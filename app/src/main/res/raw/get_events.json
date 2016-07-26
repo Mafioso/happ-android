@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "title": "Festival",
+    "interest": {
+      "title": "Music",
+      "parent": {
+        "title": "Classical",
+        "icon_url": "http://"
+      }
+    }
+  ,
+    "description": "Festival of classical music. All welcome",
+    "images": [
+      "http://1", "http://2"
+    ],
+    "votes_count": 123,
+    "did_vote": true,
+    "in_favorites": false,
+    "views_count": 1231,
+    "start_date": "2014-04-23T14:25:43.501Z",
+    "end_date": "2014-04-23T18:25:43.501Z",
+    "place": "New York City",
+    "currency": {
+      "code": "USD",
+      "symbol": "$"
+    }
+  ,
+    "lowest_price": 500, 		// if "0" then (free)
+    "highest_price": 1000, 	// if "0" then (free)
+    "author": {
+      "username": "Mussa",
+      "full_name": "Mussin"
+    }
+  }
+ ]
