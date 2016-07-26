@@ -16,9 +16,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 
-/**
- * Created by iztiev on 7/22/16.
- */
+
 public class LocalResponseInterceptor implements Interceptor {
 
     private Context context;
