@@ -1,36 +1,42 @@
-[
-  {
-    "id": 1,
-    "title": "Festival",
-    "interest": {
-      "title": "Music",
-      "parent": {
+{
+  "events": [
+    {
+      "id": 1,
+      "title": "Festival",
+      "interest": {
         "title": "Classical",
-        "icon_url": "http://"
+        "parent": {
+          "title": "Music",
+          "color": "#132132",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2014-04-23T14:25:43.501Z",
+      "end_date": "2014-04-23T18:25:43.501Z",
+      "place": "New York City",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowest_price": 13,
+      "highest_price": 200,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
       }
     }
-  ,
-    "description": "Festival of classical music. All welcome",
-    "images": [
-      "http://1", "http://2"
-    ],
-    "votes_count": 123,
-    "did_vote": true,
-    "in_favorites": false,
-    "views_count": 1231,
-    "start_date": "2014-04-23T14:25:43.501Z",
-    "end_date": "2014-04-23T18:25:43.501Z",
-    "place": "New York City",
-    "currency": {
-      "code": "USD",
-      "symbol": "$"
-    }
-  ,
-    "lowest_price": 500, 		// if "0" then (free)
-    "highest_price": 1000, 	// if "0" then (free)
-    "author": {
-      "username": "Mussa",
-      "full_name": "Mussin"
-    }
-  }
- ]
+  ]
+}

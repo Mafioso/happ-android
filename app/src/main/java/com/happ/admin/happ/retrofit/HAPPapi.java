@@ -1,12 +1,8 @@
 package com.happ.admin.happ.retrofit;
 
-import com.happ.admin.happ.models.Events;
+import com.happ.admin.happ.models.EventsResponse;
 
-import java.util.Map;
-
-import io.realm.RealmList;
 import retrofit2.Call;
-import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
 
 
@@ -15,6 +11,7 @@ import retrofit2.http.GET;
  */
 public interface HAPPapi {
 
-    @GET("/events")
-    Call<RealmList<Events>> event (@FieldMap Map<String,String> map);
+    @GET("events")
+//    Call<RealmList<Events>> getEvents(@FieldMap Map<String,String> map);
+    Call<EventsResponse> getEvents();
 }

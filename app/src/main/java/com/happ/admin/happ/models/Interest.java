@@ -7,6 +7,7 @@ import io.realm.RealmObject;
  */
 public class Interest extends RealmObject {
 
+    private Interest parent;
     private String title;
     private String icon_url;
     private String color;
@@ -33,5 +34,13 @@ public class Interest extends RealmObject {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Interest getParent() {
+        return parent;
+    }
+
+    public void setParent(Interest parent) {
+        this.parent = parent;
     }
 }
