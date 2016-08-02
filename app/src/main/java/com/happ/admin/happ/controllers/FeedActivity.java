@@ -1,95 +1,90 @@
 package com.happ.admin.happ.controllers;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.TextView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.happ.admin.happ.R;
 import com.happ.admin.happ.App;
+import com.happ.admin.happ.BroadcastIntents;
+import com.happ.admin.happ.R;
 import com.happ.admin.happ.models.Events;
-import com.happ.admin.happ.models.EventsResponse;
-import com.happ.admin.happ.retrofit.HAPPapi;
-import com.happ.admin.happ.retrofit.LocalResponseInterceptor;
+import com.happ.admin.happ.retrofit.APIService;
+import com.happ.admin.happ.retrofit.HappRestClient;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.TreeMap;
 
 import io.realm.Realm;
-import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import io.realm.RealmResults;
 
 public class FeedActivity extends AppCompatActivity {
-    private Gson gson;
-    private OkHttpClient localclient;
-    private Retrofit retrofit;
-    private TextView tw;
+    private BroadcastReceiver eventsRequestDoneReceiver;
+//    private TextView tw;
+    private ArrayList<Events> events;
+    private RecyclerView rv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        gson = new GsonBuilder().create();
-        localclient = new OkHttpClient().newBuilder().addInterceptor(new LocalResponseInterceptor(App.getContext())).build();
-        retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.11.50/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(localclient)
-                .build();
+        setContentView(R.layout.recyclerview);
 
 
-        HAPPapi service = retrofit.create(HAPPapi.class);
-        Call<EventsResponse> call = service.getEvents();
-        call.enqueue(new Callback<EventsResponse>() {
-            @Override
-            public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
+        rv = (RecyclerView)findViewById(R.id.rv);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rv.setLayoutManager(llm);
+        rv.setHasFixedSize(true);
 
-                Log.e("OnResponce", "OK");
+        events = new ArrayList<Events>();
 
-                if (response.isSuccessful()){
+        RVAdapter adapter = new RVAdapter(events);
+        rv.setAdapter(adapter);
 
-                    List<Events> managers = response.body().getEvents();
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
-                    realm.copyToRealmOrUpdate(managers);
-                    realm.commitTransaction();
-
-
-                    Events evt = realm.where(Events.class).findFirst();
-                    evt = realm.copyFromRealm(evt);
-
-                    tw = (TextView) findViewById(R.id.textView2);
-                    tw.setText(String.valueOf(evt.getTitle() ));
-                    realm.close();
-
-                    System.out.println(managers.toString());
-
-                }
-                else {
-                    Log.e("Response Successful?", "NO");
-                    Log.e("response.message",response.message());
-                    Log.e("response.code", String.valueOf(response.code()));
-                    Log.e("response.body", String.valueOf(response.body()));
-
-
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<EventsResponse> call, Throwable t) {
-                Log.e("OnFailure", "Fail");
-                Log.e((t.getMessage()), t.getMessage());
-            }
-        });
-
-        setContentView(R.layout.activity_feed);
+        eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
+        HappRestClient.getInstance().getEvents();
+        APIService.getEvents();
     }
 
+
+    @Override
+    protected void onDestroy() {
+        if (eventsRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+        }
+        super.onDestroy();
+    }
+
+    private BroadcastReceiver createEventsRequestDoneReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                Realm realm = Realm.getDefaultInstance();
+                RealmResults<Events> evts = realm.where(Events.class).findAll();
+                events = (ArrayList<Events>)realm.copyFromRealm(evts.subList(0, evts.size()));
+                ((RVAdapter)rv.getAdapter()).updateData(events);
+//                tw = (TextView) findViewById(R.id.textView2);
+//                tw.setText(String.valueOf(evt.getTitle()));
+                realm.close();
+            }
+        };
+    }
+
+
+
+    protected void outputData(String data) {
+        System.out.println(data);
+    }
+
+//         Call<EventsResponse> call = service.getEvents();
 
 }

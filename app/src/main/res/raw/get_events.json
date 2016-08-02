@@ -37,6 +37,39 @@
         "username": "Mussa",
         "full_name": "Mussin"
       }
+    },
+    {
+      "id": 2,
+      "title": "SHOP OUTLET"
+    },
+    {
+      "id": 3,
+      "title": "TEST!"
+    },
+    {
+      "id": 4,
+      "title": "TEST!"
+    },
+    {
+      "id": 5,
+      "title": "TEST!"
+    },
+    {
+      "id": 6,
+      "title": "TEST!"
+    },
+    {
+      "id": 7,
+      "title": "TEST!"
+    },
+    {
+      "id": 8,
+      "title": "TEST!"
+    },
+    {
+      "id": 9,
+      "title": "TEST!"
     }
+
   ]
 }

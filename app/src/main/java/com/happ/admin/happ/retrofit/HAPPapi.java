@@ -13,5 +13,5 @@ public interface HAPPapi {
 
     @GET("events")
 //    Call<RealmList<Events>> getEvents(@FieldMap Map<String,String> map);
-    Call<EventsResponse> getEvents();
+    Call<EventsResponse> getEvent();
 }
