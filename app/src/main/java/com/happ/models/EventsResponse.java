@@ -1,4 +1,4 @@
-package com.happ.admin.happ.models;
+package com.happ.models;
 
 import java.util.List;
 

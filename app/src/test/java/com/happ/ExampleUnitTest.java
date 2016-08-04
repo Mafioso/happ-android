@@ -1,4 +1,4 @@
-package com.happ.admin.happ;
+package com.happ;
 
 import org.junit.Test;
 

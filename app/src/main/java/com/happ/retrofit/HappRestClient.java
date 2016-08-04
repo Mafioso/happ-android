@@ -1,4 +1,4 @@
-package com.happ.admin.happ.retrofit;
+package com.happ.retrofit;
 
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
@@ -6,10 +6,10 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.happ.admin.happ.App;
-import com.happ.admin.happ.BroadcastIntents;
-import com.happ.admin.happ.models.Events;
-import com.happ.admin.happ.models.EventsResponse;
+import com.happ.App;
+import com.happ.BroadcastIntents;
+import com.happ.models.Events;
+import com.happ.models.EventsResponse;
 
 import java.util.List;
 

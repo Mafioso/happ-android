@@ -1,6 +1,6 @@
-package com.happ.admin.happ.retrofit;
+package com.happ.retrofit;
 
-import com.happ.admin.happ.models.EventsResponse;
+import com.happ.models.EventsResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

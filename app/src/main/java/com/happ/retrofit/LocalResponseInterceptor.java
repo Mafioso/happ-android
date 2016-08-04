@@ -1,4 +1,4 @@
-package com.happ.admin.happ.retrofit;
+package com.happ.retrofit;
 
 import android.content.Context;
 import android.util.Log;

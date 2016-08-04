@@ -1,4 +1,4 @@
-package com.happ.admin.happ;
+package com.happ;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

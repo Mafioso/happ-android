@@ -1,10 +1,10 @@
-package com.happ.admin.happ;
+package com.happ;
 
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.happ.admin.happ.models.Events;
+import com.happ.models.Events;
 
 import java.net.HttpURLConnection;
 import java.net.URL;

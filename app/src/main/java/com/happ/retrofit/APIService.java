@@ -1,9 +1,9 @@
-package com.happ.admin.happ.retrofit;
+package com.happ.retrofit;
 
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.happ.admin.happ.App;
+import com.happ.App;
 
 /**
  * Created by dante on 8/2/16.

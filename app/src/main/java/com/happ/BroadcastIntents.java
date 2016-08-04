@@ -1,4 +1,4 @@
-package com.happ.admin.happ;
+package com.happ;
 
 /**
  * Created by dante on 8/1/16.
