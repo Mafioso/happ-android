@@ -27,8 +27,8 @@ public class Event extends RealmObject {
     private String place;
     private Currency currency;
     @SerializedName("lowest_price")
-    private int lowest_price;
-    private int highest_price;
+    private Integer lowest_price;
+    private Integer highest_price;
     private User author;
 
     public int getId() {
@@ -133,19 +133,19 @@ public class Event extends RealmObject {
         this.currency = currency;
     }
 
-    public int getLowest_price() {
+    public Integer getLowest_price() {
         return lowest_price;
     }
 
-    public void setLowest_price(int lowest_price) {
+    public void setLowest_price(Integer lowest_price) {
         this.lowest_price = lowest_price;
     }
 
-    public int getHighest_price() {
+    public Integer getHighest_price() {
         return highest_price;
     }
 
-    public void setHighest_price(int highest_price) {
+    public void setHighest_price(Integer highest_price) {
         this.highest_price = highest_price;
     }
 

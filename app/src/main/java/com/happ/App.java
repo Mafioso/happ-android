@@ -2,9 +2,12 @@ package com.happ;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.StrictMode;
 import android.util.Log;
 
 import com.happ.models.Event;
+
+import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -24,6 +27,11 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         context = this.getApplicationContext();
+        JodaTimeAndroid.init(context);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(realmConfiguration);
         if (hasInternet()) {

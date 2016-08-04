@@ -2,6 +2,7 @@ package com.happ.retrofit;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Process;
 
 import com.happ.App;
 
@@ -9,7 +10,7 @@ import com.happ.App;
  * Created by dante on 8/2/16.
  */
 public class APIService extends IntentService{
-    private static final String ACTION_GET_EVENTS = "happ.action.ACTION_GET_EVENTS";
+    private static final String ACTION_GET_EVENTS = "com.happ.action.ACTION_GET_EVENTS";
 
     public static void getEvents() {
         Intent intent = new Intent(App.getContext(), APIService.class);
@@ -23,12 +24,11 @@ public class APIService extends IntentService{
 
     @Override
     protected void onHandleIntent(Intent intent) {
-//        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+        Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
 
         if (intent != null) {
             final String action = intent.getAction();
             if (action.equals(ACTION_GET_EVENTS)) {
-
                 HappRestClient.getInstance().getEvents();
             }
         }
