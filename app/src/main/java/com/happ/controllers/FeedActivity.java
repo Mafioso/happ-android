@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -28,48 +29,70 @@ public class FeedActivity extends AppCompatActivity {
     private BroadcastReceiver eventsRequestDoneReceiver;
     private ArrayList<Event> events;
     private RecyclerView eventsListView;
+    private LinearLayoutManager eventsListLayoutManager;
+    private int eventsFeedPageSize;
 
+    private boolean loading = true;
+    private int firstVisibleItem, visibleItemCount, totalItemCount;
+    private int previousTotal = 0;
+    private int visibleThreshold;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
+        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
         setContentView(R.layout.activity_feed);
 
         eventsListView = (RecyclerView)findViewById(R.id.events_list_view);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        eventsListView.setLayoutManager(llm);
-
-//        events = new ArrayList<Event>();
-//        for (int i=0; i<200; i++) {
-//            Event event = new Event();
-//            event.setId(i+1);
-//            event.setTitle("Title Numero " + String.valueOf(i+1));
-//            long datems = (long)(Math.random()*5184000000l + 1470312000000l);
-//            event.setStart_date(new Date(datems));
-//            events.add(event);
-//        }
-//
-//        Realm realm = Realm.getDefaultInstance();
-//        realm.beginTransaction();
-//        realm.copyToRealmOrUpdate(events);
-//        realm.commitTransaction();
-//        realm.close();
+        eventsListLayoutManager = new LinearLayoutManager(this);
+        eventsListView.setLayoutManager(eventsListLayoutManager);
         events = new ArrayList<>();
 
         EventsListAdapter ela = new EventsListAdapter(this, events);
         eventsListView.setAdapter(ela);
-//
+
+        createScrollListener();
+
         eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
-//        HappRestClient.getInstance().getEvents();
         APIService.getEvents();
-//        updateEventsList();
+    }
+
+    protected void createScrollListener() {
+        eventsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                if (dy > 0) {
+                    visibleItemCount = eventsListLayoutManager.getChildCount();
+                    totalItemCount = eventsListLayoutManager.getItemCount();
+                    firstVisibleItem = eventsListLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if (totalItemCount > previousTotal) {
+                            loading = false;
+                            previousTotal = totalItemCount;
+                        }
+                    }
+
+                    if (!loading && (totalItemCount - visibleItemCount)
+                            <= (firstVisibleItem + visibleThreshold)) {
+                        loading = true;
+                        int nextPage = (totalItemCount / eventsFeedPageSize) + 1;
+                        APIService.getEvents(nextPage);
+                    }
+                }
+
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     protected void updateEventsList() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Event> eventRealmResults = realm.where(Event.class).findAllSorted("start_date", Sort.ASCENDING);
+        RealmResults<Event> eventRealmResults = realm.where(Event.class).findAllSorted("startDate", Sort.ASCENDING);
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();

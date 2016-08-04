@@ -15,6 +15,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,7 +30,7 @@ public class HappRestClient {
     private Gson gson;
     private Retrofit retrofit;
     private HAPPapi happApi;
-    private OkHttpClient localclient;
+    private OkHttpClient httpClient;
 
     private static HappRestClient instance;
 
@@ -42,11 +43,16 @@ public class HappRestClient {
 
     private HappRestClient() {
         gson = new GsonBuilder().create();
-        localclient = new OkHttpClient().newBuilder().addInterceptor(new LocalResponseInterceptor(App.getContext())).build();
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        httpClient = new OkHttpClient().newBuilder()
+                .addInterceptor(new LocalResponseInterceptor(App.getContext()))
+                .addInterceptor(logging)
+                .build();
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://happ.com/")
+                .baseUrl("http://127.0.0.1/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .client(localclient)
+                .client(httpClient)
                 .build();
 
         happApi = retrofit.create(HAPPapi.class);
@@ -60,10 +66,9 @@ public class HappRestClient {
         happApi.getEvents(page).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
-                Log.d("RETROFIT RESPONSE >>>>>", response.message());
 
                 if (response.isSuccessful()){
-
+                    Log.d("RETROFIT RESPONSE >>>>>", "successful");
                     List<Event> events = response.body().getEvents();
 
                     Realm realm = Realm.getDefaultInstance();

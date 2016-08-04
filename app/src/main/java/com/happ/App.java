@@ -29,9 +29,6 @@ public class App extends Application {
         context = this.getApplicationContext();
         JodaTimeAndroid.init(context);
 
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(realmConfiguration);
         if (hasInternet()) {
@@ -40,26 +37,16 @@ public class App extends Application {
     }
 
     public void deleleFromRealm(){
-        // obtain the results of a query
         Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Event> results = realm.where(Event.class).findAll();
+        final RealmResults<Event> results = realm.where(Event.class).notEqualTo("inFavorites", true).findAll();
 
-    // All changes to data must happen in a transaction
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-//                // remove single match
-//                results.deleteFirstFromRealm();
-//                results.deleteLastFromRealm();
-//
-//                // remove a single object
-//                Dog dog = results.get(5);
-//                dog.deleteFromRealm();
-
-                // Delete all matches
                 results.deleteAllFromRealm();
             }
         });
+        realm.close();
     }
 
     public static boolean hasInternet()  {

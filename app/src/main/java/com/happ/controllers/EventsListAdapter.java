@@ -1,7 +1,6 @@
 package com.happ.controllers;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,7 +17,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by iztiev on 8/4/16.
@@ -51,7 +49,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         int sectionFirstPosition = 0;
 
         for (int i=0; i<events.size(); i++) {
-            DateTime eventDate = new DateTime(events.get(i).getStart_date());
+            DateTime eventDate = new DateTime(events.get(i).getStartDate());
             eventDate.minusHours(eventDate.hourOfDay().get());
             eventDate.minusMinutes(eventDate.minuteOfHour().get());
             eventDate.minusSeconds(eventDate.secondOfMinute().get());
@@ -118,7 +116,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             ((EventsListItemViewHolder)holder).mTitleView.setText(item.event.getTitle());
 
 
-            DateTime eventDate = new DateTime(item.event.getStart_date());
+            DateTime eventDate = new DateTime(item.event.getStartDate());
             String dateString = eventDate.toString(eventStartDateFormatter);
 
             ((EventsListItemViewHolder)holder).mTitleView.setText(dateString);

@@ -18,17 +18,24 @@ public class Event extends RealmObject {
     private Interest interest;
     private String description;
     private RealmList<EventImage> images;
-    private int votes_count;
-    private boolean did_vote;
-    private boolean in_favorites;
-    private int views_count;
-    private Date start_date;
-    private Date end_date;
+    @SerializedName("votes_count")
+    private int votesCount;
+    @SerializedName("did_vote")
+    private boolean didVote;
+    @SerializedName("in_favorites")
+    private boolean inFavorites;
+    @SerializedName("views_count")
+    private int viewsCount;
+    @SerializedName("start_date")
+    private Date startDate;
+    @SerializedName("end_date")
+    private Date endDate;
     private String place;
     private Currency currency;
     @SerializedName("lowest_price")
-    private Integer lowest_price;
-    private Integer highest_price;
+    private Integer lowestPrice;
+    @SerializedName("higest_price")
+    private Integer highestPrice;
     private User author;
 
     public int getId() {
@@ -61,52 +68,52 @@ public class Event extends RealmObject {
         this.images = images;
     }
 
-    public int getVotes_count() {
-        return votes_count;
+    public int getVotesCount() {
+        return votesCount;
     }
 
-    public void setVotes_count(int votes_count) {
-        this.votes_count = votes_count;
+    public void setVotesCount(int votesCount) {
+        this.votesCount = votesCount;
     }
 
-    public boolean isDid_vote() {
-        return did_vote;
+    public boolean isDidVote() {
+        return didVote;
     }
 
-    public void setDid_vote(boolean did_vote) {
-        this.did_vote = did_vote;
+    public void setDidVote(boolean didVote) {
+        this.didVote = didVote;
     }
 
-    public boolean isIn_favorites() {
-        return in_favorites;
+    public boolean isInFavorites() {
+        return inFavorites;
     }
 
-    public void setIn_favorites(boolean in_favorites) {
-        this.in_favorites = in_favorites;
+    public void setInFavorites(boolean inFavorites) {
+        this.inFavorites = inFavorites;
     }
 
-    public int getViews_count() {
-        return views_count;
+    public int getViewsCount() {
+        return viewsCount;
     }
 
-    public void setViews_count(int views_count) {
-        this.views_count = views_count;
+    public void setViewsCount(int viewsCount) {
+        this.viewsCount = viewsCount;
     }
 
-    public Date getStart_date() {
-        return start_date;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setStart_date(Date start_date) {
-        this.start_date = start_date;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getEnd_date() {
-        return end_date;
+    public Date getEndDate() {
+        return endDate;
     }
 
-    public void setEnd_date(Date end_date) {
-        this.end_date = end_date;
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public String getPlace() {
@@ -133,20 +140,20 @@ public class Event extends RealmObject {
         this.currency = currency;
     }
 
-    public Integer getLowest_price() {
-        return lowest_price;
+    public Integer getLowestPrice() {
+        return lowestPrice;
     }
 
-    public void setLowest_price(Integer lowest_price) {
-        this.lowest_price = lowest_price;
+    public void setLowestPrice(Integer lowestPrice) {
+        this.lowestPrice = lowestPrice;
     }
 
-    public Integer getHighest_price() {
-        return highest_price;
+    public Integer getHighestPrice() {
+        return highestPrice;
     }
 
-    public void setHighest_price(Integer highest_price) {
-        this.highest_price = highest_price;
+    public void setHighestPrice(Integer highestPrice) {
+        this.highestPrice = highestPrice;
     }
 
     public User getAuthor() {

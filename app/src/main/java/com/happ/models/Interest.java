@@ -1,5 +1,7 @@
 package com.happ.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import io.realm.RealmObject;
 
 /**
@@ -9,7 +11,8 @@ public class Interest extends RealmObject {
 
     private Interest parent;
     private String title;
-    private String icon_url;
+    @SerializedName("icon_url")
+    private String iconUrl;
     private String color;
 
     public String getTitle() {
@@ -20,12 +23,12 @@ public class Interest extends RealmObject {
         this.title = title;
     }
 
-    public String getIcon_url() {
-        return icon_url;
+    public String getIconUrl() {
+        return iconUrl;
     }
 
-    public void setIcon_url(String icon_url) {
-        this.icon_url = icon_url;
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     public String getColor() {
