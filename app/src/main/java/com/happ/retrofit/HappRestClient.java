@@ -68,7 +68,6 @@ public class HappRestClient {
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
 
                 if (response.isSuccessful()){
-                    Log.d("RETROFIT RESPONSE >>>>>", "successful");
                     List<Event> events = response.body().getEvents();
 
                     Realm realm = Realm.getDefaultInstance();
@@ -84,7 +83,6 @@ public class HappRestClient {
 
                 }
                 else {
-                    Log.d("RETROFIT REQUEST >>>>>>", response.message());
                     Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
                     intent.putExtra("BODY", response.body().toString());
@@ -95,7 +93,6 @@ public class HappRestClient {
 
             @Override
             public void onFailure(Call<EventsResponse> call, Throwable t) {
-                Log.d("RETROFIT RESPONSE >>>>>", t.getMessage());
                 Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
 //                intent.putExtra("MESSAGE", t.getMessage());

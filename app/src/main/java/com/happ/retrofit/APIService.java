@@ -3,7 +3,6 @@ package com.happ.retrofit;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Process;
-import android.util.Log;
 
 import com.happ.App;
 
