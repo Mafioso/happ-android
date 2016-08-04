@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.happ.App;
 import com.happ.BroadcastIntents;
-import com.happ.models.Events;
+import com.happ.models.Event;
 import com.happ.models.EventsResponse;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class HappRestClient {
         gson = new GsonBuilder().create();
         localclient = new OkHttpClient().newBuilder().addInterceptor(new LocalResponseInterceptor(App.getContext())).build();
         retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.11.50/")
+                .baseUrl("http://happ.com/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(localclient)
                 .build();
@@ -53,16 +53,16 @@ public class HappRestClient {
     }
 
     public void getEvents() {
-        happApi.getEvent().enqueue(new Callback<EventsResponse>() {
+        this.getEvents(1);
+    }
+
+    public void getEvents(int page) {
+        happApi.getEvents(page).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
-
-                Log.e("OnResponce", "OK");
-
-
                 if (response.isSuccessful()){
 
-                    List<Events> events = response.body().getEvents();
+                    List<Event> events = response.body().getEvents();
 
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
@@ -77,19 +77,20 @@ public class HappRestClient {
 
                 }
                 else {
-                    Log.e("Response Successful?", "NO");
-                    Log.e("response.message",response.message());
-                    Log.e("response.code", String.valueOf(response.code()));
-                    Log.e("response.body", String.valueOf(response.body()));
-
-                    // TOAST
+                    Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("BODY", response.body().toString());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
             }
 
             @Override
             public void onFailure(Call<EventsResponse> call, Throwable t) {
-                Log.e("OnFailure", "Fail");
-                Log.e((t.getMessage()), t.getMessage());
+                Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+//                intent.putExtra("MESSAGE", t.getMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
         });
     }

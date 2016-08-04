@@ -7,27 +7,18 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.models.Events;
-import com.happ.retrofit.APIService;
-import com.happ.retrofit.HappRestClient;
+import com.happ.models.Event;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.TreeMap;
-
-import io.realm.Realm;
-import io.realm.RealmResults;
 
 public class FeedActivity extends AppCompatActivity {
     private BroadcastReceiver eventsRequestDoneReceiver;
-//    private TextView tw;
-    private ArrayList<Events> events;
+    private ArrayList<Event> events;
     private RecyclerView rv;
 
 
@@ -43,13 +34,13 @@ public class FeedActivity extends AppCompatActivity {
 //        rv.setLayoutManager(llm);
 //        rv.setHasFixedSize(true);
 //
-//        events = new ArrayList<Events>();
+//        events = new ArrayList<Event>();
 //
 //        RVAdapter adapter = new RVAdapter(events);
 //        rv.setAdapter(adapter);
 //
-//        eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
-//        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
+        eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
 //        HappRestClient.getInstance().getEvents();
 //        APIService.getEvents();
     }
@@ -69,8 +60,8 @@ public class FeedActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
 
 //                Realm realm = Realm.getDefaultInstance();
-//                RealmResults<Events> evts = realm.where(Events.class).findAll();
-//                events = (ArrayList<Events>)realm.copyFromRealm(evts.subList(0, evts.size()));
+//                RealmResults<Event> evts = realm.where(Event.class).findAll();
+//                events = (ArrayList<Event>)realm.copyFromRealm(evts.subList(0, evts.size()));
 //                ((RVAdapter)rv.getAdapter()).updateData(events);
 ////                tw = (TextView) findViewById(R.id.textView2);
 ////                tw.setText(String.valueOf(evt.getTitle()));
@@ -78,13 +69,5 @@ public class FeedActivity extends AppCompatActivity {
             }
         };
     }
-
-
-
-    protected void outputData(String data) {
-        System.out.println(data);
-    }
-
-//         Call<EventsResponse> call = service.getEvents();
 
 }

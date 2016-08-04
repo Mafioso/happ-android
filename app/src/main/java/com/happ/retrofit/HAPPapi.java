@@ -4,6 +4,7 @@ import com.happ.models.EventsResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 
 /**
@@ -11,7 +12,6 @@ import retrofit2.http.GET;
  */
 public interface HAPPapi {
 
-    @GET("events")
-//    Call<RealmList<Events>> getEvents(@FieldMap Map<String,String> map);
-    Call<EventsResponse> getEvent();
+    @GET("events/{page}")
+    Call<EventsResponse> getEvents(@Path("page") int page);
 }

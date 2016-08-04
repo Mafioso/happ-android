@@ -1,0 +1,361 @@
+{
+  "events": [
+    {
+      "id": 11,
+      "title": "Tribute to Johan Sebastien Bach 11",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-10T12:00:00.000Z",
+      "end_date": "2016-08-10T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "highest_price": 200,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 12,
+      "title": "Modern Art Exhibition 12",
+      "interest": {
+        "title": "Art",
+        "color": "#F4A261",
+        "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+      },
+      "description": "Modern Art Festival",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-10T13:00:00.000Z",
+      "end_date": "2016-08-10T18:00:00.000Z",
+      "place": "State Art Gallery",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowest_price": 10,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 13,
+      "title": "Best Cats Fair 13",
+      "interest": {
+        "title": "Cats",
+        "parent": {
+          "title": "Animals",
+          "color": "#E9C46A",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique nisl at purus pretium, lobortis blandit enim vestibulum. Donec congue metus tortor. Mauris eget orci ante. Quisque laoreet justo at cursus interdum. Duis eu erat a massa molestie faucibus. Vivamus id ante ultricies, accumsan lorem fringilla, vestibulum quam. Nam eu mi molestie, faucibus mauris vitae, consequat lorem. Aliquam erat volutpat. In elementum ornare facilisis. Aenean sed lorem et sapien convallis condimentum ut in erat.",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-10T8:00:00.000Z",
+      "end_date": "2016-08-10T18:00:00.000Z",
+      "place": "Atakent Fair",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 14,
+      "title": "Tribute to Johan Sebastien Bach 14",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-10T12:30:00.000Z",
+      "end_date": "2016-08-10T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "highest_price": 200,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 15,
+      "title": "Modern Art Exhibition 15",
+      "interest": {
+        "title": "Art",
+        "color": "#F4A261",
+        "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+      },
+      "description": "Modern Art Festival",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-11T13:00:00.000Z",
+      "end_date": "2016-08-11T18:00:00.000Z",
+      "place": "State Art Gallery",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowest_price": 10,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 16,
+      "title": "Best Cats Fair 16",
+      "interest": {
+        "title": "Cats",
+        "parent": {
+          "title": "Animals",
+          "color": "#E9C46A",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique nisl at purus pretium, lobortis blandit enim vestibulum. Donec congue metus tortor. Mauris eget orci ante. Quisque laoreet justo at cursus interdum. Duis eu erat a massa molestie faucibus. Vivamus id ante ultricies, accumsan lorem fringilla, vestibulum quam. Nam eu mi molestie, faucibus mauris vitae, consequat lorem. Aliquam erat volutpat. In elementum ornare facilisis. Aenean sed lorem et sapien convallis condimentum ut in erat.",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-11T8:00:00.000Z",
+      "end_date": "2016-08-11T18:00:00.000Z",
+      "place": "Atakent Fair",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 17,
+      "title": "Best Cats Fair 17",
+      "interest": {
+        "title": "Cats",
+        "parent": {
+          "title": "Animals",
+          "color": "#E9C46A",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique nisl at purus pretium, lobortis blandit enim vestibulum. Donec congue metus tortor. Mauris eget orci ante. Quisque laoreet justo at cursus interdum. Duis eu erat a massa molestie faucibus. Vivamus id ante ultricies, accumsan lorem fringilla, vestibulum quam. Nam eu mi molestie, faucibus mauris vitae, consequat lorem. Aliquam erat volutpat. In elementum ornare facilisis. Aenean sed lorem et sapien convallis condimentum ut in erat.",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-12T8:00:00.000Z",
+      "end_date": "2016-08-12T18:00:00.000Z",
+      "place": "Atakent Fair",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 18,
+      "title": "Tribute to Johan Sebastien Bach 18",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-12T12:00:00.000Z",
+      "end_date": "2016-08-12T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "highest_price": 200,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 19,
+      "title": "Modern Art Exhibition 19",
+      "interest": {
+        "title": "Art",
+        "color": "#F4A261",
+        "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+      },
+      "description": "Modern Art Festival",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-12T13:00:00.000Z",
+      "end_date": "2016-08-12T18:00:00.000Z",
+      "place": "State Art Gallery",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowest_price": 10,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 20,
+      "title": "Best Cats Fair 20",
+      "interest": {
+        "title": "Cats",
+        "parent": {
+          "title": "Animals",
+          "color": "#E9C46A",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique nisl at purus pretium, lobortis blandit enim vestibulum. Donec congue metus tortor. Mauris eget orci ante. Quisque laoreet justo at cursus interdum. Duis eu erat a massa molestie faucibus. Vivamus id ante ultricies, accumsan lorem fringilla, vestibulum quam. Nam eu mi molestie, faucibus mauris vitae, consequat lorem. Aliquam erat volutpat. In elementum ornare facilisis. Aenean sed lorem et sapien convallis condimentum ut in erat.",
+      "images": [
+        {
+          "url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-12T10:00:00.000Z",
+      "end_date": "2016-08-12T22:00:00.000Z",
+      "place": "Atakent Fair",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    }
+  ]
+}

@@ -11,7 +11,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by dante on 7/26/16.
  */
-public class Events extends RealmObject {
+public class Event extends RealmObject {
     @PrimaryKey
     private int id;
     private String title;

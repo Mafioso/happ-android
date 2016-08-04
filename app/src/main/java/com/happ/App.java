@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.happ.models.Events;
+import com.happ.models.Event;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -34,7 +34,7 @@ public class App extends Application {
     public void deleleFromRealm(){
         // obtain the results of a query
         Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Events> results = realm.where(Events.class).findAll();
+        final RealmResults<Event> results = realm.where(Event.class).findAll();
 
     // All changes to data must happen in a transaction
         realm.executeTransaction(new Realm.Transaction() {

@@ -6,13 +6,13 @@ import java.util.List;
  * Created by dante on 7/27/16.
  */
 public class EventsResponse {
-    private List<Events> events;
+    private List<Event> events;
 
-    public List<Events> getEvents() {
+    public List<Event> getEvents() {
         return events;
     }
 
-    public void setEvents(List<Events> events) {
+    public void setEvents(List<Event> events) {
         this.events = events;
     }
 }
