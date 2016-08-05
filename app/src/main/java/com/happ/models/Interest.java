@@ -2,6 +2,8 @@ package com.happ.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 import io.realm.RealmObject;
 
 /**
@@ -23,6 +25,13 @@ public class Interest extends RealmObject {
         this.title = title;
     }
 
+    public ArrayList<String> getFullTitle() {
+        ArrayList<String> result = new ArrayList<>();
+        if (parent != null) result.add(parent.title);
+        result.add(title);
+        return result;
+    }
+
     public String getIconUrl() {
         return iconUrl;
     }
@@ -32,7 +41,8 @@ public class Interest extends RealmObject {
     }
 
     public String getColor() {
-        return color;
+        if (this.parent != null && this.parent.color != null) return this.parent.color;
+        return this.color;
     }
 
     public void setColor(String color) {

@@ -2,6 +2,7 @@ package com.happ.controllers;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.FutureTarget;
 import com.happ.R;
 import com.happ.models.Event;
+import com.happ.models.Interest;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -123,31 +125,12 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             final EventsListItemViewHolder itemHolder = (EventsListItemViewHolder)holder;
 
             if(itemHolder.mImageView != null && item.event.getImages().size() > 0){
-//                ParseFile image = (ParseFile) parseList.get(position).get("logo");
                 final String url = item.event.getImages().get(0).getUrl();
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            RequestManager rm = Glide.with(itemHolder.mImageView.getContext());
-                            DrawableTypeRequest<String> dtr = rm.load(url);
-                            BitmapTypeRequest<String> btr = dtr.asBitmap();
-                            FutureTarget<Bitmap> ft = btr.into(-1, -1);
-                            Bitmap bm = ft.get();
-                            int a = 100;
-                        } catch (Exception ex) {
-                            System.out.print(ex.getLocalizedMessage());
-                        }
-                    }
-                }).start();
-
-
-
-//                Glide.with(itemHolder.mImageView.getContext())
-//                        .load(url)
-//                        .asBitmap()
-//                        .into(itemHolder.mImageView);
+                Glide.with(itemHolder.mImageView.getContext())
+                        .load(url)
+                        .asBitmap()
+                        .into(itemHolder.mImageView);
             }
             else{
                 Glide.clear(itemHolder.mImageView);
@@ -155,7 +138,13 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             }
 
             itemHolder.mTitleView.setText(item.event.getTitle());
-            itemHolder.mInterestView.setText(item.event.getInterest().getTitle());
+            Interest interest = item.event.getInterest();
+
+            String combined = interest.getFullTitle().toString();
+            itemHolder.mInterestView.setText(combined);
+            if (interest.getColor() != null) {
+                itemHolder.mInterestView.setBackgroundColor(Color.parseColor(interest.getColor()));
+            }
 
             DateTime eventDate = new DateTime(item.event.getStartDate());
             String dateString = eventDate.toString(eventStartDateFormatter);

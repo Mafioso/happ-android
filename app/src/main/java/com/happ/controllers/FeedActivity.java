@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.bumptech.glide.BitmapTypeRequest;
+import com.bumptech.glide.DrawableTypeRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.FutureTarget;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
@@ -43,6 +49,25 @@ public class FeedActivity extends AppCompatActivity {
         eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
         setContentView(R.layout.activity_feed);
+
+
+//        final String url = "http://3dpapa.ru/wp-content/uploads/2014/07/alex11.jpg";
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    RequestManager rm = Glide.with(App.getContext());
+//                    DrawableTypeRequest<String> dtr = rm.load(url);
+//                    BitmapTypeRequest<String> btr = dtr.asBitmap();
+//                    FutureTarget<Bitmap> ft = btr.into(-1, -1);
+//                    Bitmap bm = ft.get();
+//                    int a = 100;
+//                } catch (Exception ex) {
+//                    System.out.print(ex.getLocalizedMessage());
+//                }
+//            }
+//        }).start();
 
         eventsListView = (RecyclerView)findViewById(R.id.events_list_view);
         eventsListLayoutManager = new LinearLayoutManager(this);
