@@ -1,13 +1,20 @@
 package com.happ.controllers;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.BitmapTypeRequest;
+import com.bumptech.glide.DrawableTypeRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.FutureTarget;
 import com.happ.R;
 import com.happ.models.Event;
 
@@ -113,13 +120,47 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         if (item.isHeader) {
             ((EventsListHeaderViewHolder)holder).mTitleView.setText(item.headerTitle);
         } else {
-            ((EventsListItemViewHolder)holder).mTitleView.setText(item.event.getTitle());
+            final EventsListItemViewHolder itemHolder = (EventsListItemViewHolder)holder;
 
+            if(itemHolder.mImageView != null && item.event.getImages().size() > 0){
+//                ParseFile image = (ParseFile) parseList.get(position).get("logo");
+                final String url = item.event.getImages().get(0).getUrl();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            RequestManager rm = Glide.with(itemHolder.mImageView.getContext());
+                            DrawableTypeRequest<String> dtr = rm.load(url);
+                            BitmapTypeRequest<String> btr = dtr.asBitmap();
+                            FutureTarget<Bitmap> ft = btr.into(-1, -1);
+                            Bitmap bm = ft.get();
+                            int a = 100;
+                        } catch (Exception ex) {
+                            System.out.print(ex.getLocalizedMessage());
+                        }
+                    }
+                }).start();
+
+
+
+//                Glide.with(itemHolder.mImageView.getContext())
+//                        .load(url)
+//                        .asBitmap()
+//                        .into(itemHolder.mImageView);
+            }
+            else{
+                Glide.clear(itemHolder.mImageView);
+                itemHolder.mImageView.setImageDrawable(null);
+            }
+
+            itemHolder.mTitleView.setText(item.event.getTitle());
+            itemHolder.mInterestView.setText(item.event.getInterest().getTitle());
 
             DateTime eventDate = new DateTime(item.event.getStartDate());
             String dateString = eventDate.toString(eventStartDateFormatter);
 
-            ((EventsListItemViewHolder)holder).mTitleView.setText(dateString);
+            itemHolder.mDateView.setText(dateString);
         }
     }
 
@@ -130,6 +171,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
     public class EventsListViewHolder extends RecyclerView.ViewHolder {
         public TextView mTitleView;
+
 
         public EventsListViewHolder(View itemView) {
             super(itemView);
@@ -146,11 +188,15 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
     public class EventsListItemViewHolder extends EventsListViewHolder {
         public TextView mDateView;
+        public TextView mInterestView;
+        public ImageView mImageView;
 
         public EventsListItemViewHolder(View itemView) {
             super(itemView);
             mTitleView = (TextView)itemView.findViewById(R.id.events_list_item_title);
             mDateView = (TextView)itemView.findViewById(R.id.events_list_item_start_date);
+            mInterestView = (TextView)itemView.findViewById(R.id.events_list_item_interest);
+            mImageView = (ImageView)itemView.findViewById(R.id.events_list_image_view);
         }
     }
 

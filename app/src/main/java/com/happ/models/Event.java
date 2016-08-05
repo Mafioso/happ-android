@@ -38,6 +38,7 @@ public class Event extends RealmObject {
     private Integer highestPrice;
     private User author;
 
+
     public int getId() {
         return id;
     }
