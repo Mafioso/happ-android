@@ -16,9 +16,6 @@ public class EventActivity extends Activity {
         setContentView(R.layout.activity_event);
 
 
-
-
-
     }
 
 }
