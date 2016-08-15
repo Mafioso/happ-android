@@ -32,7 +32,7 @@ public class App extends Application {
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(realmConfiguration);
         if (hasInternet()) {
-            deleleFromRealm();
+//            deleleFromRealm();
         }
     }
 

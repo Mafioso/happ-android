@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.fragments.EverythingFeedFragment;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
 
@@ -24,9 +25,9 @@ import io.realm.Sort;
 
 public class FeedActivity extends AppCompatActivity  {
     private BroadcastReceiver eventsRequestDoneReceiver;
-    private ArrayList<Event> events;
-    private RecyclerView eventsListView;
-    private LinearLayoutManager eventsListLayoutManager;
+    protected ArrayList<Event> events;
+    protected RecyclerView eventsListView;
+    protected LinearLayoutManager eventsListLayoutManager;
     private int eventsFeedPageSize;
 
     private boolean loading = true;
@@ -38,43 +39,31 @@ public class FeedActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
-        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
         setContentView(R.layout.activity_feed);
 
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .add(EverythingFeedFragment.newInstance(), "everythingFeedFragment")
+//                    .commit();
+//        }
 
-//        final String url = "http://3dpapa.ru/wp-content/uploads/2014/07/alex11.jpg";
+//        eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
+//        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
+//        setContentView(R.layout.activity_feed);
 //
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    RequestManager rm = Glide.with(App.getContext());
-//                    DrawableTypeRequest<String> dtr = rm.load(url);
-//                    BitmapTypeRequest<String> btr = dtr.asBitmap();
-//                    FutureTarget<Bitmap> ft = btr.into(-1, -1);
-//                    Bitmap bm = ft.get();
-//                    int a = 100;
-//                } catch (Exception ex) {
-//                    System.out.print(ex.getLocalizedMessage());
-//                }
-//            }
-//        }).start();
+//        eventsListView = (RecyclerView)findViewById(R.id.events_list_view);
+//        eventsListLayoutManager = new LinearLayoutManager(this);
+//        eventsListView.setLayoutManager(eventsListLayoutManager);
+//        events = new ArrayList<>();
+//
+//        EventsListAdapter ela = new EventsListAdapter(this, events);
+//        eventsListView.setAdapter(ela);
+//
+//        createScrollListener();
 
-
-        eventsListView = (RecyclerView)findViewById(R.id.events_list_view);
-        eventsListLayoutManager = new LinearLayoutManager(this);
-        eventsListView.setLayoutManager(eventsListLayoutManager);
-        events = new ArrayList<>();
-
-        EventsListAdapter ela = new EventsListAdapter(this, events);
-        eventsListView.setAdapter(ela);
-
-        createScrollListener();
-
-        eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
-        APIService.getEvents();
+//        eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
+//        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
+//        APIService.getEvents();
     }
 
     protected void createScrollListener() {
@@ -107,6 +96,8 @@ public class FeedActivity extends AppCompatActivity  {
             }
         });
     }
+
+
 
     protected void updateEventsList() {
         Realm realm = Realm.getDefaultInstance();

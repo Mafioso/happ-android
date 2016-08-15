@@ -5,13 +5,17 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.happ.R;
 import com.happ.models.Event;
 import com.happ.models.Interest;
@@ -82,6 +86,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
     public void updateData(ArrayList<Event> events) {
         this.updateItems(events);
+        Log.d("AAAAA", String.valueOf(events.size()));
         this.notifyDataSetChanged();
         this.notifyHeaderChanges();
     }
@@ -120,18 +125,35 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         } else {
             final EventsListItemViewHolder itemHolder = (EventsListItemViewHolder)holder;
 
-//            if(itemHolder.mImageView != null && item.event.getImages().size() > 0){
-//                final String url = item.event.getImages().get(0).getUrl();
-//
-//                Glide.with(itemHolder.mImageView.getContext())
-//                        .load(url)
-//                        .asBitmap()
-//                        .into(itemHolder.mImageView);
-//            }
-//            else{
-//                Glide.clear(itemHolder.mImageView);
-//                itemHolder.mImageView.setImageDrawable(null);
-//            }
+            if(item.event.getImages().size() > 0){
+                final String url = item.event.getImages().get(0).getUrl();
+                Glide.clear(itemHolder.mImageView);
+
+                ViewTreeObserver viewTreeObserver = itemHolder.mImageView.getViewTreeObserver();
+                if (viewTreeObserver.isAlive()) {
+                    viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            itemHolder.mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            int viewWidth = itemHolder.mImageView.getWidth();
+                            int viewHeight = itemHolder.mImageView.getHeight();
+                            Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth)+" "+String.valueOf(viewHeight));
+
+                            Glide.with(itemHolder.mImageView.getContext())
+                                    .load(url)
+                                    .override(viewWidth, viewHeight)
+                                    .centerCrop()
+                                    .into(itemHolder.mImageView);
+                        }
+                    });
+                }
+
+
+            }
+            else{
+                Glide.clear(itemHolder.mImageView);
+                itemHolder.mImageView.setImageDrawable(null);
+            }
 
             itemHolder.mTitleView.setText(item.event.getTitle());
             itemHolder.mCurencySymbol.setText(item.event.getCurrency().getSymbol());
@@ -182,7 +204,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         public LinearLayout mInterestViewColor;
         public TextView mInterest;
         public TextView mInterestTitle;
-//        public ImageView mImageView;
+        public ImageView mImageView;
         public TextView mCurencySymbol;
         public TextView mHighestPrice;
         public TextView mLowestPrice;
@@ -197,7 +219,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mInterestViewColor = (LinearLayout)itemView.findViewById(R.id.events_list_interest_color);
             mInterest = (TextView)itemView.findViewById(R.id.events_list_item_interest);
             mInterestTitle = (TextView)itemView.findViewById(R.id.events_list_item_interest_title);
-//            mImageView = (ImageView)itemView.findViewById(R.id.events_list_image_view);
+            mImageView = (ImageView)itemView.findViewById(R.id.events_list_image_view);
             mCurencySymbol = (TextView)itemView.findViewById(R.id.events_list_currency_symbol);
             mHighestPrice = (TextView)itemView.findViewById(R.id.events_list_highestprice);
             mLowestPrice = (TextView)itemView.findViewById(R.id.events_list_lowestprice);

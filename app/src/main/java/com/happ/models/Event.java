@@ -32,9 +32,9 @@ public class Event extends RealmObject {
     private Date endDate;
     private String place;
     private Currency currency;
-//    @SerializedName("lowest_price")
+    @SerializedName("lowest_price")
     private int lowestPrice;
-//    @SerializedName("highest_price")
+    @SerializedName("highest_price")
     private int highestPrice;
     private User author;
 
