@@ -5,7 +5,9 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.happ.R;
 import com.happ.controllers.EventsListAdapter;
 import com.happ.models.Event;
 
@@ -19,17 +21,35 @@ import io.realm.Sort;
  * Created by dante on 8/9/16.
  */
 public class FavoriteFeedFragment extends BaseFeedFragment {
+
+    public static FavoriteFeedFragment newInstance() {
+        return new FavoriteFeedFragment();
+    }
+
+    public FavoriteFeedFragment() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        final View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+//        updateEventsList();
+        super.onStart();
     }
 
     @Override
     public void onResume() {
-        super.onResume();
         updateEventsList();
+        super.onResume();
     }
+
+
 
     protected void updateEventsList() {
         Realm realm = Realm.getDefaultInstance();

@@ -29,6 +29,13 @@ import io.realm.Sort;
 public class EverythingFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver eventsRequestDoneReceiver;
 
+    public static EverythingFeedFragment newInstance() {
+        return new EverythingFeedFragment();
+    }
+
+    public EverythingFeedFragment() {
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

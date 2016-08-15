@@ -5,15 +5,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.fragments.BaseFeedFragment;
 import com.happ.fragments.EverythingFeedFragment;
+import com.happ.fragments.FavoriteFeedFragment;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
 
@@ -35,35 +50,31 @@ public class FeedActivity extends AppCompatActivity  {
     private int previousTotal = 0;
     private int visibleThreshold;
 
+    protected final String[] mTabNames = {"Everything", "Favorites"};
+    protected ArrayList<Fragment> mTabFragments;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-//        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(EverythingFeedFragment.newInstance(), "everythingFeedFragment")
-//                    .commit();
-//        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-//        eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
-//        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
-//        setContentView(R.layout.activity_feed);
-//
-//        eventsListView = (RecyclerView)findViewById(R.id.events_list_view);
-//        eventsListLayoutManager = new LinearLayoutManager(this);
-//        eventsListView.setLayoutManager(eventsListLayoutManager);
-//        events = new ArrayList<>();
-//
-//        EventsListAdapter ela = new EventsListAdapter(this, events);
-//        eventsListView.setAdapter(ela);
-//
-//        createScrollListener();
 
-//        eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
-//        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
-//        APIService.getEvents();
+        mTabFragments = new ArrayList<>();
+        for (int i=0; i<mTabNames.length; i++) {
+            mTabFragments.add(null);
+        }
+        FeedPagerAdapter adapter = new FeedPagerAdapter(getSupportFragmentManager());
+        ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
+        viewPager.setAdapter(adapter);
+        TabLayout tabLayout = (TabLayout)findViewById(R.id.tablayout);
+        tabLayout.setupWithViewPager(viewPager);
+
     }
 
     protected void createScrollListener() {
@@ -107,7 +118,6 @@ public class FeedActivity extends AppCompatActivity  {
         realm.close();
     }
 
-
     @Override
     protected void onDestroy() {
         if (eventsRequestDoneReceiver != null) {
@@ -125,4 +135,71 @@ public class FeedActivity extends AppCompatActivity  {
         };
     }
 
+
+//    public static class DesignDemoFragment extends Fragment {
+//        private static final String TAB_POSITION = "tab_position";
+//
+//        public DesignDemoFragment() {
+//
+//        }
+//
+//        public static DesignDemoFragment newInstance(int tabPosition) {
+//            DesignDemoFragment fragment = new DesignDemoFragment();
+//            Bundle args = new Bundle();
+//            args.putInt(TAB_POSITION, tabPosition);
+//            fragment.setArguments(args);
+//            return fragment;
+//        }
+//
+//        @Nullable
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//            Bundle args = getArguments();
+//            int tabPosition = args.getInt(TAB_POSITION);
+//            TextView tv = new TextView(getActivity());
+//            tv.setGravity(Gravity.CENTER);
+//            tv.setText("Text in Tab #" + tabPosition);
+//            return tv;
+//        }
+//    }
+
+    protected class FeedPagerAdapter extends FragmentStatePagerAdapter {
+
+        public FeedPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if (mTabFragments.get(position) == null) {
+                switch (position) {
+                    case 1:
+                        mTabFragments.set(position, FavoriteFeedFragment.newInstance());
+                        break;
+                    default:
+                        mTabFragments.set(position, EverythingFeedFragment.newInstance());
+                        break;
+                }
+            }
+//            switch (position) {
+//                case 1:
+//                    return (FavoriteFeedFragment)mTabFragments.get(position);
+//                default:
+//                    return (EverythingFeedFragment)mTabFragments.get(position);
+//            }
+            return mTabFragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mTabNames.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mTabNames[position];
+        }
+    }
+
 }
+
