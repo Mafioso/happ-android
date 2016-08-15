@@ -1,21 +1,17 @@
 package com.happ.controllers;
 
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.bumptech.glide.BitmapTypeRequest;
-import com.bumptech.glide.DrawableTypeRequest;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.FutureTarget;
 import com.happ.R;
 import com.happ.models.Event;
 import com.happ.models.Interest;
@@ -124,26 +120,31 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         } else {
             final EventsListItemViewHolder itemHolder = (EventsListItemViewHolder)holder;
 
-            if(itemHolder.mImageView != null && item.event.getImages().size() > 0){
-                final String url = item.event.getImages().get(0).getUrl();
-
-                Glide.with(itemHolder.mImageView.getContext())
-                        .load(url)
-                        .asBitmap()
-                        .into(itemHolder.mImageView);
-            }
-            else{
-                Glide.clear(itemHolder.mImageView);
-                itemHolder.mImageView.setImageDrawable(null);
-            }
+//            if(itemHolder.mImageView != null && item.event.getImages().size() > 0){
+//                final String url = item.event.getImages().get(0).getUrl();
+//
+//                Glide.with(itemHolder.mImageView.getContext())
+//                        .load(url)
+//                        .asBitmap()
+//                        .into(itemHolder.mImageView);
+//            }
+//            else{
+//                Glide.clear(itemHolder.mImageView);
+//                itemHolder.mImageView.setImageDrawable(null);
+//            }
 
             itemHolder.mTitleView.setText(item.event.getTitle());
-            Interest interest = item.event.getInterest();
+            itemHolder.mCurencySymbol.setText(item.event.getCurrency().getSymbol());
+            itemHolder.mHighestPrice.setText(Integer.toString(item.event.getHighestPrice()));
+            itemHolder.mLowestPrice.setText(Integer.toString(item.event.getLowestPrice()));
+            itemHolder.mVotesCount.setText(Integer.toString(item.event.getVotesCount()));
+            itemHolder.mViewsCount.setText(Integer.toString(item.event.getViewsCount()));
 
-            String combined = interest.getFullTitle().toString();
-            itemHolder.mInterestView.setText(combined);
+            itemHolder.mInterestTitle.setText(item.event.getInterest().getTitle());
+
+            Interest interest = item.event.getInterest();
             if (interest.getColor() != null) {
-                itemHolder.mInterestView.setBackgroundColor(Color.parseColor(interest.getColor()));
+                itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(interest.getColor()));
             }
 
             DateTime eventDate = new DateTime(item.event.getStartDate());
@@ -159,10 +160,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     }
 
     public class EventsListViewHolder extends RecyclerView.ViewHolder {
+
         public TextView mTitleView;
 
-
         public EventsListViewHolder(View itemView) {
+
             super(itemView);
         }
     }
@@ -177,15 +179,40 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
     public class EventsListItemViewHolder extends EventsListViewHolder {
         public TextView mDateView;
-        public TextView mInterestView;
-        public ImageView mImageView;
+        public LinearLayout mInterestViewColor;
+        public TextView mInterest;
+        public TextView mInterestTitle;
+//        public ImageView mImageView;
+        public TextView mCurencySymbol;
+        public TextView mHighestPrice;
+        public TextView mLowestPrice;
+        public TextView mVotesCount;
+        public TextView mViewsCount;
+        public Event event;
 
-        public EventsListItemViewHolder(View itemView) {
+        public EventsListItemViewHolder(final View itemView) {
             super(itemView);
             mTitleView = (TextView)itemView.findViewById(R.id.events_list_item_title);
             mDateView = (TextView)itemView.findViewById(R.id.events_list_item_start_date);
-            mInterestView = (TextView)itemView.findViewById(R.id.events_list_item_interest);
-            mImageView = (ImageView)itemView.findViewById(R.id.events_list_image_view);
+            mInterestViewColor = (LinearLayout)itemView.findViewById(R.id.events_list_interest_color);
+            mInterest = (TextView)itemView.findViewById(R.id.events_list_item_interest);
+            mInterestTitle = (TextView)itemView.findViewById(R.id.events_list_item_interest_title);
+//            mImageView = (ImageView)itemView.findViewById(R.id.events_list_image_view);
+            mCurencySymbol = (TextView)itemView.findViewById(R.id.events_list_currency_symbol);
+            mHighestPrice = (TextView)itemView.findViewById(R.id.events_list_highestprice);
+            mLowestPrice = (TextView)itemView.findViewById(R.id.events_list_lowestprice);
+            mVotesCount = (TextView)itemView.findViewById(R.id.events_list_votes_count);
+            mViewsCount = (TextView)itemView.findViewById(R.id.events_list_views_count);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), EventActivity.class);
+                    v.getContext().startActivity(intent);
+                    Toast.makeText(v.getContext(), "Hello.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
 

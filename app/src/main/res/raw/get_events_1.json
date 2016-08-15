@@ -1,361 +1,385 @@
 {
-"events": [
-{
-"id": 1,
-"title": "Tribute to Johan Sebastien Bach 1",
-"interest": {
-"title": "Classical",
-"parent": {
-"title": "Music",
-"color": "#2A9D8F",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-}
-},
-"description": "Festival of classical music. All welcome",
-"images": [
-{
-"url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-04T12:00:00.000Z",
-"end_date": "2016-08-04T14:45:00.000Z",
-"place": "Grand Concert Hall",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"highest_price": 200,
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-},
-{
-"id": 2,
-"title": "Modern Art Exhibition 2",
-"interest": {
-"title": "Art",
-"color": "#F4A261",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-},
-"description": "Modern Art Festival",
-"images": [
-{
-"url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-04T13:00:00.000Z",
-"end_date": "2016-08-04T18:00:00.000Z",
-"place": "State Art Gallery",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"lowest_price": 10,
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-},
-{
-"id": 3,
-"title": "Best Cats Fair 3",
-"interest": {
-"title": "Cats",
-"parent": {
-"title": "Animals",
-"color": "#E9C46A",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-}
-},
-"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique nisl at purus pretium, lobortis blandit enim vestibulum. Donec congue metus tortor. Mauris eget orci ante. Quisque laoreet justo at cursus interdum. Duis eu erat a massa molestie faucibus. Vivamus id ante ultricies, accumsan lorem fringilla, vestibulum quam. Nam eu mi molestie, faucibus mauris vitae, consequat lorem. Aliquam erat volutpat. In elementum ornare facilisis. Aenean sed lorem et sapien convallis condimentum ut in erat.",
-"images": [
-{
-"url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-04T08:00:00.000Z",
-"end_date": "2016-08-04T18:00:00.000Z",
-"place": "Atakent Fair",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-},
-{
-"id": 4,
-"title": "Tribute to Johan Sebastien Bach 4",
-"interest": {
-"title": "Classical",
-"parent": {
-"title": "Music",
-"color": "#2A9D8F",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-}
-},
-"description": "Festival of classical music. All welcome",
-"images": [
-{
-"url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-05T12:00:00.000Z",
-"end_date": "2016-08-05T14:45:00.000Z",
-"place": "Grand Concert Hall",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"highest_price": 200,
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-},
-{
-"id": 5,
-"title": "Modern Art Exhibition 5",
-"interest": {
-"title": "Art",
-"color": "#F4A261",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-},
-"description": "Modern Art Festival",
-"images": [
-{
-"url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-05T13:00:00.000Z",
-"end_date": "2016-08-05T18:00:00.000Z",
-"place": "State Art Gallery",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"lowest_price": 10,
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-},
-{
-"id": 6,
-"title": "Best Cats Fair 6",
-"interest": {
-"title": "Cats",
-"parent": {
-"title": "Animals",
-"color": "#E9C46A",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-}
-},
-"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique nisl at purus pretium, lobortis blandit enim vestibulum. Donec congue metus tortor. Mauris eget orci ante. Quisque laoreet justo at cursus interdum. Duis eu erat a massa molestie faucibus. Vivamus id ante ultricies, accumsan lorem fringilla, vestibulum quam. Nam eu mi molestie, faucibus mauris vitae, consequat lorem. Aliquam erat volutpat. In elementum ornare facilisis. Aenean sed lorem et sapien convallis condimentum ut in erat.",
-"images": [
-{
-"url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-06T08:00:00.000Z",
-"end_date": "2016-08-06T18:00:00.000Z",
-"place": "Atakent Fair",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-},
-{
-"id": 7,
-"title": "Best Cats Fair 7",
-"interest": {
-"title": "Cats",
-"parent": {
-"title": "Animals",
-"color": "#E9C46A",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-}
-},
-"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique nisl at purus pretium, lobortis blandit enim vestibulum. Donec congue metus tortor. Mauris eget orci ante. Quisque laoreet justo at cursus interdum. Duis eu erat a massa molestie faucibus. Vivamus id ante ultricies, accumsan lorem fringilla, vestibulum quam. Nam eu mi molestie, faucibus mauris vitae, consequat lorem. Aliquam erat volutpat. In elementum ornare facilisis. Aenean sed lorem et sapien convallis condimentum ut in erat.",
-"images": [
-{
-"url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-09T08:00:00.000Z",
-"end_date": "2016-08-09T18:00:00.000Z",
-"place": "Atakent Fair",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-},
-{
-"id": 8,
-"title": "Tribute to Johan Sebastien Bach 8",
-"interest": {
-"title": "Classical",
-"parent": {
-"title": "Music",
-"color": "#2A9D8F",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-}
-},
-"description": "Festival of classical music. All welcome",
-"images": [
-{
-"url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-08T12:00:00.000Z",
-"end_date": "2016-08-08T14:45:00.000Z",
-"place": "Grand Concert Hall",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"highest_price": 200,
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-},
-{
-"id": 9,
-"title": "Modern Art Exhibition 9",
-"interest": {
-"title": "Art",
-"color": "#F4A261",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-},
-"description": "Modern Art Festival",
-"images": [
-{
-"url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-08T13:00:00.000Z",
-"end_date": "2016-08-08T18:00:00.000Z",
-"place": "State Art Gallery",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"lowest_price": 10,
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-},
-{
-"id": 10,
-"title": "Best Cats Fair 10",
-"interest": {
-"title": "Cats",
-"parent": {
-"title": "Animals",
-"color": "#E9C46A",
-"icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-}
-},
-"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique nisl at purus pretium, lobortis blandit enim vestibulum. Donec congue metus tortor. Mauris eget orci ante. Quisque laoreet justo at cursus interdum. Duis eu erat a massa molestie faucibus. Vivamus id ante ultricies, accumsan lorem fringilla, vestibulum quam. Nam eu mi molestie, faucibus mauris vitae, consequat lorem. Aliquam erat volutpat. In elementum ornare facilisis. Aenean sed lorem et sapien convallis condimentum ut in erat.",
-"images": [
-{
-"url": "https://img3.goodfon.ru/wallpaper/big/b/ad/umf-ultra-music-festival.jpg"
-},
-{
-"url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
-}
-],
-"votes_count": 123,
-"did_vote": true,
-"in_favorites": false,
-"views_count": 1231,
-"start_date": "2016-08-06T09:00:00.000Z",
-"end_date": "2016-08-06T16:00:00.000Z",
-"place": "Atakent Fair",
-"currency": {
-"code": "USD",
-"symbol": "$"
-},
-"author": {
-"username": "Mussa",
-"full_name": "Mussin"
-}
-}
-]
+  "events": [
+    {
+      "id": 1,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
+        },
+        {
+          "url": "http://nibler.ru/uploads/users/2012-03-27/%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D1%81%D1%82%D0%BE%D0%BB-%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9-%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D1%81%D0%BC%D0%B5%D1%88%D0%BD%D1%8B%D0%B5%20%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D1%84%D0%BE%D1%82%D0%BE%D0%BF%D1%80%D0%B8%D0%BA%D0%BE%D0%BB%D1%8B_8617971351.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 2,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://nibler.ru/uploads/users/2012-03-27/%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D1%81%D1%82%D0%BE%D0%BB-%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9-%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D1%81%D0%BC%D0%B5%D1%88%D0%BD%D1%8B%D0%B5%20%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D1%84%D0%BE%D1%82%D0%BE%D0%BF%D1%80%D0%B8%D0%BA%D0%BE%D0%BB%D1%8B_8617971351.jpg"
+        },
+        {
+          "url": "http://nibler.ru/uploads/users/2012-03-27/%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D1%81%D1%82%D0%BE%D0%BB-%D0%A0%D0%B0%D0%B1%D0%BE%D1%87%D0%B8%D0%B9-%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D1%81%D0%BC%D0%B5%D1%88%D0%BD%D1%8B%D0%B5%20%D0%BA%D0%B0%D1%80%D1%82%D0%B8%D0%BD%D0%BA%D0%B8-%D1%84%D0%BE%D1%82%D0%BE%D0%BF%D1%80%D0%B8%D0%BA%D0%BE%D0%BB%D1%8B_8617971351.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 5,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 6,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 7,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 8,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 9,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    },
+    {
+      "id": 10,
+      "title": "Tribute to Johan Sebastien Bach 1",
+      "interest": {
+        "title": "Classical",
+        "parent": {
+          "title": "Music",
+          "color": "#2A9D8F",
+          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+        }
+      },
+      "description": "Festival of classical music. All welcome",
+      "images": [
+        {
+          "url": "http://feelgrafix.com/data_images/out/28/985372-bridge.jpg"
+        },
+        {
+          "url": "https://img2.goodfon.ru/wallpaper/big/c/61/armin-van-buuren-dj-trance.jpg"
+        }
+      ],
+      "votes_count": 123,
+      "did_vote": true,
+      "in_favorites": false,
+      "views_count": 1231,
+      "start_date": "2016-08-04T12:00:00.000Z",
+      "end_date": "2016-08-04T14:45:00.000Z",
+      "place": "Grand Concert Hall",
+      "currency": {
+        "code": "USD",
+        "symbol": "$"
+      },
+      "lowestPrice": 200,
+      "highestPrice": 550,
+      "author": {
+        "username": "Mussa",
+        "full_name": "Mussin"
+      }
+    }
+
+  ]
 }

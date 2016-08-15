@@ -4,34 +4,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
-import com.bumptech.glide.BitmapTypeRequest;
-import com.bumptech.glide.DrawableTypeRequest;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.FutureTarget;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
-import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
-public class FeedActivity extends AppCompatActivity {
+public class FeedActivity extends AppCompatActivity  {
     private BroadcastReceiver eventsRequestDoneReceiver;
     private ArrayList<Event> events;
     private RecyclerView eventsListView;
@@ -42,6 +33,7 @@ public class FeedActivity extends AppCompatActivity {
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +60,7 @@ public class FeedActivity extends AppCompatActivity {
 //                }
 //            }
 //        }).start();
+
 
         eventsListView = (RecyclerView)findViewById(R.id.events_list_view);
         eventsListLayoutManager = new LinearLayoutManager(this);

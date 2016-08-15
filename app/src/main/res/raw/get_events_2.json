@@ -31,7 +31,8 @@
         "code": "USD",
         "symbol": "$"
       },
-      "highest_price": 200,
+      "lowestPrice": 103,
+      "highest_price": 300,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
@@ -65,7 +66,8 @@
         "code": "USD",
         "symbol": "$"
       },
-      "lowest_price": 10,
+      "lowestPrice": 10,
+      "highestPrice": 30,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
@@ -102,6 +104,8 @@
         "code": "USD",
         "symbol": "$"
       },
+      "lowestPrice": 10,
+      "highestPrice": 30,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
@@ -138,7 +142,8 @@
         "code": "USD",
         "symbol": "$"
       },
-      "highest_price": 200,
+      "lowestPrice": 1000,
+      "highestPrice": 3000,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
@@ -172,7 +177,8 @@
         "code": "USD",
         "symbol": "$"
       },
-      "lowest_price": 10,
+      "lowestPrice": 10,
+      "highestPrice": 30,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
@@ -209,6 +215,8 @@
         "code": "USD",
         "symbol": "$"
       },
+      "lowestPrice": 10,
+      "highestPrice": 30,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
@@ -245,6 +253,8 @@
         "code": "USD",
         "symbol": "$"
       },
+      "lowestPrice": 10,
+      "highestPrice": 30,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
@@ -281,7 +291,8 @@
         "code": "USD",
         "symbol": "$"
       },
-      "highest_price": 200,
+      "lowestPrice": 125,
+      "highestPrice": 320,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
@@ -315,7 +326,8 @@
         "code": "USD",
         "symbol": "$"
       },
-      "lowest_price": 10,
+      "lowestPrice": 10,
+      "highestPrice": 30,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
@@ -352,6 +364,8 @@
         "code": "USD",
         "symbol": "$"
       },
+      "lowestPrice": 10,
+      "highestPrice": 30,
       "author": {
         "username": "Mussa",
         "full_name": "Mussin"
