@@ -211,6 +211,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         public TextView mVotesCount;
         public TextView mViewsCount;
         public Event event;
+        public ImageView clickimage_favorites;
+        public ImageView clickimage_like_or_dislike;
 
         public EventsListItemViewHolder(final View itemView) {
             super(itemView);
@@ -232,6 +234,22 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                     Intent intent = new Intent(v.getContext(), EventActivity.class);
                     v.getContext().startActivity(intent);
                     Toast.makeText(v.getContext(), "Hello.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            clickimage_favorites = (ImageView)itemView.findViewById(R.id.clickimage_favorites);
+            clickimage_favorites.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Hello Favorites.", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            clickimage_like_or_dislike = (ImageView)itemView.findViewById(R.id.clickimage_like_or_dislike);
+            clickimage_like_or_dislike.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), "Hello Like.", Toast.LENGTH_SHORT).show();
                 }
             });
 
