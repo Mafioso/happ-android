@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.happ.R;
 import com.happ.models.Event;
-import com.happ.models.Interest;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -162,11 +161,24 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             itemHolder.mVotesCount.setText(Integer.toString(item.event.getVotesCount()));
             itemHolder.mViewsCount.setText(Integer.toString(item.event.getViewsCount()));
 
-            itemHolder.mInterestTitle.setText(item.event.getInterest().getTitle());
+            ArrayList<String> fullTitle = item.event.getInterest().getFullTitle();
 
-            Interest interest = item.event.getInterest();
-            if (interest.getColor() != null) {
-                itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(interest.getColor()));
+            itemHolder.mInterest.setText(fullTitle.get(0));
+            if (fullTitle.size() > 1) {
+                itemHolder.mInterestTitle.setVisibility(View.VISIBLE);
+                itemHolder.mInterestDivider.setVisibility(View.VISIBLE);
+                itemHolder.mInterestTitle.setText(fullTitle.get(1));
+            } else {
+                itemHolder.mInterestTitle.setVisibility(View.GONE);
+                itemHolder.mInterestDivider.setVisibility(View.GONE);
+            }
+
+//            itemHolder.mInterestTitle.setText(item.event.getInterest().getFullTitle());
+
+//            itemHolder.mInterest.setText(item.event.getInterest().get);
+
+            if (item.event.getInterest().getColor() != null) {
+                itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(item.event.getInterest().getColor()));
             }
 
             DateTime eventDate = new DateTime(item.event.getStartDate());
@@ -213,6 +225,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         public Event event;
         public ImageView clickimage_favorites;
         public ImageView clickimage_like_or_dislike;
+        public TextView mInterestDivider;
 
         public EventsListItemViewHolder(final View itemView) {
             super(itemView);
@@ -227,6 +240,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mLowestPrice = (TextView)itemView.findViewById(R.id.events_list_lowestprice);
             mVotesCount = (TextView)itemView.findViewById(R.id.events_list_votes_count);
             mViewsCount = (TextView)itemView.findViewById(R.id.events_list_views_count);
+            mInterestDivider = (TextView)itemView.findViewById(R.id.events_list_item_interest_divider);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

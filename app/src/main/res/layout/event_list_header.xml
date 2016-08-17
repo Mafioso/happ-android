@@ -12,19 +12,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/events_list_header"
-
     >
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="Header Title"
         android:textAllCaps="true"
-        android:textStyle="bold"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="8dp"
         android:paddingBottom="7dp"
-        android:id="@+id/events_list_header_title"/>
+        android:textColor="@color/blueColor"
+        android:id="@+id/events_list_header_title"
+        android:gravity="center"
+        android:textSize="16dp"
+        android:textIsSelectable="false"
+        android:textStyle="bold" />
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

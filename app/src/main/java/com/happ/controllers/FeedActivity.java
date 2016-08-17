@@ -10,6 +10,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -20,7 +21,7 @@ import com.happ.fragments.FavoriteFeedFragment;
 
 import java.util.ArrayList;
 
-public class FeedActivity extends BaseActivity {
+public class FeedActivity extends AppCompatActivity {
 
     protected final String[] mTabNames = {"Everything", "Favo.rites"};
     protected ArrayList<Fragment> mTabFragments;

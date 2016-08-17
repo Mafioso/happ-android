@@ -182,12 +182,9 @@
       "id": 6,
       "title": "Best Cats Fair 6",
       "interest": {
-        "title": "Cats",
-        "parent": {
-          "title": "Animals",
-          "color": "#E9C46A",
-          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-        }
+        "title": "Animals",
+        "color": "#E9C46A",
+        "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
       },
       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique nisl at purus pretium, lobortis blandit enim vestibulum. Donec congue metus tortor. Mauris eget orci ante. Quisque laoreet justo at cursus interdum. Duis eu erat a massa molestie faucibus. Vivamus id ante ultricies, accumsan lorem fringilla, vestibulum quam. Nam eu mi molestie, faucibus mauris vitae, consequat lorem. Aliquam erat volutpat. In elementum ornare facilisis. Aenean sed lorem et sapien convallis condimentum ut in erat.",
       "images": [
