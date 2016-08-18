@@ -119,10 +119,33 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     @Override
     public void onBindViewHolder(EventsListViewHolder holder, int position) {
         final EventListItem item = mItems.get(position);
+        holder.itemView.setOnClickListener(null);
         if (item.isHeader) {
             ((EventsListHeaderViewHolder)holder).mTitleView.setText(item.headerTitle);
         } else {
             final EventsListItemViewHolder itemHolder = (EventsListItemViewHolder)holder;
+            itemHolder.mFavoritesImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "Add to favs from event "+item.event.getId(), Toast.LENGTH_LONG).show();
+                }
+            });
+            itemHolder.mUpvoteImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(context, "Like for event "+item.event.getId(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+            itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, EventActivity.class);
+                    intent.putExtra("event_id", item.event.getId());
+                    context.startActivity(intent);
+//                    Toast.makeText(v.getContext(), "Hello.", Toast.LENGTH_SHORT).show();
+                }
+            });
 
             if(item.event.getImages().size() > 0){
                 final String url = item.event.getImages().get(0).getUrl();
@@ -223,8 +246,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         public TextView mVotesCount;
         public TextView mViewsCount;
         public Event event;
-        public ImageView clickimage_favorites;
-        public ImageView clickimage_like_or_dislike;
+        public ImageView mFavoritesImage;
+        public ImageView mUpvoteImage;
         public TextView mInterestDivider;
 
         public EventsListItemViewHolder(final View itemView) {
@@ -242,30 +265,30 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mViewsCount = (TextView)itemView.findViewById(R.id.events_list_views_count);
             mInterestDivider = (TextView)itemView.findViewById(R.id.events_list_item_interest_divider);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), EventActivity.class);
-                    v.getContext().startActivity(intent);
-                    Toast.makeText(v.getContext(), "Hello.", Toast.LENGTH_SHORT).show();
-                }
-            });
+//            itemView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent(v.getContext(), EventActivity.class);
+//                    v.getContext().startActivity(intent);
+//                    Toast.makeText(v.getContext(), "Hello.", Toast.LENGTH_SHORT).show();
+//                }
+//            });
 
-            clickimage_favorites = (ImageView)itemView.findViewById(R.id.clickimage_favorites);
-            clickimage_favorites.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(v.getContext(), "Hello Favorites.", Toast.LENGTH_SHORT).show();
-                }
-            });
+            mFavoritesImage = (ImageView)itemView.findViewById(R.id.clickimage_favorites);
+//            mFavoritesImage.setOnClickListener(new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    Toast.makeText(v.getContext(), "Hello Favorites.", Toast.LENGTH_SHORT).show();
+//                }
+//            });
 
-            clickimage_like_or_dislike = (ImageView)itemView.findViewById(R.id.clickimage_like_or_dislike);
-            clickimage_like_or_dislike.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(v.getContext(), "Hello Like.", Toast.LENGTH_SHORT).show();
-                }
-            });
+            mUpvoteImage = (ImageView)itemView.findViewById(R.id.clickimage_like_or_dislike);
+//            mUpvoteImage.setOnClickListener(new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v) {
+//                    Toast.makeText(v.getContext(), "Hello Like.", Toast.LENGTH_SHORT).show();
+//                }
+//            });
 
         }
     }
