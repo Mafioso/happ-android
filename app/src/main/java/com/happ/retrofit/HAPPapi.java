@@ -14,4 +14,5 @@ public interface HAPPapi {
 
     @GET("events/{page}")
     Call<EventsResponse> getEvents(@Path("page") int page);
+    
 }

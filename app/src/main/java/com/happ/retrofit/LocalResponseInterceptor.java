@@ -20,13 +20,10 @@ import okio.Buffer;
 public class LocalResponseInterceptor implements Interceptor {
 
     private Context context;
-
     private String scenario = null;
-
     public LocalResponseInterceptor(Context ctx) {
         this.context = ctx;
     }
-
     public void setScenario(String scenario) {
         this.scenario = scenario;
     }

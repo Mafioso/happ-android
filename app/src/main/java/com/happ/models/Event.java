@@ -2,6 +2,10 @@ package com.happ.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.Date;
 
 import io.realm.RealmList;
@@ -105,8 +109,20 @@ public class Event extends RealmObject {
         return startDate;
     }
 
+    public String getStartDateFormatted(String format) {
+        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern(format);
+        DateTime eventDate = new DateTime(startDate);
+        return eventDate.toString(dtFormatter);
+    }
+
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
+    }
+
+    public String getEndDateFormatted(String format) {
+        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern(format);
+        DateTime eventDate = new DateTime(endDate);
+        return eventDate.toString(dtFormatter);
     }
 
     public Date getEndDate() {

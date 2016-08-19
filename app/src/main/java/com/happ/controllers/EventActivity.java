@@ -2,6 +2,7 @@ package com.happ.controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -15,9 +16,6 @@ import android.widget.Toast;
 
 import com.happ.R;
 import com.happ.models.Event;
-
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import io.realm.Realm;
 
@@ -36,16 +34,16 @@ public class EventActivity extends AppCompatActivity {
     EventImagesSwipeAdapter EventImagesSwipeAdapter;
 
     private TextView mPlace;
-    private TextView mTitle;
     private TextView mAuthor;
     private TextView mDescription;
-    private DateTimeFormatter eventStartDateFormatter;
+    private TextView mStartDate;
+    private TextView mEndDate;
+
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        eventStartDateFormatter = DateTimeFormat.forPattern("MMMM dd, yyyy 'a''t' h:mm a");
         Intent intent = getIntent();
         eventId = intent.getIntExtra("event_id", 1);
         Realm realm = Realm.getDefaultInstance();
@@ -53,6 +51,7 @@ public class EventActivity extends AppCompatActivity {
         event = realm.copyFromRealm(event);
         realm.close();
 
+        setTitle(event.getTitle());
         setContentView(R.layout.activity_event);
 
          for (int i = 0; i < event.getImages().size(); i++) {
@@ -61,10 +60,18 @@ public class EventActivity extends AppCompatActivity {
 
         mPlace = (TextView)findViewById(R.id.event_place);
         mPlace.setText(event.getPlace());
+
         mAuthor = (TextView)findViewById(R.id.event_author);
         mAuthor.setText(event.getAuthor().getFullName());
+
         mDescription = (TextView)findViewById(R.id.event_description);
         mDescription.setText(event.getDescription());
+
+        mStartDate = (TextView)findViewById(R.id.event_start_date);
+        mStartDate.setText(event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
+
+        mEndDate = (TextView)findViewById(R.id.event_end_date);
+        mEndDate.setText(event.getEndDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
 
         viewPager=(ViewPager)findViewById(R.id.slider_viewpager);
         EventImagesSwipeAdapter =new EventImagesSwipeAdapter(this);
@@ -84,7 +91,6 @@ public class EventActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -95,6 +101,22 @@ public class EventActivity extends AppCompatActivity {
             }
         });
 
+        //FLoating Action Button
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Snackbar.make(findViewById(R.id.drawer_layout), "I'm a Snackbar", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Toast.makeText(EventActivity.this, "Snackbar Action", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(v.getContext(), EditActivity.class);
+                v.getContext().startActivity(intent);
+
+            }
+//                }).show();
+//            }
+        });
     }
 
     @Override

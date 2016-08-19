@@ -24,7 +24,11 @@
         </activity>
         <activity
             android:name=".controllers.EventActivity"
-            android:label="@string/app_name"
+            android:label="Event Activity"
+            />
+        <activity
+            android:name=".controllers.EditActivity"
+            android:label="Edit Activity"
             />
         <service
             android:name=".retrofit.APIService"

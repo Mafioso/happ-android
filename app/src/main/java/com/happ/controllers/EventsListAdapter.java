@@ -69,8 +69,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             } else if (days == -1) {
                 header = context.getString(R.string.tomorrow);
             } else {
-                DateTimeFormatter fmt = DateTimeFormat.forPattern("MMMM dd, yyyy");
-                header = eventDate.toString(fmt);
+                header = events.get(i).getStartDateFormatted("MMMM dd, yyyy");
             }
             if (!TextUtils.equals(lastHeader, header)) {
                 sectionManager = (sectionManager + 1) % 2;
@@ -143,7 +142,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                     Intent intent = new Intent(context, EventActivity.class);
                     intent.putExtra("event_id", item.event.getId());
                     context.startActivity(intent);
-//                    Toast.makeText(v.getContext(), "Hello.", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -196,18 +194,12 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mInterestDivider.setVisibility(View.GONE);
             }
 
-//            itemHolder.mInterestTitle.setText(item.event.getInterest().getFullTitle());
-
-//            itemHolder.mInterest.setText(item.event.getInterest().get);
-
             if (item.event.getInterest().getColor() != null) {
                 itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(item.event.getInterest().getColor()));
             }
 
-            DateTime eventDate = new DateTime(item.event.getStartDate());
-            String dateString = eventDate.toString(eventStartDateFormatter);
 
-            itemHolder.mDateView.setText(dateString);
+            itemHolder.mDateView.setText(item.event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
         }
     }
 
