@@ -1,53 +1,66 @@
 package com.happ.controllers;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.happ.R;
+import com.happ.fragments.ImageViewFragment;
+import com.happ.models.EventImage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Torab on 20-May-16.
  */
-public class EventImagesSwipeAdapter extends PagerAdapter {
-    private int [] imageResources ={R.drawable.capture1,R.drawable.capture2,R.drawable.capture3,R.drawable.capture4,R.drawable.capture5};
-    private Context ctx;
+public class EventImagesSwipeAdapter extends FragmentStatePagerAdapter {
+    private Context context;
     private LayoutInflater layoutInflater;
+    private List<EventImage> imageList;
+    private ImageView mImageView;
+    private ProgressBar mProgressBar;
+    private ArrayList<ImageViewFragment> imageFragments;
 
-    public EventImagesSwipeAdapter(Context c) {
-        ctx=c;
+
+    public EventImagesSwipeAdapter(FragmentManager fm) {
+        super(fm);
+        imageFragments = new ArrayList<>();
+    }
+
+    public void setImageList(List<EventImage> imageList) {
+        this.imageList = imageList;
+        imageFragments.clear();
+        for (int i=0; i<getCount();i++) {
+            imageFragments.add(null);
+        }
     }
 
     @Override
     public int getCount() {
-
-        return imageResources.length;
-    }
-
-
-
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        layoutInflater= (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView=layoutInflater.inflate(R.layout.activity_custom_swipe,container,false);
-        ImageView imageView=(ImageView) itemView.findViewById(R.id.swip_image_view);
-        imageView.setImageResource(imageResources[position]);
-        container.addView(itemView);
-        return itemView;
-    }
-
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-
+        return imageList.size();
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
-
-        return  (view==object);
+    public Fragment getItem(int position) {
+        if (imageFragments.get(position) == null) {
+            ImageViewFragment fragment = ImageViewFragment.newInstance();
+            fragment.setUrl(imageList.get(position).getUrl());
+            imageFragments.set(position, fragment);
+        }
+        return imageFragments.get(position);
     }
 }

@@ -4,7 +4,14 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv"
-    android:layout_margin="0dp">
+    android:layout_margin="0dp"
+    app:cardElevation="0dp"
+    app:cardMaxElevation="0dp"
+    app:cardCornerRadius="1dp"
+    app:contentPaddingLeft="-1dp"
+    app:contentPaddingRight="-1dp"
+    app:contentPaddingTop="-1dp"
+    app:contentPaddingBottom="-1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,15 +21,33 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:background="@color/colorAccent"
+            android:background="@color/colorBlack8"
             android:id="@+id/events_list_image_view"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="180dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="-180dp"
+            android:paddingBottom="60dp"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <ProgressBar
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:theme="@style/CircularProgress"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:id="@+id/events_list_image_preloader"/>
+
+            <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="-120dp">
+            android:background="@drawable/rounded_corners"
+            android:padding="8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -50,7 +75,7 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_likes"
+                    app:srcCompat="@drawable/ic_did_not_upvote"
                     android:paddingRight="4dp"
                     android:id="@+id/clickimage_like_or_dislike"/>
                 <TextView
@@ -70,10 +95,12 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_not_in_favorites"
+                    app:srcCompat="@drawable/ic_not_in_favorites"
                     android:id="@+id/clickimage_favorites"
                     android:paddingRight="4dp"/>
             </LinearLayout>
+
+        </LinearLayout>
 
         </LinearLayout>
 
@@ -95,12 +122,11 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
+                    android:paddingTop="14dp"
                     android:id="@+id/events_list_item_title"
                     android:textSize="35sp"
                     android:textAllCaps="true"
-                    android:text="Event Title"
-                    android:maxLines="1"
+                    android:text="Event Title Very Very long"
                     android:textColor="@color/header_title"
                     android:gravity="center"/>
 
@@ -110,44 +136,21 @@
                     android:id="@+id/events_list_item_start_date"
                     android:textColor="@color/colorDate"
                     android:textSize="16sp"
+                    android:layout_marginTop="4dp"
                     android:text="August 16, 2016. 6:00 PM"
                     android:accessibilityLiveRegion="assertive"
                     android:gravity="center"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:orientation="horizontal"
-                android:padding="2dp"
-                android:weightSum="1"
-                android:gravity="center_horizontal">
-
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
                     android:textSize="16sp"
-                    android:id="@+id/events_list_currency_symbol"
+                    android:id="@+id/events_list_price"
                     android:textColor="@color/colorPrice"
-                    android:text="$" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:id="@+id/events_list_lowestprice"
-                    android:textColor="@color/colorPrice"
-                    android:text="100" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="16sp"
-                    android:id="@+id/events_list_highestprice"
-                    android:textColor="@color/colorPrice"
-                    android:text="\ — \$200" />
-            </LinearLayout>
+                    android:text="PREVIEW_PRICE" />
         </LinearLayout>
 
         <LinearLayout
@@ -171,7 +174,7 @@
                 android:layout_gravity="center"
                 android:text="Music"
                 android:id="@+id/events_list_item_interest"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:textAllCaps="true"
                 />
             <TextView
@@ -181,7 +184,7 @@
                 android:text=" / "
                 android:textColor="@android:color/white"
                 android:textStyle="bold"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:textAllCaps="true"
                 android:id="@+id/events_list_item_interest_divider"
                 />

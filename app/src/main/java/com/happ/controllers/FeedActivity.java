@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class FeedActivity extends AppCompatActivity {
 
-    protected final String[] mTabNames = {"Everything", "Favo.rites"};
+    protected final String[] mTabNames = {"Everything", "Favorites"};
     protected ArrayList<Fragment> mTabFragments;
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;

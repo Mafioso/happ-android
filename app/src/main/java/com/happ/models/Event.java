@@ -173,6 +173,19 @@ public class Event extends RealmObject {
         this.highestPrice = highestPrice;
     }
 
+    public String getPriceRange() {
+        String price = "";
+        if (lowestPrice > 0) {
+            price = price + currency.getSymbol() + String.valueOf(lowestPrice);
+        } else {
+            price = "Free";
+        }
+        if (highestPrice > 0) {
+            price = price + " — " + currency.getSymbol() + String.valueOf(highestPrice);
+        }
+        return price;
+    }
+
     public User getAuthor() {
         return author;
     }
