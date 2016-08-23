@@ -2,7 +2,7 @@ package com.happ.controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -31,7 +31,7 @@ public class EventActivity extends AppCompatActivity {
     private Event event;
 
     ViewPager viewPager;
-    EventImagesSwipeAdapter EventImagesSwipeAdapter;
+    EventImagesSwipeAdapter mEventImagesSwipeAdapter;
 
     private TextView mPlace;
     private TextView mAuthor;
@@ -51,42 +51,49 @@ public class EventActivity extends AppCompatActivity {
         event = realm.copyFromRealm(event);
         realm.close();
 
-        setTitle(event.getTitle());
+//        setTitle(event.getTitle());
         setContentView(R.layout.activity_event);
 
-         for (int i = 0; i < event.getImages().size(); i++) {
-            event.getImages().get(i).getUrl();
-         }
-
-        mPlace = (TextView)findViewById(R.id.event_place);
-        mPlace.setText(event.getPlace());
-
-        mAuthor = (TextView)findViewById(R.id.event_author);
-        mAuthor.setText(event.getAuthor().getFullName());
-
-        mDescription = (TextView)findViewById(R.id.event_description);
-        mDescription.setText(event.getDescription());
-
-        mStartDate = (TextView)findViewById(R.id.event_start_date);
-        mStartDate.setText(event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
-
-        mEndDate = (TextView)findViewById(R.id.event_end_date);
-        mEndDate.setText(event.getEndDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
+//         for (int i = 0; i < event.getImages().size(); i++) {
+//            event.getImages().get(i).getUrl();
+//         }
+//
+//        mPlace = (TextView)findViewById(R.id.event_place);
+//        mPlace.setText(event.getPlace());
+//
+//        mAuthor = (TextView)findViewById(R.id.event_author);
+//        mAuthor.setText(event.getAuthor().getFullName());
+//
+//        mDescription = (TextView)findViewById(R.id.event_description);
+//        mDescription.setText(event.getDescription());
+//
+//        mStartDate = (TextView)findViewById(R.id.event_start_date);
+//        mStartDate.setText(event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
+//
+//        mEndDate = (TextView)findViewById(R.id.event_end_date);
+//        mEndDate.setText(event.getEndDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
 
         viewPager=(ViewPager)findViewById(R.id.slider_viewpager);
-        EventImagesSwipeAdapter =new EventImagesSwipeAdapter(this);
-        viewPager.setAdapter(EventImagesSwipeAdapter);
+        mEventImagesSwipeAdapter = new EventImagesSwipeAdapter(getSupportFragmentManager());
+        mEventImagesSwipeAdapter.setImageList(event.getImages());
+        viewPager.setAdapter(mEventImagesSwipeAdapter);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+        CollapsingToolbarLayout ctl = (CollapsingToolbarLayout)findViewById(R.id.event_collapsing_layout);
+        ctl.setTitle(event.getTitle());
+
+//        toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
+
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -99,23 +106,6 @@ public class EventActivity extends AppCompatActivity {
                 Toast.makeText(EventActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
                 return true;
             }
-        });
-
-        //FLoating Action Button
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Snackbar.make(findViewById(R.id.drawer_layout), "I'm a Snackbar", Snackbar.LENGTH_LONG).setAction("Action", new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        Toast.makeText(EventActivity.this, "Snackbar Action", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(v.getContext(), EditActivity.class);
-                v.getContext().startActivity(intent);
-
-            }
-//                }).show();
-//            }
         });
     }
 

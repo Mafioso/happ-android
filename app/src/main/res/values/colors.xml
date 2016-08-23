@@ -7,9 +7,13 @@
     <color name="white70">#b2ffffff</color>
     <color name="icon_color_light">#8a000000</color>
     <color name="dark80">#cd000000</color>
+    <color name="dark57">#87000000</color>
+    <color name="dark38">#61000000</color>
+    <color name="dark28">#47000000</color>
     <color name="header_title">#686868</color>
     <color name="interestsBg">#90d738</color>
     <color name="blueColor">#6ca5ea</color>
     <color name="colorDate">#AFAFAF</color>
     <color name="colorPrice">#CBCBCB</color>
+    <color name="colorBlack8">#14000000</color>
 </resources>

@@ -63,8 +63,7 @@
             android:layout_below="@id/input_layout_description"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_margin="25dp"
-            android:onClick="btn_interests"/>
+            android:layout_margin="25dp" />
 
     <LinearLayout
         android:layout_width="match_parent"

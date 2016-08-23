@@ -1,10 +1,8 @@
 package com.happ.controllers;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -41,11 +39,6 @@ public class EventCreateActivity extends AppCompatActivity {
 //            }
 //        });
 
-        Fragment frag2 = new EventInterestFragment();
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.add(R.id., frag2);
-        ft.commit();
-
         inputLayoutTitle = (TextInputLayout) findViewById(R.id.input_layout_title);
         inputLayoutDescription = (TextInputLayout) findViewById(R.id.input_layout_description);
         inputLayoutInterests = (TextInputLayout) findViewById(R.id.input_layout_interest);
@@ -66,11 +59,6 @@ public class EventCreateActivity extends AppCompatActivity {
                 submitForm();
             }
         });
-    }
-
-    public void btn_interests(View v) {
-
-
     }
 
 
