@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.happ.R;
+import com.happ.models.Interest;
 
 public class EventInterestFragment extends DialogFragment implements
         DialogInterface.OnClickListener {
@@ -32,6 +33,9 @@ public class EventInterestFragment extends DialogFragment implements
 
         EditText loginBox=(EditText)form.findViewById(R.id.login);
         String login = loginBox.getText().toString();
+
+//        Interest interest;
+//        ((EventCreateActivity)getActivity()).eventInterest = interest;
 
         EditText loginText = (EditText) getActivity().findViewById(R.id.input_interest);
         loginText.setText(login);
