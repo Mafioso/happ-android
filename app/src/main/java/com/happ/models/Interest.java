@@ -4,14 +4,18 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by dante on 7/26/16.
  */
 public class Interest extends RealmObject {
 
-    private Interest parent;
+    @PrimaryKey
+    private int id;
+    private int parent_id;
     private String title;
     @SerializedName("icon_url")
     private String iconUrl;
@@ -27,6 +31,7 @@ public class Interest extends RealmObject {
 
     public ArrayList<String> getFullTitle() {
         ArrayList<String> result = new ArrayList<>();
+        Interest parent = getParent();
         if (parent != null) result.add(parent.title);
         result.add(title);
         return result;
@@ -41,7 +46,8 @@ public class Interest extends RealmObject {
     }
 
     public String getColor() {
-        if (this.parent != null && this.parent.color != null) return this.parent.color;
+        Interest parent = getParent();
+        if (parent != null && parent.color != null) return parent.color;
         return this.color;
     }
 
@@ -50,10 +56,27 @@ public class Interest extends RealmObject {
     }
 
     public Interest getParent() {
+        Realm realm = Realm.getDefaultInstance();
+        Interest parent = realm.where(Interest.class).equalTo("id", this.parent_id).findFirst();
+        parent = realm.copyFromRealm(parent);
+        realm.close();
+
         return parent;
     }
 
-    public void setParent(Interest parent) {
-        this.parent = parent;
+    public int getParentId() {
+        return parent_id;
+    }
+
+    public void setParentId(Interest parent) {
+        this.parent_id = parent_id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -4,12 +4,9 @@
       "id": 1,
       "title": "Tribute to Johan Sebastien Bach 1",
       "interest": {
+        "id": 2,
         "title": "Classical",
-        "parent": {
-          "title": "Music",
-          "color": "#2A9D8F",
-          "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
-        }
+        "parent_id": 1
       },
       "description": "Festival of classical music. All welcome",
       "images": [

@@ -6,6 +6,7 @@ import android.os.StrictMode;
 import android.util.Log;
 
 import com.happ.models.Event;
+import com.happ.retrofit.APIService;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -31,6 +32,9 @@ public class App extends Application {
 
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(realmConfiguration);
+
+        APIService.getInterests();
+
         if (hasInternet()) {
 //            deleleFromRealm();
         }
