@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +20,11 @@ import com.happ.R;
  * Created by dante on 8/22/16.
  */
 public class EventCreateActivity extends AppCompatActivity {
+
+    static
+    {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     private Toolbar toolbar;
     private EditText inputTitle, inputDescription, inputInterests, inputStartDate, inputEndDate;
