@@ -15,12 +15,8 @@
         android:supportsRtl="true"
         android:name=".App"
         android:theme="@style/AppTheme">
-        <activity android:name=".controllers.FeedActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity
+            android:name=".controllers.FeedActivity">
         </activity>
         <activity
             android:name=".controllers.EventActivity"
@@ -30,6 +26,18 @@
             android:name=".controllers.EditActivity"
             android:label="Edit Activity"
             />
+        <activity android:name=".controllers.EventCreateActivity"
+            android:label="Create Event">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+
         <service
             android:name=".retrofit.APIService"
             android:exported="false" >
