@@ -29,7 +29,8 @@ public class EventCreateActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private EditText inputTitle, inputDescription, inputInterests, inputStartDate, inputEndDate;
     private TextInputLayout inputLayoutTitle, inputLayoutDescription, inputLayoutInterests, inputLayoutStartDate, inputLayoutEndDate;
-    private ImageButton btnInterests, btnStartDate, btnEndDate;
+//    private ImageButton btnInterests, btnStartDate, btnEndDate;
+    private ImageButton buttonClick;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,8 @@ public class EventCreateActivity extends AppCompatActivity {
         inputStartDate = (EditText) findViewById(R.id.input_startDate);
         inputEndDate = (EditText) findViewById(R.id.input_endDate);
 
+        buttonClick = (ImageButton) findViewById(R.id.btn_choice_interests);
+
         //FLoating Action Button
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,8 +68,14 @@ public class EventCreateActivity extends AppCompatActivity {
                 submitForm();
             }
         });
+
+
+
     }
 
+    public void btn_click (View v) {
+        new EventInterestFragment().show(getSupportFragmentManager(), "LoginForm");
+        }
 
     private void submitForm() {
         if (!validateTitle()) {
