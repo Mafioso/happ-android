@@ -11,63 +11,72 @@ import android.widget.TextView;
 import com.happ.R;
 import com.happ.models.Event;
 import com.happ.models.Interest;
+import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.util.ArrayList;
 
 /**
  * Created by iztiev on 8/4/16.
  */
-public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdapter.InterestsListViewHolder> {
-    private final ArrayList<InterestListItem> mItems;
-    private static final int VIEW_TYPE_HEADER = 0x01;
-    private static final int VIEW_TYPE_CONTENT = 0x00;
+public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdapter.InterestsListViewHolder> implements INameableAdapter {
+    private final ArrayList<Interest> mItems;
     private final Context context;
+    private OnItemClickListener listener;
 
     public InterestsListAdapter(Context context, ArrayList<Interest> interests) {
         this.context = context;
-        mItems = new ArrayList<>();
-        this.updateItems(interests);
+        this.mItems = interests;
     }
 
-    public void updateItems(ArrayList<Interest> interests) {
-        mItems.clear();
+    public InterestsListAdapter(Context context, ArrayList<Interest> interests, OnItemClickListener listener) {
+        this.context = context;
+        this.mItems = interests;
+        this.listener = listener;
     }
 
-    public void updateData(ArrayList<Interest> interests) {
-        this.updateItems(interests);
-        Log.d("AAAAA", String.valueOf(interests.size()));
-        this.notifyDataSetChanged();
-        this.notifyHeaderChanges();
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
-    private void notifyHeaderChanges() {
-        for (int i = 0; i < mItems.size(); i++) {
-            InterestListItem item = mItems.get(i);
-            if (item.isHeader) {
-                notifyItemChanged(i);
-            }
-        }
-    }
 
-    @Override
-    public int getItemViewType(int position) {
-        return mItems.get(position).isHeader ? VIEW_TYPE_HEADER : VIEW_TYPE_CONTENT;
-    }
+//    public void updateItems(ArrayList<Interest> interests) {
+//        mItems.clear();
+//    }
+
+//    public void updateData(ArrayList<Interest> interests) {
+//        this.updateItems(interests);
+//        Log.d("AAAAA", String.valueOf(interests.size()));
+//        this.notifyDataSetChanged();
+//        this.notifyHeaderChanges();
+//    }
+
+//    private void notifyHeaderChanges() {
+//        for (int i = 0; i < mItems.size(); i++) {
+//            InterestListItem item = mItems.get(i);
+//            if (item.isHeader) {
+//                notifyItemChanged(i);
+//            }
+//        }
+//    }
+
+//    @Override
+//    public int getItemViewType(int position) {
+//        return mItems.get(position).isHeader ? VIEW_TYPE_HEADER : VIEW_TYPE_CONTENT;
+//    }
 
     @Override
     public InterestsListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view;
-
-        view = LayoutInflater.from(parent.getContext()).inflate(R.layout.interest_list_item, parent, false);
-            return new InterestsListItemViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.interest_list_item, parent, false);
+        return new InterestsListViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(InterestsListViewHolder holder, int position) {
-        final InterestListItem item = mItems.get(position);
-        holder.itemView.setOnClickListener(null);
-            final InterestsListItemViewHolder itemHolder = (InterestsListItemViewHolder)holder;
-            itemHolder.mTitleInterest.setText(item.interest.getTitle());
+//        final InterestListItem item = mItems.get(position);
+//        holder.itemView.setOnClickListener(null);
+//            final InterestsListItemViewHolder itemHolder = (InterestsListItemViewHolder)holder;
+        holder.mTitleInterest.setText(mItems.get(position).getTitle());
+        holder.bind(mItems.get(position), listener);
     }
 
     @Override
@@ -75,34 +84,32 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         return mItems.size();
     }
 
+    @Override
+    public Character getCharacterForElement(int element) {
+        return mItems.get(element).getTitle().charAt(0);
+    }
+
     public class InterestsListViewHolder extends RecyclerView.ViewHolder {
-
+        public TextView mTitleInterest;
         public InterestsListViewHolder(View itemView) {
-
             super(itemView);
+            mTitleInterest = (TextView)itemView.findViewById(R.id.test_interests_title);
+        }
+
+        public void bind(final Interest interest, final OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d(">>CLICK<<","TRUE");
+                    if (listener != null) {
+                        listener.onItemClick(interest);
+                    }
+                }
+            });
         }
     }
 
-    public class InterestsListItemViewHolder extends InterestsListViewHolder {
-       public TextView mTitleInterest;
-
-        public InterestsListItemViewHolder(final View itemView) {
-            super(itemView);
-            mTitleInterest = (TextView) itemView.findViewById(R.id.test_interests_title);
-        }
-    }
-
-    private class InterestListItem {
-        public int sectionManager;
-        public int sectionFirstPosition;
-        public boolean isHeader;
-        public Interest interest;
-
-        public InterestListItem(boolean isHeader, int sectionManager, int sectionFirstPosition, Event event, String headerTitle) {
-            this.isHeader = isHeader;
-            this.sectionManager = sectionManager;
-            this.sectionFirstPosition = sectionFirstPosition;
-            this.interest = interest;
-        }
+    public interface OnItemClickListener {
+        void onItemClick(Interest interest);
     }
 }

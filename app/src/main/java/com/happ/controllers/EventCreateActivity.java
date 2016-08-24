@@ -3,6 +3,7 @@ package com.happ.controllers;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +16,8 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.happ.R;
+import com.happ.fragments.EventInterestFragment;
+import com.happ.models.Interest;
 
 /**
  * Created by dante on 8/22/16.
@@ -27,10 +30,11 @@ public class EventCreateActivity extends AppCompatActivity {
     }
 
     private Toolbar toolbar;
-    private EditText inputTitle, inputDescription, inputInterests, inputStartDate, inputEndDate;
+    private EditText inputTitle, inputDescription, inputInterest, inputStartDate, inputEndDate;
     private TextInputLayout inputLayoutTitle, inputLayoutDescription, inputLayoutInterests, inputLayoutStartDate, inputLayoutEndDate;
 //    private ImageButton btnInterests, btnStartDate, btnEndDate;
-    private ImageButton buttonClick;
+    private ImageButton editInterestButton;
+    private Interest selectedInterest;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +58,26 @@ public class EventCreateActivity extends AppCompatActivity {
 
         inputTitle = (EditText) findViewById(R.id.input_title);
         inputDescription = (EditText) findViewById(R.id.input_description);
-        inputInterests = (EditText) findViewById(R.id.input_interest);
+        inputInterest = (EditText) findViewById(R.id.input_interest);
         inputStartDate = (EditText) findViewById(R.id.input_startDate);
         inputEndDate = (EditText) findViewById(R.id.input_endDate);
 
-        buttonClick = (ImageButton) findViewById(R.id.btn_choice_interests);
+        editInterestButton = (ImageButton) findViewById(R.id.btn_select_interest);
+        editInterestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm = getSupportFragmentManager();
+                EventInterestFragment editNameDialogFragment = EventInterestFragment.newInstance();
+                editNameDialogFragment.setOnInterestSelectListener(new EventInterestFragment.OnInterestSelectListener() {
+                    @Override
+                    public void onInterestSelected(Interest interest) {
+                        selectedInterest = interest;
+                        inputInterest.setText(selectedInterest.getTitle());
+                    }
+                });
+                editNameDialogFragment.show(fm, "fragment_select_interest");
+            }
+        });
 
         //FLoating Action Button
         FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);

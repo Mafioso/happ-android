@@ -52,6 +52,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="56dp"
                     android:singleLine="true"
+                    android:enabled="false"
+                    android:textColor="@android:color/primary_text_light_nodisable"
                     android:hint="@string/event_interest" />
 
         </android.support.design.widget.TextInputLayout>
@@ -61,7 +63,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btn_choice_interests"
+            android:id="@+id/btn_select_interest"
             android:background="@drawable/ic_edit_compat"
             android:layout_below="@id/input_layout_description"
             android:layout_alignParentRight="true"
