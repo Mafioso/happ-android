@@ -2,7 +2,6 @@ package com.happ.retrofit;
 
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,6 +9,8 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.models.Event;
 import com.happ.models.EventsResponse;
+import com.happ.models.Interest;
+import com.happ.models.InterestResponse;
 
 import java.util.List;
 
@@ -100,5 +101,45 @@ public class HappRestClient {
             }
         });
     }
+
+    public void getInterests() {
+        happApi.getInterests().enqueue(new Callback<InterestResponse>() {
+            @Override
+            public void onResponse(Call<InterestResponse> call, Response<InterestResponse> response) {
+
+                if (response.isSuccessful()){
+                    List<Interest> interests = response.body().getInterest();
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(interests);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("BODY", response.body().toString());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<InterestResponse> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+//                intent.putExtra("MESSAGE", t.getMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
 
 }

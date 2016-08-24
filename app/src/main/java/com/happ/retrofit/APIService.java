@@ -12,6 +12,7 @@ import com.happ.App;
 public class APIService extends IntentService {
     private static final String ACTION_GET_EVENTS = "com.happ.action.ACTION_GET_EVENTS";
     private static final String ACTION_GET_EVENTS_FOR_PAGE = "com.happ.action.ACTION_GET_EVENTS_FOR_PAGE";
+    private static final String ACTION_GET_INTERESTS = "com.happ.action.ACTION_GET_INTERESTS";
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
 
@@ -26,6 +27,12 @@ public class APIService extends IntentService {
         intent.setAction(ACTION_GET_EVENTS_FOR_PAGE);
         intent.putExtra(EXTRA_PAGE, page);
         App.getContext().startService(intent);
+    }
+
+    public static void getInterests() {
+        Intent interests = new Intent(App.getContext(), APIService.class);
+        interests.setAction(ACTION_GET_INTERESTS);
+        App.getContext().startService(interests);
     }
 
     public APIService() {
@@ -43,6 +50,8 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_GET_EVENTS_FOR_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 HappRestClient.getInstance().getEvents(page);
+            } else if (action.equals(ACTION_GET_INTERESTS)) {
+                HappRestClient.getInstance().getInterests();
             }
         }
     }

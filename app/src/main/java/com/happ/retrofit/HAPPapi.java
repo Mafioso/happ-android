@@ -1,6 +1,7 @@
 package com.happ.retrofit;
 
 import com.happ.models.EventsResponse;
+import com.happ.models.InterestResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -16,5 +17,5 @@ public interface HAPPapi {
     Call<EventsResponse> getEvents(@Path("page") int page);
 
     @GET("interests")
-    Call<InterestsResponse> getInterests();
+    Call<InterestResponse> getInterests();
 }

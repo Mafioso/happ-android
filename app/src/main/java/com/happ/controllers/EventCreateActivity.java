@@ -15,8 +15,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.happ.R;
-import com.happ.models.Event;
-import com.happ.models.Interest;
 
 /**
  * Created by dante on 8/22/16.
@@ -34,13 +32,9 @@ public class EventCreateActivity extends AppCompatActivity {
 //    private ImageButton btnInterests, btnStartDate, btnEndDate;
     private ImageButton buttonClick;
 
-    private Event event;
-    protected Interest eventInterest;
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eventcreate);
-
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -77,12 +71,10 @@ public class EventCreateActivity extends AppCompatActivity {
 
 
 
-
-
     }
 
     public void btn_click (View v) {
-        new EventInterestFragment().show(getSupportFragmentManager(), "LoginForm");
+//        new EventInterestFragment().show(getSupportFragmentManager(), "LoginForm");
         }
 
     private void submitForm() {
@@ -93,11 +85,6 @@ public class EventCreateActivity extends AppCompatActivity {
         if (!validateDescription()) {
             return;
         }
-
-        event = new Event();
-        event.setTitle(inputTitle.getText().toString());
-        event.setInterest(eventInterest);
-
 
 
         Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_SHORT).show();
