@@ -9,11 +9,10 @@ import io.realm.annotations.PrimaryKey;
  * Created by dante on 7/26/16.
  */
 public class User extends RealmObject {
-
+    @PrimaryKey
     private String username;
     @SerializedName("full_name")
     private String fullName;
-    @PrimaryKey
     private String email;
 
 

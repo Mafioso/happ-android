@@ -9,8 +9,12 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.models.Event;
 import com.happ.models.EventsResponse;
+import com.happ.models.HappToken;
 import com.happ.models.Interest;
 import com.happ.models.InterestResponse;
+import com.happ.models.LoginData;
+import com.happ.models.SignUpData;
+import com.happ.models.User;
 
 import java.util.List;
 
@@ -96,7 +100,98 @@ public class HappRestClient {
             public void onFailure(Call<EventsResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
-//                intent.putExtra("MESSAGE", t.getMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void doLogin(String username, String password) {
+
+        if (!username.equals("mussa") && !password.equals("123")) {
+            Intent intent = new Intent(BroadcastIntents.LOGIN_REQUEST_FAIL);
+            intent.putExtra("CODE", 401);
+            intent.putExtra("BODY", "Wrong Email or Password");
+            intent.putExtra("MESSAGE", "Wrong Email or Password");
+            LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            return;
+        }
+
+        LoginData loginData = new LoginData();
+        loginData.setUsername(username);
+        loginData.setPassword(password);
+
+        happApi.doLogin(loginData).enqueue(new Callback<HappToken>() {
+            @Override
+            public void onResponse(Call<HappToken> call, Response<HappToken> response) {
+
+                if(response.isSuccessful()) {
+
+                    HappToken happToken = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(happToken);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.LOGIN_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.LOGIN_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("BODY", response.body().toString());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HappToken> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.LOGIN_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void doSignUp(String username, String password) {
+        SignUpData signUpData = new SignUpData();
+        signUpData.setUsername(username);
+        signUpData.setPassword(password);
+
+        happApi.doSignUp(signUpData).enqueue(new Callback<HappToken>() {
+            @Override
+            public void onResponse(Call<HappToken> call, Response<HappToken> response) {
+
+                if(response.isSuccessful()) {
+
+                    HappToken happToken = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(happToken);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.SIGNUP_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.SIGNUP_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("BODY", response.body().toString());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HappToken> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.SIGNUP_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
         });
@@ -136,6 +231,45 @@ public class HappRestClient {
                 Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
 //                intent.putExtra("MESSAGE", t.getMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void getUser(String username) {
+
+
+        happApi.getUser(username).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+
+                if (response.isSuccessful()){
+                    User user = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(user);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.USER_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.USER_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("BODY", response.body().toString());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.USER_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
         });

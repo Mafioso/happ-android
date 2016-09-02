@@ -104,8 +104,6 @@ public class EventCreateActivity extends AppCompatActivity {
         if (!validateDescription()) {
             return;
         }
-
-
         Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_SHORT).show();
     }
 

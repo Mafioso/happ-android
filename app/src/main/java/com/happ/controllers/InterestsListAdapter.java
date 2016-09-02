@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.happ.R;
-import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
@@ -19,19 +18,15 @@ import java.util.ArrayList;
  * Created by iztiev on 8/4/16.
  */
 public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdapter.InterestsListViewHolder> implements INameableAdapter {
-    private final ArrayList<Interest> mItems;
+    private ArrayList<Interest> mItems;
     private final Context context;
     private OnItemClickListener listener;
+
+
 
     public InterestsListAdapter(Context context, ArrayList<Interest> interests) {
         this.context = context;
         this.mItems = interests;
-    }
-
-    public InterestsListAdapter(Context context, ArrayList<Interest> interests, OnItemClickListener listener) {
-        this.context = context;
-        this.mItems = interests;
-        this.listener = listener;
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -39,16 +34,18 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     }
 
 
-//    public void updateItems(ArrayList<Interest> interests) {
-//        mItems.clear();
-//    }
+    public void updateItems(ArrayList<Interest> interests) {
+        this.mItems = interests;
+        notifyDataSetChanged();
 
-//    public void updateData(ArrayList<Interest> interests) {
-//        this.updateItems(interests);
-//        Log.d("AAAAA", String.valueOf(interests.size()));
-//        this.notifyDataSetChanged();
+    }
+
+    public void updateData(ArrayList<Interest> interests) {
+        this.updateItems(interests);
+        Log.d("AAAAA", String.valueOf(interests.size()));
+        this.notifyDataSetChanged();
 //        this.notifyHeaderChanges();
-//    }
+    }
 
 //    private void notifyHeaderChanges() {
 //        for (int i = 0; i < mItems.size(); i++) {

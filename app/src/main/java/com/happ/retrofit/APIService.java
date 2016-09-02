@@ -13,8 +13,13 @@ public class APIService extends IntentService {
     private static final String ACTION_GET_EVENTS = "com.happ.action.ACTION_GET_EVENTS";
     private static final String ACTION_GET_EVENTS_FOR_PAGE = "com.happ.action.ACTION_GET_EVENTS_FOR_PAGE";
     private static final String ACTION_GET_INTERESTS = "com.happ.action.ACTION_GET_INTERESTS";
+    private static final String ACTION_POST_LOGIN = "com.happ.action.ACTION_POST_LOGIN";
+    private static final String ACTION_POST_SIGNUP = "com.happ.action.ACTION_POST_SIGNUP";
+    private static final String ACTION_GET_USER = "com.happ.action.ACTION_GET_USER";
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
+    private static final String EXTRA_USERNAME = "com.happ.extra.EXTRA_USERNAME";
+    private static final String EXTRA_PASSWORD = "com.happ.extra.EXTRA_PASSWORD";
 
     public static void getEvents() {
         Intent intent = new Intent(App.getContext(), APIService.class);
@@ -35,6 +40,31 @@ public class APIService extends IntentService {
         App.getContext().startService(interests);
     }
 
+    public static void getUser(String username) {
+        Intent user = new Intent(App.getContext(), APIService.class);
+        user.setAction(ACTION_GET_USER);
+        user.putExtra(EXTRA_USERNAME, username);
+        App.getContext().startService(user);
+    }
+
+
+
+    public static void doLogin(String username, String password) {
+        Intent login = new Intent(App.getContext(), APIService.class);
+        login.setAction(ACTION_POST_LOGIN);
+        login.putExtra(EXTRA_USERNAME, username);
+        login.putExtra(EXTRA_PASSWORD, password);
+        App.getContext().startService(login);
+    }
+
+    public static void doSignUp (String username, String password) {
+        Intent signUp = new Intent(App.getContext(), APIService.class);
+        signUp.setAction(ACTION_POST_SIGNUP);
+        signUp.putExtra(EXTRA_USERNAME, username);
+        signUp.putExtra(EXTRA_PASSWORD, password);
+        App.getContext().startService(signUp);
+    }
+
     public APIService() {
         super("APIService");
     }
@@ -52,6 +82,17 @@ public class APIService extends IntentService {
                 HappRestClient.getInstance().getEvents(page);
             } else if (action.equals(ACTION_GET_INTERESTS)) {
                 HappRestClient.getInstance().getInterests();
+            } else if (action.equals(ACTION_POST_LOGIN)) {
+                String username = intent.getStringExtra(EXTRA_USERNAME);
+                String password = intent.getStringExtra(EXTRA_PASSWORD);
+                HappRestClient.getInstance().doLogin(username, password);
+            } else if (action.equals(ACTION_POST_SIGNUP)) {
+                String username = intent.getStringExtra(EXTRA_USERNAME);
+                String password = intent.getStringExtra(EXTRA_PASSWORD);
+                HappRestClient.getInstance().doSignUp(username, password);
+            }else if (action.equals(ACTION_GET_USER)) {
+                String username = intent.getStringExtra(EXTRA_USERNAME);
+                HappRestClient.getInstance().getUser(username);
             }
         }
     }

@@ -22,6 +22,9 @@
         <item name="android:shadowRadius">16</item>
     </style>
 
-
+    <style name="Theme.Splash" parent="android:Theme">
+        <item name="android:windowBackground">@drawable/ic_menu</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 
 </resources>

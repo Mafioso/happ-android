@@ -48,4 +48,8 @@ dependencies {
     compile 'com.turingtechnologies.materialscrollbar:lib:10.+'
 
 
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+
+    // JSON Web Token
+    compile 'io.jsonwebtoken:jjwt:0.6.0'
 }

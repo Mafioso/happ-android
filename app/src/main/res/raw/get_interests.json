@@ -2,33 +2,52 @@
   "interests": [
     {
       "id": 1,
-      "title": "Music",
+      "title": "Sport",
       "color": "#2A9D8F",
       "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
     },
     {
       "id": 2,
-      "title": "Music",
+      "title": "History",
       "color": "#2A9D8F",
       "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
     },
     {
       "id": 3,
-      "title": "Music",
+      "title": "Animals",
       "color": "#2A9D8F",
       "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
     },
     {
       "id": 4,
-      "title": "Music",
+      "title": "Books",
       "color": "#2A9D8F",
       "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
     },
     {
       "id": 5,
-      "title": "Music",
+      "title": "Hotels",
+      "color": "#2A9D8F",
+      "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+    },
+    {
+      "id": 6,
+      "title": "Foods",
+      "color": "#2A9D8F",
+      "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+    },
+    {
+      "id": 7,
+      "title": "Drinks",
+      "color": "#2A9D8F",
+      "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
+    },
+    {
+      "id": 8,
+      "title": "Retards",
       "color": "#2A9D8F",
       "icon_url": "https://www.gnu.org/graphics/heckert_gnu.svg"
     }
+
   ]
 }

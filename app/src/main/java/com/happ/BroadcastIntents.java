@@ -8,5 +8,11 @@ public class BroadcastIntents {
     public static final String EVENTS_REQUEST_FAIL = "com.happ.events_request_fail";
     public static final String INTERESTS_REQUEST_OK = "com.happ.events_request_ok";
     public static final String INTERESTS_REQUEST_FAIL = "com.happ.interests_request_fail";
+    public static final String LOGIN_REQUEST_OK = "com.happ.login_request_fail";
+    public static final String LOGIN_REQUEST_FAIL = "com.happ.login_request_fail";
+    public static final String SIGNUP_REQUEST_OK = "com.happ.signup_request_fail";
+    public static final String SIGNUP_REQUEST_FAIL = "com.happ.signup_request_fail";
+    public static final String USER_REQUEST_OK = "com.happ.user_request_ok";
+    public static final String USER_REQUEST_FAIL = "com.happ.user_request_fail";
 
 }

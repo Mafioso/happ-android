@@ -2,7 +2,6 @@ package com.happ.controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
-import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -17,12 +16,14 @@ import android.widget.Toast;
 import com.happ.R;
 import com.happ.models.Event;
 
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
+
 import io.realm.Realm;
 
 /**
  * Created by dante on 8/8/16.
  */
-public class EventActivity extends AppCompatActivity {
+public class    EventActivity extends AppCompatActivity {
 
 
     private DrawerLayout mDrawerLayout;
