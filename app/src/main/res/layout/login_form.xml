@@ -15,6 +15,7 @@
         android:layout_width="0px"
         android:layout_height="0px"/>
 
+    <!--android:layout_centerVertical="true"-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:theme="@style/LoginScreenEditText"
             android:layout_below="@id/img_login_logo">
             <EditText
@@ -104,16 +105,20 @@
             android:layout_centerHorizontal="true"
             app:srcCompat="@drawable/ic_done_compat"
             app:fabSize="normal"
-            android:layout_marginTop="15dp"
-            android:visibility="invisible"
+            android:layout_marginTop="8dp"
+            android:visibility="visible"
             android:layout_below="@+id/input_layout_login_password"/>
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:layout_marginTop="16dp"
             android:id="@+id/circular_progress"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:indeterminate="true"
-            style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal" />
+            style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+            android:layout_below="@+id/input_layout_login_password"
+            android:visibility="invisible"
+            android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
 
@@ -147,4 +152,5 @@
             android:textStyle="normal"
             style="?android:attr/borderlessButtonStyle"/>
     </LinearLayout>
+
 </RelativeLayout>
