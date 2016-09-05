@@ -147,7 +147,7 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         if (signUpRequestDoneReceiver != null) signUpRequestDoneReceiver = null;
-        if(getSignUpRequestFail != null) getSignUpRequestFail = null;
+        if (getSignUpRequestFail != null) getSignUpRequestFail = null;
         super.onDestroy();
     }
 }

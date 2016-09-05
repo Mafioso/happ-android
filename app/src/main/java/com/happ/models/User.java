@@ -16,6 +16,7 @@ public class User extends RealmObject {
     private String email;
     private String id;
     private String phone;
+    private Settings settings;
 
 
     public String getUsername() {
@@ -48,5 +49,13 @@ public class User extends RealmObject {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
     }
 }

@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.models.City;
 import com.happ.models.Event;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
@@ -19,6 +20,7 @@ import com.happ.models.SignUpData;
 import com.happ.models.User;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +50,11 @@ public class HappRestClient {
     private OkHttpClient httpClient;
     private Interceptor authHeaderInterceptor;
 
+    private HttpLoggingInterceptor httpLoggingInterceptor;
+    private GsonConverterFactory gsonConverterFactory;
+    private String host = App.getContext().getString(R.string.HOST);
+    private String api = App.getContext().getString(R.string.API_URL);
+
     private static HappRestClient instance;
 
     public static synchronized HappRestClient getInstance() {
@@ -58,18 +65,32 @@ public class HappRestClient {
     }
 
     private HappRestClient() {
-        String host = App.getContext().getString(R.string.HOST);
-        String api = App.getContext().getString(R.string.API_URL);
-        gson = new GsonBuilder().create();
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
-        httpClient = new OkHttpClient().newBuilder()
+        buildClient(null);
+    }
+
+    private void buildClient(List<Interceptor> httpInterceptors) {
+        if (gson == null) {
+            gson = new GsonBuilder().create();
+            gsonConverterFactory = GsonConverterFactory.create(gson);
+        }
+        if (httpLoggingInterceptor == null) {
+            httpLoggingInterceptor = new HttpLoggingInterceptor();
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        }
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder()
 //                .addInterceptor(new LocalResponseInterceptor(App.getContext()))
-                .addInterceptor(logging)
-                .build();
+                .addInterceptor(httpLoggingInterceptor);
+
+        if (httpInterceptors != null) {
+            for (int i = 0; i < httpInterceptors.size(); i++) {
+                builder.addInterceptor(httpInterceptors.get(i));
+            }
+        }
+        httpClient = builder.build();
+
         retrofit = new Retrofit.Builder()
                 .baseUrl(host+api)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(gsonConverterFactory)
                 .client(httpClient)
                 .build();
 
@@ -110,10 +131,12 @@ public class HappRestClient {
                     return chain.proceed(request);
                 }
             };
-            httpClient.interceptors().add(authHeaderInterceptor);
+            List<Interceptor> interceptors = new ArrayList<Interceptor>();
+            interceptors.add(authHeaderInterceptor);
+            buildClient(interceptors);
             successfullyAddedHeader = true;
         } catch (Exception ex) {
-
+            Log.e("HAPP_API", ex.getLocalizedMessage());
         } finally {
             realm.close();
             return successfullyAddedHeader;
@@ -122,8 +145,8 @@ public class HappRestClient {
 
     public boolean removeAuthHeader() {
         if (authHeaderInterceptor != null && httpClient.interceptors().contains(authHeaderInterceptor)) {
-            httpClient.interceptors().remove(authHeaderInterceptor);
             authHeaderInterceptor = null;
+            buildClient(null);
             return true;
         }
         return false;
@@ -177,7 +200,7 @@ public class HappRestClient {
     }
 
     public void getEvents() {
-        this.getEvents(1);
+//        this.getEvents(1);
     }
 
     public void getEvents(int page) {
@@ -364,6 +387,14 @@ public class HappRestClient {
 
                 if (response.isSuccessful()) {
                     User user = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(user);
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
 
             }
@@ -411,6 +442,31 @@ public class HappRestClient {
                 Intent intent = new Intent(BroadcastIntents.USER_REQUEST_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void getCurrentCity() {
+        User user = App.getCurrentUser();
+        happApi.getCity(user.getSettings().getCity()).enqueue(new Callback<City>() {
+            @Override
+            public void onResponse(Call<City> call, Response<City> response) {
+                if (response.isSuccessful()) {
+                    City city = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(city);
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.CITY_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<City> call, Throwable t) {
+
             }
         });
     }

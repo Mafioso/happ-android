@@ -1,5 +1,6 @@
 package com.happ.retrofit;
 
+import com.happ.models.City;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
 import com.happ.models.InterestResponse;
@@ -39,5 +40,8 @@ public interface HAPPapi {
 
     @POST("registration")
     Call<HappToken> doSignUp(@Body SignUpData data);
+
+    @GET("cities/{id}/")
+    Call<City> getCity(@Path("id") String id);
 
 }

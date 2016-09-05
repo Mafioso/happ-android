@@ -30,8 +30,11 @@ import android.widget.Toast;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.models.City;
 import com.happ.models.HappToken;
+import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.happ.retrofit.HappRestClient;
 
 import io.realm.Realm;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -59,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private BroadcastReceiver loginRequestDoneReceiver;
     private BroadcastReceiver loginFailedReceiver;
+    private BroadcastReceiver currentUserDoneReceiver;
+    private BroadcastReceiver currentCityDoneReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,9 +88,13 @@ public class LoginActivity extends AppCompatActivity {
         if (loginRequestDoneReceiver == null)
             loginRequestDoneReceiver = createLoginSuccessReceiver();
         if (loginFailedReceiver == null) loginFailedReceiver = createLoginFailureReceiver();
+        if (currentUserDoneReceiver == null) currentUserDoneReceiver = createGetCurrentUserSuccessReceiver();
+        if (currentCityDoneReceiver == null) currentCityDoneReceiver = createGetCurrentCitySuccessReceiver();
 
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginRequestDoneReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_OK));
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginFailedReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_FAIL));
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentUserDoneReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
 
         checkValidation();
 
@@ -97,7 +106,8 @@ public class LoginActivity extends AppCompatActivity {
                 hideSoftKeyboard(LoginActivity.this, v);
                 mButtonFablogin.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
-                APIService.doLogin(mEmail.getText().toString(), mPassword.getText().toString());
+//                APIService.doLogin(mEmail.getText().toString(), mPassword.getText().toString());
+                HappRestClient.getInstance().doLogin(mEmail.getText().toString(), mPassword.getText().toString());
             }
         });
 
@@ -179,9 +189,9 @@ public class LoginActivity extends AppCompatActivity {
     };
 
     public void btn_click_registration_page(View view) {
-
-        Intent intent = new Intent(this, RegistrationActivity.class);
+        Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
     }
 
     public void btn_click_login_visibility(View view) {
@@ -200,15 +210,38 @@ public class LoginActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+//                APIService.getCurrentUser();
+                HappRestClient.getInstance().getCurrentUser();
+            }
+        };
+    }
 
-                Realm realm = Realm.getDefaultInstance();
-                HappToken token = realm.where(HappToken.class).findFirst();
-                token = realm.copyFromRealm(token);
-                realm.close();
+    private BroadcastReceiver createGetCurrentUserSuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                User currentUser = App.getCurrentUser();
+                if (currentUser.getSettings().getCity() != null) {
+//                    APIService.getCurrentCity();
+                    HappRestClient.getInstance().getCurrentCity();
+                } else {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        };
+    }
 
+    private BroadcastReceiver createGetCurrentCitySuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
 
-//                APIService.getCurrentUser();
+                Intent goToFeedIntent = new Intent(LoginActivity.this, FeedActivity.class);
+                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(goToFeedIntent);
+                overridePendingTransition(0,0);
+//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
             }
         };
     }
@@ -229,8 +262,22 @@ public class LoginActivity extends AppCompatActivity {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
         if (mKeyboardListener != null)
             activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
-        if (loginRequestDoneReceiver != null) loginRequestDoneReceiver = null;
-        if (loginFailedReceiver != null) loginFailedReceiver = null;
+        if (loginRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(loginRequestDoneReceiver);
+            loginRequestDoneReceiver = null;
+        }
+        if (loginFailedReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(loginFailedReceiver);
+            loginFailedReceiver = null;
+        }
+        if (currentUserDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(currentUserDoneReceiver);
+            currentUserDoneReceiver = null;
+        }
+        if (currentCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(currentCityDoneReceiver);
+            currentCityDoneReceiver = null;
+        }
         super.onDestroy();
     }
 

@@ -16,6 +16,8 @@ public class APIService extends IntentService {
     private static final String ACTION_POST_LOGIN = "com.happ.action.ACTION_POST_LOGIN";
     private static final String ACTION_POST_SIGNUP = "com.happ.action.ACTION_POST_SIGNUP";
     private static final String ACTION_GET_USER = "com.happ.action.ACTION_GET_USER";
+    private static final String ACTION_GET_CURRENT_USER = "com.happ.action.ACTION_GET_CURRENT_USER";
+    private static final String ACTION_GET_CURRENT_CITY = "com.happ.action.ACTION_GET_CURRENT_CITY";
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
     private static final String EXTRA_USERNAME = "com.happ.extra.EXTRA_USERNAME";
@@ -65,6 +67,18 @@ public class APIService extends IntentService {
         App.getContext().startService(signUp);
     }
 
+    public static void getCurrentUser() {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_CURRENT_USER);
+        App.getContext().startService(intent);
+    }
+
+    public static void getCurrentCity() {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_CURRENT_CITY);
+        App.getContext().startService(intent);
+    }
+
     public APIService() {
         super("APIService");
     }
@@ -93,6 +107,10 @@ public class APIService extends IntentService {
             }else if (action.equals(ACTION_GET_USER)) {
                 String username = intent.getStringExtra(EXTRA_USERNAME);
                 HappRestClient.getInstance().getUser(username);
+            } else if (action.equals(ACTION_GET_CURRENT_USER)) {
+                HappRestClient.getInstance().getCurrentUser();
+            } else if (action.equals(ACTION_GET_CURRENT_CITY)) {
+                HappRestClient.getInstance().getCurrentCity();
             }
         }
     }

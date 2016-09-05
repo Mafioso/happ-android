@@ -5,7 +5,10 @@ import android.content.Context;
 import android.os.StrictMode;
 import android.util.Log;
 
+import com.happ.models.City;
 import com.happ.models.Event;
+import com.happ.models.HappToken;
+import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
 import net.danlew.android.joda.JodaTimeAndroid;
@@ -13,6 +16,10 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jwt;
+import io.jsonwebtoken.Jwts;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 import io.realm.RealmResults;
@@ -51,6 +58,41 @@ public class App extends Application {
             }
         });
         realm.close();
+    }
+
+    public static User getCurrentUser() {
+        Realm realm = Realm.getDefaultInstance();
+        User currentUser = null;
+        try {
+            String username = getTokenData().get("username", String.class);
+            User user = realm.where(User.class).equalTo("username", username).findFirst();
+            currentUser = realm.copyFromRealm(user);
+        } catch (Exception ex) {
+        } finally {
+            realm.close();
+            return currentUser;
+        }
+    }
+
+    public static City getCurrentCity() {
+        return getCurrentUser().getSettings().getCityObject();
+    }
+
+    public static Claims getTokenData() {
+        Realm realm = Realm.getDefaultInstance();
+        Claims claims = null;
+        try {
+            HappToken token = realm.where(HappToken.class).findFirst();
+            int i = token.getToken().lastIndexOf('.');
+            String unsignedToken = token.getToken().substring(0,i+1);
+            Jwt<Header,Claims> tokenData = Jwts.parser().parseClaimsJwt(unsignedToken);
+            claims = tokenData.getBody();
+        } catch (Exception ex) {
+
+        } finally {
+            realm.close();
+            return claims;
+        }
     }
 
     public static boolean hasInternet()  {
