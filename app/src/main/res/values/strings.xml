@@ -1,4 +1,7 @@
 <resources>
+    <string name="HOST">http://happ.westeurope.cloudapp.azure.com/</string>
+    <string name="API_URL">api/v1/</string>
+
     <string name="event_feeds_page_size">10</string>
     <string name="event_feeds_visible_treshold_for_loading_next_items">3</string>
     <string name="app_name">HAPP</string>
@@ -16,7 +19,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="repeat_password">Repeat password</string>
-    <string name="sign_up_now">Sing up now</string>
+    <string name="sign_up_now">Sign up now</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="username">Username</string>

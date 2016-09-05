@@ -49,6 +49,7 @@ dependencies {
 
 
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'me.zhanghai.android.materialprogressbar:library:1.1.7'
 
     // JSON Web Token
     compile 'io.jsonwebtoken:jjwt:0.6.0'

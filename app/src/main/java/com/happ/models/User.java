@@ -11,9 +11,11 @@ import io.realm.annotations.PrimaryKey;
 public class User extends RealmObject {
     @PrimaryKey
     private String username;
-    @SerializedName("full_name")
+    @SerializedName("fullname")
     private String fullName;
     private String email;
+    private String id;
+    private String phone;
 
 
     public String getUsername() {
@@ -38,5 +40,13 @@ public class User extends RealmObject {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

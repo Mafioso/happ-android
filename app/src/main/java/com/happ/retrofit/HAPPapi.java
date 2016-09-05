@@ -19,17 +19,23 @@ import retrofit2.http.Path;
  */
 public interface HAPPapi {
 
-    @GET("events/{page}")
+    @GET("events/?page={page}")
     Call<EventsResponse> getEvents(@Path("page") int page);
 
     @GET("interests")
     Call<InterestResponse> getInterests();
 
-    @POST("login")
+    @POST("auth/login/")
     Call<HappToken> doLogin(@Body LoginData data);
+
+    @POST("auth/refresh/")
+    Call<HappToken> refreshToken(@Body HappToken data);
 
     @GET("user/{username}")
     Call<User> getUser(@Path("username") String username);
+
+    @GET("users/current/")
+    Call<User> getCurrentUser();
 
     @POST("registration")
     Call<HappToken> doSignUp(@Body SignUpData data);

@@ -1,5 +1,6 @@
 package com.happ.controllers;
 
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +14,14 @@ import android.support.v7.app.AppCompatDelegate;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +30,7 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.HappToken;
 import com.happ.retrofit.APIService;
+import com.happ.retrofit.HappRestClient;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
@@ -45,12 +51,15 @@ public class LoginActivity extends AppCompatActivity {
     EditText mEmail, mPassword;
     FloatingActionButton mButtonFablogin;
     ImageButton mVisibility, mVisibilityOff;
-    TextView mButtonRegistration;
+    Button mButtonRegistration;
     ImageView mImageLogo;
     TextInputLayout mInputLayoutEmail, mInputLayoutPassword;
+    LinearLayout mRegisterView;
+    boolean isKeyboarShown = false;
+    ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
 
     private BroadcastReceiver loginRequestDoneReceiver;
-    private BroadcastReceiver loginFaildReceiver;
+    private BroadcastReceiver loginFailedReceiver;
 
 
     @Override
@@ -63,26 +72,57 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = (EditText) findViewById(R.id.input_login_email);
         mPassword = (EditText) findViewById(R.id.input_login_password);
         mButtonFablogin = (FloatingActionButton) findViewById(R.id.login_fab);
-        mButtonRegistration = (TextView) findViewById(R.id.btn_registration_page);
+        mButtonRegistration = (Button) findViewById(R.id.btn_registration_page);
         mImageLogo = (ImageView) findViewById(R.id.img_login_logo);
         mInputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_login_email);
         mInputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_login_password);
         mVisibility = (ImageButton) findViewById(R.id.btn_login_visibility);
         mVisibilityOff = (ImageButton) findViewById(R.id.btn_login_visibility_off);
         mVisibilityOff.setVisibility(View.GONE);
+        mRegisterView = (LinearLayout) findViewById(R.id.ll_footer);
 
         if (loginRequestDoneReceiver == null) loginRequestDoneReceiver = createLoginSuccessReceiver();
-        if (loginFaildReceiver == null) loginFaildReceiver = createLoginFailureReceiver();
+        if (loginFailedReceiver == null) loginFailedReceiver = createLoginFailureReceiver();
 
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginRequestDoneReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_OK));
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginFaildReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_FAIL));
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginFailedReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_FAIL));
 
         mButtonFablogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+//                HappRestClient client = HappRestClient.getInstance();
+//                client.doLogin(mEmail.getText().toString(),mPassword.getText().toString());
                 APIService.doLogin(mEmail.getText().toString(), mPassword.getText().toString());
             }
         });
 
+        setListenerToRootView();
+
+    }
+
+    public void setListenerToRootView() {
+        final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        if (mKeyboardListener == null) {
+            mKeyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
+                    if (heightDiff > 100) {
+                        if (!isKeyboarShown) {
+                            mImageLogo.setVisibility(View.GONE);
+                            mRegisterView.setVisibility(View.GONE);
+                        }
+                        isKeyboarShown = true;
+                    } else if (isKeyboarShown) {
+                        mImageLogo.setVisibility(View.VISIBLE);
+                        mRegisterView.setVisibility(View.VISIBLE);
+                        isKeyboarShown = false;
+                    }
+                }
+            };
+        } else {
+            activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
+        }
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
     }
 
 
@@ -114,12 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                 token = realm.copyFromRealm(token);
                 realm.close();
 
-                int i = token.getToken().lastIndexOf('.');
-                String unsignedToken = token.getToken().substring(0,i+1);
-                Jwt<Header,Claims> tokenData = Jwts.parser().parseClaimsJwt(unsignedToken);
-                String username = tokenData.getBody().getSubject();
-
-                APIService.getUser(username);
+//                APIService.getCurrentUser();
             }
         };
     }
@@ -135,8 +170,10 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        if (mKeyboardListener != null) activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
         if (loginRequestDoneReceiver != null) loginRequestDoneReceiver = null;
-        if(loginFaildReceiver != null) loginFaildReceiver = null;
+        if(loginFailedReceiver != null) loginFailedReceiver = null;
         super.onDestroy();
     }
 
