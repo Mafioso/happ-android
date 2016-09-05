@@ -10,14 +10,15 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happ.App;
@@ -43,27 +44,25 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     EditText mEmail, mPassword;
-    FloatingActionButton mButtonFablogin;
     ImageButton mVisibility, mVisibilityOff;
-    TextView mButtonRegistration;
+    FloatingActionButton mButtonFablogin;
+//    TextView mButtonRegistration;
     ImageView mImageLogo;
     TextInputLayout mInputLayoutEmail, mInputLayoutPassword;
 
     private BroadcastReceiver loginRequestDoneReceiver;
     private BroadcastReceiver loginFaildReceiver;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_form);
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN| WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
         mEmail = (EditText) findViewById(R.id.input_login_email);
         mPassword = (EditText) findViewById(R.id.input_login_password);
         mButtonFablogin = (FloatingActionButton) findViewById(R.id.login_fab);
-        mButtonRegistration = (TextView) findViewById(R.id.btn_registration_page);
+
+//        mButtonRegistration = (TextView) findViewById(R.id.btn_registration_page);
         mImageLogo = (ImageView) findViewById(R.id.img_login_logo);
         mInputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_login_email);
         mInputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_login_password);
@@ -71,11 +70,17 @@ public class LoginActivity extends AppCompatActivity {
         mVisibilityOff = (ImageButton) findViewById(R.id.btn_login_visibility_off);
         mVisibilityOff.setVisibility(View.GONE);
 
+
         if (loginRequestDoneReceiver == null) loginRequestDoneReceiver = createLoginSuccessReceiver();
         if (loginFaildReceiver == null) loginFaildReceiver = createLoginFailureReceiver();
 
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginRequestDoneReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_OK));
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginFaildReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_FAIL));
+
+        checkValidation();
+
+        mEmail.addTextChangedListener(mWatcher);
+        mPassword.addTextChangedListener(mWatcher);
 
         mButtonFablogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -86,19 +91,53 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+
+    private void checkValidation() {
+
+        if ((TextUtils.isEmpty(mEmail.getText()))
+                || (TextUtils.isEmpty(mPassword.getText())))
+            mButtonFablogin.setVisibility(View.GONE);
+        else
+            mButtonFablogin.setVisibility(View.VISIBLE);
+
+    }
+
+    TextWatcher mWatcher = new TextWatcher() {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before,
+                                  int count) {
+            // TODO Auto-generated method stub
+            checkValidation();
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            // TODO Auto-generated method stub
+
+        }
+    };
+
     public void btn_click_registration_page(View view) {
 
         Intent intent = new Intent(this, RegistrationActivity.class);
         startActivity(intent);
     }
 
-    public void btn_login_visibility(View view) {
+    public void btn_click_login_visibility(View view) {
         mVisibilityOff.setVisibility(View.VISIBLE);
         mVisibility.setVisibility(View.GONE);
         mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
     }
 
-    public void btn_login_visibility_off(View view) {
+    public void btn_click_login_visibility_off(View view) {
         mVisibility.setVisibility(View.VISIBLE);
         mVisibilityOff.setVisibility(View.GONE);
         mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
