@@ -101,6 +101,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        mButtonRegistration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_click_registration_page(v);
+            }
+        });
+
         setListenerToRootView();
 
     }
