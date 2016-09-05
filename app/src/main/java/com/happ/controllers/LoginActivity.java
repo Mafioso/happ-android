@@ -25,7 +25,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -77,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         mVisibilityOff.setVisibility(View.GONE);
         mRegisterView = (LinearLayout) findViewById(R.id.ll_footer);
         mFormLayout = (RelativeLayout) findViewById(R.id.form_layout);
-        mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress);
+        mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_login);
 
 
         if (loginRequestDoneReceiver == null)
