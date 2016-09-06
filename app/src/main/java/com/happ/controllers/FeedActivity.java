@@ -50,11 +50,9 @@ public class FeedActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.nav_item_logout) {
-                    Toast.makeText(FeedActivity.this, "HELLO WORLD", Toast.LENGTH_LONG).show();
+                    App.doLogout(FeedActivity.this);
                 }
-                menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
-                Toast.makeText(FeedActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
                 return true;
             }
         });

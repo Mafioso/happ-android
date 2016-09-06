@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.happ.App;
 import com.happ.R;
 import com.happ.models.Event;
 import com.happ.models.Interest;
@@ -156,9 +157,10 @@ public class EventActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                menuItem.setChecked(true);
+                if (menuItem.getItemId() == R.id.nav_item_logout) {
+                    App.doLogout(EventActivity.this);
+                }
                 mDrawerLayout.closeDrawers();
-                Toast.makeText(EventActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
                 return true;
             }
         });

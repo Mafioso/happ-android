@@ -1,10 +1,13 @@
 package com.happ;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.StrictMode;
 import android.util.Log;
 
+import com.happ.controllers.LoginActivity;
 import com.happ.models.City;
 import com.happ.models.Event;
 import com.happ.models.HappToken;
@@ -111,6 +114,18 @@ public class App extends Application {
             Log.d("Log:", "error: " + e); // на ошибку можно не обращать внимание
         }
         return false;
+    }
+
+    public static void doLogout(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        context.startActivity(intent);
+        ((Activity)context).overridePendingTransition(0,0);
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
+        realm.close();
     }
 
 
