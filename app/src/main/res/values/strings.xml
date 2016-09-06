@@ -37,5 +37,14 @@
     <string name="second_activity_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin consectetur diam id aliquam scelerisque. Donec ultrices lacus vel dignissim pharetra. Vivamus pharetra augue quis rhoncus placerat. Sed ultricies at risus non cursus. Nam rutrum leo nec placerat consectetur. Vestibulum feugiat eleifend diam, nec interdum augue tincidunt sit amet. Praesent feugiat est auctor lacus consectetur, vitae pellentesque dolor laoreet.</string>
     <string name="title_activity_second">SecondActivity</string>
 
+    <string name="menu_filter">Filter Events</string>
+    <string name="nav_item_feed">Feed</string>
+    <string name="nav_item_interests">Interests</string>
+    <string name="nav_item_organizer">Organizer Mode</string>
+    <string name="nav_item_settings">Settings</string>
+    <string name="nav_item_logout">Logout</string>
+    <string name="nav_item_share">Tell About Happ</string>
+    <string name="nav_version">Version </string>
+
     <string name="err_msg"> Error! </string>
 </resources>

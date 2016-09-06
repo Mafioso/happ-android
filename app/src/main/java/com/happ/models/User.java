@@ -29,6 +29,10 @@ public class User extends RealmObject {
     }
 
     public String getFullName() {
+        if (fullName == null) {
+            if (fn == null) return username;
+            return fn;
+        }
         return fullName;
     }
 

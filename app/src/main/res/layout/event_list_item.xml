@@ -22,6 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:background="@color/colorBlack8"
+            android:transitionName="event_image"
             android:id="@+id/events_list_image_view"/>
 
         <LinearLayout
@@ -124,6 +125,7 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="14dp"
                     android:id="@+id/events_list_item_title"
+                    android:transitionName="event_title"
                     android:textSize="35sp"
                     android:textAllCaps="true"
                     android:text="Event Title Very Very long"
@@ -165,7 +167,8 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:layout_marginTop="114dp"
-            android:id="@+id/events_list_interest_color">
+            android:id="@+id/events_list_interest_color"
+            android:transitionName="event_interest_bg">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -176,27 +179,7 @@
                 android:id="@+id/events_list_item_interest"
                 android:textSize="18sp"
                 android:textAllCaps="true"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text=" / "
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textAllCaps="true"
-                android:id="@+id/events_list_item_interest_divider"
-                />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Electronic"
-                android:textColor="@android:color/white"
-                android:id="@+id/events_list_item_interest_title"
-                android:textSize="18dp"
-                android:textAllCaps="true"
+                android:transitionName="event_interest_name"
                 />
         </LinearLayout>
 

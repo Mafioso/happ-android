@@ -247,15 +247,6 @@ public class HappRestClient {
 
     public void doLogin(String username, String password) {
 
-//        if (!username.equals("mussa") && !password.equals("123")) {
-//            Intent intent = new Intent(BroadcastIntents.LOGIN_REQUEST_FAIL);
-//            intent.putExtra("CODE", 401);
-//            intent.putExtra("BODY", "Wrong Email or Password");
-//            intent.putExtra("MESSAGE", "Wrong Email or Password");
-//            LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
-//            return;
-//        }
-
         LoginData loginData = new LoginData();
         loginData.setUsername(username);
         loginData.setPassword(password);
@@ -286,7 +277,6 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.LOGIN_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
-                    intent.putExtra("BODY", response.body().toString());
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }

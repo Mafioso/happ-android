@@ -18,6 +18,11 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".controllers.FeedActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".controllers.EventActivity"
@@ -37,10 +42,6 @@
         <activity
             android:name=".controllers.SelectInterestsActivity"
             android:label="Select Interests">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity
             android:name=".controllers.SplashScreen" />

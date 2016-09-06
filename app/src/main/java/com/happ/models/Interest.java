@@ -42,8 +42,8 @@ public class Interest extends RealmObject {
 
     public String getColor() {
         Interest parent = getParent();
-        if (parent != null && parent.color != null) return parent.getColor();
-        if (parent == null && this.color == null) {
+        if (parent != null) return parent.getColor();
+        if (this.color == null) {
             return App.getContext().getResources().getString(0+R.color.colorPrimary);
         }
         return this.color;

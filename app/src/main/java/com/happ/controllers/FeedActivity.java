@@ -13,8 +13,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.happ.App;
 import com.happ.R;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.FavoriteFeedFragment;
@@ -39,19 +41,25 @@ public class FeedActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        setTitle(App.getCurrentCity().getName());
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.nav_item_logout) {
+                    Toast.makeText(FeedActivity.this, "HELLO WORLD", Toast.LENGTH_LONG).show();
+                }
                 menuItem.setChecked(true);
                 mDrawerLayout.closeDrawers();
                 Toast.makeText(FeedActivity.this, menuItem.getTitle(), Toast.LENGTH_LONG).show();
                 return true;
             }
         });
+
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
 
         mTabFragments = new ArrayList<>();
         for (int i=0; i<mTabNames.length; i++) {
