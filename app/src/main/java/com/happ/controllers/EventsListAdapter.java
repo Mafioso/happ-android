@@ -1,9 +1,13 @@
 package com.happ.controllers;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -123,7 +127,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     }
 
     @Override
-    public void onBindViewHolder(EventsListViewHolder holder, int position) {
+    public void onBindViewHolder(final EventsListViewHolder holder, int position) {
         final EventListItem item = mItems.get(position);
         holder.itemView.setOnClickListener(null);
         if (item.isHeader) {
@@ -148,7 +152,19 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 public void onClick(View view) {
                     Intent intent = new Intent(context, EventActivity.class);
                     intent.putExtra("event_id", item.event.getId());
-                    context.startActivity(intent);
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                        context.startActivity(intent);
+                        ((Activity)context).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                    } else {
+
+                        Pair<View, String> p1 = Pair.create((View) itemHolder.mTitleView, "event_title");
+                        Pair<View, String> p2 = Pair.create((View) itemHolder.mInterestViewColor, "event_interest_bg");
+                        Pair<View, String> p3 = Pair.create((View) itemHolder.mImageView, "ivent_image");
+                        Pair<View, String> p4 = Pair.create((View) itemHolder.mInterestTitle, "event_interest_name");
+                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                                makeSceneTransitionAnimation((Activity) context, p1, p2, p3, p4);
+                        context.startActivity(intent, options.toBundle());
+                    }
                 }
             });
 
@@ -193,6 +209,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             else{
                 Glide.clear(itemHolder.mImageView);
                 itemHolder.mImageView.setImageDrawable(null);
+                itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
             }
 
 
@@ -205,15 +222,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
             ArrayList<String> fullTitle = item.event.getInterest().getFullTitle();
 
-            itemHolder.mInterest.setText(fullTitle.get(0));
+            String fullTitleString = fullTitle.get(0);
             if (fullTitle.size() > 1) {
-                itemHolder.mInterestTitle.setVisibility(View.VISIBLE);
-                itemHolder.mInterestDivider.setVisibility(View.VISIBLE);
-                itemHolder.mInterestTitle.setText(fullTitle.get(1));
-            } else {
-                itemHolder.mInterestTitle.setVisibility(View.GONE);
-                itemHolder.mInterestDivider.setVisibility(View.GONE);
+                fullTitleString = fullTitleString + " / " + fullTitle.get(1);
             }
+            itemHolder.mInterestTitle.setText(fullTitleString);
 
             if (item.event.getInterest().getColor() != null) {
                 itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(item.event.getInterest().getColor()));
@@ -262,7 +275,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     public class EventsListItemViewHolder extends EventsListViewHolder {
         public TextView mDateView;
         public LinearLayout mInterestViewColor;
-        public TextView mInterest;
         public TextView mInterestTitle;
         public ImageView mImageView;
         public TextView mPrice;
@@ -271,7 +283,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         public Event event;
         public ImageView mFavoritesImage;
         public ImageView mUpvoteImage;
-        public TextView mInterestDivider;
         public ProgressBar mImagePreloader;
 
         public EventsListItemViewHolder(final View itemView) {
@@ -279,13 +290,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mTitleView = (TextView)itemView.findViewById(R.id.events_list_item_title);
             mDateView = (TextView)itemView.findViewById(R.id.events_list_item_start_date);
             mInterestViewColor = (LinearLayout)itemView.findViewById(R.id.events_list_interest_color);
-            mInterest = (TextView)itemView.findViewById(R.id.events_list_item_interest);
-            mInterestTitle = (TextView)itemView.findViewById(R.id.events_list_item_interest_title);
+            mInterestTitle = (TextView)itemView.findViewById(R.id.events_list_item_interest);
             mImageView = (ImageView)itemView.findViewById(R.id.events_list_image_view);
             mPrice = (TextView)itemView.findViewById(R.id.events_list_price);
             mVotesCount = (TextView)itemView.findViewById(R.id.events_list_votes_count);
             mViewsCount = (TextView)itemView.findViewById(R.id.events_list_views_count);
-            mInterestDivider = (TextView)itemView.findViewById(R.id.events_list_item_interest_divider);
             mImagePreloader = (ProgressBar)itemView.findViewById(R.id.events_list_image_preloader);
             mFavoritesImage = (ImageView)itemView.findViewById(R.id.clickimage_favorites);
             mUpvoteImage = (ImageView)itemView.findViewById(R.id.clickimage_like_or_dislike);
