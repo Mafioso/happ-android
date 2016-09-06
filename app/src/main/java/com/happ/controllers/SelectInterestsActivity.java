@@ -1,5 +1,6 @@
 package com.happ.controllers;
 
+import android.app.Activity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -17,9 +18,8 @@ import android.view.MenuInflater;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Interest;
-import com.happ.retrofit.HappRestClient;
+import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
 
@@ -34,13 +34,9 @@ public class SelectInterestsActivity extends AppCompatActivity {
     protected RecyclerView mInterestsRecyclerView;
     private ArrayList<Interest> interests;
     private InterestsListAdapter mInterestsListAdapter;
-    private EventInterestFragment.OnInterestSelectListener listener;
     private BroadcastReceiver interestsRequestDoneReceiver;
     private LinearLayoutManager interestsListLayoutManager;
 
-    public void setOnInterestSelectListener(EventInterestFragment.OnInterestSelectListener listener) {
-        this.listener = listener;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +45,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
 
 
         mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
-        interestsListLayoutManager = new LinearLayoutManager(getApplicationContext());
+        interestsListLayoutManager = new LinearLayoutManager(...);
         mInterestsRecyclerView.setLayoutManager(interestsListLayoutManager);
         interests = new ArrayList<>();
 
@@ -58,8 +54,8 @@ public class SelectInterestsActivity extends AppCompatActivity {
 
         interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
-
-        HappRestClient.getInstance().getInterests();
+//        APIService.getEvents();
+        APIService.getInterests();
 
 
 //        final String[] months = {"January", "February", "March", "April",
