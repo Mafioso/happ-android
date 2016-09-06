@@ -343,8 +343,8 @@ public class HappRestClient {
     }
 
     public void getInterests() {
-        int a = 0;
-        if (a == 0) return;
+//        int a = 0;
+//        if (a == 0) return;
         happApi.getInterests().enqueue(new Callback<InterestResponse>() {
             @Override
             public void onResponse(Call<InterestResponse> call, Response<InterestResponse> response) {
