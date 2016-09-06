@@ -23,38 +23,40 @@
             android:name=".controllers.EventActivity"
             android:label="Event Activity"
             />
+
         <activity
             android:name=".controllers.EditActivity"
             android:label="Edit Activity"
             />
         <activity
             android:name=".controllers.EventCreateActivity"
-            android:label="Create Event" />
-        <activity
-            android:name=".controllers.SplashScreen"
-            />
-        <activity
-            android:name=".controllers.RegistrationActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-
-            />
-        <activity android:name=".controllers.LoginActivity"
+            android:label="Create Event"
             android:windowSoftInputMode="stateHidden|adjustResize">
+
+        </activity>
+        <activity
+            android:name=".controllers.SelectInterestsActivity"
+            android:label="Select Interests">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".controllers.SplashScreen" />
+        <activity
+            android:name=".controllers.RegistrationActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity
+            android:name=".controllers.LoginActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
 
 
         <service
             android:name=".retrofit.APIService"
             android:exported="false" >
-        </service><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+        </service>
     </application>
 
 </manifest>

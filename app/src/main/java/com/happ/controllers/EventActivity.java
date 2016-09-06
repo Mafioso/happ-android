@@ -23,7 +23,7 @@ import io.realm.Realm;
 /**
  * Created by dante on 8/8/16.
  */
-public class    EventActivity extends AppCompatActivity {
+public class EventActivity extends AppCompatActivity {
 
 
     private DrawerLayout mDrawerLayout;

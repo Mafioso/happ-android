@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
@@ -35,6 +36,7 @@ public class EventCreateActivity extends AppCompatActivity {
 //    private ImageButton btnInterests, btnStartDate, btnEndDate;
     private ImageButton editInterestButton;
     private Interest selectedInterest;
+    private FloatingActionButton fab;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +63,10 @@ public class EventCreateActivity extends AppCompatActivity {
         inputInterest = (EditText) findViewById(R.id.input_interest);
         inputStartDate = (EditText) findViewById(R.id.input_startDate);
         inputEndDate = (EditText) findViewById(R.id.input_endDate);
-
+        fab = (FloatingActionButton)findViewById(R.id.fab);
         editInterestButton = (ImageButton) findViewById(R.id.btn_select_interest);
+
+
         editInterestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,8 +83,6 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         });
 
-        //FLoating Action Button
-        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,13 +90,56 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         });
 
+        checkValidation();
 
+        inputTitle.addTextChangedListener(mWatcher);
+        inputDescription.addTextChangedListener(mWatcher);
+        inputInterest.addTextChangedListener(mWatcher);
+        inputStartDate.addTextChangedListener(mWatcher);
+        inputEndDate.addTextChangedListener(mWatcher);
 
     }
 
-    public void btn_click (View v) {
+//    public void btn_click_selection_interests(View view) {
 //        new EventInterestFragment().show(getSupportFragmentManager(), "LoginForm");
+//    }
+
+    private void checkValidation() {
+
+        if ((TextUtils.isEmpty(inputTitle.getText()))
+                || (TextUtils.isEmpty(inputDescription.getText()))
+                || (TextUtils.isEmpty(inputInterest.getText()))
+                || (TextUtils.isEmpty(inputStartDate.getText()))
+                || (TextUtils.isEmpty(inputEndDate.getText()))
+                )
+            fab.setVisibility(View.INVISIBLE);
+        else
+            fab.setVisibility(View.VISIBLE);
+
+    }
+
+    TextWatcher mWatcher = new TextWatcher() {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before,
+                                  int count) {
+            // TODO Auto-generated method stub
+            checkValidation();
         }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            // TODO Auto-generated method stub
+
+        }
+    };
 
     private void submitForm() {
         if (!validateTitle()) {
@@ -135,29 +180,4 @@ public class EventCreateActivity extends AppCompatActivity {
         }
     }
 
-    private class MyTextWatcher implements TextWatcher {
-
-        private View view;
-
-        private MyTextWatcher(View view) {
-            this.view = view;
-        }
-
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        public void afterTextChanged(Editable editable) {
-            switch (view.getId()) {
-                case R.id.input_title:
-                    validateTitle();
-                    break;
-                case R.id.input_description:
-                    validateDescription();
-                    break;
-            }
-        }
-    }
 }
