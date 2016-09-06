@@ -17,12 +17,12 @@ import io.realm.annotations.PrimaryKey;
  */
 public class Event extends RealmObject {
     @PrimaryKey
-    private int id;
+    private String id;
     private String title;
-    private Interest interest;
+    private RealmList<Interest> interests;
     private String description;
     private RealmList<EventImage> images;
-    @SerializedName("votes_count")
+    @SerializedName("votes")
     private int votesCount;
     @SerializedName("did_vote")
     private boolean didVote;
@@ -34,19 +34,20 @@ public class Event extends RealmObject {
     private Date startDate;
     @SerializedName("end_date")
     private Date endDate;
+    @SerializedName("address")
     private String place;
     private Currency currency;
-    @SerializedName("lowest_price")
+    @SerializedName("min_price")
     private int lowestPrice;
-    @SerializedName("highest_price")
+    @SerializedName("max_price")
     private int highestPrice;
     private User author;
 
 
-    public int getId() {
+    public String getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -142,11 +143,10 @@ public class Event extends RealmObject {
     }
 
     public Interest getInterest() {
-        return interest;
-    }
-
-    public void setInterest(Interest interest) {
-        this.interest = interest;
+        if (this.interests != null && this.interests.size() > 0) {
+            return this.interests.get(0);
+        }
+        return null;
     }
 
     public Currency getCurrency() {
@@ -192,5 +192,13 @@ public class Event extends RealmObject {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public RealmList<Interest> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(RealmList<Interest> interests) {
+        this.interests = interests;
     }
 }

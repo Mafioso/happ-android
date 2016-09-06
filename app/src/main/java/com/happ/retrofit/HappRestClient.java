@@ -18,6 +18,7 @@ import com.happ.models.InterestResponse;
 import com.happ.models.LoginData;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
+import com.happ.retrofit.serializers.InterestDeserializer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +71,9 @@ public class HappRestClient {
 
     private void buildClient(List<Interceptor> httpInterceptors) {
         if (gson == null) {
-            gson = new GsonBuilder().create();
+            gson = new GsonBuilder()
+                    .registerTypeAdapter(Interest.class, new InterestDeserializer())
+                    .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }
         if (httpLoggingInterceptor == null) {
@@ -189,6 +192,8 @@ public class HappRestClient {
 
                     }
                 });
+            } else {
+                setAuthHeader();
             }
 
 
@@ -200,7 +205,7 @@ public class HappRestClient {
     }
 
     public void getEvents() {
-//        this.getEvents(1);
+        this.getEvents(1);
     }
 
     public void getEvents(int page) {
@@ -226,7 +231,6 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
-                    intent.putExtra("BODY", response.body().toString());
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }

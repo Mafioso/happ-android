@@ -1,6 +1,10 @@
 package com.happ.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
+import com.happ.App;
+import com.happ.R;
 
 import java.util.ArrayList;
 
@@ -14,11 +18,10 @@ import io.realm.annotations.PrimaryKey;
 public class Interest extends RealmObject {
 
     @PrimaryKey
-    private int id;
-    private int parent_id;
+    private String id;
+    @SerializedName("parent")
+    private String parentId;
     private String title;
-    @SerializedName("icon_url")
-    private String iconUrl;
     private String color;
 
     public String getTitle() {
@@ -37,17 +40,12 @@ public class Interest extends RealmObject {
         return result;
     }
 
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
-    }
-
     public String getColor() {
         Interest parent = getParent();
-        if (parent != null && parent.color != null) return parent.color;
+        if (parent != null && parent.color != null) return parent.getColor();
+        if (parent == null && this.color == null) {
+            return App.getContext().getResources().getString(0+R.color.colorPrimary);
+        }
         return this.color;
     }
 
@@ -57,26 +55,50 @@ public class Interest extends RealmObject {
 
     public Interest getParent() {
         Realm realm = Realm.getDefaultInstance();
-        Interest parent = realm.where(Interest.class).equalTo("id", this.parent_id).findFirst();
-        parent = realm.copyFromRealm(parent);
-        realm.close();
-
-        return parent;
+        Interest parent = null;
+        try {
+            if (this.parentId == null) throw new Exception("Interest.class > getParent(): This interest has no parent");
+            parent = realm.where(Interest.class).equalTo("id", this.parentId).findFirst();
+            parent = realm.copyFromRealm(parent);
+        } catch (Exception ex) {
+            Log.e("MODELS", ex.getLocalizedMessage());
+        } finally {
+            realm.close();
+            return parent;
+        }
     }
 
-    public int getParentId() {
-        return parent_id;
+    public void setParent(Interest interest) {
+        Realm realm = Realm.getDefaultInstance();
+        try {
+            if (interest == null) {
+                this.parentId = null;
+            } else {
+                realm.beginTransaction();
+                realm.copyToRealmOrUpdate(interest);
+                realm.commitTransaction();
+                this.parentId = interest.id;
+            }
+        } catch (Exception ex) {
+            Log.e("MODELS", ex.getLocalizedMessage());
+        } finally {
+            realm.close();
+        }
     }
 
-    public void setParentId(Interest parent) {
-        this.parent_id = parent_id;
+    public String getParentId() {
+        return parentId;
     }
 
-    public int getId() {
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

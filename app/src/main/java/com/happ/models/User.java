@@ -13,6 +13,7 @@ public class User extends RealmObject {
     private String username;
     @SerializedName("fullname")
     private String fullName;
+    private String fn;
     private String email;
     private String id;
     private String phone;
@@ -57,5 +58,21 @@ public class User extends RealmObject {
 
     public void setSettings(Settings settings) {
         this.settings = settings;
+    }
+
+    public String getFn() {
+        return fullName;
+    }
+
+    public void setFn(String fn) {
+        this.fullName = fn;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

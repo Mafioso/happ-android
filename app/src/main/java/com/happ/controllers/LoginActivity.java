@@ -35,6 +35,7 @@ import com.happ.models.User;
 import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
+import io.jsonwebtoken.Claims;
 import io.realm.Realm;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -120,6 +121,11 @@ public class LoginActivity extends AppCompatActivity {
         setListenerToRootView();
 
     }
+
+//    private void isLoggedIn() {
+//        Claims claims = App.getTokenData();
+//        HappRestClient.getInstance().refreshToken();
+//    }
 
     public void setListenerToRootView() {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
@@ -240,7 +246,6 @@ public class LoginActivity extends AppCompatActivity {
                 goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(goToFeedIntent);
                 overridePendingTransition(0,0);
-//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
             }
         };
     }
