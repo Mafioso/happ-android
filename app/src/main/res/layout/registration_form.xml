@@ -8,6 +8,25 @@
     android:background="@drawable/login_bg"
     android:fitsSystemWindows="true">
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:fitsSystemWindows="true">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:title="Hello World"
+            android:elevation="0dp"
+            >
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
     <LinearLayout
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -20,14 +39,22 @@
         android:id="@+id/form_layout"
         android:layout_centerVertical="true">
 
+            <ImageView
+                android:id="@+id/img_login_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/happ_icon"
+                android:layout_centerHorizontal="true"/>
+
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/input_layout_signup_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:theme="@style/LoginScreenEditText">
+                android:layout_marginTop="8dp"
+                android:theme="@style/LoginScreenEditText"
+                android:layout_below="@id/img_login_logo">
                 <EditText
                     android:id="@+id/input_signup_username"
                     android:layout_width="match_parent"

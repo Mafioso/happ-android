@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -16,6 +17,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
@@ -133,14 +135,20 @@ public class LoginActivity extends AppCompatActivity {
             mKeyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    int heightDiff = activityRootView.getRootView().getHeight() - activityRootView.getHeight();
-                    if (heightDiff > 100) {
+
+                    Rect r = new Rect();
+                    activityRootView.getWindowVisibleDisplayFrame(r);
+                    int screenHeight = activityRootView.getRootView().getHeight();
+
+                    int keypadHeight = screenHeight - r.bottom;
+                    if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                         if (!isKeyboarShown) {
                             mImageLogo.setVisibility(View.GONE);
                             mRegisterView.setVisibility(View.GONE);
                         }
                         isKeyboarShown = true;
-                    } else if (isKeyboarShown) {
+                    }
+                    else {
                         mImageLogo.setVisibility(View.VISIBLE);
                         mRegisterView.setVisibility(View.VISIBLE);
                         isKeyboarShown = false;
