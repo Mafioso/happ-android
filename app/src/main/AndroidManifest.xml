@@ -37,16 +37,10 @@
 
         <activity
             android:name=".controllers.SelectInterestsActivity"
-            android:label="Select Interests"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light">
+            android:label="Select Interests">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-
+                <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
-
-
             <meta-data android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
@@ -59,6 +53,10 @@
         <activity
             android:name=".controllers.LoginActivity"
             android:windowSoftInputMode="stateHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
 
 

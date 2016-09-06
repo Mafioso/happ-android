@@ -29,14 +29,9 @@ import android.widget.RelativeLayout;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.models.City;
-import com.happ.models.HappToken;
 import com.happ.models.User;
-import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
-import io.jsonwebtoken.Claims;
-import io.realm.Realm;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
@@ -242,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
 
-                Intent goToFeedIntent = new Intent(LoginActivity.this, FeedActivity.class);
+                Intent goToFeedIntent = new Intent(LoginActivity.this, SelectInterestsActivity.class);
                 goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(goToFeedIntent);
                 overridePendingTransition(0,0);
