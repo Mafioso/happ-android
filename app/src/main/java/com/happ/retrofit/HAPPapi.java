@@ -24,7 +24,7 @@ public interface HAPPapi {
     @GET("events/")
     Call<EventsResponse> getEvents(@Query("page") int page);
 
-    @GET("interests")
+    @GET("interests/")
     Call<InterestResponse> getInterests();
 
     @POST("auth/login/")
@@ -39,7 +39,7 @@ public interface HAPPapi {
     @GET("users/current/")
     Call<User> getCurrentUser();
 
-    @POST("registration")
+    @POST("registration/")
     Call<HappToken> doSignUp(@Body SignUpData data);
 
     @GET("cities/{id}/")

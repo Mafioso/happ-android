@@ -18,10 +18,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".controllers.FeedActivity">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
         <activity
@@ -39,10 +39,18 @@
             android:windowSoftInputMode="stateHidden|adjustResize">
 
         </activity>
+
         <activity
             android:name=".controllers.SelectInterestsActivity"
-            android:label="Select Interests">
+            android:label="Select Interests"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AppCompat.Light">
+
+
+            <meta-data android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
+
         <activity
             android:name=".controllers.SplashScreen" />
         <activity

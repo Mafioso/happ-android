@@ -23,7 +23,7 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.controllers.InterestsListAdapter;
 import com.happ.models.Interest;
-import com.happ.retrofit.APIService;
+import com.happ.retrofit.HappRestClient;
 import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
 import com.turingtechnologies.materialscrollbar.TouchScrollBar;
 
@@ -77,6 +77,7 @@ public class EventInterestFragment extends DialogFragment {
                 })
                 .create();
 
+
         mInterestsRecyclerView = (RecyclerView)contentView.findViewById(R.id.interests_recycler_view);
         interestsListLayoutManager = new LinearLayoutManager(activity);
 
@@ -96,11 +97,15 @@ public class EventInterestFragment extends DialogFragment {
                 dialog.dismiss();
             }
         });
+
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
 
         interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
-        APIService.getInterests();
+//        APIService.getInterests();
+
+        HappRestClient.getInstance().getInterests();
+
 
         mInterestsScrollBar = (TouchScrollBar)contentView.findViewById(R.id.interests_scroll_bar);
         mInterestsScrollBar.setHandleColourRes(R.color.colorAccent);
