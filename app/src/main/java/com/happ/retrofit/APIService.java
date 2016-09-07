@@ -14,6 +14,8 @@ import java.util.ArrayList;
 public class APIService extends IntentService {
     private static final String ACTION_GET_EVENTS = "com.happ.action.ACTION_GET_EVENTS";
     private static final String ACTION_GET_EVENTS_FOR_PAGE = "com.happ.action.ACTION_GET_EVENTS_FOR_PAGE";
+    private static final String ACTION_GET_CITYS = "com.happ.action.ACTION_GET_CITYS";
+    private static final String ACTION_GET_CITYS_FOR_PAGE = "com.happ.action.ACTION_GET_CITYS_FOR_PAGE";
     private static final String ACTION_GET_INTERESTS = "com.happ.action.ACTION_GET_INTERESTS";
     private static final String ACTION_GET_INTERESTS_FOR_PAGE = "com.happ.action.ACTION_GET_INTERESTS_FOR_PAGE";
     private static final String ACTION_POST_LOGIN = "com.happ.action.ACTION_POST_LOGIN";
@@ -22,6 +24,7 @@ public class APIService extends IntentService {
     private static final String ACTION_GET_CURRENT_USER = "com.happ.action.ACTION_GET_CURRENT_USER";
     private static final String ACTION_GET_CURRENT_CITY = "com.happ.action.ACTION_GET_CURRENT_CITY";
     private static final String ACTION_SET_INTERESTS = "com.happ.action.ACTION_SET_INTERESTS";
+
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
     private static final String EXTRA_USERNAME = "com.happ.extra.EXTRA_USERNAME";
@@ -37,6 +40,19 @@ public class APIService extends IntentService {
     public static void getEvents(int page) {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_EVENTS_FOR_PAGE);
+        intent.putExtra(EXTRA_PAGE, page);
+        App.getContext().startService(intent);
+    }
+
+    public static void getCitys() {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_CITYS);
+        App.getContext().startService(intent);
+    }
+
+    public static void getCitys(int page) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_CITYS_FOR_PAGE);
         intent.putExtra(EXTRA_PAGE, page);
         App.getContext().startService(intent);
     }
@@ -111,6 +127,11 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_GET_EVENTS_FOR_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 HappRestClient.getInstance().getEvents(page);
+            } else if (action.equals(ACTION_GET_CITYS)) {
+                HappRestClient.getInstance().getCities();
+            } else if (action.equals(ACTION_GET_CITYS_FOR_PAGE)) {
+                int page = intent.getIntExtra(EXTRA_PAGE, 1);
+                HappRestClient.getInstance().getCities(page);
             } else if (action.equals(ACTION_GET_INTERESTS)) {
                 HappRestClient.getInstance().getInterests();
             } else if (action.equals(ACTION_POST_LOGIN)) {

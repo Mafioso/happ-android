@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.models.CitiesResponse;
 import com.happ.models.City;
 import com.happ.models.Event;
 import com.happ.models.EventsResponse;
@@ -240,6 +241,47 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<EventsResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void getCities() {
+        this.getCities(1);
+    }
+
+    public void getCities(int page) {
+        happApi.getCities(page).enqueue(new Callback<CitiesResponse>() {
+            @Override
+            public void onResponse(Call<CitiesResponse> call, Response<CitiesResponse> response) {
+
+                if (response.isSuccessful()){
+                    List<City> citys = response.body().getCities();
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(citys);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.CITY_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.CITY_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CitiesResponse> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.CITY_REQUEST_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }

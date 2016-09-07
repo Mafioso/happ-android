@@ -1,7 +1,6 @@
 package com.happ.controllers;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,20 +12,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.happ.R;
-import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import retrofit2.http.POST;
 
 /**
  * Created by iztiev on 8/4/16.

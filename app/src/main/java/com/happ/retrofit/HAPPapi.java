@@ -1,5 +1,6 @@
 package com.happ.retrofit;
 
+import com.happ.models.CitiesResponse;
 import com.happ.models.City;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
@@ -46,6 +47,9 @@ public interface HAPPapi {
 
     @GET("cities/{id}/")
     Call<City> getCity(@Path("id") String id);
+
+    @GET("cities/")
+    Call<CitiesResponse> getCities(@Query("page") int page);
 
     @POST("interests/set/")
     Call<Void> setInterests(@Body List<String> data);

@@ -21,18 +21,17 @@ import android.text.method.PasswordTransformationMethod;
 import android.transition.Explode;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowInsets;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import com.happ.RelativeLayout;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.RelativeLayout;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
@@ -260,7 +259,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
 
-                Intent goToFeedIntent = new Intent(LoginActivity.this, SelectInterestsActivity.class);
+                Intent goToFeedIntent = new Intent(LoginActivity.this, SelectCityActivity.class);
                 goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(goToFeedIntent);
                 overridePendingTransition(0,0);
