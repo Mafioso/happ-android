@@ -261,7 +261,7 @@ public class LoginActivity extends AppCompatActivity {
                 mProgressBar.setVisibility(View.INVISIBLE);
 
                 Intent goToFeedIntent = new Intent(LoginActivity.this, SelectInterestsActivity.class);
-//                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(goToFeedIntent);
                 overridePendingTransition(0,0);
 

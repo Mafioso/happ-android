@@ -1,6 +1,5 @@
 package com.happ.controllers;
 
-import android.app.Activity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,7 +18,6 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.Interest;
-import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
@@ -57,6 +55,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
 //        APIService.getEvents();
         HappRestClient.getInstance().getInterests();
+        
 
 
 //        final String[] months = {"January", "February", "March", "April",

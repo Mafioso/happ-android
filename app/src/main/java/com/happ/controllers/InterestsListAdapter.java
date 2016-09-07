@@ -9,10 +9,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.happ.R;
+import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.util.ArrayList;
+
+import retrofit2.http.POST;
 
 /**
  * Created by iztiev on 8/4/16.
@@ -71,9 +74,15 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     public void onBindViewHolder(InterestsListViewHolder holder, int position) {
 //        final InterestListItem item = mItems.get(position);
 //        holder.itemView.setOnClickListener(null);
-//            final InterestsListItemViewHolder itemHolder = (InterestsListItemViewHolder)holder;
-        holder.mTitleInterest.setText(mItems.get(position).getTitle());
-        holder.bind(mItems.get(position), listener);
+//
+//        if (item.isItem) {
+//            ((InterestsListHeaderViewHolder)holder).mTitleItem.setText(item.headerItem);
+//
+//        } else {
+//            final InterestsListItemHolder itemHolder = (InterestsListItemHolder)holder;
+//            holder.mTitleInterest.setText(mItems.get(position).getTitle());
+//            holder.bind(mItems.get(position), listener);
+//        }
     }
 
     @Override
@@ -87,8 +96,18 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     }
 
     public class InterestsListViewHolder extends RecyclerView.ViewHolder {
+
         public TextView mTitleInterest;
+
         public InterestsListViewHolder(View itemView) {
+
+            super(itemView);
+        }
+    }
+
+    public class InterestsListItemHolder extends InterestsListViewHolder {
+
+        public InterestsListItemHolder(View itemView) {
             super(itemView);
             mTitleInterest = (TextView)itemView.findViewById(R.id.test_interests_title);
         }
@@ -106,7 +125,31 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         }
     }
 
+    public class InterestsListHeaderViewHolder extends InterestsListViewHolder {
+        public TextView mTitleItem;
+        public InterestsListHeaderViewHolder(View itemView) {
+            super(itemView);
+            mTitleItem = (TextView)itemView.findViewById(R.id.interests_child_item);
+        }
+    }
+
     public interface OnItemClickListener {
         void onItemClick(Interest interest);
+    }
+
+    private class InterestListItem {
+        public int sectionManager;
+        public int sectionFirstPosition;
+        public boolean isItem;
+        public String headerItem;
+        public Interest interest;
+
+        public InterestListItem(boolean isItem, int sectionManager, int sectionFirstPosition, Interest interest, String headerItem) {
+            this.isItem = isItem;
+            this.sectionManager = sectionManager;
+            this.sectionFirstPosition = sectionFirstPosition;
+            this.interest = interest;
+            this.headerItem = headerItem;
+        }
     }
 }

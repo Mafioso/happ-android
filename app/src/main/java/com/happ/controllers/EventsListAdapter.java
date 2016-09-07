@@ -131,8 +131,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         final EventListItem item = mItems.get(position);
         holder.itemView.setOnClickListener(null);
         if (item.isHeader) {
+
             ((EventsListHeaderViewHolder)holder).mTitleView.setText(item.headerTitle);
+
         } else {
+
             final EventsListItemViewHolder itemHolder = (EventsListItemViewHolder)holder;
             itemHolder.mFavoritesImage.setOnClickListener(new View.OnClickListener() {
                 @Override
