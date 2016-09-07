@@ -31,38 +31,28 @@
         <activity
             android:name=".controllers.EventCreateActivity"
             android:label="Create Event"
-            android:windowSoftInputMode="stateHidden|adjustResize">
+            android:windowSoftInputMode="adjustResize|stateHidden">
 
         </activity>
 
         <activity
             android:name=".controllers.SelectInterestsActivity"
-            android:label="Select Interests"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Light">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-
-            </intent-filter>
-
-
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+            android:label="Select Interests">
         </activity>
 
         <activity
-            android:name=".controllers.SplashScreen" />
-        <activity
-            android:name=".controllers.RegistrationActivity"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".controllers.LoginActivity"
-            android:windowSoftInputMode="adjustResize">
+            android:name=".controllers.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".controllers.RegistrationActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+        <activity
+            android:name=".controllers.LoginActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden">
         </activity>
 
 

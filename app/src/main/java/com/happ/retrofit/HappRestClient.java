@@ -333,20 +333,19 @@ public class HappRestClient {
     }
 
     public void getInterests() {
-//        int a = 0;
-//        if (a == 0) return;
-        happApi.getInterests().enqueue(new Callback<InterestResponse>() {
+        getInterests(1);
+    }
+
+    public void getInterests(int page) {
+        happApi.getInterests(page).enqueue(new Callback<InterestResponse>() {
             @Override
             public void onResponse(Call<InterestResponse> call, Response<InterestResponse> response) {
-
                 if (response.isSuccessful()){
-                    List<Interest> interests = response.body().getInterest();
+                    List<Interest> interests = response.body().getInterests();
 
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
-
                     realm.copyToRealmOrUpdate(interests);
-
                     realm.commitTransaction();
                     realm.close();
 
@@ -366,7 +365,6 @@ public class HappRestClient {
             public void onFailure(Call<InterestResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
-//                intent.putExtra("MESSAGE", t.getMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
         });

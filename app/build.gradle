@@ -53,4 +53,5 @@ dependencies {
 
     // JSON Web Token
     compile 'io.jsonwebtoken:jjwt:0.6.0'
+    compile 'org.jetbrains:annotations-java5:15.0'
 }

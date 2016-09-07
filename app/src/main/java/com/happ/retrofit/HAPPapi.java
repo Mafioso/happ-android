@@ -25,7 +25,7 @@ public interface HAPPapi {
     Call<EventsResponse> getEvents(@Query("page") int page);
 
     @GET("interests/")
-    Call<InterestResponse> getInterests();
+    Call<InterestResponse> getInterests(@Query("page") int page);
 
     @POST("auth/login/")
     Call<HappToken> doLogin(@Body LoginData data);

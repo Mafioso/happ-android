@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -17,28 +18,24 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
+import android.transition.Explode;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowInsets;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import com.happ.RelativeLayout;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.models.City;
-import com.happ.models.HappToken;
 import com.happ.models.User;
-import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
-import io.jsonwebtoken.Claims;
-import io.realm.Realm;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
@@ -61,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
     ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     RelativeLayout mFormLayout;
     MaterialProgressBar mProgressBar;
+    int[] mInsets = new int[3];
 
     private BroadcastReceiver loginRequestDoneReceiver;
     private BroadcastReceiver loginFailedReceiver;
@@ -68,9 +66,21 @@ public class LoginActivity extends AppCompatActivity {
     private BroadcastReceiver currentCityDoneReceiver;
 
     @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+    }
+
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_form);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(new Explode());
+            getWindow().setExitTransition(new Explode());
+        }
 
         mEmail = (EditText) findViewById(R.id.input_login_email);
         mPassword = (EditText) findViewById(R.id.input_login_password);
@@ -250,10 +260,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
 
-                Intent goToFeedIntent = new Intent(LoginActivity.this, FeedActivity.class);
-                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                Intent goToFeedIntent = new Intent(LoginActivity.this, SelectInterestsActivity.class);
+//                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(goToFeedIntent);
                 overridePendingTransition(0,0);
+
+//                Intent goToFeedIntent = new Intent(LoginActivity.this, FeedActivity.class);
+//                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                startActivity(goToFeedIntent);
+//                overridePendingTransition(0,0);
             }
         };
     }

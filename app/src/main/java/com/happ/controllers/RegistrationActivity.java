@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -105,10 +106,22 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.getBackground().setAlpha(0);
+//        toolbar.getBackground().setAlpha(0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(0);
+        }
+        setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                RegistrationActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
+            }
+        });
 
         setListenerToRootView();
     }

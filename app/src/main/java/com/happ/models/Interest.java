@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
+import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -83,6 +84,20 @@ public class Interest extends RealmObject {
             Log.e("MODELS", ex.getLocalizedMessage());
         } finally {
             realm.close();
+        }
+    }
+
+    public ArrayList<Interest> getChildren() {
+        Realm realm = Realm.getDefaultInstance();
+        ArrayList<Interest> children = new ArrayList<>();
+        try {
+            RealmResults<Interest> childInterests = realm.where(Interest.class).equalTo("parent", this.id).findAll();
+            children = (ArrayList<Interest>) childInterests.subList(0, childInterests.size());
+        } catch (Exception ex) {
+            Log.e("MODELS", ex.getLocalizedMessage());
+        } finally {
+            realm.close();
+            return children;
         }
     }
 

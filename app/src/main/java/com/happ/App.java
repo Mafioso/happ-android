@@ -43,8 +43,6 @@ public class App extends Application {
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(realmConfiguration);
 
-        APIService.getInterests();
-
         if (hasInternet()) {
 //            deleleFromRealm();
         }

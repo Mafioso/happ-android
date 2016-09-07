@@ -20,6 +20,7 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
+import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
 
@@ -45,7 +46,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
 
 
         mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
-        interestsListLayoutManager = new LinearLayoutManager(...);
+        interestsListLayoutManager = new LinearLayoutManager(this);
         mInterestsRecyclerView.setLayoutManager(interestsListLayoutManager);
         interests = new ArrayList<>();
 
@@ -55,7 +56,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
         interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
 //        APIService.getEvents();
-        APIService.getInterests();
+        HappRestClient.getInstance().getInterests();
 
 
 //        final String[] months = {"January", "February", "March", "April",
