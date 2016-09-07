@@ -2,6 +2,7 @@ package com.happ.retrofit.serializers;
 
 import android.util.Log;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -39,6 +40,27 @@ public class InterestDeserializer implements JsonDeserializer<Interest> {
 
         if (isSimple) {
             interest.setParentId(parentId);
+
+            boolean hasChildren = false;
+            try {
+                if (interestJson.has("children")) {
+                    JsonArray children = interestJson.getAsJsonArray("children");
+                    for (int i=0; i<children.size(); i++) {
+                        JsonObject child = children.get(i).getAsJsonObject();
+                        Interest childInterest = new Interest();
+                        childInterest.setId(child.get("id").getAsString());
+                        childInterest.setTitle(child.get("title").getAsString());
+                        if (!child.get("color").isJsonNull()) {
+                            childInterest.setColor(child.get("color").getAsString());
+                        }
+                        childInterest.setParentId(interestJson.get("id").getAsString());
+                        interest.addChild(childInterest);
+                    }
+                }
+            }catch (IllegalStateException ex) {
+                Log.e("GSON_DESER", "InterestDeserializer.class > deserialize(…): " + ex.getLocalizedMessage());
+            }
+
         } else {
             JsonObject parentObject = parent.getAsJsonObject();
             Interest parentInterest = new Interest();

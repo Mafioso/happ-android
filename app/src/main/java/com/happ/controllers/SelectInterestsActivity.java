@@ -6,18 +6,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.Interest;
+import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
@@ -34,7 +39,9 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private ArrayList<Interest> interests;
     private InterestsListAdapter mInterestsListAdapter;
     private BroadcastReceiver interestsRequestDoneReceiver;
+    private BroadcastReceiver setInterestsOKReceiver;
     private LinearLayoutManager interestsListLayoutManager;
+    private FloatingActionButton mFab;
 
 
     @Override
@@ -42,37 +49,52 @@ public class SelectInterestsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_interests);
 
+        setTitle(getResources().getString(R.string.select_interest_title));
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setVisibility(View.GONE);
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> selectedInterests = mInterestsListAdapter.getSelectedInterests();
+                // SEND DATA TO SERVER
+                HappRestClient.getInstance().setInterests(selectedInterests);
+            }
+        });
+
 
         mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
         interestsListLayoutManager = new LinearLayoutManager(this);
         mInterestsRecyclerView.setLayoutManager(interestsListLayoutManager);
+
+        Realm realm = Realm.getDefaultInstance();
         interests = new ArrayList<>();
+
+        try {
+            RealmResults<Interest> interestsResults = realm.where(Interest.class).isNull("parentId").findAll();
+            interests = (ArrayList<Interest>) realm.copyFromRealm(interestsResults);
+        } catch (Exception ex) {
+            Log.e("HAPP", "SelectInterestActivity > onCreate "+ex.getLocalizedMessage());
+        } finally {
+            realm.close();
+        }
 
         mInterestsListAdapter = new InterestsListAdapter(this, interests);
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
+        mFab.setVisibility(View.VISIBLE);
 
-        interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
-//        APIService.getEvents();
+        if (interestsRequestDoneReceiver == null) {
+            interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
+        }
+        if (setInterestsOKReceiver == null) {
+            setInterestsOKReceiver = createSetInterestsOKReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
+        }
+//        APIService.getInterests();
         HappRestClient.getInstance().getInterests();
-        
-
-
-//        final String[] months = {"January", "February", "March", "April",
-//                "May", "June", "July", "August", "September", "October",
-//                "November", "December"};
-//        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, months);
-//        final ListView listView = (ListView) findViewById(R.id.listView1);
-//        listView.setAdapter(adapter);
-//
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-//                String text = (String) listView.getItemAtPosition(position);
-//                Toast.makeText(getApplicationContext(), text,
-//                        Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
 
     }
 
@@ -84,13 +106,27 @@ public class SelectInterestsActivity extends AppCompatActivity {
             }
         };
     }
+
+    private BroadcastReceiver createSetInterestsOKReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Intent feedIntent = new Intent(SelectInterestsActivity.this, FeedActivity.class);
+                feedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                SelectInterestsActivity.this.startActivity(feedIntent);
+                SelectInterestsActivity.this.overridePendingTransition(0,0);
+            }
+        };
+    }
+
+
     public interface OnInterestSelectListener {
         public void onInterestSelected(Interest interest);
     }
 
     protected void updateInterestsList() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).findAll();
+        RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).isNull("parentId").findAll();
         interests = (ArrayList<Interest>)realm.copyFromRealm(interestsRealmResults);
         mInterestsListAdapter.updateData(interests);
         realm.close();
@@ -123,5 +159,18 @@ public class SelectInterestsActivity extends AppCompatActivity {
             }
         });
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (interestsRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(interestsRequestDoneReceiver);
+            interestsRequestDoneReceiver = null;
+        }
+        if (setInterestsOKReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(setInterestsOKReceiver);
+            setInterestsOKReceiver = null;
+        }
     }
 }

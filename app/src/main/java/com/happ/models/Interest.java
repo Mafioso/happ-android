@@ -101,6 +101,24 @@ public class Interest extends RealmObject {
         }
     }
 
+    public void addChild(Interest interest) {
+        interest.setParentId(this.id);
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(interest);
+        realm.commitTransaction();
+        realm.close();
+    }
+
+    public boolean hasChildren() {
+        long count = 0;
+        Realm realm = Realm.getDefaultInstance();
+        count = realm.where(Interest.class).equalTo("parentId", this.id).count();
+        realm.close();
+
+        return (count > 0);
+    }
+
     public String getParentId() {
         return parentId;
     }

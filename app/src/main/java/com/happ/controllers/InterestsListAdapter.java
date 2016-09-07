@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.happ.R;
@@ -21,7 +23,8 @@ import retrofit2.http.POST;
  * Created by iztiev on 8/4/16.
  */
 public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdapter.InterestsListViewHolder> implements INameableAdapter {
-    private ArrayList<Interest> mItems;
+    private ArrayList<Interest> mInterests;
+    private ArrayList<String> selectedInterests;
     private final Context context;
     private OnItemClickListener listener;
 
@@ -29,40 +32,23 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
     public InterestsListAdapter(Context context, ArrayList<Interest> interests) {
         this.context = context;
-        this.mItems = interests;
+        this.mInterests = interests;
+        this.selectedInterests = new ArrayList<>();
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
-
-    public void updateItems(ArrayList<Interest> interests) {
-        this.mItems = interests;
-        notifyDataSetChanged();
-
+    public ArrayList<String> getSelectedInterests() {
+        return this.selectedInterests;
     }
 
     public void updateData(ArrayList<Interest> interests) {
-        this.updateItems(interests);
-        Log.d("AAAAA", String.valueOf(interests.size()));
-        this.notifyDataSetChanged();
-//        this.notifyHeaderChanges();
+        mInterests = interests;
+        Log.d("AAAAA", String.valueOf(mInterests.size()));
+        notifyDataSetChanged();
     }
-
-//    private void notifyHeaderChanges() {
-//        for (int i = 0; i < mItems.size(); i++) {
-//            InterestListItem item = mItems.get(i);
-//            if (item.isHeader) {
-//                notifyItemChanged(i);
-//            }
-//        }
-//    }
-
-//    @Override
-//    public int getItemViewType(int position) {
-//        return mItems.get(position).isHeader ? VIEW_TYPE_HEADER : VIEW_TYPE_CONTENT;
-//    }
 
     @Override
     public InterestsListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -72,84 +58,75 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
     @Override
     public void onBindViewHolder(InterestsListViewHolder holder, int position) {
-//        final InterestListItem item = mItems.get(position);
-//        holder.itemView.setOnClickListener(null);
-//
-//        if (item.isItem) {
-//            ((InterestsListHeaderViewHolder)holder).mTitleItem.setText(item.headerItem);
-//
-//        } else {
-//            final InterestsListItemHolder itemHolder = (InterestsListItemHolder)holder;
-//            holder.mTitleInterest.setText(mItems.get(position).getTitle());
-//            holder.bind(mItems.get(position), listener);
-//        }
+        Interest interest = mInterests.get(position);
+        holder.mInterestTitle.setText(interest.getTitle());
+        String id = interest.getId();
+        if (selectedInterests.indexOf(id) >= 0) {
+            if (!holder.mCheckBox.isChecked()) holder.mCheckBox.toggle();
+        } else {
+            if (holder.mCheckBox.isChecked()) holder.mCheckBox.toggle();
+        }
+        if (interest.hasChildren()) {
+            holder.mExpandChildrenButton.setVisibility(View.VISIBLE);
+            holder.mExpandChildrenButton.setEnabled(true);
+        } else {
+            holder.mExpandChildrenButton.setVisibility(View.INVISIBLE);
+            holder.mExpandChildrenButton.setEnabled(false);
+        }
+        holder.bind(interest.getId(), null);
     }
 
     @Override
     public int getItemCount() {
-        return mItems.size();
+        return mInterests.size();
     }
 
     @Override
     public Character getCharacterForElement(int element) {
-        return mItems.get(element).getTitle().charAt(0);
+        return mInterests.get(element).getTitle().charAt(0);
     }
 
     public class InterestsListViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView mTitleInterest;
+        public TextView mInterestTitle;
+        public CheckBox mCheckBox;
+        public ImageButton mExpandChildrenButton;
 
         public InterestsListViewHolder(View itemView) {
-
             super(itemView);
-        }
-    }
-
-    public class InterestsListItemHolder extends InterestsListViewHolder {
-
-        public InterestsListItemHolder(View itemView) {
-            super(itemView);
-            mTitleInterest = (TextView)itemView.findViewById(R.id.test_interests_title);
+            mInterestTitle = (TextView) itemView.findViewById(R.id.interest_title);
+            mCheckBox = (CheckBox) itemView.findViewById(R.id.interest_checkbox);
+            mExpandChildrenButton = (ImageButton) itemView.findViewById(R.id.interest_show_children);
         }
 
-        public void bind(final Interest interest, final OnItemClickListener listener) {
+        public void bind(final String interestId, final OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(">>CLICK<<","TRUE");
-                    if (listener != null) {
-                        listener.onItemClick(interest);
-                    }
+                    changeState(interestId);
+                }
+            });
+
+            mCheckBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeState(interestId);
                 }
             });
         }
-    }
 
-    public class InterestsListHeaderViewHolder extends InterestsListViewHolder {
-        public TextView mTitleItem;
-        public InterestsListHeaderViewHolder(View itemView) {
-            super(itemView);
-            mTitleItem = (TextView)itemView.findViewById(R.id.interests_child_item);
+        private void changeState(String interestId) {
+            if (selectedInterests.indexOf(interestId) >= 0) {
+                selectedInterests.remove(interestId);
+            } else {
+                selectedInterests.add(interestId);
+            }
+            notifyDataSetChanged();
         }
+
+
     }
 
     public interface OnItemClickListener {
         void onItemClick(Interest interest);
-    }
-
-    private class InterestListItem {
-        public int sectionManager;
-        public int sectionFirstPosition;
-        public boolean isItem;
-        public String headerItem;
-        public Interest interest;
-
-        public InterestListItem(boolean isItem, int sectionManager, int sectionFirstPosition, Interest interest, String headerItem) {
-            this.isItem = isItem;
-            this.sectionManager = sectionManager;
-            this.sectionFirstPosition = sectionFirstPosition;
-            this.interest = interest;
-            this.headerItem = headerItem;
-        }
     }
 }

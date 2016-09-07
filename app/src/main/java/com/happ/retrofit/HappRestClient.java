@@ -98,6 +98,7 @@ public class HappRestClient {
                 .build();
 
         happApi = retrofit.create(HAPPapi.class);
+//        setAuthHeader();
     }
 
     public boolean setAuthHeader() {
@@ -364,6 +365,30 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<InterestResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void setInterests(ArrayList<String> ids) {
+        happApi.setInterests(ids).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                } else {
+                    Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }

@@ -1,18 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="16dp">
 
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Test for layout"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:layout_marginLeft="30dp"
-            android:textSize="20dp"
-            android:id="@+id/test_interests_title" />
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/interest_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Test for layout"
+                android:layout_marginLeft="30dp"
+                android:textSize="20dp"
+                android:id="@+id/interest_title"
+                android:layout_toRightOf="@+id/interest_checkbox"
+                android:layout_toLeftOf="@+id/interest_show_children"
+                android:layout_centerVertical="true"/>
+
+            <ImageButton
+                android:id="@+id/interest_show_children"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                app:srcCompat="@drawable/ic_chevron_down"
+                android:background="@android:color/transparent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                />
+
+        </RelativeLayout>
+
+
 
 </LinearLayout>

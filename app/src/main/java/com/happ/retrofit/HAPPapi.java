@@ -8,6 +8,8 @@ import com.happ.models.LoginData;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -44,5 +46,8 @@ public interface HAPPapi {
 
     @GET("cities/{id}/")
     Call<City> getCity(@Path("id") String id);
+
+    @POST("interests/set/")
+    Call<Void> setInterests(@Body List<String> data);
 
 }

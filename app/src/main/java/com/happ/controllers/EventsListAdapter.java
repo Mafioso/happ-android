@@ -173,6 +173,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
             if(item.event.getImages().size() > 0){
                 final String url = item.event.getImages().get(0).getUrl();
+//                final String url = "http://lorempixel.com/g/1080/610/nature/" + position + "/";
                 Glide.clear(itemHolder.mImageView);
                 itemHolder.mImagePreloader.setVisibility(View.VISIBLE);
 
@@ -181,35 +182,34 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                     viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                         @Override
                         public void onGlobalLayout() {
-                            itemHolder.mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            int viewWidth = itemHolder.mImageView.getWidth();
-                            int viewHeight = itemHolder.mImageView.getHeight();
-                            Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth)+" "+String.valueOf(viewHeight));
+                        itemHolder.mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        int viewWidth = itemHolder.mImageView.getWidth();
+                        int viewHeight = itemHolder.mImageView.getHeight();
+                        Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth)+" "+String.valueOf(viewHeight));
 
-                            Glide.with(itemHolder.mImageView.getContext())
-                                    .load(url)
-                                    .listener(new RequestListener<String, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            return false;
-                                        }
+                        Glide.with(itemHolder.mImageView.getContext())
+                                .load(url)
+                                .listener(new RequestListener<String, GlideDrawable>() {
+                                    @Override
+                                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                        return false;
+                                    }
 
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
-                                            return false;
-                                        }
-                                    })
-                                    .override(viewWidth, viewHeight)
-                                    .centerCrop()
-                                    .into(itemHolder.mImageView);
+                                    @Override
+                                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                        itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
+                                        return false;
+                                    }
+                                })
+                                .override(viewWidth, viewHeight)
+                                .centerCrop()
+                                .into(itemHolder.mImageView);
                         }
                     });
                 }
 
 
-            }
-            else{
+            } else{
                 Glide.clear(itemHolder.mImageView);
                 itemHolder.mImageView.setImageDrawable(null);
                 itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
