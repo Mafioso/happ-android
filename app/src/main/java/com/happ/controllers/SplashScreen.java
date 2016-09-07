@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.happ.App;
 import com.happ.R;
 import com.happ.models.User;
+import com.happ.retrofit.HappRestClient;
 
 import java.util.Date;
 
@@ -35,6 +36,7 @@ public class SplashScreen extends AppCompatActivity {
 
         if (checkIsLoggedIn()) {
             if (checkCurrentUserExistence()) {
+                HappRestClient.getInstance().refreshToken();
                 if (checkCurrentCityExistence()) {
                     if (checkInterestsSelected()) {
                         goToFeed();

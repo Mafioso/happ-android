@@ -87,16 +87,16 @@ public class EventInterestFragment extends DialogFragment {
         interests = new ArrayList<>();
 
         mInterestsListAdapter = new InterestsListAdapter(getContext(), interests);
-        mInterestsListAdapter.setOnItemClickListener(new InterestsListAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Interest interest) {
-                Log.d(">>CLICK<<","Callback in EventInterestFragment");
-                if (listener != null) {
-                    listener.onInterestSelected(interest);
-                }
-                dialog.dismiss();
-            }
-        });
+//        mInterestsListAdapter.setOnItemClickListener(new InterestsListAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(Interest interest) {
+//                Log.d(">>CLICK<<","Callback in EventInterestFragment");
+//                if (listener != null) {
+//                    listener.onInterestSelected(interest);
+//                }
+//                dialog.dismiss();
+//            }
+//        });
 
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
 

@@ -91,8 +91,8 @@ public class Interest extends RealmObject {
         Realm realm = Realm.getDefaultInstance();
         ArrayList<Interest> children = new ArrayList<>();
         try {
-            RealmResults<Interest> childInterests = realm.where(Interest.class).equalTo("parent", this.id).findAll();
-            children = (ArrayList<Interest>) childInterests.subList(0, childInterests.size());
+            RealmResults<Interest> childInterests = realm.where(Interest.class).equalTo("parentId", this.id).findAll();
+            children = (ArrayList<Interest>) realm.copyFromRealm(childInterests);
         } catch (Exception ex) {
             Log.e("MODELS", ex.getLocalizedMessage());
         } finally {
