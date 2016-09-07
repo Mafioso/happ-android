@@ -23,7 +23,6 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
-import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
 
@@ -42,12 +41,21 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private BroadcastReceiver setInterestsOKReceiver;
     private LinearLayoutManager interestsListLayoutManager;
     private FloatingActionButton mFab;
+    private int interestsPageSize;
+
+    private boolean loading = true;
+    private int firstVisibleItem, visibleItemCount, totalItemCount;
+    private int previousTotal = 0;
+    private int visibleThreshold;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_interests);
+
+        interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
+        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
 
         setTitle(getResources().getString(R.string.select_interest_title));
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -60,7 +68,8 @@ public class SelectInterestsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ArrayList<String> selectedInterests = mInterestsListAdapter.getSelectedInterests();
                 // SEND DATA TO SERVER
-                HappRestClient.getInstance().setInterests(selectedInterests);
+                APIService.setInterests(selectedInterests);
+                mFab.setVisibility(View.GONE);
             }
         });
 
@@ -93,9 +102,8 @@ public class SelectInterestsActivity extends AppCompatActivity {
             setInterestsOKReceiver = createSetInterestsOKReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
         }
-//        APIService.getInterests();
-        HappRestClient.getInstance().getInterests();
-
+        APIService.getInterests();
+        createScrollListener();
     }
 
     private BroadcastReceiver createInterestsRequestDoneReceiver() {
@@ -159,6 +167,39 @@ public class SelectInterestsActivity extends AppCompatActivity {
             }
         });
         return true;
+    }
+
+    protected void createScrollListener() {
+        mInterestsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    if (mFab.getVisibility() != View.GONE) mFab.hide();
+                    visibleItemCount = interestsListLayoutManager.getChildCount();
+                    totalItemCount = interestsListLayoutManager.getItemCount();
+                    firstVisibleItem = interestsListLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if (totalItemCount > previousTotal) {
+                            loading = false;
+                            previousTotal = totalItemCount;
+                        }
+                    }
+
+                    if (!loading && (totalItemCount - visibleItemCount)
+                            <= (firstVisibleItem + visibleThreshold)) {
+                        loading = true;
+                        int nextPage = (totalItemCount / interestsPageSize) + 1;
+                        APIService.getInterests(nextPage);
+                    }
+                }
+                if (dy < 0) {
+                    if (mFab.getVisibility() != View.VISIBLE) mFab.show();
+                }
+
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
     }
 
     @Override

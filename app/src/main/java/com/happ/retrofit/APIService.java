@@ -6,6 +6,8 @@ import android.os.Process;
 
 import com.happ.App;
 
+import java.util.ArrayList;
+
 /**
  * Created by dante on 8/2/16.
  */
@@ -13,15 +15,18 @@ public class APIService extends IntentService {
     private static final String ACTION_GET_EVENTS = "com.happ.action.ACTION_GET_EVENTS";
     private static final String ACTION_GET_EVENTS_FOR_PAGE = "com.happ.action.ACTION_GET_EVENTS_FOR_PAGE";
     private static final String ACTION_GET_INTERESTS = "com.happ.action.ACTION_GET_INTERESTS";
+    private static final String ACTION_GET_INTERESTS_FOR_PAGE = "com.happ.action.ACTION_GET_INTERESTS_FOR_PAGE";
     private static final String ACTION_POST_LOGIN = "com.happ.action.ACTION_POST_LOGIN";
     private static final String ACTION_POST_SIGNUP = "com.happ.action.ACTION_POST_SIGNUP";
     private static final String ACTION_GET_USER = "com.happ.action.ACTION_GET_USER";
     private static final String ACTION_GET_CURRENT_USER = "com.happ.action.ACTION_GET_CURRENT_USER";
     private static final String ACTION_GET_CURRENT_CITY = "com.happ.action.ACTION_GET_CURRENT_CITY";
+    private static final String ACTION_SET_INTERESTS = "com.happ.action.ACTION_SET_INTERESTS";
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
     private static final String EXTRA_USERNAME = "com.happ.extra.EXTRA_USERNAME";
     private static final String EXTRA_PASSWORD = "com.happ.extra.EXTRA_PASSWORD";
+    private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
 
     public static void getEvents() {
         Intent intent = new Intent(App.getContext(), APIService.class);
@@ -42,6 +47,13 @@ public class APIService extends IntentService {
         App.getContext().startService(interests);
     }
 
+    public static void getInterests(int page) {
+        Intent interests = new Intent(App.getContext(), APIService.class);
+        interests.setAction(ACTION_GET_INTERESTS_FOR_PAGE);
+        interests.putExtra(EXTRA_PAGE, page);
+        App.getContext().startService(interests);
+    }
+
     public static void getUser(String username) {
         Intent user = new Intent(App.getContext(), APIService.class);
         user.setAction(ACTION_GET_USER);
@@ -49,7 +61,12 @@ public class APIService extends IntentService {
         App.getContext().startService(user);
     }
 
-
+    public static void setInterests(ArrayList<String> data) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_SET_INTERESTS);
+        intent.putStringArrayListExtra(EXTRA_SET_INTERESTS, data);
+        App.getContext().startService(intent);
+    }
 
     public static void doLogin(String username, String password) {
         Intent login = new Intent(App.getContext(), APIService.class);
@@ -111,6 +128,12 @@ public class APIService extends IntentService {
                 HappRestClient.getInstance().getCurrentUser();
             } else if (action.equals(ACTION_GET_CURRENT_CITY)) {
                 HappRestClient.getInstance().getCurrentCity();
+            } else if (action.equals(ACTION_SET_INTERESTS)) {
+                ArrayList<String> data = intent.getStringArrayListExtra(EXTRA_SET_INTERESTS);
+                HappRestClient.getInstance().setInterests(data);
+            } else if (action.equals(ACTION_GET_INTERESTS_FOR_PAGE)) {
+                int page = intent.getIntExtra(EXTRA_PAGE, 1);
+                HappRestClient.getInstance().getInterests(page);
             }
         }
     }

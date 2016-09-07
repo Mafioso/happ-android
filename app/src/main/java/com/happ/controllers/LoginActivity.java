@@ -34,7 +34,7 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.User;
-import com.happ.retrofit.HappRestClient;
+import com.happ.retrofit.APIService;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -118,8 +118,8 @@ public class LoginActivity extends AppCompatActivity {
                 hideSoftKeyboard(LoginActivity.this, v);
                 mButtonFablogin.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
-//                APIService.doLogin(mEmail.getText().toString(), mPassword.getText().toString());
-                HappRestClient.getInstance().doLogin(mEmail.getText().toString(), mPassword.getText().toString());
+                APIService.doLogin(mEmail.getText().toString(), mPassword.getText().toString());
+//                HappRestClient.getInstance().doLogin(mEmail.getText().toString(), mPassword.getText().toString());
             }
         });
 
@@ -233,8 +233,8 @@ public class LoginActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-//                APIService.getCurrentUser();
-                HappRestClient.getInstance().getCurrentUser();
+                APIService.getCurrentUser();
+//                HappRestClient.getInstance().getCurrentUser();
             }
         };
     }
@@ -245,8 +245,8 @@ public class LoginActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 User currentUser = App.getCurrentUser();
                 if (currentUser.getSettings().getCity() != null) {
-//                    APIService.getCurrentCity();
-                    HappRestClient.getInstance().getCurrentCity();
+                    APIService.getCurrentCity();
+//                    HappRestClient.getInstance().getCurrentCity();
                 } else {
                     mProgressBar.setVisibility(View.INVISIBLE);
                 }
