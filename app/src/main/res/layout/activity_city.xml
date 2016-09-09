@@ -4,38 +4,65 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="70dp">
+    android:background="@color/colorPrimary"
+    android:fitsSystemWindows="true">
 
-        <TextView
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:id="@+id/appBarLayout"
+        android:theme="@style/AppBar">
+
+        <include layout="@layout/toolbar" />
+
+    </android.support.design.widget.AppBarLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Your City is"
-            android:gravity="center"
-            android:textSize="20dp"
-            android:id="@+id/tv_your_city"
-            android:padding="10dp"/>
+            android:layout_height="match_parent"
+            android:background="@android:color/background_light"
+            android:layout_below="@+id/appBarLayout"
+            android:layout_centerVertical="true">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="NOT SELECTED"
-            android:id="@+id/tv_not_selected"
-            android:layout_below="@+id/tv_your_city"
-            android:gravity="center"
-            android:textSize="23dp"
-            android:padding="10dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/city_name_label"
+                android:layout_above="@+id/tv_not_selected"
+                android:gravity="center"
+                android:textSize="20dp"
+                android:id="@+id/tv_your_city"
+                android:textColor="@color/dark57"
+                android:padding="16dp"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_select_city"
-            android:layout_below="@+id/tv_not_selected"
-            android:layout_centerHorizontal="true"
-            android:text="Select City"
-            android:textAllCaps="true"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:layout_marginTop="20dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/your_city_label"
+                android:id="@+id/tv_not_selected"
+                android:layout_above="@+id/btn_select_city"
+                android:textAllCaps="true"
+                android:gravity="center"
+                android:textColor="@color/dark28"
+                android:textSize="23dp"
+                android:padding="10dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_select_city"
+                android:layout_centerHorizontal="true"
+                android:text="@string/select_city_button"
+                android:background="@color/colorAccent"
+                android:textAllCaps="true"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_centerVertical="true"/>
+
+
+        </RelativeLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_city"

@@ -21,21 +21,19 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
     private ArrayList<City> mCities;
     private ArrayList<String> selectedCity;
     private final Context context;
+    SelectCityItemListener listener;
 
     public CityListAdapter(Context context, ArrayList<City> cities) {
         this.context = context;
         this.mCities = cities;
     }
 
-
-    public void updateItems(ArrayList<City> cities) {
-        this.mCities = cities;
-        notifyDataSetChanged();
+    public void setOnCityItemSelectListener(SelectCityItemListener listener) {
+        this.listener = listener;
     }
 
     public void updateData(ArrayList<City> cities) {
-        this.updateItems(cities);
-        Log.d("AAAAA", String.valueOf(cities.size()));
+        this.mCities = cities;
         this.notifyDataSetChanged();
     }
 
@@ -54,7 +52,8 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
             name = "empty";
         }
         holder.mTitleCities.setText(city.getName());
-        holder.bind(city.getId());
+        holder.mCountry.setText(city.getCountry());
+        holder.bind(city);
     }
 
     @Override
@@ -70,21 +69,26 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
     public class CitiesListViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mTitleCities;
+        public TextView mCountry;
 
         public CitiesListViewHolder(View itemView) {
             super(itemView);
             mTitleCities = (TextView)itemView.findViewById(R.id.city_title);
+            mCountry = (TextView)itemView.findViewById(R.id.country);
         }
 
-        public void bind(final String cityId) {
+        public void bind(final City city) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(">>CLICK<<","TRUE");
-
+                    listener.onCityItemSelected(city);
                 }
             });
         }
+    }
+
+    public interface SelectCityItemListener {
+        void onCityItemSelected(City city);
     }
 
 }

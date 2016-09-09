@@ -9,7 +9,6 @@
     </style>
 
     <style name="AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-
     </style>
 
     <style name="AppTheme" parent="AppTheme.Base">

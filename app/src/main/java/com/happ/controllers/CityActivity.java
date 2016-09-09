@@ -9,6 +9,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,7 +31,6 @@ public class CityActivity extends AppCompatActivity {
     private FloatingActionButton mFab;
     private City selectedCity;
 
-
     private BroadcastReceiver setCitiesOKReceiver;
 
     @Override
@@ -49,13 +49,19 @@ public class CityActivity extends AppCompatActivity {
                 editNameDialogFragment.setOnCitySelectListener(new SelectCityFragment.OnCitySelectListener() {
                     @Override
                     public void onCitySelected(City city) {
+                        mFab.show();
                         selectedCity = city;
                         mTVnotselected.setText(selectedCity.getName());
+                        mTVnotselected.setTextColor(getResources().getColor(R.color.dark80));
                     }
                 });
                 editNameDialogFragment.show(fm, "fragment_select_city");
             }
         });
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle(getResources().getString(R.string.select_city_string));
 
         mFab = (FloatingActionButton) findViewById(R.id.fab_city);
         mFab.setVisibility(View.GONE);

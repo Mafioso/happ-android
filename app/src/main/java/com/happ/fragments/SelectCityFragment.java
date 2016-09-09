@@ -18,6 +18,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 
 import com.happ.App;
@@ -29,8 +30,10 @@ import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by dante on 9/5/16.
@@ -43,12 +46,15 @@ public class SelectCityFragment extends DialogFragment {
     private BroadcastReceiver citiesRequestDoneReceiver;
     private LinearLayoutManager citiesListLayoutManager;
     private OnCitySelectListener listener;
+    private MaterialProgressBar mLoadingProgress;
 
     private int interestsPageSize;
     private boolean loading = true;
+    private boolean dataLoading = false;
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
+    private String searchText;
 
     private EditText search;
 
@@ -60,7 +66,6 @@ public class SelectCityFragment extends DialogFragment {
         SelectCityFragment fragment = new SelectCityFragment();
         Bundle args = new Bundle();
 //        args.putString("title", App.getContext().getString(R.string.select_interest_title));
-        args.putString("title", "123456");
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,7 +87,7 @@ public class SelectCityFragment extends DialogFragment {
         final Activity activity = getActivity();
 
         final AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle("123")
+                .setTitle(getContext().getString(R.string.select_city_string))
                 .setView(contentView)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
@@ -91,6 +96,7 @@ public class SelectCityFragment extends DialogFragment {
                     }
                 })
                 .create();
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
@@ -104,6 +110,13 @@ public class SelectCityFragment extends DialogFragment {
         cities = new ArrayList<>();
 
         mCitiesListAdapter = new CityListAdapter(getContext(), cities);
+        mCitiesListAdapter.setOnCityItemSelectListener(new CityListAdapter.SelectCityItemListener() {
+            @Override
+            public void onCityItemSelected(City city) {
+                listener.onCitySelected(city);
+                SelectCityFragment.this.dismiss();
+            }
+        });
         mCityRecyclerView.setAdapter(mCitiesListAdapter);
 
         if (citiesRequestDoneReceiver == null) {
@@ -111,7 +124,15 @@ public class SelectCityFragment extends DialogFragment {
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(citiesRequestDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
         }
 
-        APIService.getCitys();
+        mLoadingProgress = (MaterialProgressBar) contentView.findViewById(R.id.cities_progress);
+
+        APIService.getCities();
+        dataLoading = true;
+        if (dataLoading) {
+            mLoadingProgress.setVisibility(View.VISIBLE);
+        } else {
+            mLoadingProgress.setVisibility(View.GONE);
+        }
         createScrollListener();
 
         addTextListener();
@@ -123,6 +144,8 @@ public class SelectCityFragment extends DialogFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                dataLoading = false;
+                mLoadingProgress.setVisibility(View.GONE);
                 updateCitiesList();
             }
         };
@@ -131,7 +154,12 @@ public class SelectCityFragment extends DialogFragment {
 
     protected void updateCitiesList() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<City> citiesRealmResults = realm.where(City.class).findAll();
+        RealmResults<City> citiesRealmResults;
+        if (searchText != null && searchText.length() > 0) {
+            citiesRealmResults = realm.where(City.class).contains("name", searchText, Case.INSENSITIVE).findAll();
+        } else {
+            citiesRealmResults = realm.where(City.class).findAll();
+        }
         cities = (ArrayList<City>)realm.copyFromRealm(citiesRealmResults);
         mCitiesListAdapter.updateData(cities);
         realm.close();
@@ -155,11 +183,13 @@ public class SelectCityFragment extends DialogFragment {
                         }
                     }
 
-                    if (!loading && (totalItemCount - visibleItemCount)
+                    if (! dataLoading && !loading && (totalItemCount - visibleItemCount)
                             <= (firstVisibleItem + visibleThreshold)) {
                         loading = true;
                         int nextPage = (totalItemCount / interestsPageSize) + 1;
-                        APIService.getCitys(nextPage);
+                        dataLoading = true;
+                        mLoadingProgress.setVisibility(View.VISIBLE);
+                        APIService.getCities(nextPage, searchText);
                     }
                 }
                 if (dy < 0) {
@@ -180,23 +210,25 @@ public class SelectCityFragment extends DialogFragment {
 
             public void onTextChanged(CharSequence query, int start, int before, int count) {
 
-                query = query.toString().toLowerCase();
+                searchText = query.toString();
 
-                final ArrayList<City> filteredList = new ArrayList<>();
+                Realm realm = Realm.getDefaultInstance();
+                ArrayList<City> filteredList = cities;
 
-                for (int i = 0; i < cities.size(); i++) {
+                try {
+                    RealmResults<City> filteredCities = realm.where(City.class).contains("name", searchText, Case.INSENSITIVE).findAll();
+                    filteredList.clear();
+                    filteredList = (ArrayList<City>) realm.copyFromRealm(filteredCities);
+                } catch (Exception ex) {
 
-                    final String text = cities.get(i).getName().toLowerCase();
-
-                    if (text.contains(query)) {
-                        filteredList.add(cities.get(i));
-                    }
+                } finally {
+                    realm.close();
                 }
 
-                mCityRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                mCitiesListAdapter = new CityListAdapter(getContext(), filteredList);
-                mCityRecyclerView.setAdapter(mCitiesListAdapter);
-                mCitiesListAdapter.notifyDataSetChanged();  // data set changed
+                mCitiesListAdapter.updateData(filteredList);
+                dataLoading = true;
+                mLoadingProgress.setVisibility(View.VISIBLE);
+                APIService.getCities(searchText);
             }
         });
     }

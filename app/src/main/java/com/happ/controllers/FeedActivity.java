@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class FeedActivity extends AppCompatActivity {
     protected ArrayList<Fragment> mTabFragments;
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
+    private Menu menu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,25 @@ public class FeedActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.menu_feed, menu);
+//        boolean showOption = false;
+//        if (mActivity.getDeadline() != null && mActivity.getDeadline().getTime() > 0 &&
+//                (mActivity.getDateFinished() == null || mActivity.getDateFinished().getTime() < 1)
+//                && mActivity.getAuthor().getId() == RealmReadAdapter.getInstance().getCurrentUserId()) {
+//            showOption = true;
+//        } else if (mActivity.getDeadline() == null || mActivity.getDeadline().getTime() < 1
+//                && mActivity.getAuthor().getId() == RealmReadAdapter.getInstance().getCurrentUserId()) {
+//            showOption = true;
+//        }
+//        if (showOption)
+//            getMenuInflater().inflate(R.menu.menu_activity_opened, menu);
+        return true;
     }
 
     @Override

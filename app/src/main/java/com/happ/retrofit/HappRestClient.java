@@ -247,12 +247,8 @@ public class HappRestClient {
         });
     }
 
-    public void getCities() {
-        this.getCities(1);
-    }
-
-    public void getCities(int page) {
-        happApi.getCities(page).enqueue(new Callback<CitiesResponse>() {
+    public void getCities(int page, String searchText) {
+        happApi.getCities(page, searchText).enqueue(new Callback<CitiesResponse>() {
             @Override
             public void onResponse(Call<CitiesResponse> call, Response<CitiesResponse> response) {
 

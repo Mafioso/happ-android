@@ -49,7 +49,7 @@ public interface HAPPapi {
     Call<City> getCity(@Path("id") String id);
 
     @GET("cities/")
-    Call<CitiesResponse> getCities(@Query("page") int page);
+    Call<CitiesResponse> getCities(@Query("page") int page, @Query("search") String searchText);
 
     @POST("interests/set/")
     Call<Void> setInterests(@Body List<String> data);

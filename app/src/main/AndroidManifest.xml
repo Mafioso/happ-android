@@ -28,6 +28,11 @@
             android:name=".controllers.EditActivity"
             android:label="Edit Activity"
             />
+
+        <activity
+            android:name=".controllers.CityActivity"
+            android:label="Edit Activity"
+            />
         <activity
             android:name=".controllers.EventCreateActivity"
             android:label="Create Event"
@@ -47,9 +52,6 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
-        <activity android:name=".fragments.SelectCityFragment">
-
         </activity>
         <activity
             android:name=".controllers.RegistrationActivity"

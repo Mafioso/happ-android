@@ -14,8 +14,7 @@ import java.util.ArrayList;
 public class APIService extends IntentService {
     private static final String ACTION_GET_EVENTS = "com.happ.action.ACTION_GET_EVENTS";
     private static final String ACTION_GET_EVENTS_FOR_PAGE = "com.happ.action.ACTION_GET_EVENTS_FOR_PAGE";
-    private static final String ACTION_GET_CITYS = "com.happ.action.ACTION_GET_CITYS";
-    private static final String ACTION_GET_CITYS_FOR_PAGE = "com.happ.action.ACTION_GET_CITYS_FOR_PAGE";
+    private static final String ACTION_GET_CITIES = "com.happ.action.ACTION_GET_CITIES";
     private static final String ACTION_GET_INTERESTS = "com.happ.action.ACTION_GET_INTERESTS";
     private static final String ACTION_GET_INTERESTS_FOR_PAGE = "com.happ.action.ACTION_GET_INTERESTS_FOR_PAGE";
     private static final String ACTION_POST_LOGIN = "com.happ.action.ACTION_POST_LOGIN";
@@ -33,6 +32,7 @@ public class APIService extends IntentService {
     private static final String EXTRA_PASSWORD = "com.happ.extra.EXTRA_PASSWORD";
     private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
     private static final String EXTRA_SET_CITIES = "com.happ.extra.EXTRA_SET_CITIES";
+    private static final String EXTRA_SEARCH_TEXT = "com.happ.extra.EXTRA_SEARCH_TEXT";
 
     public static void getEvents() {
         Intent intent = new Intent(App.getContext(), APIService.class);
@@ -47,15 +47,30 @@ public class APIService extends IntentService {
         App.getContext().startService(intent);
     }
 
-    public static void getCitys() {
+    public static void getCities() {
         Intent intent = new Intent(App.getContext(), APIService.class);
-        intent.setAction(ACTION_GET_CITYS);
+        intent.setAction(ACTION_GET_CITIES);
         App.getContext().startService(intent);
     }
 
-    public static void getCitys(int page) {
+    public static void getCities(String searchText) {
         Intent intent = new Intent(App.getContext(), APIService.class);
-        intent.setAction(ACTION_GET_CITYS_FOR_PAGE);
+        intent.setAction(ACTION_GET_CITIES);
+        intent.putExtra(EXTRA_SEARCH_TEXT, searchText);
+        App.getContext().startService(intent);
+    }
+
+    public static void getCities(int page, String searchText) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_CITIES);
+        intent.putExtra(EXTRA_SEARCH_TEXT, searchText);
+        intent.putExtra(EXTRA_PAGE, page);
+        App.getContext().startService(intent);
+    }
+
+    public static void getCities(int page) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_CITIES);
         intent.putExtra(EXTRA_PAGE, page);
         App.getContext().startService(intent);
     }
@@ -137,11 +152,10 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_GET_EVENTS_FOR_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 HappRestClient.getInstance().getEvents(page);
-            } else if (action.equals(ACTION_GET_CITYS)) {
-                HappRestClient.getInstance().getCities();
-            } else if (action.equals(ACTION_GET_CITYS_FOR_PAGE)) {
+            } else if (action.equals(ACTION_GET_CITIES)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
-                HappRestClient.getInstance().getCities(page);
+                String searchText = intent.getStringExtra(EXTRA_SEARCH_TEXT);
+                HappRestClient.getInstance().getCities(page, searchText);
             } else if (action.equals(ACTION_GET_INTERESTS)) {
                 HappRestClient.getInstance().getInterests();
             } else if (action.equals(ACTION_POST_LOGIN)) {
