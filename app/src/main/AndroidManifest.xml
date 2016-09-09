@@ -44,7 +44,7 @@
             android:name=".controllers.SplashScreen">
 
         </activity>
-        <activity android:name=".controllers.SelectCityActivity">
+        <activity android:name=".fragments.SelectCityFragment">
 
         </activity>
         <activity

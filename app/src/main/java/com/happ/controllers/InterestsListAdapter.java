@@ -95,6 +95,7 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         final Interest interest = mInterests.get(position);
         holder.mInterestTitle.setText(interest.getTitle());
         String id = interest.getId();
+
         if (selectedInterests.indexOf(id) >= 0) {
             removeChildrenFromSelectedInterests(interest);
             if (expandedInterestAdapters.get(interest.getId()) != null) {

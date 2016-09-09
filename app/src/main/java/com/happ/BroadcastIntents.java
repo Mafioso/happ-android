@@ -19,4 +19,6 @@ public class BroadcastIntents {
     public static final String CITY_REQUEST_FAIL = "com.happ.city_request_fail";
     public static final String SET_INTERESTS_OK = "com.happ.set_interests_ok";
     public static final String SET_INTERESTS_FAIL = "com.happ.set_interests_fail";
+    public static final String SET_CITIES_OK = "com.happ.set_cities_ok";
+    public static final String SET_CITIES_FAIL = "com.happ.set_cities_fail";
 }

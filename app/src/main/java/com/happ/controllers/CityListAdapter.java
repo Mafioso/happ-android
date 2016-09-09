@@ -19,24 +19,18 @@ import java.util.ArrayList;
  */
 public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.CitiesListViewHolder> implements INameableAdapter {
     private ArrayList<City> mCities;
+    private ArrayList<String> selectedCity;
     private final Context context;
-    private OnItemClickListener listener;
 
     public CityListAdapter(Context context, ArrayList<City> cities) {
         this.context = context;
         this.mCities = cities;
-
-    }
-
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        this.listener = listener;
     }
 
 
     public void updateItems(ArrayList<City> cities) {
         this.mCities = cities;
         notifyDataSetChanged();
-
     }
 
     public void updateData(ArrayList<City> cities) {
@@ -54,13 +48,13 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
 
     @Override
     public void onBindViewHolder(CitiesListViewHolder holder, int position) {
-//        final InterestListItem item = mItems.get(position);
-//        holder.itemView.setOnClickListener(null);
-//            final InterestsListItemViewHolder itemHolder = (InterestsListItemViewHolder)holder;
-        String name = mCities.get(position).getName();
-        if (name.length() == 0) name = "undefined";
-        holder.mTitleCities.setText(name);
-        holder.bind(mCities.get(position), listener);
+        final City city = mCities.get(position);
+        String name = city.getName();
+        if (name.equals(" ")) {
+            name = "empty";
+        }
+        holder.mTitleCities.setText(city.getName());
+        holder.bind(city.getId());
     }
 
     @Override
@@ -82,20 +76,15 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
             mTitleCities = (TextView)itemView.findViewById(R.id.city_title);
         }
 
-        public void bind(final City city, final OnItemClickListener listener) {
+        public void bind(final String cityId) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.d(">>CLICK<<","TRUE");
-                    if (listener != null) {
-                        listener.onItemClick(city);
-                    }
+
                 }
             });
         }
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(City city);
-    }
 }

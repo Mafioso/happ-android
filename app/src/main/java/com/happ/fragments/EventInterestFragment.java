@@ -14,7 +14,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -80,9 +79,7 @@ public class EventInterestFragment extends DialogFragment {
 
         mInterestsRecyclerView = (RecyclerView)contentView.findViewById(R.id.interests_recycler_view);
         interestsListLayoutManager = new LinearLayoutManager(activity);
-
-        LinearLayoutManager ilm = new LinearLayoutManager(getContext());
-        mInterestsRecyclerView.setLayoutManager(ilm);
+        mInterestsRecyclerView.setLayoutManager(interestsListLayoutManager);
 
         interests = new ArrayList<>();
 

@@ -32,6 +32,7 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.RelativeLayout;
+import com.happ.fragments.SelectCityFragment;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
@@ -259,7 +260,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
 
-                Intent goToFeedIntent = new Intent(LoginActivity.this, SelectCityActivity.class);
+                Intent goToFeedIntent = new Intent(LoginActivity.this, SelectCityFragment.class);
                 goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(goToFeedIntent);
                 overridePendingTransition(0,0);
