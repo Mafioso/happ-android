@@ -75,20 +75,8 @@ public class FeedActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_feed, menu);
-//        boolean showOption = false;
-//        if (mActivity.getDeadline() != null && mActivity.getDeadline().getTime() > 0 &&
-//                (mActivity.getDateFinished() == null || mActivity.getDateFinished().getTime() < 1)
-//                && mActivity.getAuthor().getId() == RealmReadAdapter.getInstance().getCurrentUserId()) {
-//            showOption = true;
-//        } else if (mActivity.getDeadline() == null || mActivity.getDeadline().getTime() < 1
-//                && mActivity.getAuthor().getId() == RealmReadAdapter.getInstance().getCurrentUserId()) {
-//            showOption = true;
-//        }
-//        if (showOption)
-//            getMenuInflater().inflate(R.menu.menu_activity_opened, menu);
         return true;
     }
 
@@ -100,7 +88,8 @@ public class FeedActivity extends AppCompatActivity {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
-            case R.id.action_settings:
+            case R.id.menu_filter:
+                Toast.makeText(FeedActivity.this, "HELLO", Toast.LENGTH_LONG);
                 return true;
         }
 
