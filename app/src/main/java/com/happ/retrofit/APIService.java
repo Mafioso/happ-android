@@ -24,12 +24,15 @@ public class APIService extends IntentService {
     private static final String ACTION_GET_CURRENT_USER = "com.happ.action.ACTION_GET_CURRENT_USER";
     private static final String ACTION_GET_CURRENT_CITY = "com.happ.action.ACTION_GET_CURRENT_CITY";
     private static final String ACTION_SET_INTERESTS = "com.happ.action.ACTION_SET_INTERESTS";
+    private static final String ACTION_SET_CITIES = "com.happ.action.ACTION_SET_CITIES";
+
 
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
     private static final String EXTRA_USERNAME = "com.happ.extra.EXTRA_USERNAME";
     private static final String EXTRA_PASSWORD = "com.happ.extra.EXTRA_PASSWORD";
     private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
+    private static final String EXTRA_SET_CITIES = "com.happ.extra.EXTRA_SET_CITIES";
 
     public static void getEvents() {
         Intent intent = new Intent(App.getContext(), APIService.class);
@@ -82,6 +85,13 @@ public class APIService extends IntentService {
         intent.setAction(ACTION_SET_INTERESTS);
         intent.putStringArrayListExtra(EXTRA_SET_INTERESTS, data);
         App.getContext().startService(intent);
+    }
+
+    public static void setCity(String id) {
+        Intent city = new Intent(App.getContext(), APIService.class);
+        city.setAction(ACTION_SET_CITIES);
+        city.putExtra(EXTRA_SET_CITIES, id);
+        App.getContext().startService(city);
     }
 
     public static void doLogin(String username, String password) {
@@ -152,6 +162,9 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_SET_INTERESTS)) {
                 ArrayList<String> data = intent.getStringArrayListExtra(EXTRA_SET_INTERESTS);
                 HappRestClient.getInstance().setInterests(data);
+            } else if (action.equals(ACTION_SET_CITIES)) {
+                String cityId = intent.getStringExtra(EXTRA_SET_CITIES);
+                HappRestClient.getInstance().setCity(cityId);
             } else if (action.equals(ACTION_GET_INTERESTS_FOR_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 HappRestClient.getInstance().getInterests(page);

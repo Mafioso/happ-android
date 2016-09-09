@@ -437,6 +437,35 @@ public class HappRestClient {
         });
     }
 
+    public void setCity(String cityId) {
+
+        happApi.setCity(cityId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                if (response.isSuccessful()){
+                    Intent intent = new Intent(BroadcastIntents.SET_CITIES_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.SET_CITIES_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("BODY", response.body().toString());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.SET_CITIES_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
     public void getCurrentUser() {
         happApi.getCurrentUser().enqueue(new Callback<User>() {
             @Override
