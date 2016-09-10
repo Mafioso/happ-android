@@ -18,10 +18,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!--android:background="@color/colorBlack8"-->
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:background="@color/colorBlack8"
+            android:background="@color/dark12"
+            android:scaleType="fitXY"
             android:transitionName="event_image"
             android:id="@+id/events_list_image_view"/>
 

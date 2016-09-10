@@ -24,8 +24,8 @@ import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.happ.models.User;
 
-//import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
+//import android.support.design.widget.CollapsingToolbarLayout;
 
 
 import java.util.ArrayList;
@@ -85,15 +85,15 @@ public class EventActivity extends AppCompatActivity {
             getWindow().setExitTransition(new Explode());
         }
 
-        mEventTitle = (TextView) findViewById(R.id.header_text);
-        mEventTitle.setText(event.getTitle());
+//        mEventTitle = (TextView) findViewById(R.id.header_text);
+//        mEventTitle.setText(event.getTitle());
 //        mEventTitle.setVisibility(View.INVISIBLE);
 
         mEventInterestBg = (LinearLayout) findViewById(R.id.event_interest_bg);
         Interest interest = event.getInterest();
         String color = interest.getColor();
         if (color != null) {
-            mEventInterestBg.setBackgroundColor(Color.parseColor(color));
+            mEventInterestBg.setBackgroundColor(Color.parseColor("#"+color));
         }
 
         mEventInterestTitle = (TextView) findViewById(R.id.event_interest_title);

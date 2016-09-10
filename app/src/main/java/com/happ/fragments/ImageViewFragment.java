@@ -60,31 +60,36 @@ public class ImageViewFragment extends Fragment {
             viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
+
                     mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    int viewWidth = mImageView.getWidth();
-                    int viewHeight = mImageView.getHeight();
-                    mImageView.setVisibility(View.GONE);
+                    if (imageUrl != null) {
+                        int viewWidth = mImageView.getWidth();
+                        int viewHeight = mImageView.getHeight();
+                        mImageView.setVisibility(View.GONE);
 
-                    Log.d("EventImagesSwipeAdapter", "Setting Image");
+                        Log.d("EventImagesSwipeAdapter", "Setting Image");
 
-                    Glide.with(getContext())
-                            .load(imageUrl)
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    return false;
-                                }
+                            Glide.with(getContext())
+                                    .load(imageUrl)
+                                    .listener(new RequestListener<String, GlideDrawable>() {
+                                        @Override
+                                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                            return false;
+                                        }
 
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                    mImageView.setVisibility(View.VISIBLE);
-                                    mProgressBar.setVisibility(View.GONE);
-                                    return false;
-                                }
-                            })
-                            .override(viewWidth, viewHeight)
-                            .centerCrop()
-                            .into(mImageView);
+                                        @Override
+                                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                            mImageView.setVisibility(View.VISIBLE);
+                                            mProgressBar.setVisibility(View.GONE);
+                                            return false;
+                                        }
+                                    })
+                                    .override(viewWidth, viewHeight)
+                                    .centerCrop()
+                                    .into(mImageView);
+                    } else {
+                        mImageView.setVisibility(View.VISIBLE);
+                    }
                 }
             });
         }

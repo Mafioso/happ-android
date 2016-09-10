@@ -17,6 +17,7 @@ import com.happ.models.HappToken;
 import com.happ.models.Interest;
 import com.happ.models.InterestResponse;
 import com.happ.models.LoginData;
+import com.happ.models.Settings;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
 import com.happ.retrofit.serializers.InterestDeserializer;
@@ -211,7 +212,7 @@ public class HappRestClient {
     }
 
     public void getEvents(int page) {
-        happApi.getEvents(page).enqueue(new Callback<EventsResponse>() {
+        this.happApi.getEvents(page).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
 
@@ -433,13 +434,20 @@ public class HappRestClient {
         });
     }
 
-    public void setCity(String cityId) {
+    public void setCity(final String cityId) {
 
         happApi.setCity(cityId).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
 
                 if (response.isSuccessful()){
+                    Realm realm = Realm.getDefaultInstance();
+                    User user = App.getCurrentUser();
+                    user.getSettings().setCity(cityId);
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(user);
+                    realm.commitTransaction();
+                    realm.close();
                     Intent intent = new Intent(BroadcastIntents.SET_CITIES_OK);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
 

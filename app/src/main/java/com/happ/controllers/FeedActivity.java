@@ -24,6 +24,8 @@ import com.happ.fragments.FavoriteFeedFragment;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class FeedActivity extends AppCompatActivity {
 
     protected final String[] mTabNames = {"Everything", "Favorites"};
@@ -60,6 +62,7 @@ public class FeedActivity extends AppCompatActivity {
         });
 
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
 
         mTabFragments = new ArrayList<>();
         for (int i=0; i<mTabNames.length; i++) {

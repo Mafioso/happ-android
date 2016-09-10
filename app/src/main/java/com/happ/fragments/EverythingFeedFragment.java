@@ -44,7 +44,8 @@ public class EverythingFeedFragment extends BaseFeedFragment {
 
         eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
-        APIService.getEvents();
+//        APIService.getEvents();
+        HappRestClient.getInstance().getEvents();
         return view;
     }
 

@@ -177,16 +177,10 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 Glide.clear(itemHolder.mImageView);
                 itemHolder.mImagePreloader.setVisibility(View.VISIBLE);
 
-                ViewTreeObserver viewTreeObserver = itemHolder.mImageView.getViewTreeObserver();
-                if (viewTreeObserver.isAlive()) {
-                    viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                        itemHolder.mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                        int viewWidth = itemHolder.mImageView.getWidth();
-                        int viewHeight = itemHolder.mImageView.getHeight();
-                        Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth)+" "+String.valueOf(viewHeight));
-
+                try {
+                    int viewWidth = itemHolder.mImageView.getWidth();
+                    int viewHeight = itemHolder.mImageView.getHeight();
+                    if (viewHeight > 0 && viewHeight > 0) {
                         Glide.with(itemHolder.mImageView.getContext())
                                 .load(url)
                                 .listener(new RequestListener<String, GlideDrawable>() {
@@ -204,9 +198,41 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                                 .override(viewWidth, viewHeight)
                                 .centerCrop()
                                 .into(itemHolder.mImageView);
-                        }
-                    });
+                    }
+                } catch (Exception ex) {
+                    ViewTreeObserver viewTreeObserver = itemHolder.mImageView.getViewTreeObserver();
+                    if (viewTreeObserver.isAlive()) {
+                        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                itemHolder.mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                int viewWidth = itemHolder.mImageView.getWidth();
+                                int viewHeight = itemHolder.mImageView.getHeight();
+                                Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth)+" "+String.valueOf(viewHeight));
+
+                                Glide.with(itemHolder.mImageView.getContext())
+                                        .load(url)
+                                        .listener(new RequestListener<String, GlideDrawable>() {
+                                            @Override
+                                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                                return false;
+                                            }
+
+                                            @Override
+                                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                                itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
+                                                return false;
+                                            }
+                                        })
+                                        .override(viewWidth, viewHeight)
+                                        .centerCrop()
+                                        .into(itemHolder.mImageView);
+                            }
+                        });
+                    }
                 }
+
+
 
 
             } else{
@@ -232,7 +258,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             itemHolder.mInterestTitle.setText(fullTitleString);
 
             if (item.event.getInterest().getColor() != null) {
-                itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(item.event.getInterest().getColor()));
+                String color = "#" + item.event.getInterest().getColor();
+                itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(color));
             }
 
             if (item.event.isDidVote()) {

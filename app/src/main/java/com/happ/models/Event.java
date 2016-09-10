@@ -22,6 +22,7 @@ public class Event extends RealmObject {
     private RealmList<Interest> interests;
     private String description;
     private RealmList<EventImage> images;
+//    private RealmList<String> images;
     @SerializedName("votes")
     private int votesCount;
     @SerializedName("did_vote")

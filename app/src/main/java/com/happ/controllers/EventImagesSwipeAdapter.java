@@ -24,13 +24,15 @@ import com.happ.models.EventImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.RealmList;
+
 /**
  * Created by Torab on 20-May-16.
  */
 public class EventImagesSwipeAdapter extends FragmentStatePagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private List<EventImage> imageList;
+    private RealmList<EventImage> imageList;
     private ImageView mImageView;
     private ProgressBar mProgressBar;
     private ArrayList<ImageViewFragment> imageFragments;
@@ -41,8 +43,9 @@ public class EventImagesSwipeAdapter extends FragmentStatePagerAdapter {
         imageFragments = new ArrayList<>();
     }
 
-    public void setImageList(List<EventImage> imageList) {
+    public void setImageList(RealmList<EventImage> imageList) {
         this.imageList = imageList;
+        if (imageList.size() == 0) imageList.add(new EventImage());
         imageFragments.clear();
         for (int i=0; i<getCount();i++) {
             imageFragments.add(null);

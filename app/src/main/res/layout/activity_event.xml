@@ -18,53 +18,13 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppBar">
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:contentScrim="@color/colorPrimary"
-                android:id="@+id/event_collapsing_layout"
-                app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle"
-                app:title="Lorem ipsum dolor sit amet"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-                <android.support.v4.view.ViewPager
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:id="@+id/slider_viewpager"
-                    android:background="@color/colorPrimary"
-                    app:layout_collapseMode="parallax"
-                    android:transitionName="event_image"/>
-
-                <TextView
-                    android:id="@+id/header_text"
-                    android:transitionName="event_title"
-                    android:text="Lorem ipsum dolor sit amet"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:maxLines="3"
-                    android:textSize="26dp"
-                    android:textColor="@android:color/black"
-                    android:visibility="gone"
-                    android:layout_marginLeft="32dp"
-                    android:layout_marginBottom="26dp"
-                    android:fontFamily="Roboto"
-                    android:textStyle="bold"/>
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"/>
-
-            </android.support.design.widget.CollapsingToolbarLayout>
-
-            <!--<net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout-->
+            <!--<android.support.design.widget.CollapsingToolbarLayout-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--app:contentScrim="@color/colorPrimary"-->
                 <!--android:id="@+id/event_collapsing_layout"-->
                 <!--app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle"-->
+                <!--app:title="Lorem ipsum dolor sit amet"-->
                 <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
 
                 <!--<android.support.v4.view.ViewPager-->
@@ -74,13 +34,52 @@
                     <!--android:background="@color/colorPrimary"-->
                     <!--app:layout_collapseMode="parallax"/>-->
 
+                <!--<TextView-->
+                    <!--android:id="@+id/header_text"-->
+                    <!--android:transitionName="event_title"-->
+                    <!--android:text="Lorem ipsum dolor sit amet"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="bottom"-->
+                    <!--android:maxLines="3"-->
+                    <!--android:textSize="26dp"-->
+                    <!--android:textColor="@android:color/black"-->
+                    <!--android:visibility="gone"-->
+                    <!--android:layout_marginLeft="32dp"-->
+                    <!--android:layout_marginBottom="26dp"-->
+                    <!--android:fontFamily="Roboto"-->
+                    <!--android:textStyle="bold"/>-->
+
                 <!--<android.support.v7.widget.Toolbar-->
                     <!--android:id="@+id/toolbar"-->
                     <!--android:layout_width="match_parent"-->
                     <!--android:layout_height="?attr/actionBarSize"-->
-                    <!--app:layout_collapseMode="pin" />-->
+                    <!--app:layout_collapseMode="pin"/>-->
 
-            <!--</net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>-->
+            <!--</android.support.design.widget.CollapsingToolbarLayout>-->
+
+            <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:contentScrim="@color/colorPrimary"
+                android:id="@+id/event_collapsing_layout"
+                app:expandedTitleTextAppearance="@style/TextAppearance.ExpandedTitle"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <android.support.v4.view.ViewPager
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:id="@+id/slider_viewpager"
+                    android:background="@color/colorPrimary"
+                    app:layout_collapseMode="parallax"/>
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin" />
+
+            </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
 
 
         </android.support.design.widget.AppBarLayout>
@@ -247,16 +246,18 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="500dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="40dp"
                     android:paddingLeft="16dp"
                     android:paddingRight="8dp">
 
-                    <ImageView
-                        android:background="@color/colorBlack8"
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/event_author_image"
+                        app:srcCompat="@drawable/avatar"
+                        android:src="@drawable/avatar"
                         android:layout_width="40dp"
                         android:layout_height="40dp"/>
 

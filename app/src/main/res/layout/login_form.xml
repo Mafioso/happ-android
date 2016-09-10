@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/form_layout"
         android:layout_centerVertical="true"
+        android:paddingBottom="40dp"
         >
 
         <ImageView
@@ -47,7 +48,7 @@
                 android:singleLine="true"
                 android:inputType="textNoSuggestions"
                 android:textColor="@android:color/white"
-                android:hint="@string/email" />
+                android:hint="@string/username" />
 
         </android.support.design.widget.TextInputLayout>
 

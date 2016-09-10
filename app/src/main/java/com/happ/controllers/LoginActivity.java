@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -279,7 +280,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mButtonFablogin.setVisibility(View.VISIBLE);
-//                Toast.makeText(LoginActivity.this, "Введен не верный логин или пароль", Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this, "Wrong Username or Password", Toast.LENGTH_LONG).show();
             }
         };
     }
