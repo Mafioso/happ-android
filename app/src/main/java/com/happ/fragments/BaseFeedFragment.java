@@ -31,12 +31,14 @@ public class BaseFeedFragment extends Fragment {
     private int previousTotal = 0;
     private int visibleThreshold;
 
+
     public static BaseFeedFragment newInstance() {
         return new BaseFeedFragment();
     }
 
     public BaseFeedFragment() {
     }
+
 
     @Override
     public void onAttach(Context context) {

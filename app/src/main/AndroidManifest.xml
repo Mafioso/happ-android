@@ -60,7 +60,7 @@
             android:name=".controllers.LoginActivity"
             android:windowSoftInputMode="adjustPan|stateHidden">
         </activity>
-
+        <activity android:name=".controllers.OrganizerModeActivity" />
 
         <service
             android:name=".retrofit.APIService"

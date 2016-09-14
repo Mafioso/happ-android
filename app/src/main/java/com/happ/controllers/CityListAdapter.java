@@ -2,7 +2,6 @@ package com.happ.controllers;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,7 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
     public void onBindViewHolder(CitiesListViewHolder holder, int position) {
         final City city = mCities.get(position);
         String name = city.getName();
-        if (name.equals(" ")) {
+        if (name.equals("")) {
             name = "empty";
         }
         holder.mTitleCities.setText(city.getName());

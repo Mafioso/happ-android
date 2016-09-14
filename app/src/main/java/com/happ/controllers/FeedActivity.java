@@ -1,5 +1,6 @@
 package com.happ.controllers;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -56,6 +57,14 @@ public class FeedActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.nav_item_logout) {
                     App.doLogout(FeedActivity.this);
                 }
+                if (menuItem.getItemId() == R.id.nav_item_settings) {
+                    ((EverythingFeedFragment)mTabFragments.get(0)).updateEventListTest();
+                    Toast.makeText(FeedActivity.this, "UpdateEventListLikes", Toast.LENGTH_LONG).show();
+                }
+                if (menuItem.getItemId() == R.id.nav_item_organizer) {
+                    Intent i = new Intent(getApplicationContext(), OrganizerModeActivity.class);
+                    startActivity(i);
+                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
@@ -80,6 +89,7 @@ public class FeedActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_feed, menu);
+//        getMenuInflater().inflate(R.menu.popupmenu, menu);
         return true;
     }
 
@@ -92,12 +102,13 @@ public class FeedActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.menu_filter:
-                Toast.makeText(FeedActivity.this, "HELLO", Toast.LENGTH_LONG);
+                Toast.makeText(FeedActivity.this, "HELLO", Toast.LENGTH_LONG).show();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     protected class FeedPagerAdapter extends FragmentStatePagerAdapter {
 

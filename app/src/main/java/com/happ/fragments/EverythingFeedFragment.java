@@ -37,22 +37,34 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     public EverythingFeedFragment() {
     }
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
-//        APIService.getEvents();
+            eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
+
         HappRestClient.getInstance().getEvents();
+
         return view;
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
         updateEventsList();
+    }
+
+
+    public void updateEventListTest() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Event> eventRealmResults = realm.where(Event.class).findAllSorted("lowestPrice", Sort.ASCENDING);
+        events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
+        ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
+        realm.close();
     }
 
     protected void updateEventsList() {
