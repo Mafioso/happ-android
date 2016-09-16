@@ -66,6 +66,7 @@ public class BaseFeedFragment extends Fragment {
 
         createScrollListener();
 
+
         return view;
     }
 

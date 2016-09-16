@@ -150,6 +150,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 }
             });
 
+
             itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -317,17 +318,17 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
         public EventsListItemViewHolder(final View itemView) {
             super(itemView);
-            mTitleView = (TextView)itemView.findViewById(R.id.events_list_item_title);
-            mDateView = (TextView)itemView.findViewById(R.id.events_list_item_start_date);
-            mInterestViewColor = (LinearLayout)itemView.findViewById(R.id.events_list_interest_color);
-            mInterestTitle = (TextView)itemView.findViewById(R.id.events_list_item_interest);
-            mImageView = (ImageView)itemView.findViewById(R.id.events_list_image_view);
-            mPrice = (TextView)itemView.findViewById(R.id.events_list_price);
-            mVotesCount = (TextView)itemView.findViewById(R.id.events_list_votes_count);
-            mViewsCount = (TextView)itemView.findViewById(R.id.events_list_views_count);
-            mImagePreloader = (ProgressBar)itemView.findViewById(R.id.events_list_image_preloader);
-            mFavoritesImage = (ImageView)itemView.findViewById(R.id.clickimage_favorites);
-            mUpvoteImage = (ImageView)itemView.findViewById(R.id.clickimage_like_or_dislike);
+            mTitleView = (TextView) itemView.findViewById(R.id.events_list_item_title);
+            mDateView = (TextView) itemView.findViewById(R.id.events_list_item_start_date);
+            mInterestViewColor = (LinearLayout) itemView.findViewById(R.id.events_list_interest_color);
+            mInterestTitle = (TextView) itemView.findViewById(R.id.events_list_item_interest);
+            mImageView = (ImageView) itemView.findViewById(R.id.events_list_image_view);
+            mPrice = (TextView) itemView.findViewById(R.id.events_list_price);
+            mVotesCount = (TextView) itemView.findViewById(R.id.events_list_votes_count);
+            mViewsCount = (TextView) itemView.findViewById(R.id.events_list_views_count);
+            mImagePreloader = (ProgressBar) itemView.findViewById(R.id.events_list_image_preloader);
+            mFavoritesImage = (ImageView) itemView.findViewById(R.id.clickimage_favorites);
+            mUpvoteImage = (ImageView) itemView.findViewById(R.id.clickimage_like_or_dislike);
         }
     }
 
