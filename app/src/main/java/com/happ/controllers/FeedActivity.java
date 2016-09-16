@@ -58,12 +58,16 @@ public class FeedActivity extends AppCompatActivity {
                     App.doLogout(FeedActivity.this);
                 }
                 if (menuItem.getItemId() == R.id.nav_item_settings) {
+
                     ((EverythingFeedFragment)mTabFragments.get(0)).updateEventListTest();
                     Toast.makeText(FeedActivity.this, "UpdateEventListLikes", Toast.LENGTH_LONG).show();
+
                 }
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {
-                    Intent i = new Intent(getApplicationContext(), OrganizerModeActivity.class);
-                    startActivity(i);
+                    Intent goToFeedIntent = new Intent(FeedActivity.this, OrganizerModeActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
                 }
                 mDrawerLayout.closeDrawers();
                 return true;

@@ -73,6 +73,12 @@ public class OrganizerModeActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.nav_item_logout) {
                     Toast.makeText(OrganizerModeActivity.this, "UpdateEventListLikes", Toast.LENGTH_LONG).show();
                 }
+                if (menuItem.getItemId() == R.id.nav_item_feed) {
+                    Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, FeedActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
+                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
@@ -138,6 +144,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateEventsList();
+
             }
         };
     }
