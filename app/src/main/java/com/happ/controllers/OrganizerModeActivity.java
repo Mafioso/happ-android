@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,11 +51,14 @@ public class OrganizerModeActivity extends AppCompatActivity {
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
+    private FloatingActionButton fab;
+    private CardView cv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizer_mode);
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,6 +66,22 @@ public class OrganizerModeActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
         setTitle("Organizer Mode");
+
+        cv = (CardView) findViewById(R.id.cv);
+        cv.setOnClickListener(new View.OnClickListener() {
+           public void onClick(View v) {
+               Intent i = new Intent(this, EditActivity.class);
+               startActivity(i);
+           }
+        });
+
+        fab = (FloatingActionButton) findViewById(R.id.organizer_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+               Intent i = new Intent(this, EventCreateActivity.class);
+                startActivity(i);
+            }
+        });
 
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -86,6 +106,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+
 
 
         eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));

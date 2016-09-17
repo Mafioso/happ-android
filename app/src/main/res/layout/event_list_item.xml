@@ -47,149 +47,148 @@
                 android:id="@+id/events_list_image_preloader"/>
 
 
-                <LinearLayout
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:background="@drawable/rounded_corners"
                 android:padding="8dp">
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_watches"
-                            android:paddingRight="4dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="100,000"
-                            android:textSize="16sp"
-                            android:layout_gravity="center_vertical"
-                            android:textColor="@color/white70"
-                            android:id="@+id/events_list_views_count" />
-                    </LinearLayout>
-
-                    <LinearLayout
+                    <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_did_not_upvote"
-                            android:paddingRight="4dp"
-                            android:id="@+id/clickimage_like_or_dislike"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="63,000"
-                            android:textSize="16sp"
-                            android:layout_gravity="center_vertical"
-                            android:textColor="@color/white70"
-                            android:id="@+id/events_list_votes_count" />
-                    </LinearLayout>
-
-                    <LinearLayout
+                        app:srcCompat="@drawable/ic_watches"
+                        android:paddingRight="4dp"/>
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="20dp">
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_not_in_favorites"
-                            android:id="@+id/clickimage_favorites"
-                            android:paddingRight="4dp"/>
-                    </LinearLayout>
+                        android:text="100,000"
+                        android:textSize="16sp"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/white70"
+                        android:id="@+id/events_list_views_count" />
                 </LinearLayout>
-        </LinearLayout>
 
-    </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@android:color/white"
-            android:layout_marginTop="130dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="14dp"
-                    android:id="@+id/events_list_item_title"
-                    android:transitionName="event_title"
-                    android:textSize="35sp"
-                    android:textAllCaps="true"
-                    android:text="Event Title Very Very long"
-                    android:textColor="@color/header_title"
-                    android:gravity="center"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/events_list_item_start_date"
-                    android:textColor="@color/colorDate"
-                    android:textSize="16sp"
-                    android:layout_marginTop="4dp"
-                    android:text="August 16, 2016. 6:00 PM"
-                    android:accessibilityLiveRegion="assertive"
-                    android:gravity="center"/>
-
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="8dp"
-                    android:textSize="16sp"
-                    android:id="@+id/events_list_price"
-                    android:textColor="@color/colorPrice"
-                    android:text="PREVIEW_PRICE" />
-        </LinearLayout>
+                    android:layout_marginLeft="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_did_not_upvote"
+                        android:paddingRight="4dp"
+                        android:id="@+id/clickimage_like_or_dislike"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="63,000"
+                        android:textSize="16sp"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/white70"
+                        android:id="@+id/events_list_votes_count" />
+                </LinearLayout>
 
-        <LinearLayout
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_not_in_favorites"
+                        android:id="@+id/clickimage_favorites"
+                        android:paddingRight="4dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:layout_marginTop="130dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="14dp"
+            android:id="@+id/events_list_item_title"
+            android:transitionName="event_title"
+            android:textSize="35sp"
+            android:textAllCaps="true"
+            android:text="Event Title Very Very long"
+            android:textColor="@color/header_title"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/events_list_item_start_date"
+            android:textColor="@color/colorDate"
+            android:textSize="16sp"
+            android:layout_marginTop="4dp"
+            android:text="August 16, 2016. 6:00 PM"
+            android:accessibilityLiveRegion="assertive"
+            android:gravity="center"/>
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:orientation="horizontal"
-            android:background="@color/interestsBg"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:layout_marginTop="114dp"
-            android:id="@+id/events_list_interest_color"
-            android:transitionName="event_interest_bg">
+            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="16sp"
+            android:id="@+id/events_list_price"
+            android:textColor="@color/colorPrice"
+            android:text="PREVIEW_PRICE" />
+    </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:layout_gravity="center"
-                android:text="Music"
-                android:id="@+id/events_list_item_interest"
-                android:textSize="18sp"
-                android:textAllCaps="true"
-                android:transitionName="event_interest_name"
-                />
-        </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="horizontal"
+        android:background="@color/interestsBg"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="114dp"
+        android:id="@+id/events_list_interest_color"
+        android:transitionName="event_interest_bg">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center"
+            android:text="Music"
+            android:id="@+id/events_list_item_interest"
+            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:transitionName="event_interest_name"
+            />
+    </LinearLayout>
 
     <!--<ImageButton-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@drawable/ic_overflow"-->
-        <!--android:layout_gravity="end"-->
-        <!--android:layout_margin="10dp"-->
-        <!--android:id="@+id/btn_overflow"/>-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="@drawable/ic_overflow"-->
+    <!--android:layout_gravity="end"-->
+    <!--android:layout_margin="10dp"-->
+    <!--android:id="@+id/btn_overflow"/>-->
 </android.support.v7.widget.CardView>
