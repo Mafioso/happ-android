@@ -45,7 +45,7 @@ dependencies {
 
     compile 'net.opacapp:multiline-collapsingtoolbar:1.2.2'
     compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.turingtechnologies.materialscrollbar:lib:10.+'
+    compile 'com.turingtechnologies.materialscrollbar:lib:10.1.2'
 
 
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'

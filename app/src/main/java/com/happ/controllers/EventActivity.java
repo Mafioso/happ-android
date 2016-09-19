@@ -13,10 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.R;
@@ -25,12 +23,12 @@ import com.happ.models.Interest;
 import com.happ.models.User;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
-//import android.support.design.widget.CollapsingToolbarLayout;
-
 
 import java.util.ArrayList;
 
 import io.realm.Realm;
+
+//import android.support.design.widget.CollapsingToolbarLayout;
 
 /**
  * Created by dante on 8/8/16.
@@ -107,21 +105,20 @@ public class EventActivity extends AppCompatActivity {
 
         mPlace = (TextView)findViewById(R.id.event_place);
         mPlace.setText(event.getPlace());
-//
+
         mAuthor = (TextView)findViewById(R.id.event_author);
         User author = event.getAuthor();
         String fullName = author.getFullName();
         mAuthor.setText(event.getAuthor().getFullName());
-//
+
         mDescription = (TextView)findViewById(R.id.event_description);
         mDescription.setText(event.getDescription());
-//
+
         mStartDate = (TextView)findViewById(R.id.event_start_date);
         mStartDate.setText(event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
-//
+
         mEndDate = (TextView)findViewById(R.id.event_end_date);
         mEndDate.setText(event.getEndDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
-
 
 
         viewPager=(ViewPager)findViewById(R.id.slider_viewpager);

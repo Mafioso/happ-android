@@ -27,7 +27,7 @@ import io.realm.Sort;
 /**
  * Created by iztiev on 8/15/16.
  */
-public class EverythingFeedFragment extends BaseFeedFragment {
+public class EverythingFeedFragment extends BaseFeedFragment{
     private BroadcastReceiver eventsRequestDoneReceiver;
 
     public static EverythingFeedFragment newInstance() {

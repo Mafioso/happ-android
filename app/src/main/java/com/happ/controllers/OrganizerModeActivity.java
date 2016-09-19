@@ -5,12 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +41,10 @@ import io.realm.Sort;
  */
 public class OrganizerModeActivity extends AppCompatActivity {
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
 
@@ -52,7 +59,6 @@ public class OrganizerModeActivity extends AppCompatActivity {
     private int previousTotal = 0;
     private int visibleThreshold;
     private FloatingActionButton fab;
-    private CardView cv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +71,13 @@ public class OrganizerModeActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        setTitle("Organizer Mode");
+        setTitle(R.string.organizer_title);
 
-        cv = (CardView) findViewById(R.id.cv);
-        cv.setOnClickListener(new View.OnClickListener() {
-           public void onClick(View v) {
-               Intent i = new Intent(this, EditActivity.class);
-               startActivity(i);
-           }
-        });
 
         fab = (FloatingActionButton) findViewById(R.id.organizer_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               Intent i = new Intent(this, EventCreateActivity.class);
+               Intent i = new Intent(getApplicationContext(), EventCreateActivity.class);
                 startActivity(i);
             }
         });
@@ -119,6 +118,15 @@ public class OrganizerModeActivity extends AppCompatActivity {
         events = new ArrayList<>();
 
         EventsListAdapter ela = new EventsListAdapter(this, events);
+        ela.setOnSelectItemListener(new EventsListAdapter.SelectEventItemListener() {
+            @Override
+            public void onEventItemSelected(String eventId, ActivityOptionsCompat options) {
+                Intent intent = new Intent(getApplicationContext(), EditActivity.class);
+                intent.putExtra("event_id", eventId);
+//                ((Activity)getApplicationContext()).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                startActivity(intent);
+     }
+        });
         eventsListView.setAdapter(ela);
 
         eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
@@ -128,8 +136,8 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
         createScrollListener();
 
-
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

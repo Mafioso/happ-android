@@ -24,6 +24,7 @@ public class BaseFeedFragment extends Fragment {
     protected ArrayList<Event> events;
     protected RecyclerView eventsListView;
     protected LinearLayoutManager eventsListLayoutManager;
+    protected EventsListAdapter mEventAdapter;
     private int eventsFeedPageSize;
 
     private boolean loading = true;
@@ -61,8 +62,8 @@ public class BaseFeedFragment extends Fragment {
         eventsListView.setLayoutManager(eventsListLayoutManager);
         events = new ArrayList<>();
 
-        EventsListAdapter ela = new EventsListAdapter(activity, events);
-        eventsListView.setAdapter(ela);
+        mEventAdapter = new EventsListAdapter(activity, events);
+        eventsListView.setAdapter(mEventAdapter);
 
         createScrollListener();
 

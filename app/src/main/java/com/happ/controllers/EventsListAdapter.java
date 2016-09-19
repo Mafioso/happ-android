@@ -2,12 +2,12 @@ package com.happ.controllers;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,6 +46,15 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     private static final int VIEW_TYPE_CONTENT = 0x00;
     private final DateTimeFormatter eventStartDateFormatter;
     private final Context context;
+    private SelectEventItemListener mSelectItemListener;
+
+    interface SelectEventItemListener {
+        void onEventItemSelected(String eventId, ActivityOptionsCompat options);
+    }
+
+    public void setOnSelectItemListener(SelectEventItemListener listener) {
+        mSelectItemListener = listener;
+    }
 
     public EventsListAdapter(Context context, ArrayList<Event> events) {
         this.context = context;
@@ -154,21 +163,17 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, EventActivity.class);
-                    intent.putExtra("event_id", item.event.getId());
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                        context.startActivity(intent);
-                        ((Activity)context).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
-                    } else {
-
+                    String id = item.event.getId();
+                    ActivityOptionsCompat optionsCompat = null;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         Pair<View, String> p1 = Pair.create((View) itemHolder.mTitleView, "event_title");
                         Pair<View, String> p2 = Pair.create((View) itemHolder.mInterestViewColor, "event_interest_bg");
                         Pair<View, String> p3 = Pair.create((View) itemHolder.mImageView, "ivent_image");
                         Pair<View, String> p4 = Pair.create((View) itemHolder.mInterestTitle, "event_interest_name");
                         ActivityOptionsCompat options = ActivityOptionsCompat.
                                 makeSceneTransitionAnimation((Activity) context, p1, p2, p3, p4);
-                        context.startActivity(intent, options.toBundle());
                     }
+                    mSelectItemListener.onEventItemSelected(id, optionsCompat);
                 }
             });
 
@@ -232,16 +237,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                         });
                     }
                 }
-
-
-
-
             } else{
                 Glide.clear(itemHolder.mImageView);
                 itemHolder.mImageView.setImageDrawable(null);
                 itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
             }
-
 
             itemHolder.mTitleView.setText(item.event.getTitle());
             Typeface tfcs = Typefaces.get(App.getContext(), "fonts/RBNo2Light_a.otf");
@@ -287,11 +287,12 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
     public class EventsListViewHolder extends RecyclerView.ViewHolder {
 
+        public CardView mCard;
         public TextView mTitleView;
 
         public EventsListViewHolder(View itemView) {
-
             super(itemView);
+            mCard = (CardView) itemView.findViewById(R.id.cardView);
         }
     }
 
@@ -316,6 +317,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         public ImageView mUpvoteImage;
         public ProgressBar mImagePreloader;
 
+
         public EventsListItemViewHolder(final View itemView) {
             super(itemView);
             mTitleView = (TextView) itemView.findViewById(R.id.events_list_item_title);
@@ -330,6 +332,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mFavoritesImage = (ImageView) itemView.findViewById(R.id.clickimage_favorites);
             mUpvoteImage = (ImageView) itemView.findViewById(R.id.clickimage_like_or_dislike);
         }
+
     }
 
     private class EventListItem {

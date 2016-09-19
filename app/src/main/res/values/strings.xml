@@ -52,4 +52,5 @@
     <string name="city_name_label">Your City is</string>
     <string name="select_city_button">Select city</string>
     <string name="city_search">Find City</string>
+    <string name="organizer_title">Organizer Mode</string>
 </resources>

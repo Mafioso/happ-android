@@ -51,10 +51,6 @@ public class FeedActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.getMenu().getItem(R.id.nav_item_feed).setChecked(false);
-        navigationView.getMenu().getItem(R.id.nav_item_interests).setChecked(true);
-//        navigationView.getMenu().getItem(R.id.).setChecked(true);
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {

@@ -56,6 +56,7 @@ public class EventCreateActivity extends AppCompatActivity {
         inputInterest = (EditText) findViewById(R.id.input_interest);
         inputStartDate = (EditText) findViewById(R.id.input_startDate);
         inputEndDate = (EditText) findViewById(R.id.input_endDate);
+
         fab = (FloatingActionButton)findViewById(R.id.fab);
         editInterestButton = (ImageButton) findViewById(R.id.btn_select_interest);
 

@@ -31,18 +31,20 @@
 
         </LinearLayout>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/organizer_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+                app:srcCompat="@drawable/ic_plus"
+            app:fabSize="normal"
+            android:layout_marginTop="8dp"
+            android:visibility="visible"
+            android:layout_margin="20dp"/>
+
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/organizer_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        app:srcCompat="@drawable/ic_done_compat"
-        app:fabSize="normal"
-        android:layout_marginTop="8dp"
-        android:visibility="visible"
-        android:layout_below="@+id/input_layout_login_password"/>
 
     <include layout="@layout/drawer_layout" />
 

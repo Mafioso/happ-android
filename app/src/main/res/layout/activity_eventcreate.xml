@@ -1,183 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent">
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:theme="@style/CreateScreenEditText">
+        <include layout="@layout/toolbar"/>
 
-                <EditText
-                    android:id="@+id/input_title"
+    </android.support.design.widget.AppBarLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:hint="@string/event_title"
-                    android:inputType="textNoSuggestions"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/input_layout_title"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:theme="@style/CreateScreenEditText">
-
-                <EditText
-                    android:id="@+id/input_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/event_description"
-                    android:inputType="textNoSuggestions"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_interest"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/input_layout_description"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:theme="@style/CreateScreenEditText">
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:theme="@style/CreateScreenEditText">
 
                     <EditText
-                        android:id="@+id/input_interest"
+                        android:id="@+id/input_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:hint="@string/event_title"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/input_layout_title"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:theme="@style/CreateScreenEditText">
+
+                    <EditText
+                        android:id="@+id/input_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="5"
+                        android:hint="@string/event_description"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_interest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/input_layout_description"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:theme="@style/CreateScreenEditText">
+
+                        <EditText
+                            android:id="@+id/input_interest"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="56dp"
+                            android:singleLine="true"
+                            android:enabled="false"
+                            android:textColor="@android:color/primary_text_light_nodisable"
+                            android:hint="@string/event_interest"
+                            android:inputType="textNoSuggestions"/>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/btn_select_interest"
+                    android:background="@drawable/ic_edit_compat"
+                    android:layout_below="@id/input_layout_description"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="25dp"
+                    android:onClick="btn_click_selection_interests"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/input_layout_images"
+                    android:layout_below="@+id/input_layout_interest"
+                    android:layout_marginTop="15dp">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:background="@android:color/darker_gray"
+                        android:id="@+id/imageView" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/pls_add_image"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="-110dp"
+                        android:textSize="15dp" />
+                </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_startDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/input_layout_images"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:theme="@style/CreateScreenEditText">
+
+                    <EditText
+                        android:id="@+id/input_startDate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="56dp"
                         android:singleLine="true"
-                        android:enabled="false"
-                        android:textColor="@android:color/primary_text_light_nodisable"
-                        android:hint="@string/event_interest"
+                        android:hint="@string/start_date"
                         android:inputType="textNoSuggestions"/>
 
-            </android.support.design.widget.TextInputLayout>
+                </android.support.design.widget.TextInputLayout>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_select_interest"
-                android:background="@drawable/ic_edit_compat"
-                android:layout_below="@id/input_layout_description"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="25dp"
-                android:onClick="btn_click_selection_interests"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/input_layout_images"
-                android:layout_below="@+id/input_layout_interest"
-                android:layout_marginTop="15dp">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:background="@android:color/darker_gray"
-                    android:id="@+id/imageView" />
-
-                <TextView
+                <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/pls_add_image"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="-110dp"
-                    android:textSize="15dp" />
-            </LinearLayout>
+                    android:id="@+id/btn_choice_startDate"
+                    android:background="@drawable/ic_edit_compat"
+                    android:layout_below="@+id/input_layout_images"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="25dp" />
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_startDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/input_layout_images"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:theme="@style/CreateScreenEditText">
-
-                <EditText
-                    android:id="@+id/input_startDate"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_endDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="56dp"
-                    android:singleLine="true"
-                    android:hint="@string/start_date"
-                    android:inputType="textNoSuggestions"/>
+                    android:layout_below="@+id/input_layout_startDate"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="10dp"
+                    android:theme="@style/CreateScreenEditText">
 
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/input_endDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="56dp"
+                        android:singleLine="true"
+                        android:hint="@string/end_date"
+                        android:inputType="textNoSuggestions"/>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_choice_startDate"
-                android:background="@drawable/ic_edit_compat"
-                android:layout_below="@+id/input_layout_images"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="25dp" />
+                </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_endDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/input_layout_startDate"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:theme="@style/CreateScreenEditText">
-
-                <EditText
-                    android:id="@+id/input_endDate"
-                    android:layout_width="match_parent"
+                <ImageButton
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="56dp"
-                    android:singleLine="true"
-                    android:hint="@string/end_date"
-                    android:inputType="textNoSuggestions"/>
-
-            </android.support.design.widget.TextInputLayout>
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_choice_endDate"
-                android:background="@drawable/ic_edit_compat"
-                android:layout_below="@+id/input_layout_startDate"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="25dp" />
+                    android:id="@+id/btn_choice_endDate"
+                    android:background="@drawable/ic_edit_compat"
+                    android:layout_below="@+id/input_layout_startDate"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="25dp" />
 
 
-            <android.support.design.widget.FloatingActionButton
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/activity_horizontal_margin"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                app:fabSize="normal"
-                app:srcCompat="@drawable/ic_done" />
-        </RelativeLayout>
-    </LinearLayout>
-</ScrollView>
+            </RelativeLayout>
+
+    </ScrollView>
+
+
+</LinearLayout>

@@ -27,13 +27,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.RelativeLayout;
-import com.happ.fragments.SelectCityFragment;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
@@ -94,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         mVisibilityOff = (ImageButton) findViewById(R.id.btn_login_visibility_off);
         mVisibilityOff.setVisibility(View.GONE);
         mRegisterView = (LinearLayout) findViewById(R.id.ll_footer);
-        mFormLayout = (RelativeLayout) findViewById(R.id.form_layout);
+        mFormLayout = (RelativeLayout) findViewById(R.id.form_layout2);
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_login);
 
 
