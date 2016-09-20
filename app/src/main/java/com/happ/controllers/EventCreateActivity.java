@@ -1,7 +1,6 @@
 package com.happ.controllers;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +35,7 @@ public class EventCreateActivity extends AppCompatActivity {
 //    private ImageButton btnInterests, btnStartDate, btnEndDate;
     private ImageButton editInterestButton;
     private Interest selectedInterest;
-    private FloatingActionButton fab;
+//    private FloatingActionButton fab;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +43,13 @@ public class EventCreateActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         inputLayoutTitle = (TextInputLayout) findViewById(R.id.input_layout_title);
         inputLayoutDescription = (TextInputLayout) findViewById(R.id.input_layout_description);
         inputLayoutInterests = (TextInputLayout) findViewById(R.id.input_layout_interest);
@@ -57,7 +62,7 @@ public class EventCreateActivity extends AppCompatActivity {
         inputStartDate = (EditText) findViewById(R.id.input_startDate);
         inputEndDate = (EditText) findViewById(R.id.input_endDate);
 
-        fab = (FloatingActionButton)findViewById(R.id.fab);
+//        fab = (FloatingActionButton)findViewById(R.id.fab);
         editInterestButton = (ImageButton) findViewById(R.id.btn_select_interest);
 
 
@@ -77,12 +82,12 @@ public class EventCreateActivity extends AppCompatActivity {
             }
         });
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitForm();
-            }
-        });
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                submitForm();
+//            }
+//        });
 
         checkValidation();
 
@@ -105,10 +110,10 @@ public class EventCreateActivity extends AppCompatActivity {
                 || (TextUtils.isEmpty(inputInterest.getText()))
                 || (TextUtils.isEmpty(inputStartDate.getText()))
                 || (TextUtils.isEmpty(inputEndDate.getText()))
-                )
-            fab.setVisibility(View.INVISIBLE);
-        else
-            fab.setVisibility(View.VISIBLE);
+                );
+//            fab.setVisibility(View.INVISIBLE);
+//        else
+//            fab.setVisibility(View.VISIBLE);
 
     }
 

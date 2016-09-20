@@ -59,8 +59,8 @@ public class FeedActivity extends AppCompatActivity {
                 }
                 if (menuItem.getItemId() == R.id.nav_item_settings) {
 
-                    ((EverythingFeedFragment)mTabFragments.get(0)).updateEventListTest();
-                    Toast.makeText(FeedActivity.this, "UpdateEventListLikes", Toast.LENGTH_LONG).show();
+//                    ((EverythingFeedFragment)mTabFragments.get(0)).updateEventListTest();
+//                    Toast.makeText(FeedActivity.this, "UpdateEventListLikes", Toast.LENGTH_LONG).show();
 
                 }
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {

@@ -82,7 +82,6 @@ public class BaseFeedFragment extends Fragment {
                 }
             }
         });
-
         eventsListView.setAdapter(mEventAdapter);
 
         createScrollListener();
