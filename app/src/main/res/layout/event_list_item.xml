@@ -221,6 +221,18 @@
             />
     </LinearLayout>
 
+
+
+    <!--android:background="@android:color/transparent"-->
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/transparent"
+        android:theme="@style/EventToolbar"
+        android:id="@+id/event_toolbar">
+
+    </android.support.v7.widget.Toolbar>
+
     <!--<ImageButton-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content"-->

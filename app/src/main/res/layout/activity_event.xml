@@ -274,6 +274,15 @@
 
         </android.support.v4.widget.NestedScrollView>
 
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:id="@+id/fab"
+            app:fabSize="normal"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/ic_edt_white"
+            />
 
 
     </android.support.design.widget.CoordinatorLayout>

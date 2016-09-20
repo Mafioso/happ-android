@@ -8,6 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="EventToolbar" parent="ThemeOverlay.AppCompat.Light">
+        <!-- Customize your theme here. -->
+    </style>
+
     <style name="AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
     </style>
 

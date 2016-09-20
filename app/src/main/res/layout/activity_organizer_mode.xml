@@ -6,10 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/colorPrimary"
     tools:context=".controllers.OrganizerModeActivity">
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/background_light">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -37,11 +40,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-                app:srcCompat="@drawable/ic_plus"
+                app:srcCompat="@drawable/ic_plus_white"
             app:fabSize="normal"
             android:layout_marginTop="8dp"
             android:visibility="visible"
-            android:layout_margin="20dp"/>
+            android:layout_margin="16dp"/>
 
     </RelativeLayout>
 

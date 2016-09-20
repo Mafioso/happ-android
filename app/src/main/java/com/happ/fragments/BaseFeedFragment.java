@@ -81,6 +81,11 @@ public class BaseFeedFragment extends Fragment {
                     activity.startActivity(intent, options.toBundle());
                 }
             }
+
+            @Override
+            public void onEventEditSelected(String eventId) {
+
+            }
         });
         eventsListView.setAdapter(mEventAdapter);
 

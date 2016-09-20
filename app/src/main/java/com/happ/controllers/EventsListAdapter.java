@@ -9,9 +9,12 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -47,9 +50,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     private final DateTimeFormatter eventStartDateFormatter;
     private final Context context;
     private SelectEventItemListener mSelectItemListener;
+    private boolean isOrganizer;
 
     public interface SelectEventItemListener {
         void onEventItemSelected(String eventId, ActivityOptionsCompat options);
+        void onEventEditSelected(String eventId);
     }
 
     public void setOnSelectItemListener(SelectEventItemListener listener) {
@@ -61,6 +66,10 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         mItems = new ArrayList<>();
         eventStartDateFormatter = DateTimeFormat.forPattern("MMMM dd, yyyy 'a''t' h:mm a");
         this.updateItems(events);
+    }
+
+    public void setIsOrganizer(boolean val) {
+        isOrganizer = val;
     }
 
     public void updateItems(ArrayList<Event> events) {
@@ -135,6 +144,22 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         }
     }
 
+    private void eventSelected(EventsListItemViewHolder itemViewHolder, EventListItem item) {
+        String id = item.event.getId();
+        ActivityOptionsCompat optionsCompat = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Pair<View, String> p1 = Pair.create((View) itemViewHolder.mTitleView, "event_title");
+            Pair<View, String> p2 = Pair.create((View) itemViewHolder.mInterestViewColor, "event_interest_bg");
+            Pair<View, String> p3 = Pair.create((View) itemViewHolder.mImageView, "ivent_image");
+            Pair<View, String> p4 = Pair.create((View) itemViewHolder.mInterestTitle, "event_interest_name");
+            optionsCompat = ActivityOptionsCompat.
+                    makeSceneTransitionAnimation((Activity) context, p1, p2, p3, p4);
+        }
+        if (mSelectItemListener != null) {
+            mSelectItemListener.onEventItemSelected(id, optionsCompat);
+        }
+    }
+
     @Override
     public void onBindViewHolder(final EventsListViewHolder holder, int position) {
         final EventListItem item = mItems.get(position);
@@ -163,19 +188,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    String id = item.event.getId();
-                    ActivityOptionsCompat optionsCompat = null;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Pair<View, String> p1 = Pair.create((View) itemHolder.mTitleView, "event_title");
-                        Pair<View, String> p2 = Pair.create((View) itemHolder.mInterestViewColor, "event_interest_bg");
-                        Pair<View, String> p3 = Pair.create((View) itemHolder.mImageView, "ivent_image");
-                        Pair<View, String> p4 = Pair.create((View) itemHolder.mInterestTitle, "event_interest_name");
-                        optionsCompat = ActivityOptionsCompat.
-                                makeSceneTransitionAnimation((Activity) context, p1, p2, p3, p4);
-                    }
-                    if (mSelectItemListener != null) {
-                        mSelectItemListener.onEventItemSelected(id, optionsCompat);
-                    }
+                    eventSelected(itemHolder, item);
                 }
             });
 
@@ -279,6 +292,28 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
 
             itemHolder.mDateView.setText(item.event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
+
+            if (!this.isOrganizer) {
+                itemHolder.mToolbar.setVisibility(View.GONE);
+                Menu menu = itemHolder.mToolbar.getMenu();
+                if (menu != null) menu.clear();
+
+            } else {
+                Menu menu = itemHolder.mToolbar.getMenu();
+                if (menu != null) menu.clear();
+                itemHolder.mToolbar.setVisibility(View.VISIBLE);
+                itemHolder.mToolbar.inflateMenu(R.menu.menu_event_org);
+                itemHolder.mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        menuItem.setChecked(false);
+                        if (menuItem.getItemId() == R.id.menu_edit) {
+                            mSelectItemListener.onEventEditSelected(item.event.getId());
+                        }
+                        return false;
+                    }
+                });
+            }
         }
     }
 
@@ -318,6 +353,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         public ImageView mFavoritesImage;
         public ImageView mUpvoteImage;
         public ProgressBar mImagePreloader;
+        public Toolbar mToolbar;
 
 
         public EventsListItemViewHolder(final View itemView) {
@@ -333,6 +369,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mImagePreloader = (ProgressBar) itemView.findViewById(R.id.events_list_image_preloader);
             mFavoritesImage = (ImageView) itemView.findViewById(R.id.clickimage_favorites);
             mUpvoteImage = (ImageView) itemView.findViewById(R.id.clickimage_like_or_dislike);
+            mToolbar = (Toolbar) itemView.findViewById(R.id.event_toolbar);
         }
 
     }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -53,6 +54,10 @@ public class EventActivity extends AppCompatActivity {
     private TextView mEventInterestTitle;
     private LinearLayout mEventInterestBg;
 
+    private FloatingActionButton mFab;
+
+    private boolean isOrg;
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -68,14 +73,30 @@ public class EventActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
+        isOrg = intent.getBooleanExtra("is_organizer", false);
         eventId = intent.getStringExtra("event_id");
         Realm realm = Realm.getDefaultInstance();
         event = realm.where(Event.class).equalTo("id", eventId).findFirst();
         event = realm.copyFromRealm(event);
         realm.close();
 
+
 //        setTitle(event.getTitle());
         setContentView(R.layout.activity_event);
+
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setVisibility(View.GONE);
+        if (isOrg) {
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent editIntent = new Intent(EventActivity.this, EditActivity.class);
+                    editIntent.putExtra("event_id", eventId);
+                    EventActivity.this.startActivity(editIntent);
+                }
+            });
+//            mFab.show();
+        }
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -175,6 +196,14 @@ public class EventActivity extends AppCompatActivity {
             }
         });
         navigationView.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isOrg && mFab.getVisibility() != View.VISIBLE) {
+            mFab.show();
+        }
     }
 
     @Override

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".controllers.OrganizerModeActivity">
+    <item android:id="@+id/org_more"
+    android:icon="@drawable/ic_more_compat"
+    android:title="nose"
+    app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menu_edit"
+                android:visible="true"
+                android:icon="@drawable/ic_edit_compat"
+                android:title="@string/menu_edit"
+                />
+            <item
+                android:id="@+id/menu_hide"
+                android:visible="true"
+                android:icon="@drawable/ic_hide_compat"
+                android:title="@string/menu_hide"
+                />
+            <item
+                android:id="@+id/menu_delete"
+                android:visible="true"
+                android:icon="@drawable/ic_delete_compat"
+                android:title="@string/menu_delete"
+                />
+        </menu>
+    </item>
+
+</menu>

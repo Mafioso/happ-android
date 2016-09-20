@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -121,12 +122,25 @@ public class OrganizerModeActivity extends AppCompatActivity {
         ela.setOnSelectItemListener(new EventsListAdapter.SelectEventItemListener() {
             @Override
             public void onEventItemSelected(String eventId, ActivityOptionsCompat options) {
+                Intent intent = new Intent(OrganizerModeActivity.this, EventActivity.class);
+                intent.putExtra("event_id", eventId);
+                intent.putExtra("is_organizer", true);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || options == null) {
+                    OrganizerModeActivity.this.startActivity(intent);
+                    (OrganizerModeActivity.this).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                } else {
+                    OrganizerModeActivity.this.startActivity(intent, options.toBundle());
+                }
+            }
+
+            @Override
+            public void onEventEditSelected(String eventId) {
                 Intent intent = new Intent(getApplicationContext(), EditActivity.class);
                 intent.putExtra("event_id", eventId);
-//                ((Activity)getApplicationContext()).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
                 startActivity(intent);
             }
         });
+        ela.setIsOrganizer(true);
         eventsListView.setAdapter(ela);
 
         eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
