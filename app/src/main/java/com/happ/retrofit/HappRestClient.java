@@ -207,12 +207,18 @@ public class HappRestClient {
         }
     }
 
-    public void getEvents() {
-        this.getEvents(1);
+    public void getEvents(boolean favs) {
+        this.getEvents(1, favs);
     }
 
-    public void getEvents(int page) {
-        this.happApi.getEvents(page).enqueue(new Callback<EventsResponse>() {
+    public void getEvents(int page, boolean favs) {
+        Call<EventsResponse> getEventsResponse;
+        if (favs) {
+            getEventsResponse = this.happApi.getFavourites(page);
+        } else {
+            getEventsResponse = this.happApi.getEvents(page);
+        }
+        getEventsResponse.enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
 

@@ -59,13 +59,13 @@ public class FeedActivity extends AppCompatActivity {
                 }
                 if (menuItem.getItemId() == R.id.nav_item_settings) {
 
-                    ((EverythingFeedFragment)mTabFragments.get(0)).updateEventListTest();
-                    Toast.makeText(FeedActivity.this, "UpdateEventListLikes", Toast.LENGTH_LONG).show();
+//                    ((EverythingFeedFragment)mTabFragments.get(0)).updateEventListTest();
+//                    Toast.makeText(FeedActivity.this, "UpdateEventListLikes", Toast.LENGTH_LONG).show();
 
                 }
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {
                     Intent goToFeedIntent = new Intent(FeedActivity.this, OrganizerModeActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
                 }
@@ -73,6 +73,7 @@ public class FeedActivity extends AppCompatActivity {
                 return true;
             }
         });
+        navigationView.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
 
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));

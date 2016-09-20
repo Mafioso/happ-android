@@ -90,18 +90,20 @@ public class OrganizerModeActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.nav_item_logout) {
-                    Toast.makeText(OrganizerModeActivity.this, "UpdateEventListLikes", Toast.LENGTH_LONG).show();
+                    App.doLogout(OrganizerModeActivity.this);
                 }
                 if (menuItem.getItemId() == R.id.nav_item_feed) {
                     Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, FeedActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
                 }
+
                 mDrawerLayout.closeDrawers();
                 return true;
             }
         });
+        navigationView.getMenu().findItem(R.id.nav_item_organizer).setChecked(true);
 
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
@@ -130,7 +132,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
         eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
 
-        HappRestClient.getInstance().getEvents();
+        HappRestClient.getInstance().getEvents(false);
 
         createScrollListener();
 
@@ -207,7 +209,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
     }
 
     protected void getEvents(int page) {
-        APIService.getEvents(page);
+        APIService.getEvents(page, false);
     }
 
     @Override

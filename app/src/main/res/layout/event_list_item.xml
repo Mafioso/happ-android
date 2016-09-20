@@ -133,27 +133,64 @@
             android:textColor="@color/header_title"
             android:gravity="center"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/events_list_item_start_date"
-            android:textColor="@color/colorDate"
-            android:textSize="16sp"
-            android:layout_marginTop="4dp"
-            android:text="August 16, 2016. 6:00 PM"
-            android:accessibilityLiveRegion="assertive"
-            android:gravity="center"/>
 
-        <TextView
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_calendar_start"
+                android:layout_marginRight="8dp"
+                android:alpha="0.4"
+                android:gravity="center_vertical"
+                />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/events_list_item_start_date"
+                android:textColor="@color/colorDate"
+                android:textSize="16sp"
+                android:textAllCaps="true"
+                android:text="August 16, 2016. 6:00 PM"
+                android:accessibilityLiveRegion="assertive"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="8dp"
-            android:textSize="16sp"
-            android:id="@+id/events_list_price"
-            android:textColor="@color/colorPrice"
-            android:text="PREVIEW_PRICE" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_credit_card"
+                android:layout_marginRight="8dp"
+                android:alpha="0.24"
+                android:gravity="center_vertical"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                android:id="@+id/events_list_price"
+                android:textAllCaps="true"
+                android:textColor="@color/colorPrice"
+                android:gravity="center_vertical"
+                android:text="PREVIEW_PRICE" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout

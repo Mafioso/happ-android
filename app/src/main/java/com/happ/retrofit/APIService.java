@@ -28,22 +28,25 @@ public class APIService extends IntentService {
 
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
+    private static final String EXTRA_GET_FAVS = "com.happ.extra.EXTRA_GET_FAVS";
     private static final String EXTRA_USERNAME = "com.happ.extra.EXTRA_USERNAME";
     private static final String EXTRA_PASSWORD = "com.happ.extra.EXTRA_PASSWORD";
     private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
     private static final String EXTRA_SET_CITIES = "com.happ.extra.EXTRA_SET_CITIES";
     private static final String EXTRA_SEARCH_TEXT = "com.happ.extra.EXTRA_SEARCH_TEXT";
 
-    public static void getEvents() {
+    public static void getEvents(boolean favs) {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_EVENTS);
+        intent.putExtra(EXTRA_GET_FAVS, favs);
         App.getContext().startService(intent);
     }
 
-    public static void getEvents(int page) {
+    public static void getEvents(int page, boolean favs) {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_EVENTS_FOR_PAGE);
         intent.putExtra(EXTRA_PAGE, page);
+        intent.putExtra(EXTRA_GET_FAVS, favs);
         App.getContext().startService(intent);
     }
 
@@ -148,10 +151,12 @@ public class APIService extends IntentService {
         if (intent != null) {
             final String action = intent.getAction();
             if (action.equals(ACTION_GET_EVENTS)) {
-                HappRestClient.getInstance().getEvents();
+                boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
+                HappRestClient.getInstance().getEvents(favs);
             } else if (action.equals(ACTION_GET_EVENTS_FOR_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
-                HappRestClient.getInstance().getEvents(page);
+                boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
+                HappRestClient.getInstance().getEvents(page, favs);
             } else if (action.equals(ACTION_GET_CITIES)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 String searchText = intent.getStringExtra(EXTRA_SEARCH_TEXT);

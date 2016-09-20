@@ -170,10 +170,12 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                         Pair<View, String> p2 = Pair.create((View) itemHolder.mInterestViewColor, "event_interest_bg");
                         Pair<View, String> p3 = Pair.create((View) itemHolder.mImageView, "ivent_image");
                         Pair<View, String> p4 = Pair.create((View) itemHolder.mInterestTitle, "event_interest_name");
-                        ActivityOptionsCompat options = ActivityOptionsCompat.
+                        optionsCompat = ActivityOptionsCompat.
                                 makeSceneTransitionAnimation((Activity) context, p1, p2, p3, p4);
                     }
-                    mSelectItemListener.onEventItemSelected(id, optionsCompat);
+                    if (mSelectItemListener != null) {
+                        mSelectItemListener.onEventItemSelected(id, optionsCompat);
+                    }
                 }
             });
 
@@ -244,7 +246,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             }
 
             itemHolder.mTitleView.setText(item.event.getTitle());
-            Typeface tfcs = Typefaces.get(App.getContext(), "fonts/RBNo2Light_a.otf");
+            Typeface tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.ttf");
             itemHolder.mTitleView.setTypeface(tfcs);
             itemHolder.mPrice.setText(item.event.getPriceRange());
             itemHolder.mVotesCount.setText(String.valueOf(item.event.getVotesCount()));
