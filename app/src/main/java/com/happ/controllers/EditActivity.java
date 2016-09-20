@@ -85,7 +85,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
         mSelectImage = (ImageView) findViewById(R.id.edit_imageView);
-        mSelectImage.setImageURI(Url, event.getImages());
+//        mSelectImage.setImageURI(Url, event.getImages());
 
 //        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 //

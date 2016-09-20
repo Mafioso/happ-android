@@ -56,4 +56,7 @@ public interface HAPPapi {
 
     @GET("cities/{id}/set/")
     Call<Void> setCity(@Path("id") String cityId);
+
+    @GET("events/favourites/")
+    Call<EventsResponse> getFavourites(@Query("page") int page);
 }

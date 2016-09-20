@@ -2,9 +2,13 @@ package com.happ.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.happ.R;
+import com.happ.controllers.EventActivity;
 import com.happ.controllers.EventsListAdapter;
 import com.happ.models.Event;
 
@@ -63,6 +68,21 @@ public class BaseFeedFragment extends Fragment {
         events = new ArrayList<>();
 
         mEventAdapter = new EventsListAdapter(activity, events);
+
+        mEventAdapter.setOnSelectItemListener(new EventsListAdapter.SelectEventItemListener() {
+            @Override
+            public void onEventItemSelected(String eventId, ActivityOptionsCompat options) {
+                Intent intent = new Intent(activity, EventActivity.class);
+                intent.putExtra("event_id", eventId);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || options == null) {
+                    activity.startActivity(intent);
+                    (activity).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                } else {
+                    activity.startActivity(intent, options.toBundle());
+                }
+            }
+        });
+
         eventsListView.setAdapter(mEventAdapter);
 
         createScrollListener();
@@ -91,7 +111,7 @@ public class BaseFeedFragment extends Fragment {
                             <= (firstVisibleItem + visibleThreshold)) {
                         loading = true;
                         int nextPage = (totalItemCount / eventsFeedPageSize) + 1;
-                        getEvents(nextPage);
+                        getEvents(nextPage, false);
                     }
                 }
 
@@ -100,6 +120,6 @@ public class BaseFeedFragment extends Fragment {
         });
     }
 
-    protected void getEvents(int page) {
+    protected void getEvents(int page, boolean favs) {
     }
 }
