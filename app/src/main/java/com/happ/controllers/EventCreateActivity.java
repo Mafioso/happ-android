@@ -18,13 +18,22 @@ import android.widget.Toast;
 import com.happ.R;
 import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Interest;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
+
+import java.util.Calendar;
 
 /**
  * Created by dante on 8/22/16.
  */
-public class EventCreateActivity extends AppCompatActivity {
+public class EventCreateActivity extends AppCompatActivity implements
+        View.OnClickListener,
+        TimePickerDialog.OnTimeSetListener,
+        DatePickerDialog.OnDateSetListener
+{
 
-    static
+static
     {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -32,7 +41,7 @@ public class EventCreateActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private EditText inputTitle, inputDescription, inputInterest, inputStartDate, inputEndDate;
     private TextInputLayout inputLayoutTitle, inputLayoutDescription, inputLayoutInterests, inputLayoutStartDate, inputLayoutEndDate;
-//    private ImageButton btnInterests, btnStartDate, btnEndDate;
+    private ImageButton btnStartDate, btnEndDate;
     private ImageButton editInterestButton;
     private Interest selectedInterest;
 //    private FloatingActionButton fab;
@@ -89,6 +98,24 @@ public class EventCreateActivity extends AppCompatActivity {
 //            }
 //        });
 
+        btnStartDate = (ImageButton) findViewById(R.id.btn_choice_startDate);
+        btnStartDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        EventCreateActivity.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                dpd.setAccentColor(getResources().getColor(R.color.colorPrimaryDark));
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+
+
+            }
+        });
+
         checkValidation();
 
         inputTitle.addTextChangedListener(mWatcher);
@@ -102,6 +129,7 @@ public class EventCreateActivity extends AppCompatActivity {
 //    public void btn_click_selection_interests(View view) {
 //        new EventInterestFragment().show(getSupportFragmentManager(), "LoginForm");
 //    }
+
 
     private void checkValidation() {
 
@@ -179,4 +207,19 @@ public class EventCreateActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onClick(View view) {
+
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        String date = dayOfMonth + "/" + (++monthOfYear) + "/" +year;
+        inputStartDate.setText(date);
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+
+    }
 }
