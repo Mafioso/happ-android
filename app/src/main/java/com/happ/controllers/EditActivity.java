@@ -3,12 +3,12 @@ package com.happ.controllers;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.happ.R;
 import com.happ.fragments.EventInterestFragment;
@@ -16,7 +16,6 @@ import com.happ.models.Event;
 import com.happ.models.Interest;
 
 import io.realm.Realm;
-import retrofit2.http.Url;
 
 /**
  * Created by dante on 8/19/16.
@@ -27,10 +26,12 @@ public class EditActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private EditText mEditTitle, mEditDescription, mEditInterests, mEditStartDate, mEditFinishDate;
     private ImageButton mButtonSelectInterest;
-    private ImageView mSelectImage;
+    private ViewPager mSelectImage;
     private Event event;
     private Interest selectedInterest;
     private String eventId;
+
+    EventImagesSwipeAdapter mEventImagesSwipeAdapter;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +43,7 @@ public class EditActivity extends AppCompatActivity {
         realm.close();
 
         setContentView(R.layout.activity_edit);
+        setTitle(event.getTitle());
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -84,8 +86,10 @@ public class EditActivity extends AppCompatActivity {
                 editNameDialogFragment.show(fm, "fragment_select_interest");
             }
         });
-        mSelectImage = (ImageView) findViewById(R.id.edit_imageView);
-        mSelectImage.setImageURI(Url, event.getImages());
+        mSelectImage = (ViewPager) findViewById(R.id.viewpager_edit);
+        mEventImagesSwipeAdapter = new EventImagesSwipeAdapter(getSupportFragmentManager());
+        mEventImagesSwipeAdapter.setImageList(event.getImages());
+        mSelectImage.setAdapter(mEventImagesSwipeAdapter);
 
 //        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 //

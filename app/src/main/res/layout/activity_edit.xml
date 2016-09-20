@@ -100,11 +100,12 @@
                 android:id="@+id/edit_input_layout_images"
                 android:layout_below="@+id/edit_input_layout_interest"
                 android:layout_marginTop="15dp">
-                <ImageView
+                <android.support.v4.view.ViewPager
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:background="@android:color/darker_gray"
-                    android:id="@+id/edit_imageView" />
+                    android:id="@+id/viewpager_edit"
+                    android:background="@color/colorPrimary"
+                    app:layout_collapseMode="parallax"/>
 
             </LinearLayout>
 

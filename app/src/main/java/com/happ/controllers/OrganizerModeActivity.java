@@ -58,7 +58,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
-    private FloatingActionButton fab;
+    private FloatingActionButton mOrganizerFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +74,8 @@ public class OrganizerModeActivity extends AppCompatActivity {
         setTitle(R.string.organizer_title);
 
 
-        fab = (FloatingActionButton) findViewById(R.id.organizer_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mOrganizerFab = (FloatingActionButton) findViewById(R.id.organizer_fab);
+        mOrganizerFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                Intent i = new Intent(getApplicationContext(), EventCreateActivity.class);
                 startActivity(i);
@@ -106,8 +106,6 @@ public class OrganizerModeActivity extends AppCompatActivity {
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
 
-
-
         eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
 
@@ -125,7 +123,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
                 intent.putExtra("event_id", eventId);
 //                ((Activity)getApplicationContext()).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
                 startActivity(intent);
-     }
+            }
         });
         eventsListView.setAdapter(ela);
 

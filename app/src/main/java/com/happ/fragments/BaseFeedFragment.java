@@ -2,8 +2,10 @@ package com.happ.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.happ.R;
+import com.happ.controllers.EventActivity;
 import com.happ.controllers.EventsListAdapter;
 import com.happ.models.Event;
 
@@ -63,6 +66,15 @@ public class BaseFeedFragment extends Fragment {
         events = new ArrayList<>();
 
         mEventAdapter = new EventsListAdapter(activity, events);
+        mEventAdapter.setOnSelectItemListener(new EventsListAdapter.SelectEventItemListener() {
+            @Override
+            public void onEventItemSelected(String eventId, ActivityOptionsCompat options) {
+                Intent intent = new Intent(getContext(), EventActivity.class);
+                intent.putExtra("event_id", eventId);
+//                ((Activity)getApplicationContext()).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                startActivity(intent);
+            }
+        });
         eventsListView.setAdapter(mEventAdapter);
 
         createScrollListener();

@@ -48,7 +48,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     private final Context context;
     private SelectEventItemListener mSelectItemListener;
 
-    interface SelectEventItemListener {
+    public interface SelectEventItemListener {
         void onEventItemSelected(String eventId, ActivityOptionsCompat options);
     }
 

@@ -104,7 +104,7 @@ public class EventActivity extends AppCompatActivity {
         mEventInterestTitle.setText(fullTitleString.toUpperCase());
 
         mPlace = (TextView)findViewById(R.id.event_place);
-        mPlace.setText(event.getPlace());
+        mPlace.setText(App.getCurrentCity().getName());
 
         mAuthor = (TextView)findViewById(R.id.event_author);
         User author = event.getAuthor();
@@ -115,10 +115,10 @@ public class EventActivity extends AppCompatActivity {
         mDescription.setText(event.getDescription());
 
         mStartDate = (TextView)findViewById(R.id.event_start_date);
-        mStartDate.setText(event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
+        mStartDate.setText(event.getStartDateFormatted("dd MMMM, yyyy 'a''t' h:mm"));
 
         mEndDate = (TextView)findViewById(R.id.event_end_date);
-        mEndDate.setText(event.getEndDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
+        mEndDate.setText(event.getEndDateFormatted("dd MMMM, yyyy 'a''t' h:mm"));
 
 
         viewPager=(ViewPager)findViewById(R.id.slider_viewpager);

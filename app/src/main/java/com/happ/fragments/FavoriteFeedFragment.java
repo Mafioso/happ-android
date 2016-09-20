@@ -5,9 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.happ.R;
 import com.happ.controllers.EventsListAdapter;
 import com.happ.models.Event;
 
