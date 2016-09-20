@@ -16,6 +16,7 @@ import com.happ.models.Event;
 import com.happ.models.Interest;
 
 import io.realm.Realm;
+import retrofit2.http.Url;
 
 /**
  * Created by dante on 8/19/16.
@@ -84,6 +85,7 @@ public class EditActivity extends AppCompatActivity {
             }
         });
         mSelectImage = (ImageView) findViewById(R.id.edit_imageView);
+        mSelectImage.setImageURI(Url, event.getImages());
 
 //        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 //
