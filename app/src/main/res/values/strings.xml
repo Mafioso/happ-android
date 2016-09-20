@@ -26,6 +26,9 @@
     <string name="sign_up">Sign up</string>
     <string name="dont_account">Do not have an account?</string>
 
+    <string name="create_event">Create Event</string>
+    <string name="edit_event">Edit Event</string>
+
     <string name="action_settings">Settings</string>
     <string name="nav_item_attachment">Attachment</string>
     <string name="nav_item_images">Images</string>

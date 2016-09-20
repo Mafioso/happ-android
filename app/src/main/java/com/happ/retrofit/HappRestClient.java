@@ -20,6 +20,7 @@ import com.happ.models.LoginData;
 import com.happ.models.Settings;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
+import com.happ.retrofit.serializers.DateDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
 
 import java.io.IOException;
@@ -75,6 +76,7 @@ public class HappRestClient {
         if (gson == null) {
             gson = new GsonBuilder()
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
+                    .registerTypeAdapter(Date.class, new DateDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }

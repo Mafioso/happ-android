@@ -31,9 +31,9 @@ public class Event extends RealmObject {
     private boolean inFavorites;
     @SerializedName("views_count")
     private int viewsCount;
-    @SerializedName("start_date")
+    @SerializedName("start_datetime")
     private Date startDate;
-    @SerializedName("end_date")
+    @SerializedName("end_datetime")
     private Date endDate;
     @SerializedName("address")
     private String place;

@@ -23,6 +23,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/event_edit_srollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/background_light"
@@ -136,6 +137,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="56dp"
                     android:singleLine="true"
+                    android:enabled="false"
+                    android:textColor="@android:color/primary_text_light_nodisable"
                     android:hint="@string/start_date"
                     android:inputType="textNoSuggestions"/>
 
@@ -144,11 +147,14 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_edit_compat"
                 android:layout_below="@+id/edit_input_layout_images"
+                android:background="@drawable/ic_edit_compat"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_margin="25dp" />
+                android:id="@+id/btn_choice_startDate"
+                android:layout_margin="24dp">
+
+            </ImageButton>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/edit_input_layout_endDate"
@@ -158,7 +164,8 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginTop="10dp"
-                android:theme="@style/CreateScreenEditText">
+                android:theme="@style/CreateScreenEditText"
+                android:layout_marginBottom="72dp">
 
                 <EditText
                     android:id="@+id/edit_input_endDate"
@@ -166,12 +173,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="56dp"
                     android:singleLine="true"
+                    android:textColor="@android:color/primary_text_light_nodisable"
+                    android:enabled="false"
                     android:hint="@string/end_date"
                     android:inputType="textNoSuggestions"/>
 
             </android.support.design.widget.TextInputLayout>
 
             <ImageButton
+                android:id="@+id/btn_choice_endDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_edit_compat"

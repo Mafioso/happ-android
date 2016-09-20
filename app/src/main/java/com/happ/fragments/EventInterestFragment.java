@@ -84,18 +84,19 @@ public class EventInterestFragment extends DialogFragment {
         interests = new ArrayList<>();
 
         mInterestsListAdapter = new InterestsListAdapter(getContext(), interests);
-//        mInterestsListAdapter.setOnItemClickListener(new InterestsListAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(Interest interest) {
-//                Log.d(">>CLICK<<","Callback in EventInterestFragment");
-//                if (listener != null) {
-//                    listener.onInterestSelected(interest);
-//                }
-//                dialog.dismiss();
-//            }
-//        });
+        mInterestsListAdapter.setSelectSingle(true);
+        mInterestsListAdapter.setOnItemSelectedListener(new InterestsListAdapter.OnInterestClickedListener() {
+            @Override
+            public void onInterestSelected(Interest interest) {
+                if (listener != null) {
+                    listener.onInterestSelected(interest);
+                }
+                dialog.dismiss();
+            }
+        });
 
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
+        updateInterestsList();
 
         interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
@@ -112,7 +113,7 @@ public class EventInterestFragment extends DialogFragment {
     }
 
     public interface OnInterestSelectListener {
-        public void onInterestSelected(Interest interest);
+        void onInterestSelected(Interest interest);
     }
 
     private BroadcastReceiver createInterestsRequestDoneReceiver() {
@@ -126,7 +127,7 @@ public class EventInterestFragment extends DialogFragment {
 
     protected void updateInterestsList() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).findAll();
+        RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).isNull("parentId").findAll();
         interests = (ArrayList<Interest>)realm.copyFromRealm(interestsRealmResults);
         mInterestsListAdapter.updateData(interests);
         realm.close();

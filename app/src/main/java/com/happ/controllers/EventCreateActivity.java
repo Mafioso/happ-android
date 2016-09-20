@@ -22,6 +22,10 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.util.Calendar;
 
 /**
@@ -44,6 +48,8 @@ static
     private ImageButton btnStartDate, btnEndDate;
     private ImageButton editInterestButton;
     private Interest selectedInterest;
+
+    private DateTime startDate;
 //    private FloatingActionButton fab;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,8 @@ static
         inputInterest = (EditText) findViewById(R.id.input_interest);
         inputStartDate = (EditText) findViewById(R.id.input_startDate);
         inputEndDate = (EditText) findViewById(R.id.input_endDate);
+
+        startDate = new DateTime();
 
 //        fab = (FloatingActionButton)findViewById(R.id.fab);
         editInterestButton = (ImageButton) findViewById(R.id.btn_select_interest);
@@ -102,14 +110,14 @@ static
         btnStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar now = Calendar.getInstance();
+
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
                         EventCreateActivity.this,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH)
+                        startDate.getYear(),
+                        startDate.getMonthOfYear(),
+                        startDate.getDayOfMonth()
                 );
-                dpd.setAccentColor(getResources().getColor(R.color.colorPrimaryDark));
+                dpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
                 dpd.show(getFragmentManager(), "Datepickerdialog");
 
 
@@ -214,12 +222,27 @@ static
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        String date = dayOfMonth + "/" + (++monthOfYear) + "/" +year;
-        inputStartDate.setText(date);
+        startDate.year().setCopy(year);
+        startDate.monthOfYear().setCopy(monthOfYear);
+        startDate.dayOfMonth().setCopy(dayOfMonth);
+
+
+        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("MMMM dd, yyyy 'a''t' h:mm a");
+        inputStartDate.setText(startDate.toString(dtFormatter));
+
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                EventCreateActivity.this,
+                startDate.getHourOfDay(), startDate.getMinuteOfHour(), true);
+        tpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
+        tpd.show(getFragmentManager(), "TimePickerDialog");
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-
+        startDate.hourOfDay().setCopy(hourOfDay);
+        startDate.minuteOfHour().setCopy(minute);
+        startDate.secondOfMinute().setCopy(second);
+        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("MMMM dd, yyyy 'a''t' h:mm a");
+        inputStartDate.setText(startDate.toString(dtFormatter));
     }
 }

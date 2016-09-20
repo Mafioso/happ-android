@@ -29,6 +29,8 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     private List<Interest> mInterests;
     private ArrayList<String> selectedInterests;
     private String parentId;
+    private OnInterestClickedListener interestSelectedListener;
+    private boolean selectSingle = false;
 
     private ArrayList<String> expandedInterests;
 
@@ -48,6 +50,10 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         this.expandedInterestAdapters = new HashMap<>();
     }
 
+    public void setSelectSingle(boolean selectSingle) {
+        this.selectSingle = selectSingle;
+    }
+
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
@@ -63,6 +69,10 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
     public void setOnInterestsSelectListener(OnInterestsSelectListener listener) {
         this.listener = listener;
+    }
+
+    public void setOnItemSelectedListener(OnInterestClickedListener listener) {
+        this.interestSelectedListener = listener;
     }
 
     public ArrayList<String> getSelectedInterests() {
@@ -96,6 +106,10 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         holder.mInterestTitle.setText(interest.getTitle());
         String id = interest.getId();
 
+        if (this.selectSingle) {
+            holder.mCheckBox.setVisibility(View.GONE);
+        }
+
         if (selectedInterests.indexOf(id) >= 0) {
             removeChildrenFromSelectedInterests(interest);
             if (expandedInterestAdapters.get(interest.getId()) != null) {
@@ -118,19 +132,25 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
                 InterestsListAdapter ila = new InterestsListAdapter(this.context, childrenList);
                 ila.setIsChild(true);
                 ila.setParentId(interest.getId());
-                ila.setOnInterestsSelectListener(new OnInterestsSelectListener() {
-                    @Override
-                    public void onInterestsSelected(ArrayList<String> selectedChildren, String parentId) {
-                        removeChildrenFromSelectedInterests(interest);
-                        if (selectedChildren.size() > 0) {
-                            if (selectedInterests.indexOf(parentId) >= 0) {
-                                selectedInterests.remove(parentId);
+                ila.setSelectSingle(this.selectSingle);
+
+                if (this.selectSingle) {
+                    ila.setOnItemSelectedListener(this.interestSelectedListener);
+                } else {
+                    ila.setOnInterestsSelectListener(new OnInterestsSelectListener() {
+                        @Override
+                        public void onInterestsSelected(ArrayList<String> selectedChildren, String parentId) {
+                            removeChildrenFromSelectedInterests(interest);
+                            if (selectedChildren.size() > 0) {
+                                if (selectedInterests.indexOf(parentId) >= 0) {
+                                    selectedInterests.remove(parentId);
+                                }
+                                selectedInterests.addAll(selectedChildren);
                             }
-                            selectedInterests.addAll(selectedChildren);
+                            notifyDataSetChanged();
                         }
-                        notifyDataSetChanged();
-                    }
-                });
+                    });
+                }
                 expandedInterestAdapters.put(id, ila);
             }
             holder.mChildrenRecyclerView.setAdapter(expandedInterestAdapters.get(id));
@@ -216,6 +236,13 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
             if (listener != null) {
                 listener.onInterestsSelected(selectedInterests, parentId);
             }
+            if (interestSelectedListener != null) {
+                Realm realm = Realm.getDefaultInstance();
+                Interest interest = realm.where(Interest.class).equalTo("id", interestId).findFirst();
+                if (interest != null) interest = realm.copyFromRealm(interest);
+                realm.close();
+                interestSelectedListener.onInterestSelected(interest);
+            }
             notifyDataSetChanged();
         }
 
@@ -224,5 +251,9 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
     public interface OnInterestsSelectListener {
         void onInterestsSelected(ArrayList<String> selectedChildren, String parentId);
+    }
+
+    public interface OnInterestClickedListener {
+        void onInterestSelected(Interest interest);
     }
 }

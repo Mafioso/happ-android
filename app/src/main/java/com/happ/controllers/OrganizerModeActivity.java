@@ -78,7 +78,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
         mOrganizerFab = (FloatingActionButton) findViewById(R.id.organizer_fab);
         mOrganizerFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               Intent i = new Intent(getApplicationContext(), EventCreateActivity.class);
+               Intent i = new Intent(getApplicationContext(), EditActivity.class);
                 startActivity(i);
             }
         });
