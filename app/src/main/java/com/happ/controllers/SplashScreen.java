@@ -1,47 +1,66 @@
 package com.happ.controllers;
 
-import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.happ.App;
+import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.User;
+import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
 import java.util.Date;
 
 import io.jsonwebtoken.Claims;
-import io.realm.Realm;
 
 /**
  * Created by dante on 8/26/16.
  */
 public class SplashScreen extends AppCompatActivity {
     ImageView mLogo;
+    BroadcastReceiver mCityLoadedBroadcastReceiver;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
         mLogo = (ImageView)findViewById(R.id.img_login_logo);
 
+        if (mCityLoadedBroadcastReceiver == null) {
+            mCityLoadedBroadcastReceiver = createCityLoadedBroadcastReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mCityLoadedBroadcastReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
+        }
+
+        checkIsEverythingOk();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (mCityLoadedBroadcastReceiver != null)
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(mCityLoadedBroadcastReceiver);
+        super.onDestroy();
+    }
+
+    private void checkIsEverythingOk() {
         if (checkIsLoggedIn()) {
             if (checkCurrentUserExistence()) {
                 HappRestClient.getInstance().refreshToken();
                 if (checkCurrentCityExistence()) {
-                    if (checkInterestsSelected()) {
-                        goToFeed();
+                    if (checkCityObjectExistence()) {
+                        if (checkInterestsSelected()) {
+                            goToFeed();
+                        } else {
+                            // Select Interests Page;
+                        }
                     } else {
-                        // Select Interests Page;
+                        APIService.getCurrentCity();
                     }
                 } else {
                     // Select Current City Page
@@ -52,6 +71,15 @@ public class SplashScreen extends AppCompatActivity {
         } else {
             goToLogin();
         }
+    }
+
+    private BroadcastReceiver createCityLoadedBroadcastReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                checkIsEverythingOk();
+            }
+        };
     }
 
     private void goToFeed() {
@@ -68,12 +96,16 @@ public class SplashScreen extends AppCompatActivity {
         overridePendingTransition(0,0);
     }
 
+    private boolean checkCityObjectExistence() {
+        return App.getCurrentCity() != null;
+    }
+
     private boolean checkInterestsSelected() {
         return true;
     }
 
     private boolean checkCurrentCityExistence() {
-        return true;
+        return App.getCurrentUser().getSettings().getCity() != null;
     }
 
     private boolean checkCurrentUserExistence() {

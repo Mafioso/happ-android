@@ -28,6 +28,10 @@
             android:name=".controllers.EditActivity"
             android:label="Edit Activity"
             android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".controllers.UserActivity"
+            android:label="@string/user_settings"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
 
         <activity
             android:name=".controllers.CityActivity"
@@ -39,6 +43,8 @@
             android:windowSoftInputMode="adjustResize|stateHidden">
 
         </activity>
+        <activity android:name=".controllers.SettingsActivity"
+            android:label="Settings"/>
 
         <activity
             android:name=".controllers.SelectInterestsActivity"

@@ -1,0 +1,90 @@
+package com.happ.controllers;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+
+import com.happ.App;
+import com.happ.R;
+
+/**
+ * Created by dante on 9/22/16.
+ */
+public class SettingsActivity extends AppCompatActivity {
+
+    private DrawerLayout mDrawerLayout;
+    private Toolbar toolbar;
+    private Button mButtonUserSettings;
+
+    static
+    {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_settings);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                if (menuItem.getItemId() == R.id.nav_item_logout) {
+                    App.doLogout(SettingsActivity.this);
+                }
+                if (menuItem.getItemId() == R.id.nav_item_feed) {
+                    Intent goToFeedIntent = new Intent(SettingsActivity.this, FeedActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
+                }
+
+                if (menuItem.getItemId() == R.id.nav_item_organizer) {
+                    Intent goToFeedIntent = new Intent(SettingsActivity.this, OrganizerModeActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
+                }
+                mDrawerLayout.closeDrawers();
+                return true;
+            }
+        });
+        navigationView.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
+
+        mButtonUserSettings = (Button) findViewById(R.id.btn_user_settings);
+        mButtonUserSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_click_user_settings(v);
+            }
+        });
+
+    }
+
+    public void btn_click_user_settings(View view) {
+        Intent i = new Intent(getApplicationContext(), UserActivity.class);
+        startActivity(i);
+    }
+}

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,12 +22,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Event;
+import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -60,6 +63,8 @@ public class OrganizerModeActivity extends AppCompatActivity {
     private int previousTotal = 0;
     private int visibleThreshold;
     private FloatingActionButton mOrganizerFab;
+    private Interest selectedInterest;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +103,24 @@ public class OrganizerModeActivity extends AppCompatActivity {
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
+                }
+                if (menuItem.getItemId() == R.id.nav_item_interests) {
+//                    Intent i = new Intent(getApplicationContext(), SelectInterestsActivity.class);
+//                    startActivity(i);
+
+                    FragmentManager fm = getSupportFragmentManager();
+                    EventInterestFragment editNameDialogFragment = EventInterestFragment.newInstance();
+                    editNameDialogFragment.setOnInterestSelectListener(new EventInterestFragment.OnInterestSelectListener() {
+                        @Override
+                        public void onInterestSelected(Interest interest) {
+                            selectedInterest = interest;
+                            RealmList<Interest> interests = new RealmList<Interest>();
+                            interests.add(interest);
+                            event.setInterests(interests);
+//                            mEditInterests.setText(selectedInterest.getTitle());
+                        }
+                    });
+                    editNameDialogFragment.show(fm, "fragment_select_interest");
                 }
 
                 mDrawerLayout.closeDrawers();
