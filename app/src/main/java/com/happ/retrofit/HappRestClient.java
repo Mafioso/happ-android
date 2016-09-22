@@ -12,6 +12,7 @@ import com.happ.R;
 import com.happ.models.CitiesResponse;
 import com.happ.models.City;
 import com.happ.models.Event;
+import com.happ.models.EventImage;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
 import com.happ.models.Interest;
@@ -21,6 +22,7 @@ import com.happ.models.Settings;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
 import com.happ.retrofit.serializers.DateDeserializer;
+import com.happ.retrofit.serializers.ImageDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
 
 import java.io.IOException;
@@ -77,6 +79,7 @@ public class HappRestClient {
             gson = new GsonBuilder()
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
                     .registerTypeAdapter(Date.class, new DateDeserializer())
+                    .registerTypeAdapter(EventImage.class, new ImageDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }
