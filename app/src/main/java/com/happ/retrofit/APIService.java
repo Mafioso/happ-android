@@ -27,6 +27,7 @@ public class APIService extends IntentService {
 
     private static final String ACTION_POST_USEREDIT = "com.happ.action.ACTION_POST_USEREDIT";
 
+    private static final String ACTION_PATCH_EVENTEDIT = "com.happ.action.ACTION_PATCH_EVENTEDIT";
 
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
@@ -41,6 +42,14 @@ public class APIService extends IntentService {
     private static final String EXTRA_EMAIL = "com.happ.extra.EXTRA_EMAIL";
     private static final String EXTRA_PHONE = "com.happ.extra.EXTRA_PHONE";
     private static final String EXTRA_DATEOFBIRTH = "com.happ.extra.EXTRA_DATEOFBIRTH";
+
+    private static final String EXTRA_EVENT = "com.happ.extra.EXTRA_EVENT";
+
+    private static final String EXTRA_EE_ID = "com.happ.extra.EXTRA_EE_ID";
+    private static final String EXTRA_EE_TITLE = "com.happ.extra.EXTRA_EE_TITLE";
+    private static final String EXTRA_EE_DESCRIPTION = "com.happ.extra.EXTRA_EE_DESCRIPTION";
+    private static final String EXTRA_EE_INTERESTS = "com.happ.extra.EXTRA_EE_INTERESTS";
+
 
     public static void getEvents(boolean favs) {
         Intent intent = new Intent(App.getContext(), APIService.class);
@@ -137,6 +146,13 @@ public class APIService extends IntentService {
         App.getContext().startService(userEdit);
     }
 
+    public static void doEventEdit(String eventId) {
+        Intent eventEdit = new Intent(App.getContext(), APIService.class);
+        eventEdit.setAction(ACTION_PATCH_EVENTEDIT);
+        eventEdit.putExtra(EXTRA_EE_ID, eventId);
+        App.getContext().startService(eventEdit);
+    }
+
     public static void doSignUp (String username, String password) {
         Intent signUp = new Intent(App.getContext(), APIService.class);
         signUp.setAction(ACTION_POST_SIGNUP);
@@ -211,6 +227,14 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_GET_INTERESTS_FOR_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 HappRestClient.getInstance().getInterests(page);
+            } else if (action.equals(ACTION_PATCH_EVENTEDIT)) {
+//                Event event = (Event)intent.getSerializableExtra(EXTRA_EVENT);
+                String eventId = intent.getStringExtra(EXTRA_EE_ID);
+//                Interest interest = /// From realm by id
+
+//                event.setInterests();
+
+                HappRestClient.getInstance().doEventEdit(eventId);
             }
         }
     }

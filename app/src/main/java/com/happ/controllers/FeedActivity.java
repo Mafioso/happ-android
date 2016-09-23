@@ -1,12 +1,16 @@
 package com.happ.controllers;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happ.App;
+import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.FavoriteFeedFragment;
@@ -36,10 +41,17 @@ public class FeedActivity extends AppCompatActivity {
     private Menu menu;
 
 
+    private BroadcastReceiver userRequestDoneReceiver;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
+
+        if (userRequestDoneReceiver == null)
+            userRequestDoneReceiver = createLoginSuccessReceiver();
+
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -150,6 +162,25 @@ public class FeedActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return mTabNames[position];
         }
+    }
+
+    private BroadcastReceiver createLoginSuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                App.getCurrentUser();
+//                HappRestClient.getInstance().getCurrentUser();
+            }
+        };
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (userRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(userRequestDoneReceiver);
+            userRequestDoneReceiver = null;
+        }
+        super.onDestroy();
     }
 
 }

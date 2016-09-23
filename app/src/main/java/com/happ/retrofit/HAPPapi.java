@@ -2,6 +2,7 @@ package com.happ.retrofit;
 
 import com.happ.models.CitiesResponse;
 import com.happ.models.City;
+import com.happ.models.Event;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
 import com.happ.models.InterestResponse;
@@ -15,6 +16,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -45,6 +47,9 @@ public interface HAPPapi {
 
     @GET("users/current/")
     Call<User> getCurrentUser();
+
+    @PATCH("events/{id}/")
+    Call<Event> doEventEdit(@Path("id") String eventEditID, @Body Event event);
 
     @POST("registration/")
     Call<HappToken> doSignUp(@Body SignUpData data);

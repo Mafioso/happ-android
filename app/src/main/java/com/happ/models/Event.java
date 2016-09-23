@@ -6,6 +6,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import io.realm.RealmList;
@@ -15,7 +16,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by dante on 7/26/16.
  */
-public class Event extends RealmObject {
+public class Event extends RealmObject implements Serializable {
     @PrimaryKey
     private String id;
     private String title;
@@ -46,6 +47,8 @@ public class Event extends RealmObject {
     private String email;
     @SerializedName("web_site")
     private String webSite;
+    private boolean localOnly = false;
+    private String localId;
 
 
     public String getId() {
@@ -226,5 +229,21 @@ public class Event extends RealmObject {
 
     public void setWebSite(String webSite) {
         this.webSite = webSite;
+    }
+
+    public boolean isLocalOnly() {
+        return localOnly;
+    }
+
+    public void setLocalOnly(boolean localOnly) {
+        this.localOnly = localOnly;
+    }
+
+    public String getLocalId() {
+        return localId;
+    }
+
+    public void setLocalId(String localId) {
+        this.localId = localId;
     }
 }

@@ -1,7 +1,10 @@
 package com.happ.controllers;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
@@ -9,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -16,13 +20,12 @@ import com.happ.R;
 import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Event;
 import com.happ.models.Interest;
+import com.happ.retrofit.APIService;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -45,6 +48,7 @@ public class EditActivity extends AppCompatActivity {
     private String eventId;
     private ImageButton btnStartDate, btnEndDate;
     private NestedScrollView mScrollView;
+    private FloatingActionButton mFab;
 
     private DateTime startDate;
     private DateTime endDate;
@@ -53,7 +57,7 @@ public class EditActivity extends AppCompatActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         eventId = intent.getStringExtra("event_id");
         if (eventId != null) {
             Realm realm = Realm.getDefaultInstance();
@@ -65,10 +69,38 @@ public class EditActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_edit);
+
+        mFab = (FloatingActionButton) findViewById(R.id.edit_or_create_fab);
+
         if (eventId == null) {
             setTitle(getString(R.string.create_event));
         } else {
             setTitle(getString(R.string.edit_event));
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    hideSoftKeyboard(EditActivity.this, view);
+
+                    event.setTitle(mEditTitle.getText().toString());
+                    event.setDescription(mEditDescription.getText().toString());
+
+                    event.setLocalOnly(true);
+
+                    if (eventId != null) {
+                        event.setLocalId(eventId);
+                    }
+                    event.setId("local_event_" + (new Date()).getTime());
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(event);
+                    realm.commitTransaction();
+                    realm.close();
+
+
+                    APIService.doEventEdit(event.getId());
+                }
+            });
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -190,6 +222,12 @@ public class EditActivity extends AppCompatActivity {
                 dpd.show(getFragmentManager(), "EndDatepickerdialog");
             }
         });
+    }
+
+    public static void hideSoftKeyboard (Activity activity, View view)
+    {
+        InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
     private DatePickerDialog.OnDateSetListener createStartDateListener() {

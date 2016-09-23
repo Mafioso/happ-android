@@ -25,4 +25,7 @@ public class BroadcastIntents {
     public static final String USEREDIT_REQUEST_FAIL = "com.happ.useredit_request_fail";
     public static final String SET_USEREDIT_OK = "com.happ.set_useredit_ok";
     public static final String SET_USEREDIT_FAIL = "com.happ.set_useredit_fail";
+
+    public static final String EVENTEDIT_REQUEST_OK = "com.happ.eventedit_request_ok";
+    public static final String EVENTEDIT_REQUEST_FAIL = "com.happ.eventedit_request_fail";
 }
