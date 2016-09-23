@@ -80,6 +80,9 @@ public class OrganizerModeActivity extends AppCompatActivity {
         setTitle(R.string.organizer_title);
 
 
+//        APIService.doEventDelete(event.getId());
+
+
         mOrganizerFab = (FloatingActionButton) findViewById(R.id.organizer_fab);
         mOrganizerFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

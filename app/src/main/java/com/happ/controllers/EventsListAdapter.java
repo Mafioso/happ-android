@@ -32,6 +32,7 @@ import com.happ.App;
 import com.happ.R;
 import com.happ.Typefaces;
 import com.happ.models.Event;
+import com.happ.retrofit.APIService;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -180,7 +181,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             itemHolder.mUpvoteImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "Like for event "+item.event.getId(), Toast.LENGTH_LONG).show();
+                    if (item.event.isDidVote()) {
+                        APIService.doDownVote(item.event.getId());
+                    } else {
+                        APIService.doUpVote(item.event.getId());
+                    }
                 }
             });
 
@@ -320,6 +325,10 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                         if (menuItem.getItemId() == R.id.menu_edit) {
                             mSelectItemListener.onEventEditSelected(item.event.getId());
                         }
+                        if (menuItem.getItemId() == R.id.menu_delete) {
+//                            mSelectItemListener.onEventItemSelected(item.event.getId(), OrganizerModeActivity.this);
+                            APIService.doEventDelete(item.event.getId());
+                        }
                         return false;
                     }
                 });
@@ -361,7 +370,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         public TextView mViewsCount;
         public Event event;
         public ImageView mFavoritesImage;
-        public ImageView mUpvoteImage;
+        public ImageView mUpvoteImage, mDownVoteImage;
         public ProgressBar mImagePreloader;
         public Toolbar mToolbar;
 
@@ -378,7 +387,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mViewsCount = (TextView) itemView.findViewById(R.id.events_list_views_count);
             mImagePreloader = (ProgressBar) itemView.findViewById(R.id.events_list_image_preloader);
             mFavoritesImage = (ImageView) itemView.findViewById(R.id.clickimage_favorites);
-            mUpvoteImage = (ImageView) itemView.findViewById(R.id.clickimage_like_or_dislike);
+            mUpvoteImage = (ImageView) itemView.findViewById(R.id.clickimage_like);
             mToolbar = (Toolbar) itemView.findViewById(R.id.event_toolbar);
         }
 

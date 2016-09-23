@@ -15,6 +15,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -50,6 +51,15 @@ public interface HAPPapi {
 
     @PATCH("events/{id}/")
     Call<Event> doEventEdit(@Path("id") String eventEditID, @Body Event event);
+
+    @DELETE("events/{id}/")
+    Call<Event> doEventDelete(@Path("id") String eventID);
+
+    @GET("events/{id}/upvote")
+    Call<Void> doUpVote(@Path("id") String eventID);
+
+    @GET("events/{id}/downvote")
+    Call<Void> doDownVote(@Path("id") String eventID);
 
     @POST("registration/")
     Call<HappToken> doSignUp(@Body SignUpData data);

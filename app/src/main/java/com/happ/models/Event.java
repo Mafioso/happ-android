@@ -24,11 +24,11 @@ public class Event extends RealmObject implements Serializable {
     private String description;
     private RealmList<EventImage> images;
 //    private RealmList<String> images;
-    @SerializedName("votes")
+    @SerializedName("votes_num")
     private int votesCount;
-    @SerializedName("did_vote")
+    @SerializedName("is_upvoted")
     private boolean didVote;
-    @SerializedName("in_favorites")
+    @SerializedName("is_in_favourites")
     private boolean inFavorites;
     @SerializedName("views_count")
     private int viewsCount;

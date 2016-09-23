@@ -16,7 +16,6 @@ import com.happ.BroadcastIntents;
 import com.happ.controllers.EventsListAdapter;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
-import com.happ.retrofit.HAPPapi;
 import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ import io.realm.Sort;
  */
 public class EverythingFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver eventsRequestDoneReceiver;
+    private BroadcastReceiver didUpvoteReceiver;
 
     public static EverythingFeedFragment newInstance() {
         return new EverythingFeedFragment();
@@ -47,9 +47,22 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
 
+            if (didUpvoteReceiver == null) {
+                didUpvoteReceiver = createUpvoteReceiver();
+                LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
+            }
 //        APIService.getEvents(false);
     HappRestClient.getInstance().getEvents(false);
         return view;
+    }
+
+    private BroadcastReceiver createUpvoteReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateEventsList();
+            }
+        };
     }
 
 
@@ -58,15 +71,6 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         super.onResume();
         updateEventsList();
     }
-
-
-//    public void updateEventListTest() {
-//        Realm realm = Realm.getDefaultInstance();
-//        RealmResults<Event> eventRealmResults = realm.where(Event.class).findAllSorted("lowestPrice", Sort.ASCENDING);
-//        events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
-//        ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
-//        realm.close();
-//    }
 
     protected void updateEventsList() {
         Realm realm = Realm.getDefaultInstance();
@@ -80,6 +84,9 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     public void onDestroy() {
         if (eventsRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+        }
+        if (didUpvoteReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
         }
         super.onDestroy();
     }

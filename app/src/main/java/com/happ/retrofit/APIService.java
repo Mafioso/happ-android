@@ -26,8 +26,13 @@ public class APIService extends IntentService {
     private static final String ACTION_SET_CITIES = "com.happ.action.ACTION_SET_CITIES";
 
     private static final String ACTION_POST_USEREDIT = "com.happ.action.ACTION_POST_USEREDIT";
-
     private static final String ACTION_PATCH_EVENTEDIT = "com.happ.action.ACTION_PATCH_EVENTEDIT";
+    private static final String ACTION_DELETE_EVENT = "com.happ.extra.ACTION_DELETE_EVENT";
+    private static final String ACTION_UPVOTE_EVENT = "com.happ.extra.ACTION_UPVOTE_EVENT";
+    private static final String ACTION_DOWNVOTE_EVENT = "com.happ.extra.ACTION_DOWNVOTE_EVENT";
+
+
+
 
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
@@ -49,6 +54,13 @@ public class APIService extends IntentService {
     private static final String EXTRA_EE_TITLE = "com.happ.extra.EXTRA_EE_TITLE";
     private static final String EXTRA_EE_DESCRIPTION = "com.happ.extra.EXTRA_EE_DESCRIPTION";
     private static final String EXTRA_EE_INTERESTS = "com.happ.extra.EXTRA_EE_INTERESTS";
+
+    private static final String EXTRA_DELETE_EVENT = "com.happ.extra.EXTRA_DELETE_EVENT";
+
+    private static final String EXTRA_UPVOTE_EVENT = "com.happ.extra.EXTRA_UPVOTE_EVENT";
+    private static final String EXTRA_DOWNVOTE_EVENT = "com.happ.extra.EXTRA_DOWNVOTE_EVENT";
+
+
 
 
     public static void getEvents(boolean favs) {
@@ -146,6 +158,20 @@ public class APIService extends IntentService {
         App.getContext().startService(userEdit);
     }
 
+    public static void doUpVote(String eventId) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_UPVOTE_EVENT);
+        intent.putExtra(EXTRA_UPVOTE_EVENT, eventId);
+        App.getContext().startService(intent);
+    }
+
+    public static void doDownVote(String eventId) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_DOWNVOTE_EVENT);
+        intent.putExtra(EXTRA_DOWNVOTE_EVENT, eventId);
+        App.getContext().startService(intent);
+    }
+
     public static void doEventEdit(String eventId) {
         Intent eventEdit = new Intent(App.getContext(), APIService.class);
         eventEdit.setAction(ACTION_PATCH_EVENTEDIT);
@@ -170,6 +196,13 @@ public class APIService extends IntentService {
     public static void getCurrentCity() {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_CURRENT_CITY);
+        App.getContext().startService(intent);
+    }
+
+    public static void doEventDelete(String eventID) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_DELETE_EVENT);
+        intent.putExtra(EXTRA_DELETE_EVENT, eventID);
         App.getContext().startService(intent);
     }
 
@@ -235,7 +268,19 @@ public class APIService extends IntentService {
 //                event.setInterests();
 
                 HappRestClient.getInstance().doEventEdit(eventId);
+            } else if (action.equals(ACTION_DELETE_EVENT)) {
+                String eventId = intent.getStringExtra(EXTRA_DELETE_EVENT);
+                HappRestClient.getInstance().doEventDelete(eventId);
+            } else if (action.equals(ACTION_UPVOTE_EVENT)) {
+                String eventId = intent.getStringExtra(EXTRA_UPVOTE_EVENT);
+                HappRestClient.getInstance().doUpVote(eventId);
+            } else if (action.equals(ACTION_DOWNVOTE_EVENT)) {
+                String eventId = intent.getStringExtra(EXTRA_DOWNVOTE_EVENT);
+                HappRestClient.getInstance().doDownVote(eventId);
             }
+
+
+
         }
     }
 

@@ -454,6 +454,80 @@ public class HappRestClient {
         }
     }
 
+    public void doUpVote(final String eventId) {
+
+        happApi.doUpVote(eventId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+
+                    Realm realm = Realm.getDefaultInstance();
+                    Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    if (event != null) {
+                        realm.beginTransaction();
+                        event.setDidVote(true);
+                        event.setVotesCount(event.getVotesCount()+1);
+                        realm.copyToRealmOrUpdate(event);
+                        realm.commitTransaction();
+                    }
+
+                    Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                } else {
+                    Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
+
+    public void doDownVote(final String eventId) {
+
+        happApi.doDownVote(eventId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+
+                    Realm realm = Realm.getDefaultInstance();
+                    Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    if (event != null) {
+                        realm.beginTransaction();
+                        event.setDidVote(false);
+                        event.setVotesCount(event.getVotesCount()-1);
+                        realm.copyToRealmOrUpdate(event);
+                        realm.commitTransaction();
+                    }
+
+                    Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                } else {
+                    Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
     public void doSignUp(String username, String password) {
         SignUpData signUpData = new SignUpData();
         signUpData.setUsername(username);
@@ -681,6 +755,34 @@ public class HappRestClient {
 
             @Override
             public void onFailure(Call<City> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    public void doEventDelete(final String eventId) {
+        Event event = new Event();
+
+        happApi.doEventDelete(event.getId()).enqueue(new Callback<Event>() {
+            @Override
+            public void onResponse(Call<Event> call, Response<Event> response) {
+                if (response.isSuccessful()) {
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    Event deleteEvent = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    deleteEvent.deleteFromRealm();
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.EVENTDELETE_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Event> call, Throwable t) {
 
             }
         });

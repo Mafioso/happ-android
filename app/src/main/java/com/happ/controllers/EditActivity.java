@@ -97,8 +97,8 @@ public class EditActivity extends AppCompatActivity {
                     realm.commitTransaction();
                     realm.close();
 
-
                     APIService.doEventEdit(event.getId());
+
                 }
             });
         }
