@@ -27,12 +27,13 @@ public class APIService extends IntentService {
 
     private static final String ACTION_POST_USEREDIT = "com.happ.action.ACTION_POST_USEREDIT";
     private static final String ACTION_PATCH_EVENTEDIT = "com.happ.action.ACTION_PATCH_EVENTEDIT";
+
     private static final String ACTION_DELETE_EVENT = "com.happ.extra.ACTION_DELETE_EVENT";
     private static final String ACTION_UPVOTE_EVENT = "com.happ.extra.ACTION_UPVOTE_EVENT";
     private static final String ACTION_DOWNVOTE_EVENT = "com.happ.extra.ACTION_DOWNVOTE_EVENT";
 
 
-
+    private static final String ACTION_PATCH_EVENTCREATE = "com.happ.action.ACTION_PATCH_EVENTCREATE";
 
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
@@ -46,14 +47,8 @@ public class APIService extends IntentService {
     private static final String EXTRA_FULLNAME = "com.happ.extra.EXTRA_FULLNAME";
     private static final String EXTRA_EMAIL = "com.happ.extra.EXTRA_EMAIL";
     private static final String EXTRA_PHONE = "com.happ.extra.EXTRA_PHONE";
-    private static final String EXTRA_DATEOFBIRTH = "com.happ.extra.EXTRA_DATEOFBIRTH";
-
-    private static final String EXTRA_EVENT = "com.happ.extra.EXTRA_EVENT";
 
     private static final String EXTRA_EE_ID = "com.happ.extra.EXTRA_EE_ID";
-    private static final String EXTRA_EE_TITLE = "com.happ.extra.EXTRA_EE_TITLE";
-    private static final String EXTRA_EE_DESCRIPTION = "com.happ.extra.EXTRA_EE_DESCRIPTION";
-    private static final String EXTRA_EE_INTERESTS = "com.happ.extra.EXTRA_EE_INTERESTS";
 
     private static final String EXTRA_DELETE_EVENT = "com.happ.extra.EXTRA_DELETE_EVENT";
 
@@ -203,6 +198,12 @@ public class APIService extends IntentService {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_DELETE_EVENT);
         intent.putExtra(EXTRA_DELETE_EVENT, eventID);
+    }
+
+    public static void createEvent(String eventId) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_PATCH_EVENTCREATE);
+        intent.putExtra(EXTRA_EE_ID, eventId);
         App.getContext().startService(intent);
     }
 
@@ -261,12 +262,7 @@ public class APIService extends IntentService {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 HappRestClient.getInstance().getInterests(page);
             } else if (action.equals(ACTION_PATCH_EVENTEDIT)) {
-//                Event event = (Event)intent.getSerializableExtra(EXTRA_EVENT);
                 String eventId = intent.getStringExtra(EXTRA_EE_ID);
-//                Interest interest = /// From realm by id
-
-//                event.setInterests();
-
                 HappRestClient.getInstance().doEventEdit(eventId);
             } else if (action.equals(ACTION_DELETE_EVENT)) {
                 String eventId = intent.getStringExtra(EXTRA_DELETE_EVENT);
@@ -277,6 +273,9 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_DOWNVOTE_EVENT)) {
                 String eventId = intent.getStringExtra(EXTRA_DOWNVOTE_EVENT);
                 HappRestClient.getInstance().doDownVote(eventId);
+            } else if (action.equals(ACTION_PATCH_EVENTCREATE)) {
+                String eventId = intent.getStringExtra(EXTRA_EE_ID);
+                HappRestClient.getInstance().createEvent(eventId);
             }
 
 

@@ -12,6 +12,7 @@ public class Settings extends RealmObject{
     private int id = 1;
     private String language;
     private String city;
+    private String currency;
 
 
     public String getLanguage() {
@@ -56,5 +57,21 @@ public class Settings extends RealmObject{
         City city = getCityObject();
         if (city != null) return city.getName();
         return "";
+    }
+
+    public Currency getCurrencyObject() {
+        Realm realm = Realm.getDefaultInstance();
+        Currency currency = realm.where(Currency.class).equalTo("id", getCurrency()).findFirst();
+        if (currency != null) currency = realm.copyFromRealm(currency);
+        realm.close();
+        return currency;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }

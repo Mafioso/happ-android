@@ -8,6 +8,8 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.happ.models.Interest;
 
 import java.lang.reflect.Type;
@@ -15,7 +17,7 @@ import java.lang.reflect.Type;
 /**
  * Created by iztiev on 9/6/16.
  */
-public class InterestDeserializer implements JsonDeserializer<Interest> {
+public class InterestDeserializer implements JsonDeserializer<Interest>, JsonSerializer<Interest> {
     @Override
     public Interest deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject interestJson = json.getAsJsonObject();
@@ -73,5 +75,10 @@ public class InterestDeserializer implements JsonDeserializer<Interest> {
         }
 
         return interest;
+    }
+
+    @Override
+    public JsonElement serialize(Interest src, Type typeOfSrc, JsonSerializationContext context) {
+        return null;
     }
 }

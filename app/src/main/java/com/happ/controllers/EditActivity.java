@@ -1,11 +1,15 @@
 package com.happ.controllers;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -15,12 +19,16 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.happ.App;
+import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
+import com.happ.retrofit.HappRestClient;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -40,7 +48,8 @@ public class EditActivity extends AppCompatActivity {
 
 //    private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
-    private EditText mEditTitle, mEditDescription, mEditInterests, mEditStartDate, mEditFinishDate;
+    private EditText mEditTitle, mEditDescription, mEditInterests, mEditStartDate, mEditFinishDate,
+            mPlace, mMinPrice, mMaxPrice, mWebsite;
     private ImageButton mButtonSelectInterest;
     private ViewPager mSelectImage;
     private Event event;
@@ -54,6 +63,16 @@ public class EditActivity extends AppCompatActivity {
     private DateTime endDate;
 
     EventImagesSwipeAdapter mEventImagesSwipeAdapter;
+
+    BroadcastReceiver saveDoneReceiver;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (saveDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(saveDoneReceiver);
+        }
+    }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,31 +95,6 @@ public class EditActivity extends AppCompatActivity {
             setTitle(getString(R.string.create_event));
         } else {
             setTitle(getString(R.string.edit_event));
-            mFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    hideSoftKeyboard(EditActivity.this, view);
-
-                    event.setTitle(mEditTitle.getText().toString());
-                    event.setDescription(mEditDescription.getText().toString());
-
-                    event.setLocalOnly(true);
-
-                    if (eventId != null) {
-                        event.setLocalId(eventId);
-                    }
-                    event.setId("local_event_" + (new Date()).getTime());
-
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
-                    realm.copyToRealmOrUpdate(event);
-                    realm.commitTransaction();
-                    realm.close();
-
-                    APIService.doEventEdit(event.getId());
-
-                }
-            });
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -128,10 +122,26 @@ public class EditActivity extends AppCompatActivity {
         mEditDescription.setText(event.getDescription());
 
         mEditStartDate = (EditText) findViewById(R.id.edit_input_startDate);
+        if (event.getStartDate() == null) {
+            event.setStartDate(new Date());
+        }
         mEditStartDate.setText(event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
 
         mEditFinishDate = (EditText) findViewById(R.id.edit_input_endDate);
+        if (event.getEndDate() == null) {
+            event.setEndDate(new Date());
+        }
         mEditFinishDate.setText(event.getEndDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
+
+        mPlace = (EditText) findViewById(R.id.edit_input_place);
+        mMinPrice = (EditText) findViewById(R.id.edit_input_min_price);
+        mMaxPrice = (EditText) findViewById(R.id.edit_input_max_price);
+        mWebsite = (EditText) findViewById(R.id.edit_input_website);
+
+        mPlace.setText(event.getPlace());
+        mMinPrice.setText(String.valueOf(event.getLowestPrice()));
+        mMaxPrice.setText(String.valueOf(event.getHighestPrice()));
+        mWebsite.setText(event.getWebSite());
 
         mEditInterests = (EditText) findViewById(R.id.edit_input_interest);
         if (event.getInterest() != null) {
@@ -222,6 +232,56 @@ public class EditActivity extends AppCompatActivity {
                 dpd.show(getFragmentManager(), "EndDatepickerdialog");
             }
         });
+
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideSoftKeyboard(EditActivity.this, view);
+                saveEvent();
+            }
+        });
+
+
+        if (saveDoneReceiver == null) {
+            saveDoneReceiver = createSaveDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(saveDoneReceiver, new IntentFilter(BroadcastIntents.EVENTEDIT_REQUEST_OK));
+        }
+    }
+
+    private void saveEvent() {
+        event.setTitle(mEditTitle.getText().toString());
+        event.setDescription(mEditDescription.getText().toString());
+
+        event.setLocalOnly(true);
+
+        if (eventId != null) {
+            event.setLocalId(eventId);
+        }
+        event.setId("local_event_" + (new Date()).getTime());
+        event.setCityId(App.getCurrentCity().getId());
+        event.setCurrencyId(App.getCurrentUser().getSettings().getCurrency());
+        event.setPlace(mPlace.getText().toString());
+        if (mMinPrice.getText().toString().length() == 0) mMinPrice.setText("0");
+        if (mMaxPrice.getText().toString().length() == 0) mMaxPrice.setText("0");
+        event.setLowestPrice(Integer.parseInt(mMinPrice.getText().toString()));
+        event.setHighestPrice(Integer.parseInt(mMaxPrice.getText().toString()));
+        event.setWebSite(mWebsite.getText().toString());
+        if (event.getCurrency() != null) {
+            event.setCurrencyId(event.getCurrency().getId());
+        }
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(event);
+        realm.commitTransaction();
+        realm.close();
+
+        if (eventId == null) {
+            APIService.createEvent(event.getId());
+        } else {
+            APIService.doEventEdit(event.getId());
+        }
     }
 
     public static void hideSoftKeyboard (Activity activity, View view)
@@ -320,6 +380,22 @@ public class EditActivity extends AppCompatActivity {
 
                 event.setEndDate(calendar.getTime());
                 mEditFinishDate.setText(event.getEndDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
+            }
+        };
+    }
+
+    private BroadcastReceiver createSaveDoneReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.event_done), Snackbar.LENGTH_INDEFINITE);
+                snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            snackbar.dismiss();
+                        }
+                    });
+                snackbar.show();
             }
         };
     }

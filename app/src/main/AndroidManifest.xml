@@ -27,7 +27,7 @@
         <activity
             android:name=".controllers.EditActivity"
             android:label="Edit Activity"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity android:name=".controllers.UserActivity"
             android:label="@string/user_settings"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
@@ -37,12 +37,6 @@
             android:name=".controllers.CityActivity"
             android:label="Edit Activity"
             />
-        <activity
-            android:name=".controllers.EventCreateActivity"
-            android:label="Create Event"
-            android:windowSoftInputMode="adjustResize|stateHidden">
-
-        </activity>
         <activity android:name=".controllers.SettingsActivity"
             android:label="Settings"/>
 

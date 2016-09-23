@@ -85,7 +85,7 @@ public class HappRestClient {
         }
         if (httpLoggingInterceptor == null) {
             httpLoggingInterceptor = new HttpLoggingInterceptor();
-            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         }
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder()
 //                .addInterceptor(new LocalResponseInterceptor(App.getContext()))
@@ -398,7 +398,12 @@ public class HappRestClient {
 
         if (event != null) {
             event.setId(event.getLocalId());
-
+            ArrayList<String> interest_ids = new ArrayList<>();
+            for (Interest interest: event.getInterests()
+                    ) {
+                interest_ids.add(interest.getId());
+            }
+            event.setInterestIds(interest_ids);
             happApi.doEventEdit(event.getId(), event).enqueue(new Callback<Event>() {
                 @Override
                 public void onResponse(Call<Event> call, Response<Event> response) {
@@ -504,7 +509,7 @@ public class HappRestClient {
                     if (event != null) {
                         realm.beginTransaction();
                         event.setDidVote(false);
-                        event.setVotesCount(event.getVotesCount()-1);
+                        event.setVotesCount(event.getVotesCount() - 1);
                         realm.copyToRealmOrUpdate(event);
                         realm.commitTransaction();
                     }
@@ -526,6 +531,75 @@ public class HappRestClient {
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
         });
+    }
+
+
+    public void createEvent(final String eventId) {
+        Realm realm = Realm.getDefaultInstance();
+        Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+        event = realm.copyFromRealm(event);
+        realm.close();
+
+        if (event != null) {
+            ArrayList<String> interest_ids = new ArrayList<>();
+            for (Interest interest: event.getInterests()
+                    ) {
+                interest_ids.add(interest.getId());
+            }
+            event.setInterestIds(interest_ids);
+            happApi.createEvent(event).enqueue(new Callback<Event>() {
+                @Override
+                public void onResponse(Call<Event> call, Response<Event> response) {
+
+                    Log.d("HAPP_API", String.valueOf(response.code()));
+                    Log.d("HAPP_API", response.message());
+
+                    if (response.isSuccessful()) {
+
+                        Event event = response.body();
+
+                        Realm realm = Realm.getDefaultInstance();
+                        realm.beginTransaction();
+
+                        realm.copyToRealmOrUpdate(event);
+
+                        realm.commitTransaction();
+                        realm.close();
+
+                        Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_OK);
+                        LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                    } else {
+                        Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_FAIL);
+                        intent.putExtra("CODE", response.code());
+                        intent.putExtra("MESSAGE", response.message());
+                        LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                    }
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    Event oldEvent = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    oldEvent.deleteFromRealm();
+                    realm.commitTransaction();
+                    realm.close();
+                }
+
+                @Override
+                public void onFailure(Call<Event> call, Throwable t) {
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    Event oldEvent = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    oldEvent.deleteFromRealm();
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_FAIL);
+                    intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            });
+
+        }
     }
 
     public void doSignUp(String username, String password) {
