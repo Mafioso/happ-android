@@ -534,6 +534,79 @@ public class HappRestClient {
     }
 
 
+    public void doUnFav(final String eventId) {
+
+        happApi.doUnFav(eventId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+
+                    Realm realm = Realm.getDefaultInstance();
+                    Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    if (event != null) {
+                        realm.beginTransaction();
+                        event.setInFavorites(true);
+                        realm.copyToRealmOrUpdate(event);
+                        realm.commitTransaction();
+                    }
+
+                    Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                } else {
+                    Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
+    public void doFav(final String eventId) {
+
+        happApi.doFav(eventId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+
+                    Realm realm = Realm.getDefaultInstance();
+                    Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    if (event != null) {
+                        realm.beginTransaction();
+                        event.setInFavorites(true);
+                        realm.copyToRealmOrUpdate(event);
+                        realm.commitTransaction();
+                    }
+
+                    Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                } else {
+                    Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
+
     public void createEvent(final String eventId) {
         Realm realm = Realm.getDefaultInstance();
         Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();

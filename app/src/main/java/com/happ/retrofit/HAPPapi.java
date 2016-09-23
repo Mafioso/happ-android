@@ -61,6 +61,12 @@ public interface HAPPapi {
     @GET("events/{id}/downvote")
     Call<Void> doDownVote(@Path("id") String eventID);
 
+    @GET("events/{id}/fav/")
+    Call<Void> doFav(@Path("id") String eventID);
+
+    @GET("events/{id}/unfav")
+    Call<Void> doUnFav(@Path("id") String eventID);
+
     @POST("registration/")
     Call<HappToken> doSignUp(@Body SignUpData data);
 

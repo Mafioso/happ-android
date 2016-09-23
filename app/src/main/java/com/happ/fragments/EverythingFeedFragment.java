@@ -30,6 +30,7 @@ import io.realm.Sort;
 public class EverythingFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver eventsRequestDoneReceiver;
     private BroadcastReceiver didUpvoteReceiver;
+    private BroadcastReceiver didIsFavReceiver;
 
     public static EverythingFeedFragment newInstance() {
         return new EverythingFeedFragment();
@@ -51,11 +52,24 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 didUpvoteReceiver = createUpvoteReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
             }
+            if (didIsFavReceiver == null) {
+                didIsFavReceiver = createFavReceiver();
+                LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
+            }
     HappRestClient.getInstance().getEvents(false);
         return view;
     }
 
     private BroadcastReceiver createUpvoteReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateEventsList();
+            }
+        };
+    }
+
+    private BroadcastReceiver createFavReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -86,6 +100,9 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         }
         if (didUpvoteReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
+        }
+        if (didIsFavReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
         }
         super.onDestroy();
     }

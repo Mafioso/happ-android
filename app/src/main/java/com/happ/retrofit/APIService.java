@@ -31,6 +31,8 @@ public class APIService extends IntentService {
     private static final String ACTION_DELETE_EVENT = "com.happ.extra.ACTION_DELETE_EVENT";
     private static final String ACTION_UPVOTE_EVENT = "com.happ.extra.ACTION_UPVOTE_EVENT";
     private static final String ACTION_DOWNVOTE_EVENT = "com.happ.extra.ACTION_DOWNVOTE_EVENT";
+    private static final String ACTION_UNFAV_EVENT = "com.happ.extra.ACTION_UNFAV_EVENT";
+    private static final String ACTION_FAV_EVENT = "com.happ.extra.ACTION_FAV_EVENT";
 
 
     private static final String ACTION_PATCH_EVENTCREATE = "com.happ.action.ACTION_PATCH_EVENTCREATE";
@@ -54,6 +56,8 @@ public class APIService extends IntentService {
 
     private static final String EXTRA_UPVOTE_EVENT = "com.happ.extra.EXTRA_UPVOTE_EVENT";
     private static final String EXTRA_DOWNVOTE_EVENT = "com.happ.extra.EXTRA_DOWNVOTE_EVENT";
+    private static final String EXTRA_UNFAV_EVENT = "com.happ.extra.EXTRA_UNFAV_EVENT";
+    private static final String EXTRA_FAV_EVENT = "com.happ.extra.EXTRA_FAV_EVENT";
 
 
 
@@ -167,6 +171,20 @@ public class APIService extends IntentService {
         App.getContext().startService(intent);
     }
 
+    public static void doUnFav(String eventId) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_UNFAV_EVENT);
+        intent.putExtra(EXTRA_UNFAV_EVENT, eventId);
+        App.getContext().startService(intent);
+    }
+
+    public static void doFav(String eventId) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_FAV_EVENT);
+        intent.putExtra(EXTRA_FAV_EVENT, eventId);
+        App.getContext().startService(intent);
+    }
+
     public static void doEventEdit(String eventId) {
         Intent eventEdit = new Intent(App.getContext(), APIService.class);
         eventEdit.setAction(ACTION_PATCH_EVENTEDIT);
@@ -276,9 +294,13 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_PATCH_EVENTCREATE)) {
                 String eventId = intent.getStringExtra(EXTRA_EE_ID);
                 HappRestClient.getInstance().createEvent(eventId);
+            }else if (action.equals(ACTION_FAV_EVENT)) {
+                String eventId = intent.getStringExtra(EXTRA_FAV_EVENT);
+                HappRestClient.getInstance().doFav(eventId);
+            }else if (action.equals(ACTION_UNFAV_EVENT)) {
+                String eventId = intent.getStringExtra(EXTRA_UNFAV_EVENT);
+                HappRestClient.getInstance().doUnFav(eventId);
             }
-
-
 
         }
     }

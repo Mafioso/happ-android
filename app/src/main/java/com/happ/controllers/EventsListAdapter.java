@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -175,7 +174,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             itemHolder.mFavoritesImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "Add to favs from event "+item.event.getId(), Toast.LENGTH_LONG).show();
+                    if (item.event.isInFavorites()) {
+                        APIService.doUnFav(item.event.getId());
+                    } else {
+                        APIService.doFav(item.event.getId());
+                    }
                 }
             });
             itemHolder.mUpvoteImage.setOnClickListener(new View.OnClickListener() {
