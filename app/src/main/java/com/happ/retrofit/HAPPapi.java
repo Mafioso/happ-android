@@ -68,4 +68,7 @@ public interface HAPPapi {
 
     @GET("events/favourites/")
     Call<EventsResponse> getFavourites(@Query("page") int page);
+
+    @POST("events/")
+    Call<Event> createEvent(@Body Event event);
 }

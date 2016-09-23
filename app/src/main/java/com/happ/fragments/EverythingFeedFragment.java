@@ -47,7 +47,6 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
 
-//        APIService.getEvents(false);
     HappRestClient.getInstance().getEvents(false);
         return view;
     }
@@ -59,18 +58,9 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         updateEventsList();
     }
 
-
-//    public void updateEventListTest() {
-//        Realm realm = Realm.getDefaultInstance();
-//        RealmResults<Event> eventRealmResults = realm.where(Event.class).findAllSorted("lowestPrice", Sort.ASCENDING);
-//        events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
-//        ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
-//        realm.close();
-//    }
-
     protected void updateEventsList() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Event> eventRealmResults = realm.where(Event.class).findAllSorted("startDate", Sort.ASCENDING);
+        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).findAllSorted("startDate", Sort.ASCENDING);
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();

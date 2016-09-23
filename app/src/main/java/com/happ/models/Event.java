@@ -7,10 +7,12 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -49,7 +51,13 @@ public class Event extends RealmObject implements Serializable {
     private String webSite;
     private boolean localOnly = false;
     private String localId;
-
+    @SerializedName("city_id")
+    private String cityId;
+    @SerializedName("currency_id")
+    private String currencyId;
+    @Ignore
+    @SerializedName("interest_ids")
+    private ArrayList<String> interestIds;
 
     public String getId() {
         return id;
@@ -245,5 +253,29 @@ public class Event extends RealmObject implements Serializable {
 
     public void setLocalId(String localId) {
         this.localId = localId;
+    }
+
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCurrencyId() {
+        return currencyId;
+    }
+
+    public void setCurrencyId(String currencyId) {
+        this.currencyId = currencyId;
+    }
+
+    public ArrayList<String> getInterestIds() {
+        return interestIds;
+    }
+
+    public void setInterestIds(ArrayList<String> interestIds) {
+        this.interestIds = interestIds;
     }
 }

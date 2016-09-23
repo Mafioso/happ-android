@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.happ.App;
 import com.happ.R;
 import com.happ.models.Event;
+import com.happ.models.EventImage;
 import com.happ.models.Interest;
 import com.happ.models.User;
 
@@ -28,6 +29,7 @@ import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import java.util.ArrayList;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 
 //import android.support.design.widget.CollapsingToolbarLayout;
 
@@ -52,6 +54,9 @@ public class EventActivity extends AppCompatActivity {
     private FloatingActionButton mFab;
 
     private boolean isOrg;
+    CollapsingToolbarLayout ctl;
+
+
 
     @Override
     public void onBackPressed() {
@@ -64,42 +69,14 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        isOrg = intent.getBooleanExtra("is_organizer", false);
-        eventId = intent.getStringExtra("event_id");
+    private void repopulateEvent() {
         Realm realm = Realm.getDefaultInstance();
         event = realm.where(Event.class).equalTo("id", eventId).findFirst();
         event = realm.copyFromRealm(event);
         realm.close();
 
-        setContentView(R.layout.activity_event);
+        mEventImagesSwipeAdapter.setImageList(event.getImages());
 
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mFab.setVisibility(View.GONE);
-        if (isOrg) {
-            mFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent editIntent = new Intent(EventActivity.this, EditActivity.class);
-                    editIntent.putExtra("event_id", eventId);
-                    EventActivity.this.startActivity(editIntent);
-                }
-            });
-//            mFab.show();
-        }
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setEnterTransition(new Explode());
-            getWindow().setExitTransition(new Explode());
-        }
-
-        mEventInterestTitle = (TextView) findViewById(R.id.event_interest_title);
-        mEventInterestBg = (LinearLayout) findViewById(R.id.event_interest_bg);
-        mEventAuthor = (LinearLayout) findViewById(R.id.event_author_form);
         Interest interest = event.getInterest();
 
         if (interest != null) {
@@ -118,13 +95,7 @@ public class EventActivity extends AppCompatActivity {
         } else {
             mEventInterestTitle.setText("Null");
         }
-
-
-
-        mPlace = (TextView)findViewById(R.id.event_place);
         mPlace.setText(event.getPlace());
-
-        mAuthor = (TextView)findViewById(R.id.event_author);
         User author = event.getAuthor();
         if (author != null) {
             String fullName = author.getFullName();
@@ -132,43 +103,85 @@ public class EventActivity extends AppCompatActivity {
         } else {
             mEventAuthor.setVisibility(View.GONE);
         }
-        mDescription = (TextView)findViewById(R.id.event_description);
-        mDescription.setText(event.getDescription());
 
-        mWebSite = (TextView) findViewById(R.id.event_website);
-        mEventWEbSite = (LinearLayout) findViewById(R.id.event_website_form);
+        mDescription.setText(event.getDescription());
         if (event.getWebSite() != null ) {
             mWebSite.setText(event.getWebSite());
         } else {
             mEventWEbSite.setVisibility(View.GONE);
         }
 
-        mEventEmail = (LinearLayout) findViewById(R.id.event_email_form);
         mEmail = (TextView) findViewById(R.id.event_email);
         if (event.getEmail() != null ) {
             mEmail.setText(event.getEmail());
         } else {
             mEventEmail.setVisibility(View.GONE);
         }
+        mStartDate.setText(event.getStartDateFormatted("dd MMMM, yyyy 'a''t' h:mm"));
+        mEndDate.setText(event.getEndDateFormatted("dd MMMM, yyyy 'a''t' h:mm"));
+
+        ctl.setTitle(event.getTitle());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        isOrg = intent.getBooleanExtra("is_organizer", false);
+        eventId = intent.getStringExtra("event_id");
+
+        setContentView(R.layout.activity_event);
+
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mFab.setVisibility(View.GONE);
+        if (isOrg) {
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent editIntent = new Intent(EventActivity.this, EditActivity.class);
+                    editIntent.putExtra("event_id", eventId);
+                    EventActivity.this.startActivity(editIntent);
+                }
+            });
+        }
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(new Explode());
+            getWindow().setExitTransition(new Explode());
+        }
+
+        mEventInterestTitle = (TextView) findViewById(R.id.event_interest_title);
+        mEventInterestBg = (LinearLayout) findViewById(R.id.event_interest_bg);
+        mEventAuthor = (LinearLayout) findViewById(R.id.event_author_form);
+
+        mPlace = (TextView)findViewById(R.id.event_place);
+
+        mAuthor = (TextView)findViewById(R.id.event_author);
+
+        mDescription = (TextView)findViewById(R.id.event_description);
+
+        mWebSite = (TextView) findViewById(R.id.event_website);
+        mEventWEbSite = (LinearLayout) findViewById(R.id.event_website_form);
+
+
+        mEventEmail = (LinearLayout) findViewById(R.id.event_email_form);
 
         mStartDate = (TextView)findViewById(R.id.event_start_date);
-        mStartDate.setText(event.getStartDateFormatted("dd MMMM, yyyy 'a''t' h:mm"));
 
         mEndDate = (TextView)findViewById(R.id.event_end_date);
-        mEndDate.setText(event.getEndDateFormatted("dd MMMM, yyyy 'a''t' h:mm"));
 
 
         viewPager=(ViewPager)findViewById(R.id.slider_viewpager);
         mEventImagesSwipeAdapter = new EventImagesSwipeAdapter(getSupportFragmentManager());
-        mEventImagesSwipeAdapter.setImageList(event.getImages());
+        mEventImagesSwipeAdapter.setImageList(new RealmList<EventImage>());
         viewPager.setAdapter(mEventImagesSwipeAdapter);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        CollapsingToolbarLayout ctl = (CollapsingToolbarLayout)findViewById(R.id.event_collapsing_layout);
-        ctl.setTitle(event.getTitle());
+        ctl = (CollapsingToolbarLayout)findViewById(R.id.event_collapsing_layout);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -211,11 +224,14 @@ public class EventActivity extends AppCompatActivity {
             }
         });
         navigationView.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
+
+        repopulateEvent();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        repopulateEvent();
         if (isOrg && mFab.getVisibility() != View.VISIBLE) {
             mFab.show();
         }

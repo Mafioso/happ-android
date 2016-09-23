@@ -207,7 +207,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
     protected void updateEventsList() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("author.id", App.getCurrentUser().getId()).findAllSorted("startDate", Sort.ASCENDING);
+        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("author.id", App.getCurrentUser().getId()).equalTo("localOnly", false).findAllSorted("startDate", Sort.ASCENDING);
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();
