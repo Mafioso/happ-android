@@ -45,14 +45,9 @@ public class EventActivity extends AppCompatActivity {
     ViewPager viewPager;
     EventImagesSwipeAdapter mEventImagesSwipeAdapter;
 
-    private TextView mPlace;
-    private TextView mAuthor;
-    private TextView mDescription;
-    private TextView mStartDate;
-    private TextView mEndDate;
-    private TextView mEventTitle;
-    private TextView mEventInterestTitle;
-    private LinearLayout mEventInterestBg, mEventAuthor;
+
+    private TextView mWebSite, mEmail, mPlace, mAuthor, mDescription,mStartDate,mEndDate,mEventInterestTitle ;
+    private LinearLayout mEventInterestBg, mEventAuthor, mEventWEbSite, mEventEmail;
 
     private FloatingActionButton mFab;
 
@@ -80,8 +75,6 @@ public class EventActivity extends AppCompatActivity {
         event = realm.copyFromRealm(event);
         realm.close();
 
-
-//        setTitle(event.getTitle());
         setContentView(R.layout.activity_event);
 
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -104,9 +97,6 @@ public class EventActivity extends AppCompatActivity {
             getWindow().setExitTransition(new Explode());
         }
 
-//        mEventTitle = (TextView) findViewById(R.id.header_text);
-//        mEventTitle.setText(event.getTitle());
-//        mEventTitle.setVisibility(View.INVISIBLE);
         mEventInterestTitle = (TextView) findViewById(R.id.event_interest_title);
         mEventInterestBg = (LinearLayout) findViewById(R.id.event_interest_bg);
         mEventAuthor = (LinearLayout) findViewById(R.id.event_author_form);
@@ -132,7 +122,7 @@ public class EventActivity extends AppCompatActivity {
 
 
         mPlace = (TextView)findViewById(R.id.event_place);
-        mPlace.setText(App.getCurrentCity().getName());
+        mPlace.setText(event.getPlace());
 
         mAuthor = (TextView)findViewById(R.id.event_author);
         User author = event.getAuthor();
@@ -144,6 +134,22 @@ public class EventActivity extends AppCompatActivity {
         }
         mDescription = (TextView)findViewById(R.id.event_description);
         mDescription.setText(event.getDescription());
+
+        mWebSite = (TextView) findViewById(R.id.event_website);
+        mEventWEbSite = (LinearLayout) findViewById(R.id.event_website_form);
+        if (event.getWebSite() != null ) {
+            mWebSite.setText(event.getWebSite());
+        } else {
+            mEventWEbSite.setVisibility(View.GONE);
+        }
+
+        mEventEmail = (LinearLayout) findViewById(R.id.event_email_form);
+        mEmail = (TextView) findViewById(R.id.event_email);
+        if (event.getEmail() != null ) {
+            mEmail.setText(event.getEmail());
+        } else {
+            mEventEmail.setVisibility(View.GONE);
+        }
 
         mStartDate = (TextView)findViewById(R.id.event_start_date);
         mStartDate.setText(event.getStartDateFormatted("dd MMMM, yyyy 'a''t' h:mm"));
@@ -164,7 +170,6 @@ public class EventActivity extends AppCompatActivity {
         CollapsingToolbarLayout ctl = (CollapsingToolbarLayout)findViewById(R.id.event_collapsing_layout);
         ctl.setTitle(event.getTitle());
 
-//        toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

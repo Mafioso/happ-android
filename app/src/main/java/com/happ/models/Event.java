@@ -43,6 +43,9 @@ public class Event extends RealmObject {
     @SerializedName("max_price")
     private int highestPrice;
     private User author;
+    private String email;
+    @SerializedName("web_site")
+    private String webSite;
 
 
     public String getId() {
@@ -207,5 +210,21 @@ public class Event extends RealmObject {
 
     public void setInterests(RealmList<Interest> interests) {
         this.interests = interests;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getWebSite() {
+        return webSite;
+    }
+
+    public void setWebSite(String webSite) {
+        this.webSite = webSite;
     }
 }
