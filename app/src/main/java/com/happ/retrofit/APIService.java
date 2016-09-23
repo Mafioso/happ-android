@@ -25,6 +25,8 @@ public class APIService extends IntentService {
     private static final String ACTION_SET_INTERESTS = "com.happ.action.ACTION_SET_INTERESTS";
     private static final String ACTION_SET_CITIES = "com.happ.action.ACTION_SET_CITIES";
 
+    private static final String ACTION_POST_USEREDIT = "com.happ.action.ACTION_POST_USEREDIT";
+
 
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
@@ -34,6 +36,11 @@ public class APIService extends IntentService {
     private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
     private static final String EXTRA_SET_CITIES = "com.happ.extra.EXTRA_SET_CITIES";
     private static final String EXTRA_SEARCH_TEXT = "com.happ.extra.EXTRA_SEARCH_TEXT";
+
+    private static final String EXTRA_FULLNAME = "com.happ.extra.EXTRA_FULLNAME";
+    private static final String EXTRA_EMAIL = "com.happ.extra.EXTRA_EMAIL";
+    private static final String EXTRA_PHONE = "com.happ.extra.EXTRA_PHONE";
+    private static final String EXTRA_DATEOFBIRTH = "com.happ.extra.EXTRA_DATEOFBIRTH";
 
     public static void getEvents(boolean favs) {
         Intent intent = new Intent(App.getContext(), APIService.class);
@@ -120,6 +127,16 @@ public class APIService extends IntentService {
         App.getContext().startService(login);
     }
 
+    public static void doUserEdit(String edit_fullname, String edit_email, String edit_phone) {
+        Intent userEdit = new Intent(App.getContext(), APIService.class);
+        userEdit.setAction(ACTION_POST_USEREDIT);
+        userEdit.putExtra(EXTRA_FULLNAME, edit_fullname);
+        userEdit.putExtra(EXTRA_EMAIL, edit_email);
+        userEdit.putExtra(EXTRA_PHONE, edit_phone);
+//        userEdit.putExtra(EXTRA_DATEOFBIRTH, edit_dateofbirth.getTime());
+        App.getContext().startService(userEdit);
+    }
+
     public static void doSignUp (String username, String password) {
         Intent signUp = new Intent(App.getContext(), APIService.class);
         signUp.setAction(ACTION_POST_SIGNUP);
@@ -167,6 +184,13 @@ public class APIService extends IntentService {
                 String username = intent.getStringExtra(EXTRA_USERNAME);
                 String password = intent.getStringExtra(EXTRA_PASSWORD);
                 HappRestClient.getInstance().doLogin(username, password);
+            } else if (action.equals(ACTION_POST_USEREDIT)) {
+                String edit_fullname = intent.getStringExtra(EXTRA_FULLNAME);
+                String edit_email = intent.getStringExtra(EXTRA_EMAIL);
+                String edit_phone = intent.getStringExtra(EXTRA_PHONE);
+//                long birthDateLong = intent.getLongExtra(EXTRA_DATEOFBIRTH, 0);
+//                Date edit_dateofbirth = new Date(birthDateLong);
+                HappRestClient.getInstance().doUserEdit(edit_fullname, edit_email, edit_phone);
             } else if (action.equals(ACTION_POST_SIGNUP)) {
                 String username = intent.getStringExtra(EXTRA_USERNAME);
                 String password = intent.getStringExtra(EXTRA_PASSWORD);

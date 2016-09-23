@@ -60,7 +60,7 @@ public class FeedActivity extends AppCompatActivity {
                 }
 
                 if (menuItem.getItemId() == R.id.nav_item_settings) {
-                    Intent goToFeedIntent = new Intent(FeedActivity.this, SettingsActivity.class);
+                    Intent goToFeedIntent = new Intent(FeedActivity.this, UserActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);

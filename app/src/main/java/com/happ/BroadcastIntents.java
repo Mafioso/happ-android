@@ -21,4 +21,8 @@ public class BroadcastIntents {
     public static final String SET_INTERESTS_FAIL = "com.happ.set_interests_fail";
     public static final String SET_CITIES_OK = "com.happ.set_cities_ok";
     public static final String SET_CITIES_FAIL = "com.happ.set_cities_fail";
+    public static final String USEREDIT_REQUEST_OK = "com.happ.useredit_request_ok";
+    public static final String USEREDIT_REQUEST_FAIL = "com.happ.useredit_request_fail";
+    public static final String SET_USEREDIT_OK = "com.happ.set_useredit_ok";
+    public static final String SET_USEREDIT_FAIL = "com.happ.set_useredit_fail";
 }

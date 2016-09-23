@@ -8,6 +8,7 @@ import com.happ.models.InterestResponse;
 import com.happ.models.LoginData;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
+import com.happ.models.UserEditData;
 
 import java.util.List;
 
@@ -32,6 +33,9 @@ public interface HAPPapi {
 
     @POST("auth/login/")
     Call<HappToken> doLogin(@Body LoginData data);
+
+    @POST("users/current/edit/")
+    Call<HappToken> doUserEdit(@Body UserEditData data);
 
     @POST("auth/refresh/")
     Call<HappToken> refreshToken(@Body HappToken data);

@@ -18,9 +18,9 @@ import com.happ.models.HappToken;
 import com.happ.models.Interest;
 import com.happ.models.InterestResponse;
 import com.happ.models.LoginData;
-import com.happ.models.Settings;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
+import com.happ.models.UserEditData;
 import com.happ.retrofit.serializers.DateDeserializer;
 import com.happ.retrofit.serializers.ImageDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
@@ -341,6 +341,55 @@ public class HappRestClient {
             }
         });
     }
+
+    public void doUserEdit(String edit_fullname, String edit_email, String edit_phone) {
+
+        UserEditData userEditData = new UserEditData();
+        userEditData.setFullname(edit_fullname);
+        userEditData.setEmail(edit_email);
+        userEditData.setPhone(edit_phone);
+//        userEditData.setDate_of_birth(edit_dateofbirth);
+
+        happApi.doUserEdit(userEditData).enqueue(new Callback<HappToken>() {
+            @Override
+            public void onResponse(Call<HappToken> call, Response<HappToken> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()));
+                Log.d("HAPP_API", response.message());
+
+                if(response.isSuccessful()) {
+
+                    HappToken happToken = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(happToken);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    setAuthHeader();
+
+                    Intent intent = new Intent(BroadcastIntents.USEREDIT_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.USEREDIT_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HappToken> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.USEREDIT_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
 
     public void doSignUp(String username, String password) {
         SignUpData signUpData = new SignUpData();

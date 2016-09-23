@@ -2,6 +2,8 @@ package com.happ.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Date;
+
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -78,5 +80,9 @@ public class User extends RealmObject {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Date getBirthDate() {
+        return null;
     }
 }

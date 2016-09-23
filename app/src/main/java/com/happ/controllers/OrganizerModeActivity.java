@@ -104,6 +104,13 @@ public class OrganizerModeActivity extends AppCompatActivity {
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
                 }
+                if (menuItem.getItemId() == R.id.nav_item_settings) {
+                    Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, UserActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
+
+                }
                 if (menuItem.getItemId() == R.id.nav_item_interests) {
 //                    Intent i = new Intent(getApplicationContext(), SelectInterestsActivity.class);
 //                    startActivity(i);
@@ -122,6 +129,8 @@ public class OrganizerModeActivity extends AppCompatActivity {
                     });
                     editNameDialogFragment.show(fm, "fragment_select_interest");
                 }
+
+
 
                 mDrawerLayout.closeDrawers();
                 return true;
