@@ -265,18 +265,28 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             itemHolder.mVotesCount.setText(String.valueOf(item.event.getVotesCount()));
             itemHolder.mViewsCount.setText(String.valueOf(item.event.getViewsCount()));
 
-            ArrayList<String> fullTitle = item.event.getInterest().getFullTitle();
+            if ( item.event.getInterest() != null) {
+                ArrayList<String> fullTitle = item.event.getInterest().getFullTitle();
 
-            String fullTitleString = fullTitle.get(0);
-            if (fullTitle.size() > 1) {
-                fullTitleString = fullTitleString + " / " + fullTitle.get(1);
-            }
-            itemHolder.mInterestTitle.setText(fullTitleString);
+                if (item.event.getInterest().getColor() != null) {
+                    String color = "#" + item.event.getInterest().getColor();
+                    itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(color));
+                } else {
+                    itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor("#FF1493"));
+                }
 
-            if (item.event.getInterest().getColor() != null) {
-                String color = "#" + item.event.getInterest().getColor();
-                itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(color));
+                String fullTitleString = fullTitle.get(0);
+                if (fullTitle.size() > 1) {
+                    fullTitleString = fullTitleString + " / " + fullTitle.get(1);
+                }
+                itemHolder.mInterestTitle.setText(fullTitleString);
+
+            } else {
+                itemHolder.mInterestTitle.setText("Null");
             }
+
+
+
 
             if (item.event.isDidVote()) {
                 itemHolder.mUpvoteImage.setImageResource(R.drawable.ic_did_upvote);

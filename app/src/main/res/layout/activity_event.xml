@@ -252,7 +252,8 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="40dp"
                     android:paddingLeft="16dp"
-                    android:paddingRight="8dp">
+                    android:paddingRight="8dp"
+                    android:id="@+id/event_author_form">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/event_author_image"

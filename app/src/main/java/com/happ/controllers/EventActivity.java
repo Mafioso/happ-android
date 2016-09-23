@@ -52,7 +52,7 @@ public class EventActivity extends AppCompatActivity {
     private TextView mEndDate;
     private TextView mEventTitle;
     private TextView mEventInterestTitle;
-    private LinearLayout mEventInterestBg;
+    private LinearLayout mEventInterestBg, mEventAuthor;
 
     private FloatingActionButton mFab;
 
@@ -107,31 +107,41 @@ public class EventActivity extends AppCompatActivity {
 //        mEventTitle = (TextView) findViewById(R.id.header_text);
 //        mEventTitle.setText(event.getTitle());
 //        mEventTitle.setVisibility(View.INVISIBLE);
-
-        mEventInterestBg = (LinearLayout) findViewById(R.id.event_interest_bg);
-        Interest interest = event.getInterest();
-        String color = interest.getColor();
-        if (color != null) {
-            mEventInterestBg.setBackgroundColor(Color.parseColor("#"+color));
-        }
-
         mEventInterestTitle = (TextView) findViewById(R.id.event_interest_title);
-        ArrayList<String> fullTitle = event.getInterest().getFullTitle();
+        mEventInterestBg = (LinearLayout) findViewById(R.id.event_interest_bg);
+        mEventAuthor = (LinearLayout) findViewById(R.id.event_author_form);
+        Interest interest = event.getInterest();
 
-        String fullTitleString = fullTitle.get(0);
-        if (fullTitle.size() > 1) {
-            fullTitleString = fullTitleString + " / " + fullTitle.get(1);
+        if (interest != null) {
+            if (interest.getColor() != null) {
+                mEventInterestBg.setBackgroundColor(Color.parseColor("#" + interest.getColor()));
+            } else {
+                mEventInterestBg.setBackgroundColor(Color.parseColor("#FF1493"));
+            }
+
+            ArrayList<String> fullTitle = event.getInterest().getFullTitle();
+            String fullTitleString = fullTitle.get(0);
+            if (fullTitle.size() > 1) {
+                fullTitleString = fullTitleString + " / " + fullTitle.get(1);
+            }
+            mEventInterestTitle.setText(fullTitleString.toUpperCase());
+        } else {
+            mEventInterestTitle.setText("Null");
         }
-        mEventInterestTitle.setText(fullTitleString.toUpperCase());
+
+
 
         mPlace = (TextView)findViewById(R.id.event_place);
         mPlace.setText(App.getCurrentCity().getName());
 
         mAuthor = (TextView)findViewById(R.id.event_author);
         User author = event.getAuthor();
-        String fullName = author.getFullName();
-        mAuthor.setText(event.getAuthor().getFullName());
-
+        if (author != null) {
+            String fullName = author.getFullName();
+            mAuthor.setText(event.getAuthor().getFullName());
+        } else {
+            mEventAuthor.setVisibility(View.GONE);
+        }
         mDescription = (TextView)findViewById(R.id.event_description);
         mDescription.setText(event.getDescription());
 

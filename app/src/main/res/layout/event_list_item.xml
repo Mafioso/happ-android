@@ -213,7 +213,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:layout_gravity="center"
-            android:text="Music"
+            android:text="Music "
             android:id="@+id/events_list_item_interest"
             android:textSize="18sp"
             android:textAllCaps="true"
