@@ -37,6 +37,9 @@ public interface HAPPapi {
     @POST("auth/login/")
     Call<HappToken> doLogin(@Body LoginData data);
 
+    @POST("auth/register/")
+    Call<HappToken> doSignUp(@Body SignUpData data);
+
     @POST("users/current/edit/")
     Call<HappToken> doUserEdit(@Body UserEditData data);
 
@@ -67,8 +70,6 @@ public interface HAPPapi {
     @GET("events/{id}/unfav")
     Call<Void> doUnFav(@Path("id") String eventID);
 
-    @POST("registration/")
-    Call<HappToken> doSignUp(@Body SignUpData data);
 
     @GET("cities/{id}/")
     Call<City> getCity(@Path("id") String id);

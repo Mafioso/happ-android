@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,6 +35,7 @@ public class BaseFeedFragment extends Fragment {
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
+    private String searchText;
 
 
     public static BaseFeedFragment newInstance() {
@@ -123,6 +123,8 @@ public class BaseFeedFragment extends Fragment {
             }
         });
     }
+
+
 
     protected void getEvents(int page, boolean favs) {
     }

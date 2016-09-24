@@ -693,13 +693,14 @@ public class HappRestClient {
                     realm.commitTransaction();
                     realm.close();
 
+                    setAuthHeader();
+
                     Intent intent = new Intent(BroadcastIntents.SIGNUP_REQUEST_OK);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
                 else {
                     Intent intent = new Intent(BroadcastIntents.SIGNUP_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
-                    intent.putExtra("BODY", response.body().toString());
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }

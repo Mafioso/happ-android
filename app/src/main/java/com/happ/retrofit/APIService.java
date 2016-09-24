@@ -45,6 +45,8 @@ public class APIService extends IntentService {
     private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
     private static final String EXTRA_SET_CITIES = "com.happ.extra.EXTRA_SET_CITIES";
     private static final String EXTRA_SEARCH_TEXT = "com.happ.extra.EXTRA_SEARCH_TEXT";
+    private static final String EXTRA_EVENT_SEARCH_TEXT = "com.happ.extra.EXTRA_EVENT_SEARCH_TEXT";
+
 
     private static final String EXTRA_FULLNAME = "com.happ.extra.EXTRA_FULLNAME";
     private static final String EXTRA_EMAIL = "com.happ.extra.EXTRA_EMAIL";
@@ -76,6 +78,7 @@ public class APIService extends IntentService {
         intent.putExtra(EXTRA_GET_FAVS, favs);
         App.getContext().startService(intent);
     }
+
 
     public static void getCities() {
         Intent intent = new Intent(App.getContext(), APIService.class);
