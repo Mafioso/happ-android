@@ -474,6 +474,8 @@ public class HappRestClient {
                     }
 
                     Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK);
+                    intent.putExtra(BroadcastIntents.EXTRA_DID_UPVOTE, 1);
+                    intent.putExtra(BroadcastIntents.EXTRA_EVENT_ID, eventId);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 } else {
                     Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
@@ -510,6 +512,8 @@ public class HappRestClient {
                     }
 
                     Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK);
+                    intent.putExtra(BroadcastIntents.EXTRA_DID_UPVOTE, 0);
+                    intent.putExtra(BroadcastIntents.EXTRA_EVENT_ID, eventId);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 } else {
                     Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
@@ -546,6 +550,8 @@ public class HappRestClient {
                     }
 
                     Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_OK);
+                    intent.putExtra(BroadcastIntents.EXTRA_DID_FAV, 0);
+                    intent.putExtra(BroadcastIntents.EXTRA_EVENT_ID, eventId);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 } else {
                     Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);
@@ -582,6 +588,8 @@ public class HappRestClient {
                     }
 
                     Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_OK);
+                    intent.putExtra(BroadcastIntents.EXTRA_DID_FAV, 1);
+                    intent.putExtra(BroadcastIntents.EXTRA_EVENT_ID, eventId);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 } else {
                     Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);

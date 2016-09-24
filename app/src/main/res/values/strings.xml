@@ -72,4 +72,15 @@
     <string name="city_search">Find City</string>
     <string name="organizer_title">Organizer Mode</string>
     <string name="user_settings">User Settings</string>
+
+    <string name="did_upvote">You Like Event </string>
+    <string name="did_downvote">You No Longer Like Event </string>
+
+    <string name="did_fav">You Added Event </string>
+    <string name="did_fav_2"> To Favorites</string>
+    <string name="did_unfav">Your Removed Event </string>
+    <string name="did_unfav_2"> From Favorites</string>
+
+
+    <string name="undo">UNDO</string>
 </resources>

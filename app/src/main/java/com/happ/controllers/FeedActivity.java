@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,9 +30,11 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.FavoriteFeedFragment;
+import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.happ.models.User;
 import com.happ.models.UserAccount;
+import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
 
@@ -48,9 +52,14 @@ public class FeedActivity extends AppCompatActivity {
     protected ArrayList<User> user;
     private String username;
     private NavigationView navigationView;
+    private CoordinatorLayout rootLayout;
+
+    private boolean isUnvoting = false;
 
 
     private BroadcastReceiver userRequestDoneReceiver;
+    private BroadcastReceiver didUpvoteReceiver;
+    private BroadcastReceiver didIsFavReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +70,17 @@ public class FeedActivity extends AppCompatActivity {
             userRequestDoneReceiver = createLoginSuccessReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
         }
+
+        if (didUpvoteReceiver == null) {
+            didUpvoteReceiver = createUpvoteReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
+        }
+        if (didIsFavReceiver == null) {
+            didIsFavReceiver = createFavReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
+        }
+
+        rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -236,7 +256,64 @@ public class FeedActivity extends AppCompatActivity {
         if (userRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(userRequestDoneReceiver);
         }
+        if (didUpvoteReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
+        }
+        if (didIsFavReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
+        }
         super.onDestroy();
+    }
+
+    private BroadcastReceiver createUpvoteReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (isUnvoting) {
+                    isUnvoting = false;
+                    return;
+                }
+                final int didUpvote = intent.getIntExtra(BroadcastIntents.EXTRA_DID_UPVOTE, -1);
+                final String eventId = intent.getStringExtra(BroadcastIntents.EXTRA_EVENT_ID);
+                if (didUpvote >= 0 && eventId != null) {
+                    isUnvoting = true;
+                    Realm realm = Realm.getDefaultInstance();
+                    Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    String eventTitle = event.getTitle();
+                    String text = "";
+                    if (didUpvote == 1) {
+                        text = getResources().getString(R.string.did_upvote) + " " + eventTitle;
+                    } else {
+                        text = getResources().getString(R.string.did_downvote) + " " + eventTitle;
+                    }
+                    String undo = getResources().getString(R.string.undo);
+
+                    final Snackbar snackbar = Snackbar.make(rootLayout, text, Snackbar.LENGTH_SHORT);
+                    snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (didUpvote == 1) {
+                                APIService.doDownVote(eventId);
+                            } else {
+                                APIService.doUpVote(eventId);
+                            }
+                            snackbar.dismiss();
+                        }
+                    });
+                    snackbar.show();
+                }
+//                updateEventsList();
+            }
+        };
+    }
+
+    private BroadcastReceiver createFavReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+//                updateEventsList();
+            }
+        };
     }
 
 }

@@ -36,4 +36,9 @@ public class BroadcastIntents {
 
     public static final String EVENT_UNFAV_REQUEST_OK = "com.happ.event_unfav_request_ok";
     public static final String EVENT_UNFAV_REQUEST_FAIL = "com.happ.event_unfav_request_fail";
+
+
+    public static final String EXTRA_DID_UPVOTE = "com.happ.extra.did_upvote";
+    public static final String EXTRA_DID_FAV = "com.happ.extra.did_fav";
+    public static final String EXTRA_EVENT_ID = "com.happ.extra.event_id";
 }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.R;
 import com.happ.controllers.EventsListAdapter;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
@@ -31,6 +33,8 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver eventsRequestDoneReceiver;
     private BroadcastReceiver didUpvoteReceiver;
     private BroadcastReceiver didIsFavReceiver;
+
+    private boolean isUndoing = false;
 
     public static EverythingFeedFragment newInstance() {
         return new EverythingFeedFragment();
