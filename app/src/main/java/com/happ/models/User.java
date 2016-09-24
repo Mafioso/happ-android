@@ -2,6 +2,7 @@ package com.happ.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import io.realm.RealmList;
@@ -103,5 +104,15 @@ public class User extends RealmObject {
 
     public void setInterests(RealmList<Interest> interests) {
         this.interests = interests;
+    }
+
+    public ArrayList<String> getInterestIds() {
+        ArrayList<String> ids = new ArrayList<>();
+
+        for (int i=0; i<interests.size();i++) {
+            ids.add(interests.get(i).getId());
+        }
+
+        return ids;
     }
 }

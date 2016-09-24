@@ -31,6 +31,7 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     private String parentId;
     private OnInterestClickedListener interestSelectedListener;
     private boolean selectSingle = false;
+    private ArrayList<String> userInterestIds;
 
     private ArrayList<String> expandedInterests;
 
@@ -59,6 +60,29 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     }
     public void setIsChild(boolean val) {
         isChild = val;
+        notifyDataSetChanged();
+    }
+
+    public void setUserAcivityIds(ArrayList<String> interestIds) {
+        userInterestIds = interestIds;
+        updateSelectedInterests();
+    }
+
+    private void updateSelectedInterests() {
+        if (userInterestIds != null) {
+            for (int i=0; i<userInterestIds.size(); i++) {
+                boolean notInSelectedInterests = true;
+                for (int j = 0; j<selectedInterests.size(); j++) {
+                    if (userInterestIds.get(i).equals(selectedInterests.get(j))) {
+                        notInSelectedInterests = false;
+                        break;
+                    }
+                }
+                if (notInSelectedInterests) {
+                    selectedInterests.add(userInterestIds.get(i));
+                }
+            }
+        }
         notifyDataSetChanged();
     }
 
@@ -133,6 +157,9 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
                 ila.setIsChild(true);
                 ila.setParentId(interest.getId());
                 ila.setSelectSingle(this.selectSingle);
+                if (userInterestIds != null) {
+                    ila.setUserAcivityIds(userInterestIds);
+                }
 
                 if (this.selectSingle) {
                     ila.setOnItemSelectedListener(this.interestSelectedListener);

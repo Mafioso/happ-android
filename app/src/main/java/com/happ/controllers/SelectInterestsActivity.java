@@ -25,7 +25,6 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.Interest;
-import com.happ.models.UserAccount;
 import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
@@ -112,6 +111,9 @@ public class SelectInterestsActivity extends AppCompatActivity {
         }
 
         mInterestsListAdapter = new InterestsListAdapter(this, interests);
+        if (fullActivity) {
+            mInterestsListAdapter.setUserAcivityIds(App.getCurrentUser().getInterestIds());
+        }
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
         mFab.setVisibility(View.VISIBLE);
 
