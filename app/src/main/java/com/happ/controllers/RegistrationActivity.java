@@ -29,10 +29,9 @@ import android.widget.Toast;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.models.HappToken;
+import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
-import io.realm.Realm;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
@@ -46,6 +45,8 @@ public class RegistrationActivity extends AppCompatActivity {
     ImageButton mPWVisibility, mPWVisibilityOff, mPWRVisibility, mPWRVisibilityOff;
     private BroadcastReceiver signUpRequestDoneReceiver;
     private BroadcastReceiver getSignUpRequestFail;
+    private BroadcastReceiver currentUserDoneReceiver;
+    private BroadcastReceiver currentCityDoneReceiver;
 
     boolean isKeyboarShown = false;
     ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
@@ -57,6 +58,18 @@ public class RegistrationActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration_form);
+
+        if (signUpRequestDoneReceiver == null) signUpRequestDoneReceiver = createSignUpSuccessReceiver();
+        if (currentUserDoneReceiver == null) currentUserDoneReceiver = createGetCurrentUserSuccessReceiver();
+
+        if (getSignUpRequestFail == null) getSignUpRequestFail = createSignUpFailureReceiver();
+        if (currentCityDoneReceiver == null) currentCityDoneReceiver = createGetCurrentCitySuccessReceiver();
+
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(signUpRequestDoneReceiver, new IntentFilter(BroadcastIntents.SIGNUP_REQUEST_OK));
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(getSignUpRequestFail, new IntentFilter(BroadcastIntents.SIGNUP_REQUEST_FAIL));
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentUserDoneReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
+
 
         mUsername = (EditText) findViewById(R.id.input_signup_username);
         mPassword = (EditText) findViewById(R.id.input_signup_password);
@@ -71,18 +84,15 @@ public class RegistrationActivity extends AppCompatActivity {
         mPWRVisibilityOff.setVisibility(View.GONE);
         mPWVisibilityOff.setVisibility(View.GONE);
         mSignUpFab = (FloatingActionButton) findViewById(R.id.signup_fab);
+        mSignUpFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                APIService.doSignUp(mUsername.getText().toString(), mPassword.getText().toString());
+            }
+        });
         signUpRequestDoneReceiver = createSignUpSuccessReceiver();
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_signup);
         mFormLayout = (RelativeLayout) findViewById(R.id.form_layout);
-
-        if (signUpRequestDoneReceiver == null)
-            signUpRequestDoneReceiver = createSignUpSuccessReceiver();
-        if (getSignUpRequestFail == null)
-            getSignUpRequestFail = createSignUpFailureReceiver();
-
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(signUpRequestDoneReceiver, new IntentFilter(BroadcastIntents.SIGNUP_REQUEST_OK));
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(getSignUpRequestFail, new IntentFilter(BroadcastIntents.SIGNUP_REQUEST_FAIL));
-
 
         checkValidation();
 
@@ -228,19 +238,11 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                Realm realm = Realm.getDefaultInstance();
-                HappToken token = realm.where(HappToken.class).findFirst();
-                token = realm.copyFromRealm(token);
-                realm.close();
-
-                mProgressBar.setVisibility(View.INVISIBLE);
-
-//                int i = token.getToken().lastIndexOf('.');
-//                String unsignedToken = token.getToken().substring(0,i+1);
-//                Jwt<Header,Claims> tokenData = Jwts.parser().parseClaimsJwt(unsignedToken);
-//                String username = tokenData.getBody().getSubject();
-
-//                APIService.getUser(username);
+//                Realm realm = Realm.getDefaultInstance();
+//                HappToken token = realm.where(HappToken.class).findFirst();
+//                token = realm.copyFromRealm(token);
+//                realm.close();
+                APIService.getCurrentUser();
             }
         };
     }
@@ -251,7 +253,42 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mSignUpFab.setVisibility(View.VISIBLE);
-//                Toast.makeText(RegistrationActivity.this, "Введен не верный логин или пароль", Toast.LENGTH_LONG).show();
+                Toast.makeText(RegistrationActivity.this, "Wrong Username or Password", Toast.LENGTH_LONG).show();
+            }
+        };
+    }
+
+
+    private BroadcastReceiver createGetCurrentCitySuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mProgressBar.setVisibility(View.INVISIBLE);
+
+                Intent goToFeedIntent = new Intent(RegistrationActivity.this, CityActivity.class);
+                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(goToFeedIntent);
+                overridePendingTransition(0,0);
+
+            }
+        };
+    }
+
+    private BroadcastReceiver createGetCurrentUserSuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                User currentUser = App.getCurrentUser();
+                if (currentUser.getSettings().getCity() != null) {
+                    APIService.getCurrentCity();
+//                    HappRestClient.getInstance().getCurrentCity();
+                } else {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    Intent goToFeedIntent = new Intent(RegistrationActivity.this, CityActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
+                }
             }
         };
     }
@@ -261,8 +298,23 @@ public class RegistrationActivity extends AppCompatActivity {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
         if (mKeyboardListener != null)
             activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
-        if (signUpRequestDoneReceiver != null) signUpRequestDoneReceiver = null;
-        if (getSignUpRequestFail != null) getSignUpRequestFail = null;
+        if (signUpRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(signUpRequestDoneReceiver);
+            signUpRequestDoneReceiver = null;
+        }
+
+        if (getSignUpRequestFail != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(getSignUpRequestFail);
+            getSignUpRequestFail = null;
+        }
+        if (currentUserDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(currentUserDoneReceiver);
+            currentUserDoneReceiver = null;
+        }
+        if (currentCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(currentCityDoneReceiver);
+            currentCityDoneReceiver = null;
+        }
         super.onDestroy();
     }
 }

@@ -97,8 +97,7 @@ public class LoginActivity extends AppCompatActivity {
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_login);
 
 
-        if (loginRequestDoneReceiver == null)
-            loginRequestDoneReceiver = createLoginSuccessReceiver();
+        if (loginRequestDoneReceiver == null) loginRequestDoneReceiver = createLoginSuccessReceiver();
         if (loginFailedReceiver == null) loginFailedReceiver = createLoginFailureReceiver();
         if (currentUserDoneReceiver == null) currentUserDoneReceiver = createGetCurrentUserSuccessReceiver();
         if (currentCityDoneReceiver == null) currentCityDoneReceiver = createGetCurrentCitySuccessReceiver();
@@ -248,7 +247,10 @@ public class LoginActivity extends AppCompatActivity {
                     APIService.getCurrentCity();
 //                    HappRestClient.getInstance().getCurrentCity();
                 } else {
-                    mProgressBar.setVisibility(View.INVISIBLE);
+                    Intent goToFeedIntent = new Intent(LoginActivity.this, CityActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
                 }
             }
         };
@@ -265,10 +267,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(goToFeedIntent);
                 overridePendingTransition(0,0);
 
-//                Intent goToFeedIntent = new Intent(LoginActivity.this, FeedActivity.class);
-//                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                startActivity(goToFeedIntent);
-//                overridePendingTransition(0,0);
             }
         };
     }

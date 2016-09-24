@@ -37,7 +37,7 @@
             android:layout_below="@+id/interests_app_bar"
             android:id="@+id/activity_interests_rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@android:color/background_light">
         </android.support.v7.widget.RecyclerView>
 
