@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,9 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.FavoriteFeedFragment;
+import com.happ.models.Interest;
 import com.happ.models.User;
+import com.happ.models.UserAccount;
 
 import java.util.ArrayList;
 
@@ -78,7 +81,7 @@ public class FeedActivity extends AppCompatActivity {
                 }
 
                 if (menuItem.getItemId() == R.id.nav_item_settings) {
-                    Intent goToFeedIntent = new Intent(FeedActivity.this, UserActivity.class);
+                    Intent goToFeedIntent = new Intent(FeedActivity.this, SettingsActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
@@ -86,8 +89,25 @@ public class FeedActivity extends AppCompatActivity {
                 }
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {
                     Intent goToFeedIntent = new Intent(FeedActivity.this, OrganizerModeActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
+                }
+
+                if (menuItem.getItemId() == R.id.nav_item_interests) {
+                    Intent intent = new Intent(FeedActivity.this, SelectInterestsActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+
+                }
+
+                if (menuItem.getItemId() == R.id.nav_item_feed) {
+                    Intent intent = new Intent(FeedActivity.this, FeedActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                     overridePendingTransition(0,0);
                 }
                 mDrawerLayout.closeDrawers();
@@ -99,6 +119,21 @@ public class FeedActivity extends AppCompatActivity {
 
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeedActivity.this, UserAccount.class);
+                startActivity(intent);
+            }
+        });
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FeedActivity.this, UserAccount.class);
+                startActivity(intent);
+            }
+        });
 
         mTabFragments = new ArrayList<>();
         for (int i=0; i<mTabNames.length; i++) {

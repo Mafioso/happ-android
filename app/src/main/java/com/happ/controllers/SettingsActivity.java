@@ -10,9 +10,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.happ.App;
 import com.happ.R;
+import com.happ.models.UserAccount;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by dante on 9/22/16.
@@ -54,24 +58,58 @@ public class SettingsActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.nav_item_logout) {
                     App.doLogout(SettingsActivity.this);
                 }
-                if (menuItem.getItemId() == R.id.nav_item_feed) {
-                    Intent goToFeedIntent = new Intent(SettingsActivity.this, FeedActivity.class);
+                if (menuItem.getItemId() == R.id.nav_item_settings) {
+                    Intent goToFeedIntent = new Intent(SettingsActivity.this, SettingsActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
-                }
 
+                }
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {
                     Intent goToFeedIntent = new Intent(SettingsActivity.this, OrganizerModeActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
                 }
+
+                if (menuItem.getItemId() == R.id.nav_item_interests) {
+                    Intent intent = new Intent(SettingsActivity.this, SelectInterestsActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+
+                }
+
+                if (menuItem.getItemId() == R.id.nav_item_feed) {
+                    Intent intent = new Intent(SettingsActivity.this, FeedActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
         });
-        navigationView.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
+        navigationView.getMenu().findItem(R.id.nav_item_settings).setChecked(true);
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, UserAccount.class);
+                startActivity(intent);
+            }
+        });
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, UserAccount.class);
+                startActivity(intent);
+            }
+        });
 
         mButtonUserSettings = (Button) findViewById(R.id.btn_user_settings);
         mButtonUserSettings.setOnClickListener(new View.OnClickListener() {

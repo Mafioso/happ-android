@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -43,9 +45,8 @@ public class UserActivity extends AppCompatActivity implements
     private ImageButton mButtonBirthday, mButtonEditPassword, mButtonCloseFormPw;
     private RelativeLayout mRLeditPasswrod, mRLcloseFormPassword;
     private FloatingActionButton mUserEditFab;
+    private NestedScrollView mScrollView;
 
-    private String username;
-    private User user;
     private Date birthday;
     private BroadcastReceiver setUserEditOKReceiver;
 
@@ -57,12 +58,6 @@ public class UserActivity extends AppCompatActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        if (user.getBirthDate() != null) {
-//            birthday = user.getBirthDate();
-//        } else {
-//            birthday = new Date();
-//        }
 
         setContentView(R.layout.activity_user);
 
@@ -113,6 +108,7 @@ public class UserActivity extends AppCompatActivity implements
         mPassword = (EditText) findViewById(R.id.input_user_password);
         mRepeatPassword = (EditText) findViewById(R.id.input_user_rpw);
         mNewPassword = (EditText) findViewById(R.id.input_user_newpw);
+        mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
 
         mRLeditPasswrod = (RelativeLayout) findViewById(R.id.user_rl_edit_pw);
         mRLeditPasswrod.setVisibility(View.GONE);
@@ -132,29 +128,20 @@ public class UserActivity extends AppCompatActivity implements
 
     }
 
-    protected void updateUserList() {
-        Intent intent = getIntent();
-        username = intent.getStringExtra("username");
-        Realm realm = Realm.getDefaultInstance();
-        user = realm.where(User.class).equalTo("username", username).findFirst();
-        user = realm.copyFromRealm(user);
-        realm.commitTransaction();
-        realm.close();
-
-//        Realm realm = Realm.getDefaultInstance();
-//        user = realm.where(User.class).equalTo("username", username).findFirst();
-//        realm.beginTransaction();
-//            user.setEmail(user.getEmail());
-//            user.setFullName(user.getFullName());
-//            user.setPhone(user.getPhone());
-//        user =  realm.copyToRealmOrUpdate(user);
-//        realm.commitTransaction();
-//        realm.close();
+    protected void updateUserData() {
+//        user = App.getCurrentUser();
+        final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.user_done), Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
     }
 
     @Override
     public void onResume() {
-        updateUserList();
         super.onResume();
     }
 
@@ -162,7 +149,7 @@ public class UserActivity extends AppCompatActivity implements
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                updateUserList();
+                updateUserData();
             }
         };
     }

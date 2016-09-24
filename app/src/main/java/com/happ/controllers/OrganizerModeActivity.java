@@ -29,6 +29,7 @@ import com.happ.R;
 import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Event;
 import com.happ.models.Interest;
+import com.happ.models.UserAccount;
 import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
@@ -101,39 +102,37 @@ public class OrganizerModeActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.nav_item_logout) {
                     App.doLogout(OrganizerModeActivity.this);
                 }
-                if (menuItem.getItemId() == R.id.nav_item_feed) {
-                    Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, FeedActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(goToFeedIntent);
-                    overridePendingTransition(0,0);
-                }
+
+
                 if (menuItem.getItemId() == R.id.nav_item_settings) {
-                    Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, UserActivity.class);
+                    Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, SettingsActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
 
                 }
-                if (menuItem.getItemId() == R.id.nav_item_interests) {
-//                    Intent i = new Intent(getApplicationContext(), SelectInterestsActivity.class);
-//                    startActivity(i);
-
-                    FragmentManager fm = getSupportFragmentManager();
-                    EventInterestFragment editNameDialogFragment = EventInterestFragment.newInstance();
-                    editNameDialogFragment.setOnInterestSelectListener(new EventInterestFragment.OnInterestSelectListener() {
-                        @Override
-                        public void onInterestSelected(Interest interest) {
-                            selectedInterest = interest;
-                            RealmList<Interest> interests = new RealmList<Interest>();
-                            interests.add(interest);
-                            event.setInterests(interests);
-//                            mEditInterests.setText(selectedInterest.getTitle());
-                        }
-                    });
-                    editNameDialogFragment.show(fm, "fragment_select_interest");
+                if (menuItem.getItemId() == R.id.nav_item_organizer) {
+                    Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, OrganizerModeActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
                 }
 
+                if (menuItem.getItemId() == R.id.nav_item_interests) {
+                    Intent intent = new Intent(OrganizerModeActivity.this, SelectInterestsActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                }
 
+                if (menuItem.getItemId() == R.id.nav_item_feed) {
+                    Intent intent = new Intent(OrganizerModeActivity.this, FeedActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                }
 
                 mDrawerLayout.closeDrawers();
                 return true;
@@ -143,6 +142,21 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OrganizerModeActivity.this, UserAccount.class);
+                startActivity(intent);
+            }
+        });
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OrganizerModeActivity.this, UserAccount.class);
+                startActivity(intent);
+            }
+        });
 
         eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));

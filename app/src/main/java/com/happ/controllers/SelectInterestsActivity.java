@@ -6,22 +6,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.Interest;
+import com.happ.models.UserAccount;
 import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -38,17 +47,21 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private LinearLayoutManager interestsListLayoutManager;
     private FloatingActionButton mFab;
     private int interestsPageSize;
+    private DrawerLayout mDrawerLayout;
 
     private boolean loading = true;
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
 
+    private boolean fullActivity = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_interests);
+        Intent intent = getIntent();
+        fullActivity = intent.getBooleanExtra("is_full", false);
 
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
@@ -98,8 +111,101 @@ public class SelectInterestsActivity extends AppCompatActivity {
             setInterestsOKReceiver = createSetInterestsOKReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
         }
+
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        if (fullActivity) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+
+            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                    if (menuItem.getItemId() == R.id.nav_item_logout) {
+                        App.doLogout(SelectInterestsActivity.this);
+                    }
+
+                    if (menuItem.getItemId() == R.id.nav_item_settings) {
+                        Intent goToFeedIntent = new Intent(SelectInterestsActivity.this, SettingsActivity.class);
+                        goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(goToFeedIntent);
+                        overridePendingTransition(0,0);
+
+                    }
+                    if (menuItem.getItemId() == R.id.nav_item_organizer) {
+                        Intent goToFeedIntent = new Intent(SelectInterestsActivity.this, OrganizerModeActivity.class);
+                        goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(goToFeedIntent);
+                        overridePendingTransition(0,0);
+                    }
+
+                    if (menuItem.getItemId() == R.id.nav_item_interests) {
+                        Intent intent = new Intent(SelectInterestsActivity.this, SelectInterestsActivity.class);
+                        intent.putExtra("is_full", true);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        overridePendingTransition(0,0);
+
+                    }
+
+                    if (menuItem.getItemId() == R.id.nav_item_feed) {
+                        Intent intent = new Intent(SelectInterestsActivity.this, FeedActivity.class);
+                        intent.putExtra("is_full", true);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(intent);
+                        overridePendingTransition(0,0);
+                    }
+                    mDrawerLayout.closeDrawers();
+                    return true;
+                }
+            });
+
+            navigationView.getMenu().findItem(R.id.nav_item_interests).setChecked(true);
+            ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+            ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+
+            ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SelectInterestsActivity.this, UserAccount.class);
+                    startActivity(intent);
+                }
+            });
+            ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(SelectInterestsActivity.this, UserAccount.class);
+                    startActivity(intent);
+                }
+            });
+        } else {
+//            mDrawerLayout.setVisibility(View.GONE);
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            navigationView.setVisibility(View.GONE);
+        }
+
+
         APIService.getInterests();
         createScrollListener();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private BroadcastReceiver createInterestsRequestDoneReceiver() {
@@ -135,35 +241,6 @@ public class SelectInterestsActivity extends AppCompatActivity {
         mInterestsListAdapter.updateData(interests);
         realm.close();
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.search, menu);
-//
-//
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = (SearchView) menu.findItem(R.id.listsearch).getActionView();
-//
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//        searchView.setIconifiedByDefault(false);
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//
-////                interests.getFilter().filter(newText);
-//
-//                return false;
-//            }
-//        });
-//        return true;
-//    }
 
     protected void createScrollListener() {
         mInterestsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

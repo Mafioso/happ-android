@@ -23,11 +23,13 @@ import com.happ.models.Event;
 import com.happ.models.EventImage;
 import com.happ.models.Interest;
 import com.happ.models.User;
+import com.happ.models.UserAccount;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmList;
 
@@ -207,23 +209,60 @@ public class EventActivity extends AppCompatActivity {
                     App.doLogout(EventActivity.this);
                 }
 
+
+                if (menuItem.getItemId() == R.id.nav_item_settings) {
+                    Intent goToFeedIntent = new Intent(EventActivity.this, SettingsActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0,0);
+
+                }
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {
                     Intent goToFeedIntent = new Intent(EventActivity.this, OrganizerModeActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
                 }
+
+                if (menuItem.getItemId() == R.id.nav_item_interests) {
+                    Intent intent = new Intent(EventActivity.this, SelectInterestsActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                }
+
                 if (menuItem.getItemId() == R.id.nav_item_feed) {
-                    Intent goToFeedIntent = new Intent(EventActivity.this, EventActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(goToFeedIntent);
+                    Intent intent = new Intent(EventActivity.this, FeedActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                     overridePendingTransition(0,0);
                 }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
         });
+
         navigationView.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
+
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventActivity.this, UserAccount.class);
+                startActivity(intent);
+            }
+        });
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EventActivity.this, UserAccount.class);
+                startActivity(intent);
+            }
+        });
 
         repopulateEvent();
     }
