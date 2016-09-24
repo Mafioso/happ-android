@@ -103,13 +103,13 @@ public class OrganizerModeActivity extends AppCompatActivity {
                 }
                 if (menuItem.getItemId() == R.id.nav_item_feed) {
                     Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, FeedActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
                 }
                 if (menuItem.getItemId() == R.id.nav_item_settings) {
                     Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, UserActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
 

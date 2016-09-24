@@ -495,8 +495,6 @@ public class HappRestClient {
         });
     }
 
-
-
     public void doDownVote(final String eventId) {
 
         happApi.doDownVote(eventId).enqueue(new Callback<Void>() {
@@ -545,7 +543,7 @@ public class HappRestClient {
                     Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
                     if (event != null) {
                         realm.beginTransaction();
-                        event.setInFavorites(true);
+                        event.setInFavorites(false);
                         realm.copyToRealmOrUpdate(event);
                         realm.commitTransaction();
                     }

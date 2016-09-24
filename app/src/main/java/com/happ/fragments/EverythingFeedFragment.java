@@ -60,25 +60,6 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         return view;
     }
 
-    private BroadcastReceiver createUpvoteReceiver() {
-        return new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateEventsList();
-            }
-        };
-    }
-
-    private BroadcastReceiver createFavReceiver() {
-        return new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateEventsList();
-            }
-        };
-    }
-
-
     @Override
     public void onResume() {
         super.onResume();
@@ -113,6 +94,24 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     }
 
     private BroadcastReceiver createEventsRequestDoneReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateEventsList();
+            }
+        };
+    }
+
+    private BroadcastReceiver createUpvoteReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateEventsList();
+            }
+        };
+    }
+
+    private BroadcastReceiver createFavReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {

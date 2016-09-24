@@ -27,10 +27,13 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.FavoriteFeedFragment;
+import com.happ.models.User;
 
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class FeedActivity extends AppCompatActivity {
 
@@ -39,19 +42,22 @@ public class FeedActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private Menu menu;
+    protected ArrayList<User> user;
+    private String username;
 
 
     private BroadcastReceiver userRequestDoneReceiver;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        if (userRequestDoneReceiver == null)
+        if (userRequestDoneReceiver == null) {
             userRequestDoneReceiver = createLoginSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
+        }
 
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -73,14 +79,14 @@ public class FeedActivity extends AppCompatActivity {
 
                 if (menuItem.getItemId() == R.id.nav_item_settings) {
                     Intent goToFeedIntent = new Intent(FeedActivity.this, UserActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
 
                 }
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {
                     Intent goToFeedIntent = new Intent(FeedActivity.this, OrganizerModeActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
                 }
@@ -88,6 +94,7 @@ public class FeedActivity extends AppCompatActivity {
                 return true;
             }
         });
+
         navigationView.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
 
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
@@ -103,15 +110,13 @@ public class FeedActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
-
-
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_feed, menu);
-//        getMenuInflater().inflate(R.menu.popupmenu, menu);
         return true;
     }
 
@@ -168,17 +173,30 @@ public class FeedActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                App.getCurrentUser();
-//                HappRestClient.getInstance().getCurrentUser();
+                updateUserList();
             }
         };
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        updateUserList();
+    }
+
+    protected void updateUserList() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<User> eventRealmResults = realm.where(User.class).equalTo("username", username).findAll();
+        user = (ArrayList<User>)realm.copyFromRealm(eventRealmResults);
+//        ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
+        realm.close();
+    }
+
+    @Override
     protected void onDestroy() {
+
         if (userRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(userRequestDoneReceiver);
-            userRequestDoneReceiver = null;
         }
         super.onDestroy();
     }

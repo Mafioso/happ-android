@@ -29,6 +29,8 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import java.util.Calendar;
 import java.util.Date;
 
+import io.realm.Realm;
+
 /**
  * Created by dante on 9/22/16.
  */
@@ -55,13 +57,6 @@ public class UserActivity extends AppCompatActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        Intent intent = getIntent();
-//        username = intent.getStringExtra("username");
-//        Realm realm = Realm.getDefaultInstance();
-//        user = realm.where(User.class).equalTo("username", username).findFirst();
-//        user = realm.copyFromRealm(user);
-//        realm.close();
 
 //        if (user.getBirthDate() != null) {
 //            birthday = user.getBirthDate();
@@ -137,14 +132,37 @@ public class UserActivity extends AppCompatActivity implements
 
     }
 
+    protected void updateUserList() {
+        Intent intent = getIntent();
+        username = intent.getStringExtra("username");
+        Realm realm = Realm.getDefaultInstance();
+        user = realm.where(User.class).equalTo("username", username).findFirst();
+        user = realm.copyFromRealm(user);
+        realm.commitTransaction();
+        realm.close();
+
+//        Realm realm = Realm.getDefaultInstance();
+//        user = realm.where(User.class).equalTo("username", username).findFirst();
+//        realm.beginTransaction();
+//            user.setEmail(user.getEmail());
+//            user.setFullName(user.getFullName());
+//            user.setPhone(user.getPhone());
+//        user =  realm.copyToRealmOrUpdate(user);
+//        realm.commitTransaction();
+//        realm.close();
+    }
+
+    @Override
+    public void onResume() {
+        updateUserList();
+        super.onResume();
+    }
+
     private BroadcastReceiver createSetUserEditOKReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Intent feedIntent = new Intent(UserActivity.this, FeedActivity.class);
-                feedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                UserActivity.this.startActivity(feedIntent);
-                UserActivity.this.overridePendingTransition(0,0);
+                updateUserList();
             }
         };
     }
@@ -210,7 +228,7 @@ public class UserActivity extends AppCompatActivity implements
     public void onDestroy() {
         super.onDestroy();
         if (setUserEditOKReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(setUserEditOKReceiver    );
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(setUserEditOKReceiver);
             setUserEditOKReceiver = null;
         }
     }

@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
-import com.happ.R;
 import com.happ.controllers.EventsListAdapter;
 import com.happ.models.Event;
 
@@ -28,6 +27,8 @@ import io.realm.Sort;
  */
 public class FavoriteFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver eventsRequestDoneReceiver;
+    private BroadcastReceiver didUpvoteReceiver;
+    private BroadcastReceiver didIsFavReceiver;
 
     public static FavoriteFeedFragment newInstance() {
         return new FavoriteFeedFragment();
@@ -44,6 +45,14 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
 
+        if (didUpvoteReceiver == null) {
+            didUpvoteReceiver = createUpvoteReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
+        }
+        if (didIsFavReceiver == null) {
+            didIsFavReceiver = createFavReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
+        }
         return view;
     }
 
@@ -63,6 +72,12 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     public void onDestroy() {
         if (eventsRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+        }
+        if (didUpvoteReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
+        }
+        if (didIsFavReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
         }
         super.onDestroy();
     }
@@ -88,4 +103,22 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
             }
         };
     }
+    private BroadcastReceiver createUpvoteReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateEventsList();
+            }
+        };
+    }
+
+    private BroadcastReceiver createFavReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateEventsList();
+            }
+        };
+    }
+
 }
