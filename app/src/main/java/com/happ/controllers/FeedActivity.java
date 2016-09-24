@@ -56,6 +56,7 @@ public class FeedActivity extends AppCompatActivity {
     private CoordinatorLayout rootLayout;
 
     private boolean isUnvoting = false;
+    private boolean isUnfaving = false;
 
 
     private BroadcastReceiver userRequestDoneReceiver;
@@ -288,13 +289,13 @@ public class FeedActivity extends AppCompatActivity {
                     String eventTitle = event.getTitle();
                     String text = "";
                     if (didUpvote == 1) {
-                        text = getResources().getString(R.string.did_upvote) + " " + eventTitle;
+                        text = getResources().getString(R.string.did_upvote) + " \"" + eventTitle+"\"";
                     } else {
-                        text = getResources().getString(R.string.did_downvote) + " " + eventTitle;
+                        text = getResources().getString(R.string.did_downvote) + " \"" + eventTitle+"\"";
                     }
                     String undo = getResources().getString(R.string.undo);
 
-                    final Snackbar snackbar = Snackbar.make(rootLayout, text, Snackbar.LENGTH_SHORT);
+                    final Snackbar snackbar = Snackbar.make(rootLayout, text, Snackbar.LENGTH_LONG);
                     snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -303,12 +304,20 @@ public class FeedActivity extends AppCompatActivity {
                             } else {
                                 APIService.doUpVote(eventId);
                             }
-                            snackbar.dismiss();
+//                            snackbar.dismiss();
+                        }
+                    });
+                    snackbar.setCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar snackbar, int event) {
+                            if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
+                                isUnvoting = false;
+                            }
+                            super.onDismissed(snackbar, event);
                         }
                     });
                     snackbar.show();
                 }
-//                updateEventsList();
             }
         };
     }
@@ -317,7 +326,48 @@ public class FeedActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-//                updateEventsList();
+                if (isUnvoting) {
+                    isUnvoting = false;
+                    return;
+                }
+                final int didFav = intent.getIntExtra(BroadcastIntents.EXTRA_DID_FAV, -1);
+                final String eventId = intent.getStringExtra(BroadcastIntents.EXTRA_EVENT_ID);
+                if (didFav >= 0 && eventId != null) {
+                    isUnvoting = true;
+                    Realm realm = Realm.getDefaultInstance();
+                    Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    String eventTitle = event.getTitle();
+                    String text = "";
+                    if (didFav == 1) {
+                        text = getResources().getString(R.string.did_fav) + " \"" + eventTitle + "\" " + getResources().getString(R.string.did_fav_2);
+                    } else {
+                        text = getResources().getString(R.string.did_unfav) + " \"" + eventTitle + "\" " + getResources().getString(R.string.did_unfav_2);
+                    }
+                    String undo = getResources().getString(R.string.undo);
+
+                    final Snackbar snackbar = Snackbar.make(rootLayout, text, Snackbar.LENGTH_LONG);
+                    snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (didFav == 1) {
+                                APIService.doUnFav(eventId);
+                            } else {
+                                APIService.doFav(eventId);
+                            }
+//                            snackbar.dismiss();
+                        }
+                    });
+                    snackbar.setCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar snackbar, int event) {
+                            if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
+                                isUnvoting = false;
+                            }
+                            super.onDismissed(snackbar, event);
+                        }
+                    });
+                    snackbar.show();
+                }
             }
         };
     }

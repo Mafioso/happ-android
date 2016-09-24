@@ -47,6 +47,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private InterestsListAdapter mInterestsListAdapter;
     private BroadcastReceiver interestsRequestDoneReceiver;
     private BroadcastReceiver setInterestsOKReceiver;
+    private BroadcastReceiver getCurrentUserReceiver;
     private LinearLayoutManager interestsListLayoutManager;
     private FloatingActionButton mFab;
     private int interestsPageSize;
@@ -124,6 +125,10 @@ public class SelectInterestsActivity extends AppCompatActivity {
         if (setInterestsOKReceiver == null) {
             setInterestsOKReceiver = createSetInterestsOKReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
+        }
+        if (getCurrentUserReceiver == null) {
+            getCurrentUserReceiver = createGetUserDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(getCurrentUserReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
         }
 
 
@@ -235,6 +240,15 @@ public class SelectInterestsActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                APIService.getCurrentUser();
+            }
+        };
+    }
+
+    private BroadcastReceiver createGetUserDoneReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
                 Intent feedIntent = new Intent(SelectInterestsActivity.this, FeedActivity.class);
                 feedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 SelectInterestsActivity.this.startActivity(feedIntent);
@@ -242,6 +256,8 @@ public class SelectInterestsActivity extends AppCompatActivity {
             }
         };
     }
+
+
 
 
     public interface OnInterestSelectListener {
@@ -299,6 +315,10 @@ public class SelectInterestsActivity extends AppCompatActivity {
         if (setInterestsOKReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(setInterestsOKReceiver);
             setInterestsOKReceiver = null;
+        }
+        if (getCurrentUserReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(getCurrentUserReceiver);
+            getCurrentUserReceiver = null;
         }
     }
 }
