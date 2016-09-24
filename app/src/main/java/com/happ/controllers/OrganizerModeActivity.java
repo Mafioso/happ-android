@@ -66,6 +66,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
     private FloatingActionButton mOrganizerFab;
     private Interest selectedInterest;
     private Event event;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -128,7 +129,6 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
                 if (menuItem.getItemId() == R.id.nav_item_feed) {
                     Intent intent = new Intent(OrganizerModeActivity.this, FeedActivity.class);
-                    intent.putExtra("is_full", true);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     overridePendingTransition(0,0);
@@ -146,14 +146,14 @@ public class OrganizerModeActivity extends AppCompatActivity {
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrganizerModeActivity.this, UserAccount.class);
+                Intent intent = new Intent(OrganizerModeActivity.this, UserActivity.class);
                 startActivity(intent);
             }
         });
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(OrganizerModeActivity.this, UserAccount.class);
+                Intent intent = new Intent(OrganizerModeActivity.this, UserActivity.class);
                 startActivity(intent);
             }
         });
@@ -219,6 +219,8 @@ public class OrganizerModeActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         updateEventsList();
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
     }
 
 

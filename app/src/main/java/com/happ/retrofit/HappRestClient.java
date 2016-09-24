@@ -342,33 +342,30 @@ public class HappRestClient {
         });
     }
 
-    public void doUserEdit(String edit_fullname, String edit_email, String edit_phone) {
+    public void doUserEdit(String edit_fullname, String edit_email, String edit_phone, Date edit_dateofbirth, int gender) {
 
         UserEditData userEditData = new UserEditData();
         userEditData.setFullname(edit_fullname);
         userEditData.setEmail(edit_email);
         userEditData.setPhone(edit_phone);
-//        userEditData.setDate_of_birth(edit_dateofbirth);
+        userEditData.setDate_of_birth(edit_dateofbirth);
+        userEditData.setGender(gender);
 
-        happApi.doUserEdit(userEditData).enqueue(new Callback<HappToken>() {
+        happApi.doUserEdit(userEditData).enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<HappToken> call, Response<HappToken> response) {
+            public void onResponse(Call<User> call, Response<User> response) {
 
                 Log.d("HAPP_API", String.valueOf(response.code()));
                 Log.d("HAPP_API", response.message());
 
                 if(response.isSuccessful()) {
 
-                    HappToken happToken = response.body();
+                    User user = response.body();
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
-
-                    realm.copyToRealmOrUpdate(happToken);
-
+                    realm.copyToRealmOrUpdate(user);
                     realm.commitTransaction();
                     realm.close();
-
-                    setAuthHeader();
 
                     Intent intent = new Intent(BroadcastIntents.USEREDIT_REQUEST_OK);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
@@ -382,7 +379,7 @@ public class HappRestClient {
             }
 
             @Override
-            public void onFailure(Call<HappToken> call, Throwable t) {
+            public void onFailure(Call<User> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.USEREDIT_REQUEST_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);

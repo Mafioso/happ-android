@@ -18,7 +18,7 @@
     <string name="pls_add_image">Please, add at least one image for this event</string>
     <string name="start_date">Start Date</string>
     <string name="end_date">Finish Date</string>
-    <string name="birthday">Your Birthday</string>
+    <string name="birthday">Birth Date</string>
     <string name="select_interest_title">Select Your Interests</string>
     <string name="cancel">Cancel</string>
     <string name="login">Login</string>

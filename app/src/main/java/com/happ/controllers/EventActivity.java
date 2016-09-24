@@ -57,8 +57,32 @@ public class EventActivity extends AppCompatActivity {
 
     private boolean isOrg;
     CollapsingToolbarLayout ctl;
+    private NavigationView navigationView;
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDrawerLayout = null;
+        toolbar = null;
+        eventId = null;
+        event = null;
+        viewPager = null;
+        mEventImagesSwipeAdapter = null;
+        mWebSite = null;
+        mEmail = null;
+        mPlace = null;
+        mAuthor = null;
+        mDescription = null;
+        mStartDate = null;
+        mEndDate = null;
+        mEventInterestTitle = null;
+        mEventInterestBg = null;
+        mEventAuthor = null;
+        mEventWEbSite = null;
+        mEventEmail = null;
+        mFab = null;
+        ctl = null;
+    }
 
     @Override
     public void onBackPressed() {
@@ -198,10 +222,9 @@ public class EventActivity extends AppCompatActivity {
         });
 
 
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -252,14 +275,14 @@ public class EventActivity extends AppCompatActivity {
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EventActivity.this, UserAccount.class);
+                Intent intent = new Intent(EventActivity.this, UserActivity.class);
                 startActivity(intent);
             }
         });
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EventActivity.this, UserAccount.class);
+                Intent intent = new Intent(EventActivity.this, UserActivity.class);
                 startActivity(intent);
             }
         });
@@ -274,6 +297,8 @@ public class EventActivity extends AppCompatActivity {
         if (isOrg && mFab.getVisibility() != View.VISIBLE) {
             mFab.show();
         }
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
     }
 
     @Override

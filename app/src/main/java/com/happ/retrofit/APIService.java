@@ -7,6 +7,7 @@ import android.os.Process;
 import com.happ.App;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by dante on 8/2/16.
@@ -49,6 +50,8 @@ public class APIService extends IntentService {
     private static final String EXTRA_FULLNAME = "com.happ.extra.EXTRA_FULLNAME";
     private static final String EXTRA_EMAIL = "com.happ.extra.EXTRA_EMAIL";
     private static final String EXTRA_PHONE = "com.happ.extra.EXTRA_PHONE";
+    private static final String EXTRA_DATEOFBIRTH = "com.happ.extra.EXTRA_DATEOFBIRTH";
+    private static final String EXTRA_GENDER = "com.happ.extra.EXTRA_GENDER";
 
     private static final String EXTRA_EE_ID = "com.happ.extra.EXTRA_EE_ID";
 
@@ -147,13 +150,14 @@ public class APIService extends IntentService {
         App.getContext().startService(login);
     }
 
-    public static void doUserEdit(String edit_fullname, String edit_email, String edit_phone) {
+    public static void doUserEdit(String edit_fullname, String edit_email, String edit_phone, Date edit_dateofbirth, int gender) {
         Intent userEdit = new Intent(App.getContext(), APIService.class);
         userEdit.setAction(ACTION_POST_USEREDIT);
         userEdit.putExtra(EXTRA_FULLNAME, edit_fullname);
         userEdit.putExtra(EXTRA_EMAIL, edit_email);
         userEdit.putExtra(EXTRA_PHONE, edit_phone);
-//        userEdit.putExtra(EXTRA_DATEOFBIRTH, edit_dateofbirth.getTime());
+        userEdit.putExtra(EXTRA_DATEOFBIRTH, edit_dateofbirth.getTime());
+        userEdit.putExtra(EXTRA_GENDER, gender);
         App.getContext().startService(userEdit);
     }
 
@@ -256,9 +260,10 @@ public class APIService extends IntentService {
                 String edit_fullname = intent.getStringExtra(EXTRA_FULLNAME);
                 String edit_email = intent.getStringExtra(EXTRA_EMAIL);
                 String edit_phone = intent.getStringExtra(EXTRA_PHONE);
-//                long birthDateLong = intent.getLongExtra(EXTRA_DATEOFBIRTH, 0);
-//                Date edit_dateofbirth = new Date(birthDateLong);
-                HappRestClient.getInstance().doUserEdit(edit_fullname, edit_email, edit_phone);
+                long birthDateLong = intent.getLongExtra(EXTRA_DATEOFBIRTH, 0);
+                int gender = intent.getIntExtra(EXTRA_GENDER, 0);
+                Date edit_dateofbirth = new Date(birthDateLong);
+                HappRestClient.getInstance().doUserEdit(edit_fullname, edit_email, edit_phone, edit_dateofbirth, gender);
             } else if (action.equals(ACTION_POST_SIGNUP)) {
                 String username = intent.getStringExtra(EXTRA_USERNAME);
                 String password = intent.getStringExtra(EXTRA_PASSWORD);

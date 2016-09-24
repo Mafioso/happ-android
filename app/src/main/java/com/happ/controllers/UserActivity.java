@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,11 +13,14 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -31,6 +35,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import java.util.Calendar;
 import java.util.Date;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 
 /**
@@ -42,13 +47,28 @@ public class UserActivity extends AppCompatActivity implements
 
     private Toolbar toolbar;
     private EditText mFullName, mLastName, mEmail, mPhoneNumber, mBirthday, mPassword, mRepeatPassword, mNewPassword;
-    private ImageButton mButtonBirthday, mButtonEditPassword, mButtonCloseFormPw;
+    private ImageButton mButtonEditPassword, mButtonCloseFormPw;
+    private Button mButtonBirthday;
     private RelativeLayout mRLeditPasswrod, mRLcloseFormPassword;
     private FloatingActionButton mUserEditFab;
     private NestedScrollView mScrollView;
 
+    private SwitchCompat mGenderSwitch;
+
     private Date birthday;
     private BroadcastReceiver setUserEditOKReceiver;
+    private boolean fromSettings = false;
+
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        if (fromSettings) {
+            UserActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
+        }
+    }
 
     static
     {
@@ -58,17 +78,27 @@ public class UserActivity extends AppCompatActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        fromSettings = getIntent().getBooleanExtra("from_settings", false);
 
         setContentView(R.layout.activity_user);
+
+        ((CircleImageView)findViewById(R.id.avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+        if (fromSettings) {
+            toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+        } else {
+            toolbar.setNavigationIcon(R.drawable.ic_close_white);
+        }
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
+                if (fromSettings) {
+                    UserActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
+                }
             }
         });
 
@@ -83,47 +113,68 @@ public class UserActivity extends AppCompatActivity implements
 
         mBirthday = (EditText) findViewById(R.id.input_user_birthday);
 
-        mButtonBirthday = (ImageButton) findViewById(R.id.btn_choice_birthday);
+        birthday = App.getCurrentUser().getBirthDate();
+        if (birthday == null) {
+            Calendar cal = Calendar.getInstance();
+            int currentYear = cal.get(Calendar.YEAR);
+            cal.set(Calendar.YEAR, currentYear-18);
+            birthday = cal.getTime();
+        }
+
+        java.text.DateFormat format = DateFormat.getLongDateFormat(this);
+        mBirthday.setText(format.format(birthday));
+
+        mButtonBirthday = (Button) findViewById(R.id.btn_choice_birthday);
         mButtonBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 btn_click_birthday(v);
             }
         });
-        mButtonEditPassword = (ImageButton) findViewById(R.id.btn_user_edit_pw);
-        mButtonEditPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn_click_user_edit_pw(v);
-            }
-        });
-        mButtonCloseFormPw = (ImageButton) findViewById(R.id.btn_user_close_form_pw);
-        mButtonCloseFormPw.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                btn_click_user_close_form_pw(v);
-            }
-        });
 
-        mPassword = (EditText) findViewById(R.id.input_user_password);
-        mRepeatPassword = (EditText) findViewById(R.id.input_user_rpw);
-        mNewPassword = (EditText) findViewById(R.id.input_user_newpw);
         mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
 
-        mRLeditPasswrod = (RelativeLayout) findViewById(R.id.user_rl_edit_pw);
-        mRLeditPasswrod.setVisibility(View.GONE);
-        mRLcloseFormPassword = (RelativeLayout) findViewById(R.id.user_rl_close_form_pw);
+        mGenderSwitch = (SwitchCompat) findViewById(R.id.user_gender);
+        mGenderSwitch.setChecked(App.getCurrentUser().getGender()>0);
+//        if (App.getCurrentUser().getGender());
+//        mButtonEditPassword = (ImageButton) findViewById(R.id.btn_user_edit_pw);
+//        mButtonEditPassword.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                btn_click_user_edit_pw(v);
+//            }
+//        });
+//        mButtonCloseFormPw = (ImageButton) findViewById(R.id.btn_user_close_form_pw);
+//        mButtonCloseFormPw.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                btn_click_user_close_form_pw(v);
+//            }
+//        });
+//
+//        mPassword = (EditText) findViewById(R.id.input_user_password);
+//        mRepeatPassword = (EditText) findViewById(R.id.input_user_rpw);
+//        mNewPassword = (EditText) findViewById(R.id.input_user_newpw);
+//        mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
+//
+//        mRLeditPasswrod = (RelativeLayout) findViewById(R.id.user_rl_edit_pw);
+//        mRLeditPasswrod.setVisibility(View.GONE);
+//        mRLcloseFormPassword = (RelativeLayout) findViewById(R.id.user_rl_close_form_pw);
+
+
         mUserEditFab = (FloatingActionButton) findViewById(R.id.useredit_fab);
         mUserEditFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 hideSoftKeyboard(UserActivity.this, v);
-                APIService.doUserEdit(mFullName.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString());
+                int gender = 0;
+                if (mGenderSwitch.isChecked()) gender = 1;
+                APIService.doUserEdit(mFullName.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), birthday, gender);
             }
         });
 
         if (setUserEditOKReceiver == null) {
             setUserEditOKReceiver = createSetUserEditOKReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setUserEditOKReceiver, new IntentFilter(BroadcastIntents.SET_USEREDIT_OK));
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setUserEditOKReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
         }
 
     }
@@ -166,9 +217,11 @@ public class UserActivity extends AppCompatActivity implements
         DatePickerDialog dpd = DatePickerDialog.newInstance(
                 UserActivity.this,
                 now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH)-1,
+                now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
         );
+        now.setTime(new Date());
+        dpd.setMaxDate(now);
 
         dpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
         dpd.show(getFragmentManager(), "Datepickerdialog");
@@ -186,7 +239,9 @@ public class UserActivity extends AppCompatActivity implements
         cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
         birthday = cal.getTime();
-        mBirthday.setText(date);
+
+        java.text.DateFormat format = DateFormat.getLongDateFormat(this);
+        mBirthday.setText(format.format(birthday));
     }
 
     public void btn_click_user_close_form_pw(View view) {

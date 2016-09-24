@@ -3,7 +3,9 @@ package com.happ.controllers;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -11,9 +13,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.R;
+import com.happ.models.User;
 import com.happ.models.UserAccount;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -26,6 +30,14 @@ public class SettingsActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private Button mButtonUserSettings;
+    private NavigationView navigationView;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+    }
 
     static
     {
@@ -39,18 +51,14 @@ public class SettingsActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -99,15 +107,17 @@ public class SettingsActivity extends AppCompatActivity {
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, UserAccount.class);
+                Intent intent = new Intent(SettingsActivity.this, UserActivity.class);
                 startActivity(intent);
+//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
             }
         });
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, UserAccount.class);
+                Intent intent = new Intent(SettingsActivity.this, UserActivity.class);
                 startActivity(intent);
+//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
             }
         });
 
@@ -123,6 +133,21 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void btn_click_user_settings(View view) {
         Intent i = new Intent(getApplicationContext(), UserActivity.class);
+        i.putExtra("from_settings", true);
         startActivity(i);
+        overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -50,6 +50,7 @@ public class EventImagesSwipeAdapter extends FragmentStatePagerAdapter {
         for (int i=0; i<getCount();i++) {
             imageFragments.add(null);
         }
+        notifyDataSetChanged();
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
+import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -20,6 +21,8 @@ public class User extends RealmObject {
     private String id;
     private String phone;
     private Settings settings;
+    private int gender;
+    private RealmList<Interest> interests;
 
 
     public String getUsername() {
@@ -84,5 +87,21 @@ public class User extends RealmObject {
 
     public Date getBirthDate() {
         return null;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    public RealmList<Interest> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(RealmList<Interest> interests) {
+        this.interests = interests;
     }
 }

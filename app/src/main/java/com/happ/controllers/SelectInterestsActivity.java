@@ -55,6 +55,14 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private int visibleThreshold;
 
     private boolean fullActivity = false;
+    private NavigationView navigationView;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +126,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
         if (fullActivity) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -173,14 +181,14 @@ public class SelectInterestsActivity extends AppCompatActivity {
             ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(SelectInterestsActivity.this, UserAccount.class);
+                    Intent intent = new Intent(SelectInterestsActivity.this, UserActivity.class);
                     startActivity(intent);
                 }
             });
             ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(SelectInterestsActivity.this, UserAccount.class);
+                    Intent intent = new Intent(SelectInterestsActivity.this, UserActivity.class);
                     startActivity(intent);
                 }
             });

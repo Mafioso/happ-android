@@ -47,6 +47,7 @@ public class FeedActivity extends AppCompatActivity {
     private Menu menu;
     protected ArrayList<User> user;
     private String username;
+    private NavigationView navigationView;
 
 
     private BroadcastReceiver userRequestDoneReceiver;
@@ -71,7 +72,7 @@ public class FeedActivity extends AppCompatActivity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -123,14 +124,14 @@ public class FeedActivity extends AppCompatActivity {
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FeedActivity.this, UserAccount.class);
+                Intent intent = new Intent(FeedActivity.this, UserActivity.class);
                 startActivity(intent);
             }
         });
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(FeedActivity.this, UserAccount.class);
+                Intent intent = new Intent(FeedActivity.this, UserActivity.class);
                 startActivity(intent);
             }
         });
@@ -217,6 +218,8 @@ public class FeedActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         updateUserList();
+        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
     }
 
     protected void updateUserList() {

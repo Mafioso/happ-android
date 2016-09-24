@@ -38,7 +38,7 @@ public interface HAPPapi {
     Call<HappToken> doLogin(@Body LoginData data);
 
     @POST("users/current/edit/")
-    Call<HappToken> doUserEdit(@Body UserEditData data);
+    Call<User> doUserEdit(@Body UserEditData data);
 
     @POST("auth/refresh/")
     Call<HappToken> refreshToken(@Body HappToken data);
