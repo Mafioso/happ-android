@@ -298,9 +298,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mInterestTitle.setText("Null");
             }
 
-
-
-
             if (item.event.isDidVote()) {
                 itemHolder.mUpvoteImage.setImageResource(R.drawable.ic_did_upvote);
             } else {
