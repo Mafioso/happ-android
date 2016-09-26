@@ -81,6 +81,7 @@
     <string name="did_unfav">Your Removed Event </string>
     <string name="did_unfav_2"> From Favorites</string>
 
+    <string name="changes_saved">Changes saved</string>
 
     <string name="undo">UNDO</string>
 </resources>

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,7 +27,6 @@ import android.widget.RelativeLayout;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.models.User;
 import com.happ.retrofit.APIService;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -36,7 +34,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import io.realm.Realm;
 
 /**
  * Created by dante on 9/22/16.
@@ -44,6 +41,10 @@ import io.realm.Realm;
 public class UserActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener
 {
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     private Toolbar toolbar;
     private EditText mFullName, mLastName, mEmail, mPhoneNumber, mBirthday, mPassword, mRepeatPassword, mNewPassword;
@@ -68,11 +69,6 @@ public class UserActivity extends AppCompatActivity implements
         if (fromSettings) {
             UserActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
         }
-    }
-
-    static
-    {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     @Override

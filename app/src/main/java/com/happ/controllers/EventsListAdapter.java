@@ -278,7 +278,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
                 if (item.event.getInterest().getColor() != null) {
                     String color = "#" + item.event.getInterest().getColor();
-                    itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(color));
+                        itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(color));
                 } else {
                     itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor("#FF1493"));
                 }
@@ -292,9 +292,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             } else {
                 itemHolder.mInterestTitle.setText("Null");
             }
-
-
-
 
             if (item.event.isDidVote()) {
                 itemHolder.mUpvoteImage.setImageResource(R.drawable.ic_did_upvote);

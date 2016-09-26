@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -28,7 +27,6 @@ import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
-import com.happ.retrofit.HappRestClient;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -267,6 +265,7 @@ public class EditActivity extends AppCompatActivity {
         event.setLowestPrice(Integer.parseInt(mMinPrice.getText().toString()));
         event.setHighestPrice(Integer.parseInt(mMaxPrice.getText().toString()));
         event.setWebSite(mWebsite.getText().toString());
+
         if (event.getCurrency() != null) {
             event.setCurrencyId(event.getCurrency().getId());
         }

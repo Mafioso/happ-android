@@ -13,12 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.R;
-import com.happ.models.User;
-import com.happ.models.UserAccount;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -26,6 +23,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by dante on 9/22/16.
  */
 public class SettingsActivity extends AppCompatActivity {
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
@@ -37,11 +38,6 @@ public class SettingsActivity extends AppCompatActivity {
         super.onResume();
         ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
-    }
-
-    static
-    {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     @Override
