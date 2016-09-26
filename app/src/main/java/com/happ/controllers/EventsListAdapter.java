@@ -277,7 +277,12 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 ArrayList<String> fullTitle = item.event.getInterest().getFullTitle();
 
                 if (item.event.getInterest().getColor() != null) {
-                    String color = "#" + item.event.getInterest().getColor();
+                    String colorString =  item.event.getInterest().getColor();
+                    if (colorString.length() > 6) {
+                        colorString = colorString.substring(colorString.length()-6);
+                    }
+                    String color = "#" + colorString;
+
                     itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(color));
                 } else {
                     itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor("#FF1493"));

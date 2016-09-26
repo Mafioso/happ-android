@@ -105,9 +105,14 @@ public class EventActivity extends AppCompatActivity {
 
         Interest interest = event.getInterest();
 
+
         if (interest != null) {
             if (interest.getColor() != null) {
-                mEventInterestBg.setBackgroundColor(Color.parseColor("#" + interest.getColor()));
+                String color = interest.getColor();
+                if (color.length() > 6) {
+                    color = color.substring(color.length()-6);
+                }
+                mEventInterestBg.setBackgroundColor(Color.parseColor("#" + color));
             } else {
                 mEventInterestBg.setBackgroundColor(Color.parseColor("#FF1493"));
             }

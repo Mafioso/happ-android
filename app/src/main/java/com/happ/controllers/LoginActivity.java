@@ -261,11 +261,21 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
+                User currentUser = App.getCurrentUser();
+                if (currentUser.getInterests() != null && currentUser.getInterests().size() > 0) {
+                    Intent goToFeedIntent = new Intent(LoginActivity.this, FeedActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0, 0);
 
-                Intent goToFeedIntent = new Intent(LoginActivity.this, CityActivity.class);
-                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(goToFeedIntent);
-                overridePendingTransition(0,0);
+                } else {
+
+                    Intent goToFeedIntent = new Intent(LoginActivity.this, SelectInterestsActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0, 0);
+
+                }
 
             }
         };
