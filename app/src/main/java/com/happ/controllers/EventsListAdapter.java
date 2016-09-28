@@ -52,6 +52,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     private SelectEventItemListener mSelectItemListener;
     private boolean isOrganizer;
 
+
     public interface SelectEventItemListener {
         void onEventItemSelected(String eventId, ActivityOptionsCompat options);
         void onEventEditSelected(String eventId);
@@ -144,7 +145,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         }
     }
 
-    private void eventSelected(EventsListItemViewHolder itemViewHolder, EventListItem item) {
+    public void eventSelected(EventsListItemViewHolder itemViewHolder, EventListItem item) {
         String id = item.event.getId();
         ActivityOptionsCompat optionsCompat = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -269,8 +270,9 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             itemHolder.mTitleView.setText(item.event.getTitle());
             Typeface tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.ttf");
             itemHolder.mTitleView.setTypeface(tfcs);
+
             itemHolder.mPrice.setText(item.event.getPriceRange());
-            itemHolder.mVotesCount.setText(String.valueOf(item.event.getVotesCount()));
+                itemHolder.mVotesCount.setText(String.valueOf(item.event.getVotesCount()));
             itemHolder.mViewsCount.setText(String.valueOf(item.event.getViewsCount()));
 
             if ( item.event.getInterest() != null) {
@@ -398,7 +400,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
     }
 
-    private class EventListItem {
+    public class EventListItem {
         public int sectionManager;
         public int sectionFirstPosition;
         public boolean isHeader;

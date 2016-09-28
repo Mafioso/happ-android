@@ -42,6 +42,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = super.onCreateView(inflater, container, savedInstanceState);
 
+
         eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
         LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
 

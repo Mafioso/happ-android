@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -39,6 +38,7 @@ import java.util.Date;
 import io.realm.Realm;
 import io.realm.RealmList;
 
+
 /**
  * Created by dante on 8/19/16.
  */
@@ -59,10 +59,12 @@ public class EditActivity extends AppCompatActivity {
 
     private DateTime startDate;
     private DateTime endDate;
+    private String idE;
 
     EventImagesSwipeAdapter mEventImagesSwipeAdapter;
 
     BroadcastReceiver saveDoneReceiver;
+
 
     @Override
     protected void onDestroy() {
@@ -233,10 +235,11 @@ public class EditActivity extends AppCompatActivity {
 
 
         mFab.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard(EditActivity.this, view);
-                saveEvent();
+                    saveEvent();
             }
         });
 
@@ -257,6 +260,7 @@ public class EditActivity extends AppCompatActivity {
             event.setLocalId(eventId);
         }
         event.setId("local_event_" + (new Date()).getTime());
+
         event.setCityId(App.getCurrentCity().getId());
         event.setCurrencyId(App.getCurrentUser().getSettings().getCurrency());
         event.setPlace(mPlace.getText().toString());
@@ -280,7 +284,9 @@ public class EditActivity extends AppCompatActivity {
             APIService.createEvent(event.getId());
         } else {
             APIService.doEventEdit(event.getId());
+
         }
+
     }
 
     public static void hideSoftKeyboard (Activity activity, View view)
@@ -387,14 +393,19 @@ public class EditActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.event_done), Snackbar.LENGTH_INDEFINITE);
-                snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            snackbar.dismiss();
-                        }
-                    });
-                snackbar.show();
+                String evendId = intent.getStringExtra("event_id");
+                intent = new Intent(App.getContext(), EventActivity.class);
+                intent.putExtra("event_id", evendId);
+                startActivity(intent);
+
+//                final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.event_done), Snackbar.LENGTH_INDEFINITE);
+//                snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View view) {
+//                            snackbar.dismiss();
+//                        }
+//                    });
+//                snackbar.show();
             }
         };
     }

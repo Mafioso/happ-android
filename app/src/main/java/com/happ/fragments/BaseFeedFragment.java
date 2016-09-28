@@ -17,9 +17,13 @@ import android.view.ViewGroup;
 import com.happ.R;
 import com.happ.controllers.EventActivity;
 import com.happ.controllers.EventsListAdapter;
+import com.happ.controllers.FeedActivity;
 import com.happ.models.Event;
+import com.happ.retrofit.APIService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by dante on 8/8/16.
@@ -62,7 +66,7 @@ public class BaseFeedFragment extends Fragment {
         final View view = inflater.inflate(R.layout.feeds_fragment, container, false);
         final Activity activity = getActivity();
 
-        eventsListView = (RecyclerView)view.findViewById(R.id.events_list_view);
+        eventsListView = (RecyclerView) view.findViewById(R.id.events_list_view);
         eventsListLayoutManager = new LinearLayoutManager(activity);
         eventsListView.setLayoutManager(eventsListLayoutManager);
         events = new ArrayList<>();
@@ -114,8 +118,19 @@ public class BaseFeedFragment extends Fragment {
                     if (!loading && (totalItemCount - visibleItemCount)
                             <= (firstVisibleItem + visibleThreshold)) {
                         loading = true;
+
                         int nextPage = (totalItemCount / eventsFeedPageSize) + 1;
-                        getEvents(nextPage, false);
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
+                        Date startDate = ((FeedActivity)getActivity()).getStartD();
+                        Date endDate = ((FeedActivity)getActivity()).getEndD();
+                        if (startDate != null || endDate != null || maxFree != null) {
+                            String sD = sdf.format(startDate);
+                            String eD = sdf.format(endDate);
+                            getFilteredEvents(nextPage, sD, eD, maxFree);
+                        } else {
+                            getEvents(nextPage, false);
+                        }
                     }
                 }
 
@@ -125,7 +140,12 @@ public class BaseFeedFragment extends Fragment {
     }
 
 
-
     protected void getEvents(int page, boolean favs) {
+
     }
+
+    public void getFilteredEvents(int page, String startDate, String endDate, String maxPrice) {
+        APIService.getFilteredEvents(page, startDate, endDate, maxPrice);
+    }
+
 }

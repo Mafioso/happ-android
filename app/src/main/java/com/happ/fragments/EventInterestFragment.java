@@ -46,9 +46,6 @@ public class EventInterestFragment extends DialogFragment {
 
     public static EventInterestFragment newInstance() {
         EventInterestFragment fragment = new EventInterestFragment();
-        Bundle args = new Bundle();
-        args.putString("title", App.getContext().getString(R.string.select_interest_title));
-        fragment.setArguments(args);
         return fragment;
     }
 

@@ -23,7 +23,6 @@ import com.happ.models.Event;
 import com.happ.models.EventImage;
 import com.happ.models.Interest;
 import com.happ.models.User;
-import com.happ.models.UserAccount;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
@@ -182,26 +181,18 @@ public class EventActivity extends AppCompatActivity {
             getWindow().setExitTransition(new Explode());
         }
 
+
         mEventInterestTitle = (TextView) findViewById(R.id.event_interest_title);
         mEventInterestBg = (LinearLayout) findViewById(R.id.event_interest_bg);
         mEventAuthor = (LinearLayout) findViewById(R.id.event_author_form);
-
         mPlace = (TextView)findViewById(R.id.event_place);
-
         mAuthor = (TextView)findViewById(R.id.event_author);
-
         mDescription = (TextView)findViewById(R.id.event_description);
-
         mWebSite = (TextView) findViewById(R.id.event_website);
         mEventWEbSite = (LinearLayout) findViewById(R.id.event_website_form);
-
-
         mEventEmail = (LinearLayout) findViewById(R.id.event_email_form);
-
         mStartDate = (TextView)findViewById(R.id.event_start_date);
-
         mEndDate = (TextView)findViewById(R.id.event_end_date);
-
 
         viewPager=(ViewPager)findViewById(R.id.slider_viewpager);
         mEventImagesSwipeAdapter = new EventImagesSwipeAdapter(getSupportFragmentManager());

@@ -41,4 +41,9 @@ public class BroadcastIntents {
     public static final String EXTRA_DID_UPVOTE = "com.happ.extra.did_upvote";
     public static final String EXTRA_DID_FAV = "com.happ.extra.did_fav";
     public static final String EXTRA_EVENT_ID = "com.happ.extra.event_id";
+
+    public static final String FILTERED_EVENTS_REQUEST_OK = "com.happ.filtered_events_request_ok";
+    public static final String FILTERED_EVENTS_REQUEST_FAIL = "com.happ.filtered_events_request_fail";
+
+
 }

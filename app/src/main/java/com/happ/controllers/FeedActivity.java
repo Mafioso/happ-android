@@ -20,24 +20,27 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.FavoriteFeedFragment;
+import com.happ.fragments.FilterFragment;
 import com.happ.models.Event;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
@@ -55,6 +58,10 @@ public class FeedActivity extends AppCompatActivity {
     private NavigationView navigationView;
     private CoordinatorLayout rootLayout;
 
+    private Date startD, endD;
+    private String isFree;
+    private String start_date = "", end_date = "", max_free = "";
+
     private boolean isUnvoting = false;
     private boolean isUnfaving = false;
 
@@ -63,10 +70,16 @@ public class FeedActivity extends AppCompatActivity {
     private BroadcastReceiver didUpvoteReceiver;
     private BroadcastReceiver didIsFavReceiver;
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
+
+
 
         if (userRequestDoneReceiver == null) {
             userRequestDoneReceiver = createLoginSuccessReceiver();
@@ -192,13 +205,60 @@ public class FeedActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.menu_filter:
-                Toast.makeText(FeedActivity.this, "HELLO", Toast.LENGTH_LONG).show();
+                FragmentManager fm = getSupportFragmentManager();
+                FilterFragment editNameDialogFragment = new FilterFragment().newInstance();
+                if (startD == null) {
+                    startD = new Date();
+                }
+                if (endD == null) {
+                    endD = new Date();
+                }
+                editNameDialogFragment.setState(startD, endD, isFree);
+
+                editNameDialogFragment.setOnDateFilterAppliedListener(new FilterFragment.DateFilterAppliedListener() {
+                    @Override
+                    public void onDateFilterApplied(Date startDate, Date endDate, String isMaxFree) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+                        startD = startDate;
+                        endD = endDate;
+                        isFree = isMaxFree;
+
+                        String max_free = "";
+                        String sD = "";
+                        String eD = "";
+
+                        if (startD != null) {
+                            sD = sdf.format(startD);
+                        }
+                        if (endD != null) {
+                            eD = sdf.format(endD);
+                        }
+                        if (isFree != null) {
+                            max_free = isFree;
+                        }
+
+
+                        APIService.getFilteredEvents(1, sD, eD, max_free);
+                        
+                    }
+                });
+                editNameDialogFragment.show(fm, "f");
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    public Date getStartD() {
+        return startD;
+    }
+    public Date getEndD() {
+        return endD;
+    }
+    public String getMaxFree() {
+        return isFree;
+    }
 
     protected class FeedPagerAdapter extends FragmentStatePagerAdapter {
 

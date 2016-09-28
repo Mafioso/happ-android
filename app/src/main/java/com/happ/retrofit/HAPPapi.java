@@ -31,6 +31,9 @@ public interface HAPPapi {
     @GET("events/")
     Call<EventsResponse> getEvents(@Query("page") int page);
 
+    @GET("events/")
+    Call<EventsResponse> getFilteredEvents(@Query("page") int page, @Query("start_date") String startDate, @Query("end_date") String endDate, @Query("max_price") String price);
+
     @GET("interests/")
     Call<InterestResponse> getInterests(@Query("page") int page);
 
