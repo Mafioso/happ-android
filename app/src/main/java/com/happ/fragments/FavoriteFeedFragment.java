@@ -11,12 +11,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.common.api.Api;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.controllers.EventsListAdapter;
+import com.happ.controllers.FeedActivity;
 import com.happ.models.Event;
+import com.happ.retrofit.APIService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -93,8 +98,21 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
 
     @Override
     protected void getEvents(int page, boolean favs) {
-        super.getEvents(page, true);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
+        Date startDate = ((FeedActivity)getActivity()).getStartD();
+        Date endDate = ((FeedActivity)getActivity()).getEndD();
+        if (startDate != null || endDate != null || (maxFree != null && maxFree.length() > 0)) {
+            String sD = sdf.format(startDate);
+            String eD = sdf.format(endDate);
+            APIService.getFilteredEvents(page, sD, eD, maxFree, true);
+        } else {
+            APIService.getEvents(page, true);
+        }
     }
+
+
+
 
     private BroadcastReceiver createEventsRequestDoneReceiver() {
         return new BroadcastReceiver() {

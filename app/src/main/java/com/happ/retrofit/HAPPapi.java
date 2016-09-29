@@ -32,7 +32,10 @@ public interface HAPPapi {
     Call<EventsResponse> getEvents(@Query("page") int page);
 
     @GET("events/")
-    Call<EventsResponse> getFilteredEvents(@Query("page") int page, @Query("start_date") String startDate, @Query("end_date") String endDate, @Query("max_price") String price);
+    Call<EventsResponse> getFilteredEvents(@Query("page") int page,
+                                           @Query("start_date") String startDate,
+                                           @Query("end_date") String endDate,
+                                           @Query("max_price") String price);
 
     @GET("interests/")
     Call<InterestResponse> getInterests(@Query("page") int page);
@@ -73,7 +76,6 @@ public interface HAPPapi {
     @GET("events/{id}/unfav")
     Call<Void> doUnFav(@Path("id") String eventID);
 
-
     @GET("cities/{id}/")
     Call<City> getCity(@Path("id") String id);
 
@@ -88,6 +90,12 @@ public interface HAPPapi {
 
     @GET("events/favourites/")
     Call<EventsResponse> getFavourites(@Query("page") int page);
+
+    @GET("events/favourites/")
+    Call<EventsResponse> getFilteredFavourites(@Query("page") int page,
+                                               @Query("start_date") String startDate,
+                                               @Query("end_date") String endDate,
+                                               @Query("max_price") String price);
 
     @POST("events/")
     Call<Event> createEvent(@Body Event event);

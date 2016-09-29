@@ -19,6 +19,7 @@ import com.happ.models.Event;
 import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -90,17 +91,13 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         String maxFree = ((FeedActivity)getActivity()).getMaxFree();
         Date startDate = ((FeedActivity)getActivity()).getStartD();
         Date endDate = ((FeedActivity)getActivity()).getEndD();
-//        if (startDate == null) {
-//            startDate = new Date();
-//            startDate.setTime(0);
-//        }
 
         Realm realm = Realm.getDefaultInstance();
-        RealmQuery q = realm.where(Event.class).equalTo("localOnly", false);
+        RealmQuery q = realm.where(Event.class).equalTo("localOnly", false).beginGroup();
         if (startDate != null) q.greaterThanOrEqualTo("startDate", startDate);
-        if (endDate != null) q.lessThanOrEqualTo("endDate", endDate);
+        if (endDate != null) q.lessThanOrEqualTo("startDate", endDate);
         if (maxFree != null && maxFree.length() > 0) q.equalTo("lowestPrice", 0);
-        RealmResults<Event> eventRealmResults = q.findAllSorted("startDate", Sort.ASCENDING);
+        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("startDate", Sort.ASCENDING);
 
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
@@ -127,7 +124,17 @@ public class EverythingFeedFragment extends BaseFeedFragment {
 
     @Override
     protected void getEvents(int page, boolean favs) {
-        APIService.getEvents(page, false);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
+        Date startDate = ((FeedActivity)getActivity()).getStartD();
+        Date endDate = ((FeedActivity)getActivity()).getEndD();
+        if (startDate != null || endDate != null || (maxFree != null && maxFree.length() > 0)) {
+            String sD = sdf.format(startDate);
+            String eD = sdf.format(endDate);
+            APIService.getFilteredEvents(page, sD, eD, maxFree, false);
+        } else {
+            APIService.getEvents(page, false);
+        }
     }
 
 

@@ -120,17 +120,8 @@ public class BaseFeedFragment extends Fragment {
                         loading = true;
 
                         int nextPage = (totalItemCount / eventsFeedPageSize) + 1;
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
-                        Date startDate = ((FeedActivity)getActivity()).getStartD();
-                        Date endDate = ((FeedActivity)getActivity()).getEndD();
-                        if (startDate != null || endDate != null || maxFree != null) {
-                            String sD = sdf.format(startDate);
-                            String eD = sdf.format(endDate);
-                            getFilteredEvents(nextPage, sD, eD, maxFree);
-                        } else {
-                            getEvents(nextPage, false);
-                        }
+
+                        getEvents(nextPage, false);
                     }
                 }
 
@@ -141,11 +132,6 @@ public class BaseFeedFragment extends Fragment {
 
 
     protected void getEvents(int page, boolean favs) {
-
-    }
-
-    public void getFilteredEvents(int page, String startDate, String endDate, String maxPrice) {
-        APIService.getFilteredEvents(page, startDate, endDate, maxPrice);
     }
 
 }

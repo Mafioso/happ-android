@@ -107,13 +107,15 @@ public class FilterFragment extends DialogFragment {
         mStartDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startDate = new Date();
+                if (startDate == null) startDate = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(startDate);
 
                 DatePickerDialog dpdstart = DatePickerDialog.newInstance(
                         createStartDateListener(),
-                        startDate.getYear(),
-                        startDate.getMonth()-1,
-                        startDate.getDay()
+                        cal.get(Calendar.YEAR),
+                        cal.get(Calendar.MONTH),
+                        cal.get(Calendar.DAY_OF_MONTH)
                 );
                 dpdstart.setAccentColor(getResources().getColor(R.color.colorPrimary));
                 dpdstart.show(getActivity().getFragmentManager(), "StartDatepickerdialog");
@@ -124,13 +126,15 @@ public class FilterFragment extends DialogFragment {
         mEndDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                endDate = new Date();
+                if (endDate == null) endDate = new Date();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(endDate);
 
                 DatePickerDialog dpdend = DatePickerDialog.newInstance(
                         createEndDateListener(),
-                        endDate.getYear(),
-                        endDate.getMonth()-1,
-                        endDate.getDay()
+                        cal.get(Calendar.YEAR),
+                        cal.get(Calendar.MONTH),
+                        cal.get(Calendar.DAY_OF_MONTH)
                 );
                 dpdend.setAccentColor(getResources().getColor(R.color.colorPrimary));
                 dpdend.show(getActivity().getFragmentManager(), "EndDatepickerdialog");

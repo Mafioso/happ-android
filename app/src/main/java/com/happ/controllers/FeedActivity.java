@@ -53,14 +53,13 @@ public class FeedActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private Menu menu;
-    protected ArrayList<User> user;
+    protected User user;
     private String username;
     private NavigationView navigationView;
     private CoordinatorLayout rootLayout;
 
     private Date startD, endD;
     private String isFree;
-    private String start_date = "", end_date = "", max_free = "";
 
     private boolean isUnvoting = false;
     private boolean isUnfaving = false;
@@ -311,9 +310,8 @@ public class FeedActivity extends AppCompatActivity {
 
     protected void updateUserList() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<User> eventRealmResults = realm.where(User.class).equalTo("username", username).findAll();
-        user = (ArrayList<User>)realm.copyFromRealm(eventRealmResults);
-//        ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
+        User realmUser = realm.where(User.class).equalTo("username", username).findFirst();
+        user = realm.copyFromRealm(realmUser);
         realm.close();
     }
 
@@ -386,14 +384,14 @@ public class FeedActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (isUnvoting) {
-                    isUnvoting = false;
+                if (isUnfaving) {
+                    isUnfaving = false;
                     return;
                 }
                 final int didFav = intent.getIntExtra(BroadcastIntents.EXTRA_DID_FAV, -1);
                 final String eventId = intent.getStringExtra(BroadcastIntents.EXTRA_EVENT_ID);
                 if (didFav >= 0 && eventId != null) {
-                    isUnvoting = true;
+                    isUnfaving = true;
                     Realm realm = Realm.getDefaultInstance();
                     Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
                     String eventTitle = event.getTitle();
@@ -421,7 +419,7 @@ public class FeedActivity extends AppCompatActivity {
                         @Override
                         public void onDismissed(Snackbar snackbar, int event) {
                             if (event != Snackbar.Callback.DISMISS_EVENT_ACTION) {
-                                isUnvoting = false;
+                                isUnfaving = false;
                             }
                             super.onDismissed(snackbar, event);
                         }
