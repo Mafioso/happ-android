@@ -238,6 +238,7 @@ public class APIService extends IntentService {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_DELETE_EVENT);
         intent.putExtra(EXTRA_DELETE_EVENT, eventID);
+        App.getContext().startService(intent);
     }
 
     public static void createEvent(String eventId) {

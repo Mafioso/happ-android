@@ -954,29 +954,38 @@ public class HappRestClient {
     }
 
 
-    public void doEventDelete(final String eventId) {
-        Event event = new Event();
+    public void doEventDelete(final String eventID) {
 
-        happApi.doEventDelete(event.getId()).enqueue(new Callback<Event>() {
+        happApi.doEventDelete(eventID).enqueue(new Callback<Event>() {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {
-                if (response.isSuccessful()) {
 
+                if (response.isSuccessful()){
                     Realm realm = Realm.getDefaultInstance();
+                    Event event = realm.where(Event.class).equalTo("id", eventID).findFirst();
                     realm.beginTransaction();
-                    Event deleteEvent = realm.where(Event.class).equalTo("id", eventId).findFirst();
-                    deleteEvent.deleteFromRealm();
+                    event.deleteFromRealm();
                     realm.commitTransaction();
                     realm.close();
 
                     Intent intent = new Intent(BroadcastIntents.EVENTDELETE_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.EVENTDELETE_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("BODY", response.body().toString());
+                    intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
             }
 
             @Override
             public void onFailure(Call<Event> call, Throwable t) {
-
+                Intent intent = new Intent(BroadcastIntents.EVENTDELETE_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
         });
     }

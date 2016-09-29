@@ -68,7 +68,19 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 didIsFavReceiver = createFavReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
             }
-    HappRestClient.getInstance().getEvents(false);
+
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
+//        Date startDate = ((FeedActivity)getActivity()).getStartD();
+//        Date endDate = ((FeedActivity)getActivity()).getEndD();
+//        if (startDate != null || endDate != null || maxFree != null) {
+//            String sD = sdf.format(startDate);
+//            String eD = sdf.format(endDate);
+//            HappRestClient.getInstance().getFilteredEvents(sD, eD, maxFree);
+//        } else {
+            HappRestClient.getInstance().getEvents(false);
+//        }
+
         return view;
     }
 

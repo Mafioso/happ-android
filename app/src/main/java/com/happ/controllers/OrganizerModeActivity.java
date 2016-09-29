@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -26,10 +25,8 @@ import android.widget.TextView;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Event;
 import com.happ.models.Interest;
-import com.happ.models.UserAccount;
 import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
@@ -37,7 +34,6 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
-import io.realm.RealmList;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -57,6 +53,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
     protected RecyclerView eventsListView;
     protected LinearLayoutManager eventsListLayoutManager;
     private BroadcastReceiver eventsRequestDoneReceiver;
+    private BroadcastReceiver deleteEventRequestDoneReceiver;
 
     private int eventsFeedPageSize;
     private boolean loading = true;
@@ -80,9 +77,6 @@ public class OrganizerModeActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.organizer_title);
-
-
-//        APIService.doEventDelete(event.getId());
 
 
         mOrganizerFab = (FloatingActionButton) findViewById(R.id.organizer_fab);
@@ -129,7 +123,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
                 if (menuItem.getItemId() == R.id.nav_item_feed) {
                     Intent intent = new Intent(OrganizerModeActivity.this, FeedActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                 }
@@ -192,8 +186,15 @@ public class OrganizerModeActivity extends AppCompatActivity {
         ela.setIsOrganizer(true);
         eventsListView.setAdapter(ela);
 
-        eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
+        if (eventsRequestDoneReceiver == null) {
+            eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
+        }
+
+        if (deleteEventRequestDoneReceiver == null) {
+            deleteEventRequestDoneReceiver = deleteEventRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(deleteEventRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTDELETE_REQUEST_OK));
+        }
 
         HappRestClient.getInstance().getEvents(false);
 
@@ -233,6 +234,8 @@ public class OrganizerModeActivity extends AppCompatActivity {
     }
 
 
+
+
     private BroadcastReceiver createEventsRequestDoneReceiver() {
         return new BroadcastReceiver() {
             @Override
@@ -243,6 +246,14 @@ public class OrganizerModeActivity extends AppCompatActivity {
         };
     }
 
+    private BroadcastReceiver deleteEventRequestDoneReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateEventsList();
+            }
+        };
+    }
 
     protected void createScrollListener() {
         eventsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -281,6 +292,10 @@ public class OrganizerModeActivity extends AppCompatActivity {
     public void onDestroy() {
         if (eventsRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+        }
+
+        if (deleteEventRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(deleteEventRequestDoneReceiver);
         }
         super.onDestroy();
     }
