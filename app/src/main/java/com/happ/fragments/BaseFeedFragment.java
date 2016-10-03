@@ -17,13 +17,9 @@ import android.view.ViewGroup;
 import com.happ.R;
 import com.happ.controllers.EventActivity;
 import com.happ.controllers.EventsListAdapter;
-import com.happ.controllers.FeedActivity;
 import com.happ.models.Event;
-import com.happ.retrofit.APIService;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by dante on 8/8/16.

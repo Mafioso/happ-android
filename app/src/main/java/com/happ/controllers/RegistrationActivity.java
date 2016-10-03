@@ -16,21 +16,35 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginBehavior;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -38,26 +52,103 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
  * Created by dante on 8/29/16.
  */
 public class RegistrationActivity extends AppCompatActivity {
+    private CallbackManager mCallbackManager;
 
-    EditText mUsername, mPassword, mRepeatPassword;
-    TextInputLayout mInputLayoutUsername, mInputLayoutRepeatPassword, mInputLayoutPassword;
-    FloatingActionButton mSignUpFab;
-    ImageButton mPWVisibility, mPWVisibilityOff, mPWRVisibility, mPWRVisibilityOff;
+    private EditText mUsername, mPassword, mRepeatPassword;
+    private TextInputLayout mInputLayoutUsername, mInputLayoutRepeatPassword, mInputLayoutPassword;
+    private FloatingActionButton mSignUpFab;
     private BroadcastReceiver signUpRequestDoneReceiver;
     private BroadcastReceiver getSignUpRequestFail;
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
+    private Button facebookButton;
 
     boolean isKeyboarShown = false;
     ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     RelativeLayout mFormLayout;
     MaterialProgressBar mProgressBar;
-
+    private static final String TAG = "myLogs";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        mCallbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(mCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d("Success", "Login");
+                        Log.e(TAG, "Facebook getApplicationId: " + loginResult.getAccessToken().getApplicationId());
+                        Log.d(TAG, "Facebook getToken: " + loginResult.getAccessToken().getToken());
+                        Log.d(TAG, "Facebook getUserId: " + loginResult.getAccessToken().getUserId());
+                        Log.d(TAG, "Facebook getExpires: " + loginResult.getAccessToken().getExpires());
+                        Log.d(TAG, "Facebook getLastRefresh: " + loginResult.getAccessToken().getLastRefresh());
+
+                        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                accessToken,
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(JSONObject object, GraphResponse response) {
+                                        try {
+
+                                            //check is response is not empty
+                                            if (response.getError() == null){
+
+                                                //parse json
+                                                object = new JSONObject(response.getRawResponse().toString());
+
+                                                String id = object.getString("id");
+                                                String email = object.getString("email");
+
+                                                APIService.doSignUp(email, id);
+                                            }
+
+
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id,email");
+                        request.setParameters(parameters);
+                        request.executeAsync();
+
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(RegistrationActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Toast.makeText(RegistrationActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(TAG, exception.getMessage());
+                    }
+                });
+
         setContentView(R.layout.registration_form);
+
+
+        facebookButton = (Button) findViewById(R.id.button_fb_login);
+        facebookButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginManager loginManager = LoginManager.getInstance();
+                loginManager.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
+                loginManager.logInWithReadPermissions(
+                        RegistrationActivity.this,
+                        Arrays.asList("public_profile", "user_friends", "email"));
+            }
+        });
 
         if (signUpRequestDoneReceiver == null) signUpRequestDoneReceiver = createSignUpSuccessReceiver();
         if (currentUserDoneReceiver == null) currentUserDoneReceiver = createGetCurrentUserSuccessReceiver();
@@ -77,12 +168,12 @@ public class RegistrationActivity extends AppCompatActivity {
         mInputLayoutUsername = (TextInputLayout) findViewById(R.id.input_layout_signup_username);
         mInputLayoutRepeatPassword = (TextInputLayout) findViewById(R.id.input_layout_signup_repeat_password);
         mInputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_signup_password);
-        mPWVisibility = (ImageButton) findViewById(R.id.btn_signup_pw_visibility);
-        mPWVisibilityOff = (ImageButton) findViewById(R.id.btn_signup_pw_visibility_off);
-        mPWRVisibility = (ImageButton) findViewById(R.id.btn_signup_pwr_visibility);
-        mPWRVisibilityOff = (ImageButton) findViewById(R.id.btn_signup_pwr_visibility_off);
-        mPWRVisibilityOff.setVisibility(View.GONE);
-        mPWVisibilityOff.setVisibility(View.GONE);
+//        mPWVisibility = (ImageButton) findViewById(R.id.btn_signup_pw_visibility);
+//        mPWVisibilityOff = (ImageButton) findViewById(R.id.btn_signup_pw_visibility_off);
+//        mPWRVisibility = (ImageButton) findViewById(R.id.btn_signup_pwr_visibility);
+//        mPWRVisibilityOff = (ImageButton) findViewById(R.id.btn_signup_pwr_visibility_off);
+//        mPWRVisibilityOff.setVisibility(View.GONE);
+//        mPWVisibilityOff.setVisibility(View.GONE);
         mSignUpFab = (FloatingActionButton) findViewById(R.id.signup_fab);
         mSignUpFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +205,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
             }
         });
+
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        toolbar.getBackground().setAlpha(0);
@@ -167,6 +260,11 @@ public class RegistrationActivity extends AppCompatActivity {
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
     public static void hideSoftKeyboard (Activity activity, View view)
     {
         InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -209,30 +307,6 @@ public class RegistrationActivity extends AppCompatActivity {
     };
 
 
-    public void btn_click_signup_pw_visibility(View view) {
-        mPWVisibilityOff.setVisibility(View.VISIBLE);
-        mPWVisibility.setVisibility(View.GONE);
-        mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-    }
-
-    public void btn_click_signup_pw_visibility_off(View view) {
-        mPWVisibility.setVisibility(View.VISIBLE);
-        mPWVisibilityOff.setVisibility(View.GONE);
-        mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    }
-
-    public void btn_click_signup_pwr_visibility(View view) {
-        mPWRVisibilityOff.setVisibility(View.VISIBLE);
-        mPWRVisibility.setVisibility(View.GONE);
-        mRepeatPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-    }
-
-    public void btn_click_signup_pwr_visibility_off(View view) {
-        mPWRVisibility.setVisibility(View.VISIBLE);
-        mPWRVisibilityOff.setVisibility(View.GONE);
-        mRepeatPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    }
-
     private BroadcastReceiver createSignUpSuccessReceiver() {
         return new BroadcastReceiver() {
             @Override
@@ -246,6 +320,7 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         };
     }
+
 
     private BroadcastReceiver createSignUpFailureReceiver() {
         return  new BroadcastReceiver() {

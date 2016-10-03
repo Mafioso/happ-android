@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.gms.common.api.Api;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.controllers.EventsListAdapter;

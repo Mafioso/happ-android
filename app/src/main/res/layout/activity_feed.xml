@@ -19,6 +19,112 @@
 
                 <include layout="@layout/toolbar"/>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:id="@+id/filter_feed_ll">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_event_black_24dp"
+                        android:alpha="0.57"
+                        android:layout_marginLeft="16dp"
+                        android:layout_gravity="center_vertical"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ll_startdate_filter">
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/filter_input_layout_start_date"
+                            android:layout_width="100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="8dp">
+
+                            <EditText
+                                android:id="@+id/filter_input_start_date"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:singleLine="true"
+                                android:enabled="false"
+                                android:textColor="@android:color/primary_text_dark_nodisable"
+                                android:hint="@string/start_date"
+                                android:inputType="textNoSuggestions"/>
+
+                        </android.support.design.widget.TextInputLayout>
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_edit_compat"
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/edit_start_date_filter"/>
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="—"
+                        android:textStyle="bold"
+                        android:textSize="16dp"
+                        android:layout_gravity="center_vertical"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ll_enddate_filter">
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/filter_input_layout_end_date"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp">
+
+                        <EditText
+                            android:id="@+id/filter_input_end_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:enabled="false"
+                            android:textColor="@android:color/primary_text_dark_nodisable"
+                            android:hint="@string/end_date"
+                            android:inputType="textNoSuggestions"/>
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_edit_compat"
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/edit_end_date_filter"/>
+                </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/only_free"
+                            android:gravity="center"/>
+                        <android.support.v7.widget.SwitchCompat
+                            android:id="@+id/filter_free"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"/>
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
             <android.support.design.widget.TabLayout
                     android:id="@+id/tablayout"
                     android:layout_width="match_parent"
@@ -37,9 +143,19 @@
                     <android.support.v4.view.ViewPager
                         android:id="@+id/viewpager"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
                 </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:id="@+id/fab_filter_done"
+            app:fabSize="normal"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/ic_done" />
 
     </android.support.design.widget.CoordinatorLayout>
 

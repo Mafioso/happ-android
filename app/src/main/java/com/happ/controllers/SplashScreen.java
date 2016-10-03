@@ -31,13 +31,13 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
+
         mLogo = (ImageView)findViewById(R.id.img_login_logo);
 
         if (mCityLoadedBroadcastReceiver == null) {
             mCityLoadedBroadcastReceiver = createCityLoadedBroadcastReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mCityLoadedBroadcastReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
         }
-
         checkIsEverythingOk();
     }
 
@@ -95,6 +95,10 @@ public class SplashScreen extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(0,0);
     }
+//
+//    private void goToWelcomeScreen() {
+//        startActivity(new Intent(SplashScreen.this, WelcomeActivity.class));
+//    }
 
     private boolean checkCityObjectExistence() {
         return App.getCurrentCity() != null;

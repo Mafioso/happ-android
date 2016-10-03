@@ -50,7 +50,26 @@
                     android:gravity="left|center"
                     />
 
+                <Button
+                    android:id="@+id/btn_privacy_policy"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    style="?attr/borderlessButtonStyle"
+                    android:textSize="16sp"
+                    android:textAllCaps="false"
+                    android:text="@string/privacy_policy"
+                    android:drawableLeft="@drawable/ic_privacy_policy_compat"
+                    android:paddingLeft="16dp"
+                    android:drawablePadding="24dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:paddingRight="0dp"
+                    android:gravity="left|center"
+                    />
+
             </LinearLayout>
+
+
 
         </android.support.v4.widget.NestedScrollView>
 

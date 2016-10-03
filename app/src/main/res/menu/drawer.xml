@@ -30,5 +30,16 @@
             android:title="@string/nav_item_logout"
             android:icon="@drawable/ic_logout"
             />
+        <item
+            android:id="@+id/nav_item_privacy_policy"
+            android:title="@string/privacy_policy"
+            android:icon="@drawable/ic_privacy_policy"
+            />
+        <item
+            android:id="@+id/nav_item_org_rules"
+            android:title="@string/organizer_rules"
+            android:icon="@drawable/ic_organizer_rules"
+            />
+
     </group>
 </menu>

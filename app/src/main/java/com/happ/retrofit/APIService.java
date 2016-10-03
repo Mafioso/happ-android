@@ -21,6 +21,8 @@ public class APIService extends IntentService {
     private static final String ACTION_GET_INTERESTS_FOR_PAGE = "com.happ.action.ACTION_GET_INTERESTS_FOR_PAGE";
     private static final String ACTION_POST_LOGIN = "com.happ.action.ACTION_POST_LOGIN";
     private static final String ACTION_POST_SIGNUP = "com.happ.action.ACTION_POST_SIGNUP";
+    private static final String ACTION_POST_CHANGE_PW = "com.happ.action.ACTION_POST_CHANGE_PW";
+
     private static final String ACTION_GET_USER = "com.happ.action.ACTION_GET_USER";
     private static final String ACTION_GET_CURRENT_USER = "com.happ.action.ACTION_GET_CURRENT_USER";
     private static final String ACTION_GET_CURRENT_CITY = "com.happ.action.ACTION_GET_CURRENT_CITY";
@@ -35,8 +37,6 @@ public class APIService extends IntentService {
     private static final String ACTION_DOWNVOTE_EVENT = "com.happ.extra.ACTION_DOWNVOTE_EVENT";
     private static final String ACTION_UNFAV_EVENT = "com.happ.extra.ACTION_UNFAV_EVENT";
     private static final String ACTION_FAV_EVENT = "com.happ.extra.ACTION_FAV_EVENT";
-
-
     private static final String ACTION_PATCH_EVENTCREATE = "com.happ.action.ACTION_PATCH_EVENTCREATE";
 
 
@@ -44,6 +44,10 @@ public class APIService extends IntentService {
     private static final String EXTRA_GET_FAVS = "com.happ.extra.EXTRA_GET_FAVS";
     private static final String EXTRA_USERNAME = "com.happ.extra.EXTRA_USERNAME";
     private static final String EXTRA_PASSWORD = "com.happ.extra.EXTRA_PASSWORD";
+
+    private static final String EXTRA_OLD_PASSWORD = "com.happ.extra.EXTRA_OLD_PASSWORD";
+    private static final String EXTRA_NEW_PASSWORD = "com.happ.extra.EXTRA_NEW_PASSWORD";
+
     private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
     private static final String EXTRA_SET_CITIES = "com.happ.extra.EXTRA_SET_CITIES";
     private static final String EXTRA_SEARCH_TEXT = "com.happ.extra.EXTRA_SEARCH_TEXT";
@@ -170,6 +174,15 @@ public class APIService extends IntentService {
         App.getContext().startService(login);
     }
 
+    public static void doChangePassword(String oldPassword, String newPassword) {
+        Intent changePw = new Intent(App.getContext(), APIService.class);
+        changePw.setAction(ACTION_POST_CHANGE_PW);
+        changePw.putExtra(EXTRA_OLD_PASSWORD, oldPassword);
+        changePw.putExtra(EXTRA_NEW_PASSWORD, newPassword);
+        App.getContext().startService(changePw);
+    }
+
+
     public static void doUserEdit(String edit_fullname, String edit_email, String edit_phone, Date edit_dateofbirth, int gender) {
         Intent userEdit = new Intent(App.getContext(), APIService.class);
         userEdit.setAction(ACTION_POST_USEREDIT);
@@ -284,6 +297,10 @@ public class APIService extends IntentService {
                 String username = intent.getStringExtra(EXTRA_USERNAME);
                 String password = intent.getStringExtra(EXTRA_PASSWORD);
                 HappRestClient.getInstance().doLogin(username, password);
+            } else if (action.equals(ACTION_POST_CHANGE_PW)) {
+                String oldPassword = intent.getStringExtra(EXTRA_OLD_PASSWORD);
+                String newPassword = intent.getStringExtra(EXTRA_NEW_PASSWORD);
+                HappRestClient.getInstance().doChangePassword(oldPassword, newPassword);
             } else if (action.equals(ACTION_POST_USEREDIT)) {
                 String edit_fullname = intent.getStringExtra(EXTRA_FULLNAME);
                 String edit_email = intent.getStringExtra(EXTRA_EMAIL);

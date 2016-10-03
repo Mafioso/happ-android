@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.models.ChangePwData;
 import com.happ.models.CitiesResponse;
 import com.happ.models.City;
 import com.happ.models.Event;
@@ -336,6 +337,52 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<HappToken> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.LOGIN_REQUEST_FAIL);
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void doChangePassword(String oldPassword, String newPassword) {
+
+        ChangePwData changePwData = new ChangePwData();
+        changePwData.setOldPassword(oldPassword);
+        changePwData.setNewPssword(newPassword);
+
+        happApi.doChangePassword(changePwData).enqueue(new Callback<HappToken>() {
+            @Override
+            public void onResponse(Call<HappToken> call, Response<HappToken> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()));
+                Log.d("HAPP_API", response.message());
+
+                if(response.isSuccessful()) {
+
+                    HappToken happToken = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(happToken);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    setAuthHeader();
+
+                    Intent intent = new Intent(BroadcastIntents.CHANGE_PW_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.CHANGE_PW_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HappToken> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.CHANGE_PW_REQUEST_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }

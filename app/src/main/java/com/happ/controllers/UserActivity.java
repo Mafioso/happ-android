@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -16,17 +17,14 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.fragments.ChangePasswordFragment;
 import com.happ.retrofit.APIService;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -47,19 +45,14 @@ public class UserActivity extends AppCompatActivity implements
     }
 
     private Toolbar toolbar;
-    private EditText mFullName, mLastName, mEmail, mPhoneNumber, mBirthday, mPassword, mRepeatPassword, mNewPassword;
-    private ImageButton mButtonEditPassword, mButtonCloseFormPw;
-    private Button mButtonBirthday;
-    private RelativeLayout mRLeditPasswrod, mRLcloseFormPassword;
+    private EditText mFullName, mEmail, mPhoneNumber, mBirthday;
+    private Button mButtonBirthday, mButtonChangePW;
     private FloatingActionButton mUserEditFab;
     private NestedScrollView mScrollView;
-
     private SwitchCompat mGenderSwitch;
-
     private Date birthday;
     private BroadcastReceiver setUserEditOKReceiver;
     private boolean fromSettings = false;
-
 
 
     @Override
@@ -132,31 +125,6 @@ public class UserActivity extends AppCompatActivity implements
 
         mGenderSwitch = (SwitchCompat) findViewById(R.id.user_gender);
         mGenderSwitch.setChecked(App.getCurrentUser().getGender()>0);
-//        if (App.getCurrentUser().getGender());
-//        mButtonEditPassword = (ImageButton) findViewById(R.id.btn_user_edit_pw);
-//        mButtonEditPassword.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                btn_click_user_edit_pw(v);
-//            }
-//        });
-//        mButtonCloseFormPw = (ImageButton) findViewById(R.id.btn_user_close_form_pw);
-//        mButtonCloseFormPw.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                btn_click_user_close_form_pw(v);
-//            }
-//        });
-//
-//        mPassword = (EditText) findViewById(R.id.input_user_password);
-//        mRepeatPassword = (EditText) findViewById(R.id.input_user_rpw);
-//        mNewPassword = (EditText) findViewById(R.id.input_user_newpw);
-//        mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
-//
-//        mRLeditPasswrod = (RelativeLayout) findViewById(R.id.user_rl_edit_pw);
-//        mRLeditPasswrod.setVisibility(View.GONE);
-//        mRLcloseFormPassword = (RelativeLayout) findViewById(R.id.user_rl_close_form_pw);
-
 
         mUserEditFab = (FloatingActionButton) findViewById(R.id.useredit_fab);
         mUserEditFab.setOnClickListener(new View.OnClickListener() {
@@ -172,6 +140,16 @@ public class UserActivity extends AppCompatActivity implements
             setUserEditOKReceiver = createSetUserEditOKReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setUserEditOKReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
         }
+
+        mButtonChangePW = (Button) findViewById(R.id.btn_user_change_password);
+        mButtonChangePW.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getSupportFragmentManager();
+                ChangePasswordFragment changePasswordFragment = ChangePasswordFragment.newInstance();
+                changePasswordFragment.show(fm, "fragment_change_password");
+            }
+        });
 
     }
 
@@ -240,27 +218,6 @@ public class UserActivity extends AppCompatActivity implements
         mBirthday.setText(format.format(birthday));
     }
 
-    public void btn_click_user_close_form_pw(View view) {
-        Animation up_anim = null;
-        up_anim = AnimationUtils.loadAnimation(this, R.anim.up_animation);
-
-        mRLeditPasswrod.startAnimation(up_anim);
-
-        mButtonCloseFormPw.setVisibility(View.GONE);
-        mButtonEditPassword.setVisibility(View.VISIBLE);
-        mRLeditPasswrod.setVisibility(View.GONE);
-
-    }
-
-    public void btn_click_user_edit_pw(View view) {
-        Animation anim = null;
-        anim = AnimationUtils.loadAnimation(this, R.anim.down_animation);
-
-        mRLeditPasswrod.setVisibility(View.VISIBLE);
-        mRLeditPasswrod.startAnimation(anim);
-        mButtonEditPassword.setVisibility(View.GONE);
-        mButtonCloseFormPw.setVisibility(View.VISIBLE);
-    }
 
     @Override
     public void onDestroy() {

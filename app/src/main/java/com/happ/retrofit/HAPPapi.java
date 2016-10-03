@@ -1,5 +1,6 @@
 package com.happ.retrofit;
 
+import com.happ.models.ChangePwData;
 import com.happ.models.CitiesResponse;
 import com.happ.models.City;
 import com.happ.models.Event;
@@ -45,6 +46,9 @@ public interface HAPPapi {
 
     @POST("auth/register/")
     Call<HappToken> doSignUp(@Body SignUpData data);
+
+    @POST("auth/password/change/")
+    Call<HappToken> doChangePassword(@Body ChangePwData data);
 
     @POST("users/current/edit/")
     Call<User> doUserEdit(@Body UserEditData data);
@@ -99,4 +103,5 @@ public interface HAPPapi {
 
     @POST("events/")
     Call<Event> createEvent(@Body Event event);
+
 }

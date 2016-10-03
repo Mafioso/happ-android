@@ -258,6 +258,13 @@ public class EventActivity extends AppCompatActivity {
                     startActivity(intent);
                     overridePendingTransition(0,0);
                 }
+
+                if (menuItem.getItemId() == R.id.nav_item_privacy_policy) {
+                    Intent intent = new Intent(EventActivity.this, OrganizerRulesActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }

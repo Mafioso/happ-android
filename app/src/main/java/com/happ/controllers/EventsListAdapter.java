@@ -333,8 +333,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                             mSelectItemListener.onEventEditSelected(item.event.getId());
                         }
                         if (menuItem.getItemId() == R.id.menu_delete) {
-//                            mSelectItemListener.onEventItemSelected(item.event.getId(), OrganizerModeActivity.this);
-                            APIService.doEventDelete(item.event.getId());
+                            ((OrganizerModeActivity) context).functionToRun();
                         }
                         return false;
                     }
@@ -342,6 +341,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             }
         }
     }
+
 
     @Override
     public int getItemCount() {

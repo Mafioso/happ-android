@@ -30,8 +30,9 @@ public class SettingsActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
-    private Button mButtonUserSettings;
+    private Button mButtonUserSettings, mPrivacyPolice;
     private NavigationView navigationView;
+
 
     @Override
     protected void onResume() {
@@ -92,6 +93,19 @@ public class SettingsActivity extends AppCompatActivity {
                     startActivity(intent);
                     overridePendingTransition(0,0);
                 }
+
+                if (menuItem.getItemId() == R.id.nav_item_privacy_policy) {
+                    Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                }
+                if (menuItem.getItemId() == R.id.nav_item_org_rules) {
+                    Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
@@ -120,11 +134,28 @@ public class SettingsActivity extends AppCompatActivity {
         mButtonUserSettings = (Button) findViewById(R.id.btn_user_settings);
         mButtonUserSettings.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                btn_click_user_settings(v);
+            public void onClick(View view) {
+                btn_click_user_settings(view);
             }
         });
 
+        mPrivacyPolice = (Button) findViewById(R.id.btn_privacy_policy);
+        mPrivacyPolice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn_click_btn_privacy_policy(view);
+            }
+        });
+
+
+
+    }
+
+    public void btn_click_btn_privacy_policy(View view) {
+        Intent i = new Intent(getApplicationContext(), PrivacyPolicyActivity.class);
+        i.putExtra("from_settings", true);
+        startActivity(i);
+        overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
     }
 
     public void btn_click_user_settings(View view) {

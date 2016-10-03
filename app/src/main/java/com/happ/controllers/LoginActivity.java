@@ -16,8 +16,6 @@ import android.support.v7.app.AppCompatDelegate;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.transition.Explode;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -64,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     private BroadcastReceiver loginFailedReceiver;
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
+    private PrefManager prefManager;
 
     @Override
     public void onBackPressed() {
@@ -77,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_form);
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setEnterTransition(new Explode());
             getWindow().setExitTransition(new Explode());
@@ -89,9 +89,9 @@ public class LoginActivity extends AppCompatActivity {
         mImageLogo = (ImageView) findViewById(R.id.img_login_logo);
         mInputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_login_email);
         mInputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_login_password);
-        mVisibility = (ImageButton) findViewById(R.id.btn_login_visibility);
-        mVisibilityOff = (ImageButton) findViewById(R.id.btn_login_visibility_off);
-        mVisibilityOff.setVisibility(View.GONE);
+//        mVisibility = (ImageButton) findViewById(R.id.btn_login_visibility);
+//        mVisibilityOff = (ImageButton) findViewById(R.id.btn_login_visibility_off);
+//        mVisibilityOff.setVisibility(View.GONE);
         mRegisterView = (LinearLayout) findViewById(R.id.ll_footer);
         mFormLayout = (RelativeLayout) findViewById(R.id.form_layout2);
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_login);
@@ -132,6 +132,8 @@ public class LoginActivity extends AppCompatActivity {
         setListenerToRootView();
 
     }
+
+
 
 //    private void isLoggedIn() {
 //        Claims claims = App.getTokenData();
@@ -215,18 +217,18 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
     }
-
-    public void btn_click_login_visibility(View view) {
-        mVisibilityOff.setVisibility(View.VISIBLE);
-        mVisibility.setVisibility(View.GONE);
-        mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-    }
-
-    public void btn_click_login_visibility_off(View view) {
-        mVisibility.setVisibility(View.VISIBLE);
-        mVisibilityOff.setVisibility(View.GONE);
-        mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-    }
+//
+//    public void btn_click_login_visibility(View view) {
+//        mVisibilityOff.setVisibility(View.VISIBLE);
+//        mVisibility.setVisibility(View.GONE);
+//        mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+//    }
+//
+//    public void btn_click_login_visibility_off(View view) {
+//        mVisibility.setVisibility(View.VISIBLE);
+//        mVisibilityOff.setVisibility(View.GONE);
+//        mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+//    }
 
     private BroadcastReceiver createLoginSuccessReceiver() {
         return new BroadcastReceiver() {

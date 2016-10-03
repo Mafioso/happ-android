@@ -4,8 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -22,6 +25,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
@@ -65,6 +70,10 @@ public class OrganizerModeActivity extends AppCompatActivity {
     private Event event;
     private NavigationView navigationView;
 
+    private SharedPreferences sPref;
+    final String FIRST_CREATE_EVENT = "first_create_event";
+    private String first_create_event = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,8 +91,26 @@ public class OrganizerModeActivity extends AppCompatActivity {
         mOrganizerFab = (FloatingActionButton) findViewById(R.id.organizer_fab);
         mOrganizerFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-               Intent i = new Intent(getApplicationContext(), EditActivity.class);
-                startActivity(i);
+
+                sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                String name = sPref.getString("first_create_event", "");
+
+                if (name == null || name.length() == 0) {
+                    sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                    sPref.edit().putString("first_create_event", FIRST_CREATE_EVENT).apply();
+
+                    Intent i = new Intent(OrganizerModeActivity.this, OrganizerRulesActivity.class);
+                    i.putExtra("from_org_fab_create", true);
+                    startActivity(i);
+
+//                    Intent intent = new Intent(OrganizerModeActivity.this, SettingsActivity.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                    startActivity(intent);
+//                    overridePendingTransition(0,0);
+                } else {
+                    Intent i = new Intent(getApplicationContext(), EditActivity.class);
+                    startActivity(i);
+                }
             }
         });
 
@@ -124,6 +151,18 @@ public class OrganizerModeActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.nav_item_feed) {
                     Intent intent = new Intent(OrganizerModeActivity.this, FeedActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                }
+                if (menuItem.getItemId() == R.id.nav_item_privacy_policy) {
+                    Intent intent = new Intent(OrganizerModeActivity.this, PrivacyPolicyActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                }
+                if (menuItem.getItemId() == R.id.nav_item_org_rules) {
+                    Intent intent = new Intent(OrganizerModeActivity.this, OrganizerRulesActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                 }
@@ -200,6 +239,21 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
         createScrollListener();
 
+    }
+
+    public void functionToRun() {
+        new MaterialDialog.Builder(this)
+                .title("String title")
+                .content("String context")
+                .positiveText("agree")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                        APIService.doEventDelete(eventid);
+                    }
+                })
+                .negativeText("cancel")
+                .show();
     }
 
 
@@ -299,6 +353,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
+
 
 
 }

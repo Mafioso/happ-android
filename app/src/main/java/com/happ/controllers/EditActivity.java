@@ -16,8 +16,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -56,14 +59,15 @@ public class EditActivity extends AppCompatActivity {
     private ImageButton btnStartDate, btnEndDate;
     private NestedScrollView mScrollView;
     private FloatingActionButton mFab;
+    private CheckBox mCheckOrgRules;
+    private TextView mLinkOrgRules;
+    private LinearLayout mLLOrgRules;
 
     private DateTime startDate;
     private DateTime endDate;
-    private String idE;
 
-    EventImagesSwipeAdapter mEventImagesSwipeAdapter;
-
-    BroadcastReceiver saveDoneReceiver;
+    private EventImagesSwipeAdapter mEventImagesSwipeAdapter;
+    private BroadcastReceiver saveDoneReceiver;
 
 
     @Override
@@ -89,13 +93,44 @@ public class EditActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_edit);
 
+        mLLOrgRules = (LinearLayout) findViewById(R.id.ll_org_rules);
+        mLinkOrgRules = (TextView) findViewById(R.id.link_org_rules_activity);
+        mLinkOrgRules.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(EditActivity.this, OrganizerRulesActivity.class);
+                startActivity(i);
+//                Toast.makeText(EditActivity.this, "LOOK RULES", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        mCheckOrgRules = (CheckBox) findViewById(R.id.checkbox_for_org_rules);
         mFab = (FloatingActionButton) findViewById(R.id.edit_or_create_fab);
+//        mFab.setEnabled(false);
+        mFab.setVisibility(View.GONE);
 
         if (eventId == null) {
             setTitle(getString(R.string.create_event));
         } else {
+            mLLOrgRules.setVisibility(View.GONE);
+            mCheckOrgRules.setEnabled(true);
+            mFab.setVisibility(View.VISIBLE);
             setTitle(getString(R.string.edit_event));
         }
+
+
+
+        mCheckOrgRules.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCheckOrgRules.isChecked()) {
+                    mFab.setVisibility(View.VISIBLE);
+                } else {
+                    mFab.setVisibility(View.GONE);
+                }
+            }
+        });
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -218,7 +253,7 @@ public class EditActivity extends AppCompatActivity {
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
                         createEndDateListener(),
                         endDate.getYear(),
-                        endDate.getMonthOfYear()-1,
+                        endDate.getMonthOfYear() -1,
                         endDate.getDayOfMonth()
                 );
                 Calendar mindate = Calendar.getInstance();
@@ -240,6 +275,7 @@ public class EditActivity extends AppCompatActivity {
             public void onClick(View view) {
                 hideSoftKeyboard(EditActivity.this, view);
                     saveEvent();
+
             }
         });
 
@@ -248,12 +284,12 @@ public class EditActivity extends AppCompatActivity {
             saveDoneReceiver = createSaveDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(saveDoneReceiver, new IntentFilter(BroadcastIntents.EVENTEDIT_REQUEST_OK));
         }
+
     }
 
     private void saveEvent() {
         event.setTitle(mEditTitle.getText().toString());
         event.setDescription(mEditDescription.getText().toString());
-
         event.setLocalOnly(true);
 
         if (eventId != null) {
@@ -284,10 +320,10 @@ public class EditActivity extends AppCompatActivity {
             APIService.createEvent(event.getId());
         } else {
             APIService.doEventEdit(event.getId());
-
         }
 
     }
+
 
     public static void hideSoftKeyboard (Activity activity, View view)
     {

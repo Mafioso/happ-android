@@ -16,6 +16,27 @@
         android:supportsRtl="true"
         android:name=".App"
         android:theme="@style/AppTheme">
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name">
+
+        </activity>
+
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".controllers.FeedActivity">
         </activity>
@@ -31,6 +52,12 @@
         <activity android:name=".controllers.UserActivity"
             android:label="@string/user_settings"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
+
+        <activity android:name=".controllers.PrivacyPolicyActivity"
+            android:label="@string/privacy_policy"/>
+
+        <activity android:name=".controllers.OrganizerRulesActivity"
+            android:label="@string/organizer_rules"/>
 
 
         <activity
@@ -48,10 +75,7 @@
         <activity
             android:name=".controllers.SplashScreen"
             android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".controllers.RegistrationActivity"
@@ -59,6 +83,12 @@
         <activity
             android:name=".controllers.LoginActivity"
             android:windowSoftInputMode="adjustPan|stateHidden">
+        </activity>
+        <activity android:name=".controllers.WelcomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
         <activity android:name=".controllers.OrganizerModeActivity" />
 

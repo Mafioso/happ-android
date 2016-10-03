@@ -10,6 +10,8 @@ public class BroadcastIntents {
     public static final String INTERESTS_REQUEST_FAIL = "com.happ.interests_request_fail";
     public static final String LOGIN_REQUEST_OK = "com.happ.login_request_ok";
     public static final String LOGIN_REQUEST_FAIL = "com.happ.login_request_fail";
+    public static final String CHANGE_PW_REQUEST_OK = "com.happ.change_pw_request_ok";
+    public static final String CHANGE_PW_REQUEST_FAIL = "com.happ.change_pw_request_fail";
     public static final String SIGNUP_REQUEST_OK = "com.happ.signup_request_ok";
     public static final String SIGNUP_REQUEST_FAIL = "com.happ.signup_request_fail";
     public static final String USER_REQUEST_OK = "com.happ.user_request_ok";
@@ -23,8 +25,6 @@ public class BroadcastIntents {
     public static final String SET_CITIES_FAIL = "com.happ.set_cities_fail";
     public static final String USEREDIT_REQUEST_OK = "com.happ.useredit_request_ok";
     public static final String USEREDIT_REQUEST_FAIL = "com.happ.useredit_request_fail";
-    public static final String SET_USEREDIT_OK = "com.happ.set_useredit_ok";
-    public static final String SET_USEREDIT_FAIL = "com.happ.set_useredit_fail";
 
     public static final String EVENTEDIT_REQUEST_OK = "com.happ.eventedit_request_ok";
     public static final String EVENTEDIT_REQUEST_FAIL = "com.happ.eventedit_request_fail";

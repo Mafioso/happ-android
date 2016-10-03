@@ -92,28 +92,28 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_signup_pw_visibility"
-                android:background="@drawable/ic_visibility_compat"
-                android:layout_below="@id/input_layout_signup_username"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="30dp"
-                android:onClick="btn_click_signup_pw_visibility"/>
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_signup_pw_visibility_off"
-                android:background="@drawable/ic_visibility_off_compat"
-                android:layout_below="@id/input_layout_signup_username"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="30dp"
-                android:onClick="btn_click_signup_pw_visibility_off"/>
+            <!--<ImageButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/btn_signup_pw_visibility"-->
+                <!--android:background="@drawable/ic_visibility_compat"-->
+                <!--android:layout_below="@id/input_layout_signup_username"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginRight="30dp"-->
+                <!--android:onClick="btn_click_signup_pw_visibility"/>-->
+            <!--<ImageButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/btn_signup_pw_visibility_off"-->
+                <!--android:background="@drawable/ic_visibility_off_compat"-->
+                <!--android:layout_below="@id/input_layout_signup_username"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginRight="30dp"-->
+                <!--android:onClick="btn_click_signup_pw_visibility_off"/>-->
 
 
             <android.support.design.widget.TextInputLayout
@@ -136,28 +136,28 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_signup_pwr_visibility"
-                android:background="@drawable/ic_visibility_compat"
-                android:layout_below="@id/input_layout_signup_password"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="30dp"
-                android:onClick="btn_click_signup_pwr_visibility"/>
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_signup_pwr_visibility_off"
-                android:background="@drawable/ic_visibility_off_compat"
-                android:layout_below="@id/input_layout_signup_password"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="30dp"
-                android:onClick="btn_click_signup_pwr_visibility_off"/>
+            <!--<ImageButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/btn_signup_pwr_visibility"-->
+                <!--android:background="@drawable/ic_visibility_compat"-->
+                <!--android:layout_below="@id/input_layout_signup_password"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginRight="30dp"-->
+                <!--android:onClick="btn_click_signup_pwr_visibility"/>-->
+            <!--<ImageButton-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/btn_signup_pwr_visibility_off"-->
+                <!--android:background="@drawable/ic_visibility_off_compat"-->
+                <!--android:layout_below="@id/input_layout_signup_password"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginRight="30dp"-->
+                <!--android:onClick="btn_click_signup_pwr_visibility_off"/>-->
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/signup_fab"
@@ -181,5 +181,26 @@
                 android:visibility="invisible"
                 android:layout_centerHorizontal="true"/>
 
+        <Button
+            android:id="@+id/button_fb_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/signup_fab"
+            style="?attr/borderlessButtonStyle"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:textColor="@color/mdtp_white"
+            android:text="@string/login_facebook"
+            android:drawableLeft="@drawable/com_facebook_button_icon"
+            android:background="@drawable/com_facebook_button_background"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            />
+
     </RelativeLayout>
+
 </RelativeLayout>
