@@ -24,7 +24,7 @@ import android.widget.EditText;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.controllers.CityListAdapter;
+import com.happ.adapters.CityListAdapter;
 import com.happ.models.City;
 import com.happ.retrofit.APIService;
 

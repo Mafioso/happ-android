@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.adapters.InterestsListAdapter;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
 

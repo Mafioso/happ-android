@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 
 import com.happ.R;
 import com.happ.controllers.EventActivity;
-import com.happ.controllers.EventsListAdapter;
+import com.happ.adapters.EventsListAdapter;
 import com.happ.models.Event;
 
 import java.util.ArrayList;

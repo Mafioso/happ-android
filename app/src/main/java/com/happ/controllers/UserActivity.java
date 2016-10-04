@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -53,6 +54,7 @@ public class UserActivity extends AppCompatActivity implements
     private Date birthday;
     private BroadcastReceiver setUserEditOKReceiver;
     private boolean fromSettings = false;
+    private CoordinatorLayout mRootLayout;
 
 
     @Override
@@ -70,6 +72,8 @@ public class UserActivity extends AppCompatActivity implements
         fromSettings = getIntent().getBooleanExtra("from_settings", false);
 
         setContentView(R.layout.activity_user);
+
+        mRootLayout = (CoordinatorLayout)findViewById(R.id.root_layout);
 
         ((CircleImageView)findViewById(R.id.avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
 
@@ -151,6 +155,10 @@ public class UserActivity extends AppCompatActivity implements
             }
         });
 
+    }
+
+    public View getRootLayout() {
+        return mRootLayout;
     }
 
     protected void updateUserData() {

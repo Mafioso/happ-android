@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
-import com.happ.controllers.EventsListAdapter;
+import com.happ.adapters.EventsListAdapter;
 import com.happ.controllers.FeedActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;

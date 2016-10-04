@@ -30,6 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.adapters.EventsListAdapter;
 import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
@@ -241,7 +242,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
     }
 
-    public void functionToRun() {
+    public void functionToRun(final String eventId) {
         new MaterialDialog.Builder(this)
                 .title("String title")
                 .content("String context")
@@ -249,7 +250,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//                        APIService.doEventDelete(eventid);
+                        APIService.doEventDelete(eventId);
                     }
                 })
                 .negativeText("cancel")

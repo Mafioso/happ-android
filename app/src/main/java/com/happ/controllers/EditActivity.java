@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.adapters.EventImagesSwipeAdapter;
 import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Event;
 import com.happ.models.Interest;

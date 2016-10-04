@@ -1,4 +1,4 @@
-package com.happ.controllers;
+package com.happ.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -30,6 +30,7 @@ import com.bumptech.glide.request.target.Target;
 import com.happ.App;
 import com.happ.R;
 import com.happ.Typefaces;
+import com.happ.controllers.OrganizerModeActivity;
 import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
@@ -353,7 +354,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                             mSelectItemListener.onEventEditSelected(item.event.getId());
                         }
                         if (menuItem.getItemId() == R.id.menu_delete) {
-                            ((OrganizerModeActivity) context).functionToRun();
+                            ((OrganizerModeActivity) context).functionToRun(item.event.getId());
                         }
                         return false;
                     }

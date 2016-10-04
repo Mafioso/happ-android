@@ -20,7 +20,7 @@ import android.view.View;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.controllers.InterestsListAdapter;
+import com.happ.adapters.InterestsListAdapter;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
 import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
