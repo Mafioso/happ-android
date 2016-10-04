@@ -31,6 +31,7 @@ import com.happ.App;
 import com.happ.R;
 import com.happ.Typefaces;
 import com.happ.models.Event;
+import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
 
 import org.joda.time.DateTime;
@@ -52,6 +53,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
     private SelectEventItemListener mSelectItemListener;
     private boolean isOrganizer;
 
+    private InterestsListAdapter mInterestsListAdapter;
+    private ArrayList<Interest> interests;
 
     public interface SelectEventItemListener {
         void onEventItemSelected(String eventId, ActivityOptionsCompat options);
@@ -312,13 +315,30 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mFavoritesImage.setImageResource(R.drawable.ic_not_in_favorites);
             }
 
-
             itemHolder.mDateView.setText(item.event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
 
             if (!this.isOrganizer) {
-                itemHolder.mToolbar.setVisibility(View.GONE);
                 Menu menu = itemHolder.mToolbar.getMenu();
                 if (menu != null) menu.clear();
+                itemHolder.mToolbar.setVisibility(View.VISIBLE);
+                itemHolder.mToolbar.inflateMenu(R.menu.menu_event_feed);
+                itemHolder.mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        menuItem.setChecked(false);
+                        if (menuItem.getItemId() == R.id.menu_unsubscribe) {
+
+                            mInterestsListAdapter = new InterestsListAdapter(App.getContext(), interests);
+                            mInterestsListAdapter.setUserAcivityIds(App.getCurrentUser().getInterestIds());
+                            ArrayList<String> selectedInterests = mInterestsListAdapter.getSelectedInterests();
+                            String idInterest = item.event.getInterest().getId();
+                            selectedInterests.remove(idInterest);
+                            APIService.setInterests(selectedInterests);
+
+                        }
+                        return false;
+                    }
+                });
 
             } else {
                 Menu menu = itemHolder.mToolbar.getMenu();

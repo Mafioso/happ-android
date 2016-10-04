@@ -22,7 +22,6 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -46,7 +45,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     EditText mEmail, mPassword;
-    ImageButton mVisibility, mVisibilityOff;
     Button mButtonRegistration;
     FloatingActionButton mButtonFablogin;
     ImageView mImageLogo;

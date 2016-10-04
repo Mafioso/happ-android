@@ -332,6 +332,7 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="ok">ok</string>
     <string name="old_password">Old Password</string>
     <string name="repeat_new_password">Repeat New Password</string>
+    <string name="menu_unsubscribe">Unsubscribe</string>
 
 
 </resources>

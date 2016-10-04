@@ -89,6 +89,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 ArrayList<String> selectedInterests = mInterestsListAdapter.getSelectedInterests();
                 // SEND DATA TO SERVER
+//                selectedInterests.remove(1);
                 APIService.setInterests(selectedInterests);
                 mFab.setVisibility(View.GONE);
             }

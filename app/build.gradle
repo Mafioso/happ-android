@@ -18,6 +18,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            resValue "string", "HOST", "http://happ.westeurope.cloudapp.azure.com/"
+//            resValue "string", "HOST", "http://192.168.0.104:8000/"
             resValue "string", "HOST", "http://192.168.11.175:8000/"
         }
     }
