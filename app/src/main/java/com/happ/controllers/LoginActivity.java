@@ -9,7 +9,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -44,17 +43,16 @@ public class LoginActivity extends AppCompatActivity {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    EditText mEmail, mPassword;
-    Button mButtonRegistration;
-    FloatingActionButton mButtonFablogin;
-    ImageView mImageLogo;
-    TextInputLayout mInputLayoutEmail, mInputLayoutPassword;
-    LinearLayout mRegisterView;
-    boolean isKeyboarShown = false;
-    ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
-    RelativeLayout mFormLayout;
-    MaterialProgressBar mProgressBar;
-    int[] mInsets = new int[3];
+    private EditText mEmail, mPassword;
+    private Button mButtonRegistration;
+    private FloatingActionButton mButtonFablogin;
+    private ImageView mImageLogo;
+    private LinearLayout mRegisterView;
+    private boolean isKeyboarShown = false;
+    private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
+    private RelativeLayout mFormLayout;
+    private MaterialProgressBar mProgressBar;
+    private int[] mInsets = new int[3];
 
     private BroadcastReceiver loginRequestDoneReceiver;
     private BroadcastReceiver loginFailedReceiver;
@@ -83,16 +81,20 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = (EditText) findViewById(R.id.input_login_email);
         mPassword = (EditText) findViewById(R.id.input_login_password);
         mButtonFablogin = (FloatingActionButton) findViewById(R.id.login_fab);
+        mButtonFablogin.setVisibility(View.GONE);
         mButtonRegistration = (Button) findViewById(R.id.btn_registration_page);
         mImageLogo = (ImageView) findViewById(R.id.img_login_logo);
-        mInputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_login_email);
-        mInputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_login_password);
+
+//        mInputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_login_email);
+//        mInputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_login_password);
 //        mVisibility = (ImageButton) findViewById(R.id.btn_login_visibility);
 //        mVisibilityOff = (ImageButton) findViewById(R.id.btn_login_visibility_off);
 //        mVisibilityOff.setVisibility(View.GONE);
+
         mRegisterView = (LinearLayout) findViewById(R.id.ll_footer);
         mFormLayout = (RelativeLayout) findViewById(R.id.form_layout2);
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_login);
+        mProgressBar.setVisibility(View.GONE);
 
 
         if (loginRequestDoneReceiver == null) loginRequestDoneReceiver = createLoginSuccessReceiver();
@@ -113,7 +115,7 @@ public class LoginActivity extends AppCompatActivity {
         mButtonFablogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 hideSoftKeyboard(LoginActivity.this, v);
-                mButtonFablogin.setVisibility(View.INVISIBLE);
+                mButtonFablogin.setVisibility(View.GONE);
                 mProgressBar.setVisibility(View.VISIBLE);
                 APIService.doLogin(mEmail.getText().toString(), mPassword.getText().toString());
 //                HappRestClient.getInstance().doLogin(mEmail.getText().toString(), mPassword.getText().toString());
@@ -181,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if ((TextUtils.isEmpty(mEmail.getText()))
                 || (TextUtils.isEmpty(mPassword.getText())))
-            mButtonFablogin.setVisibility(View.INVISIBLE);
+            mButtonFablogin.setVisibility(View.GONE);
         else
             mButtonFablogin.setVisibility(View.VISIBLE);
 
@@ -260,7 +262,7 @@ public class LoginActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mProgressBar.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.GONE);
                 User currentUser = App.getCurrentUser();
                 if (currentUser.getInterests() != null && currentUser.getInterests().size() > 0) {
                     Intent goToFeedIntent = new Intent(LoginActivity.this, FeedActivity.class);
@@ -285,7 +287,7 @@ public class LoginActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mProgressBar.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.GONE);
                 mButtonFablogin.setVisibility(View.VISIBLE);
                 Toast.makeText(LoginActivity.this, "Wrong Username or Password", Toast.LENGTH_LONG).show();
             }

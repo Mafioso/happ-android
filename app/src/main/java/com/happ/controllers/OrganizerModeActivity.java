@@ -108,6 +108,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
 //                    startActivity(intent);
 //                    overridePendingTransition(0,0);
+
                 } else {
                     Intent i = new Intent(getApplicationContext(), EditActivity.class);
                     startActivity(i);
@@ -126,14 +127,13 @@ public class OrganizerModeActivity extends AppCompatActivity {
                     App.doLogout(OrganizerModeActivity.this);
                 }
 
-
                 if (menuItem.getItemId() == R.id.nav_item_settings) {
                     Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, SettingsActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
-
                 }
+
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {
                     Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, OrganizerModeActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -155,12 +155,14 @@ public class OrganizerModeActivity extends AppCompatActivity {
                     startActivity(intent);
                     overridePendingTransition(0,0);
                 }
+
                 if (menuItem.getItemId() == R.id.nav_item_privacy_policy) {
                     Intent intent = new Intent(OrganizerModeActivity.this, PrivacyPolicyActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     overridePendingTransition(0,0);
                 }
+
                 if (menuItem.getItemId() == R.id.nav_item_org_rules) {
                     Intent intent = new Intent(OrganizerModeActivity.this, OrganizerRulesActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -237,7 +239,6 @@ public class OrganizerModeActivity extends AppCompatActivity {
         }
 
         HappRestClient.getInstance().getEvents(false);
-
         createScrollListener();
 
     }
@@ -287,8 +288,6 @@ public class OrganizerModeActivity extends AppCompatActivity {
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();
     }
-
-
 
 
     private BroadcastReceiver createEventsRequestDoneReceiver() {
@@ -352,6 +351,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
         if (deleteEventRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(deleteEventRequestDoneReceiver);
         }
+
         super.onDestroy();
     }
 

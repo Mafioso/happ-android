@@ -22,6 +22,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.borax12.materialdaterangepicker.date.DatePickerDialog;
+import com.borax12.materialdaterangepicker.time.RadialPickerLayout;
+import com.borax12.materialdaterangepicker.time.TimePickerDialog;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
@@ -30,9 +33,6 @@ import com.happ.fragments.EventInterestFragment;
 import com.happ.models.Event;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
-import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.joda.time.DateTime;
 
@@ -78,6 +78,7 @@ public class EditActivity extends AppCompatActivity {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(saveDoneReceiver);
         }
     }
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -318,6 +319,8 @@ public class EditActivity extends AppCompatActivity {
         realm.close();
 
         if (eventId == null) {
+
+
             APIService.createEvent(event.getId());
         } else {
             APIService.doEventEdit(event.getId());
@@ -335,7 +338,7 @@ public class EditActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener createStartDateListener() {
         return new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth,int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
                 Calendar calendar = Calendar.getInstance();
                 Date startDt = new Date();
                 if (event.getStartDate() != null) startDt = event.getStartDate();
@@ -363,7 +366,7 @@ public class EditActivity extends AppCompatActivity {
     private TimePickerDialog.OnTimeSetListener createStartTimeListener() {
         return new TimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
                 Calendar calendar = Calendar.getInstance();
                 Date startDt = new Date();
                 if (event.getStartDate() != null) startDt = event.getStartDate();
@@ -371,7 +374,7 @@ public class EditActivity extends AppCompatActivity {
                 calendar.set(calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH),
-                        hourOfDay, minute, second);
+                        hourOfDay, minute);
 
                 event.setStartDate(calendar.getTime());
                 mEditStartDate.setText(event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
@@ -382,7 +385,7 @@ public class EditActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener createEndDateListener() {
         return new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
                 Calendar calendar = Calendar.getInstance();
                 Date endDt = new Date();
                 if (event.getEndDate() != null) endDt = event.getEndDate();
@@ -410,7 +413,7 @@ public class EditActivity extends AppCompatActivity {
     private TimePickerDialog.OnTimeSetListener createEndTimeListener() {
         return new TimePickerDialog.OnTimeSetListener() {
             @Override
-            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int hourOfDayEnd, int minuteEnd) {
                 Calendar calendar = Calendar.getInstance();
                 Date startDt = new Date();
                 if (event.getEndDate() != null) startDt = event.getEndDate();
@@ -418,7 +421,7 @@ public class EditActivity extends AppCompatActivity {
                 calendar.set(calendar.get(Calendar.YEAR),
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH),
-                        hourOfDay, minute, second);
+                        hourOfDay, minute);
 
                 event.setEndDate(calendar.getTime());
                 mEditFinishDate.setText(event.getEndDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));

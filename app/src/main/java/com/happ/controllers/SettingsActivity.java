@@ -3,6 +3,7 @@ package com.happ.controllers;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.happ.App;
 import com.happ.R;
+import com.happ.fragments.AboutFragment;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -30,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
-    private Button mButtonUserSettings, mPrivacyPolice;
+    private Button mButtonUserSettings, mPrivacyPolice, mAbout;
     private NavigationView navigationView;
 
 
@@ -135,7 +137,10 @@ public class SettingsActivity extends AppCompatActivity {
         mButtonUserSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btn_click_user_settings(view);
+                Intent i = new Intent(getApplicationContext(), UserActivity.class);
+                i.putExtra("from_settings", true);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
             }
         });
 
@@ -143,26 +148,25 @@ public class SettingsActivity extends AppCompatActivity {
         mPrivacyPolice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btn_click_btn_privacy_policy(view);
+                Intent i = new Intent(getApplicationContext(), PrivacyPolicyActivity.class);
+                i.putExtra("from_settings", true);
+                startActivity(i);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+            }
+        });
+
+        mAbout = (Button) findViewById(R.id.btn_about_settings);
+        mAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fm = getSupportFragmentManager();
+                AboutFragment aboutFragment = AboutFragment.newInstance();
+                aboutFragment.show(fm, "fragment_about");
             }
         });
 
 
 
-    }
-
-    public void btn_click_btn_privacy_policy(View view) {
-        Intent i = new Intent(getApplicationContext(), PrivacyPolicyActivity.class);
-        i.putExtra("from_settings", true);
-        startActivity(i);
-        overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
-    }
-
-    public void btn_click_user_settings(View view) {
-        Intent i = new Intent(getApplicationContext(), UserActivity.class);
-        i.putExtra("from_settings", true);
-        startActivity(i);
-        overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
     }
 
     @Override

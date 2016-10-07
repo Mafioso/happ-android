@@ -57,10 +57,21 @@ public class ChangePasswordFragment extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if (mNewPw.getText().toString().equals(mRepeatNewPw.getText().toString())) {
                             APIService.doChangePassword(mOldPw.getText().toString(), mNewPw.getText().toString());
+
+                                String text_ok = getResources().getString(R.string.password_changed);
+                                final Snackbar snackbar = Snackbar.make(((UserActivity)getActivity()).getRootLayout(), text_ok, Snackbar.LENGTH_LONG);
+                                snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        snackbar.dismiss();
+                                    }
+                                });
+                                snackbar.show();
+
                             return;
                         } else {
                             String text = getResources().getString(R.string.passwords_mismatch);
-                            String ok = getResources().getString(R.string.ok).toUpperCase();
+//                            String ok = getResources().getString(R.string.ok).toUpperCase();
                             final Snackbar snackbar = Snackbar.make(((UserActivity)getActivity()).getRootLayout(), text, Snackbar.LENGTH_LONG);
                             snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                                 @Override

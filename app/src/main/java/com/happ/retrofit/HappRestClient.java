@@ -3,6 +3,7 @@ package com.happ.retrofit;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -246,6 +247,9 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if(response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -254,6 +258,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<EventsResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -283,6 +288,9 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.CITY_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -291,6 +299,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<CitiesResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.CITY_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -329,6 +338,9 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.LOGIN_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -337,6 +349,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<HappToken> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.LOGIN_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -420,6 +433,11 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.USEREDIT_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+
+                    if(response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
+
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -428,6 +446,8 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.USEREDIT_REQUEST_FAIL);
+
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -474,6 +494,14 @@ public class HappRestClient {
                     } else {
                         Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_FAIL);
                         intent.putExtra("CODE", response.code());
+
+                        if(response.code() == 500) {
+                            Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                        }
+                        if (response.code() == 400) {
+                            Toast.makeText(App.getContext(), R.string.error_400, Toast.LENGTH_SHORT).show();
+                        }
+
                         intent.putExtra("MESSAGE", response.message());
                         LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                     }
@@ -497,6 +525,7 @@ public class HappRestClient {
                     realm.close();
 
                     Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_FAIL);
+                    Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     intent.putExtra("MESSAGE", t.getLocalizedMessage());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -529,6 +558,10 @@ public class HappRestClient {
                 } else {
                     Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -537,6 +570,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -567,6 +601,9 @@ public class HappRestClient {
                 } else {
                     Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -575,6 +612,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -605,6 +643,9 @@ public class HappRestClient {
                 } else {
                     Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -613,6 +654,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -643,6 +685,9 @@ public class HappRestClient {
                 } else {
                     Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -652,6 +697,7 @@ public class HappRestClient {
             public void onFailure(Call<Void> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENT_UNFAV_REQUEST_FAIL);
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
         });
@@ -697,6 +743,14 @@ public class HappRestClient {
                     } else {
                         Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_FAIL);
                         intent.putExtra("CODE", response.code());
+
+                        if(response.code() == 500) {
+                            Toast.makeText(App.getContext(), "500 error", Toast.LENGTH_LONG).show();
+                        }
+                        if (response.code() == 400) {
+                            Toast.makeText(App.getContext(), "400 error", Toast.LENGTH_LONG).show();
+                        }
+
                         intent.putExtra("MESSAGE", response.message());
                         LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                     }
@@ -720,6 +774,7 @@ public class HappRestClient {
                     realm.close();
 
                     Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_FAIL);
+                    Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     intent.putExtra("MESSAGE", t.getLocalizedMessage());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -756,6 +811,10 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.SIGNUP_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
+
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -764,6 +823,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<HappToken> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.SIGNUP_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -796,6 +856,9 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.FILTERED_EVENTS_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if(response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -804,6 +867,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<EventsResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.FILTERED_EVENTS_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -830,6 +894,9 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.FILTERED_EVENTS_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if(response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -838,6 +905,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<EventsResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.FILTERED_EVENTS_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -868,6 +936,9 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if(response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -876,6 +947,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<InterestResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -892,6 +964,9 @@ public class HappRestClient {
                 } else {
                     Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -900,6 +975,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -927,6 +1003,9 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.SET_CITIES_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("BODY", response.body().toString());
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
@@ -936,6 +1015,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.SET_CITIES_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -995,6 +1075,9 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.USER_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("BODY", response.body().toString());
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
@@ -1004,6 +1087,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.USER_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
@@ -1057,6 +1141,9 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.EVENTDELETE_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
                     intent.putExtra("BODY", response.body().toString());
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
@@ -1066,6 +1153,7 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<Event> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENTDELETE_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }

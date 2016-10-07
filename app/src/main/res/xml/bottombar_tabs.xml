@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/tab_mail"
+        icon="@drawable/ic_content_mail"
+        title="Favorites" />
+    <tab
+        id="@+id/tab_maps_place"
+        icon="@drawable/ic_maps_place"
+        title="Nearby" />
+    <tab
+        id="@+id/tab_looks_one"
+        icon="@drawable/ic_image_looks_one"
+        title="Friends" />
+</tabs>

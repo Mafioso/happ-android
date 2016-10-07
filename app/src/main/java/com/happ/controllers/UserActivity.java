@@ -22,12 +22,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.fragments.ChangePasswordFragment;
 import com.happ.retrofit.APIService;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -212,7 +212,7 @@ public class UserActivity extends AppCompatActivity implements
 
 
     @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
         String date = dayOfMonth+" "+(monthOfYear)+" "+year;
         Calendar cal = Calendar.getInstance();
         cal.setTime(birthday);
@@ -235,4 +235,5 @@ public class UserActivity extends AppCompatActivity implements
             setUserEditOKReceiver = null;
         }
     }
+
 }

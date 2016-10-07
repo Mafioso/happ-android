@@ -11,7 +11,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -32,9 +31,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
@@ -43,7 +43,6 @@ import com.happ.fragments.FavoriteFeedFragment;
 import com.happ.models.Event;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
-import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ import java.util.Date;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 
-public class FeedActivity extends AppCompatActivity {
+public class FeedActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -75,16 +74,13 @@ public class FeedActivity extends AppCompatActivity {
     private boolean isUnfaving = false;
 
 
-    private EditText mStartDateText, mEndDateText;
-    private TextInputLayout mLayoutInputStartDate, mLayoutInputEndDate;
+    private EditText mStartDateText, mDateText;
     private SwitchCompat mFilterFree;
     private Date startDate, endDate;
     private String isFree = "";
-    private LinearLayout LLFeedFilter;
+    private RelativeLayout RLFeedFilter;
     private FloatingActionButton mFabFilterDone;
 
-    private LinearLayout LLFilterStartDate;
-    private LinearLayout LLFilterEndDate;
 
     private ImageView StartDate, EndDate;
 
@@ -210,96 +206,72 @@ public class FeedActivity extends AppCompatActivity {
 
 
         mStartDateText = (EditText) findViewById(R.id.filter_input_start_date);
-        mEndDateText = (EditText) findViewById(R.id.filter_input_end_date);
+
+        mDateText = (EditText) findViewById(R.id.filter_input_end_date);
+        mDateText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar now = Calendar.getInstance();
+                DatePickerDialog dpd = DatePickerDialog.newInstance(
+                        FeedActivity.this,
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH)
+                );
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+            }
+        });
+
+
         mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
-        mLayoutInputStartDate = (TextInputLayout) findViewById(R.id.filter_input_layout_start_date);
-        mLayoutInputEndDate = (TextInputLayout) findViewById(R.id.filter_input_layout_end_date);
-        LLFeedFilter = (LinearLayout) findViewById(R.id.filter_feed_ll);
-        LLFeedFilter.setVisibility(View.GONE);
+        RLFeedFilter = (RelativeLayout) findViewById(R.id.filter_feed_ll);
+        RLFeedFilter.setVisibility(View.GONE);
         mFabFilterDone = (FloatingActionButton) findViewById(R.id.fab_filter_done);
         mFabFilterDone.setVisibility(View.GONE);
 
-        LLFilterStartDate = (LinearLayout) findViewById(R.id.ll_startdate_filter);
-        LLFilterEndDate = (LinearLayout) findViewById(R.id.ll_enddate_filter);
+    }
 
-        StartDate = (ImageView) findViewById(R.id.edit_start_date_filter);
-        EndDate = (ImageView) findViewById(R.id.edit_end_date_filter);
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String startDate = year +""+ (monthOfYear++)+""+ (dayOfMonth++);
+        String endDate = yearEnd +""+ (monthOfYearEnd)+ "" + dayOfMonthEnd;
 
-        StartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (startDate == null) startDate = new Date();
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(startDate);
-
-                DatePickerDialog dpdstart = DatePickerDialog.newInstance(
-                        createStartDateListener(),
-                        cal.get(Calendar.YEAR),
-                        cal.get(Calendar.MONTH),
-                        cal.get(Calendar.DAY_OF_MONTH)
-                );
-                dpdstart.setAccentColor(getResources().getColor(R.color.colorPrimary));
-                dpdstart.show(getFragmentManager(), "StartDatepickerdialog");
-
-            }
-        });
-
-        EndDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (endDate == null) endDate = new Date();
-                Calendar cal = Calendar.getInstance();
-                cal.setTime(endDate);
-
-                DatePickerDialog dpdend = DatePickerDialog.newInstance(
-                        createEndDateListener(),
-                        cal.get(Calendar.YEAR),
-                        cal.get(Calendar.MONTH),
-                        cal.get(Calendar.DAY_OF_MONTH)
-                );
-                dpdend.setAccentColor(getResources().getColor(R.color.colorPrimary));
-                dpdend.show(getFragmentManager(), "EndDatepickerdialog");
-
-            }
-        });
-
+        mStartDateText.setText(startDate);
+        mDateText.setText(endDate);
     }
 
 
 
-    private DatePickerDialog.OnDateSetListener createEndDateListener() {
-        return new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
-                if (endDate == null) endDate = new Date();
-                calendar.setTime(endDate);
-                calendar.set(year, monthOfYear, dayOfMonth);
-
-                endDate = calendar.getTime();
-                java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
-
-                mEndDateText.setText(format.format(endDate));
-
-            }
-        };
-    }
-
-    private DatePickerDialog.OnDateSetListener createStartDateListener() {
-        return new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar calendar = Calendar.getInstance();
-                if (startDate == null) startDate = new Date();
-                calendar.setTime(startDate);
-                calendar.set(year, monthOfYear, dayOfMonth);
-
-                startDate = calendar.getTime();
-                java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
-                mStartDateText.setText(format.format(startDate));
-            }
-        };
-    }
+//    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth,int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+//
+//        Calendar calendar = Calendar.getInstance();
+//        if (endDate == null) endDate = new Date();
+//        calendar.setTime(endDate);
+//        calendar.set(year, monthOfYear, dayOfMonth, yearEnd, monthOfYearEnd, dayOfMonthEnd);
+//
+//        endDate = calendar.getTime();
+//        java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
+//
+////                mStartDateText.setText(format.format(startDate));
+//        mDateText.setText(format.format(endDate));
+//
+//    }
+//    private DatePickerDialog.OnDateSetListener createStartDateListener() {
+//        return new DatePickerDialog.OnDateSetListener() {
+//            @Override
+//            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+//                Calendar calendar = Calendar.getInstance();
+//                if (startDate == null) startDate = new Date();
+//                calendar.setTime(startDate);
+//                calendar.set(year, monthOfYear, dayOfMonth);
+//
+//                startDate = calendar.getTime();
+//                java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
+//                mStartDateText.setText(format.format(startDate));
+//            }
+//        };
+//    }
 
 
     @Override
@@ -324,8 +296,8 @@ public class FeedActivity extends AppCompatActivity {
                 return true;
             case R.id.menu_filter:
 
-                if (LLFeedFilter.getVisibility() == View.GONE ) {
-                    LLFeedFilter.setVisibility(View.VISIBLE);
+                if (RLFeedFilter.getVisibility() == View.GONE ) {
+                    RLFeedFilter.setVisibility(View.VISIBLE);
 
                     if (startDate == null) {
                         startDate = new Date();
@@ -336,7 +308,7 @@ public class FeedActivity extends AppCompatActivity {
 
 
 
-                    if (LLFeedFilter.getVisibility() == View.VISIBLE) {
+                    if (RLFeedFilter.getVisibility() == View.VISIBLE) {
                         mFabFilterDone.setVisibility(View.VISIBLE);
                         mFabFilterDone.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -367,7 +339,7 @@ public class FeedActivity extends AppCompatActivity {
                         });
                     }
                 } else {
-                    LLFeedFilter.setVisibility(View.GONE);
+                    RLFeedFilter.setVisibility(View.GONE);
                 }
                 return true;
         }
@@ -384,6 +356,7 @@ public class FeedActivity extends AppCompatActivity {
     public String getMaxFree() {
         return isFree;
     }
+
 
     protected class FeedPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -434,7 +407,7 @@ public class FeedActivity extends AppCompatActivity {
         ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
         java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
 //        mStartDateText.setText(format.format(startDate));
-//        mEndDateText.setText(format.format(endDate));
+//        mDateText.setText(format.format(endDate));
 //        if (isFree != null && isFree.length() > 0) {
 //            mFilterFree.setChecked(true);
 //        } else {

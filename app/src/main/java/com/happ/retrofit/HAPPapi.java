@@ -29,10 +29,9 @@ import retrofit2.http.Query;
  */
 public interface HAPPapi {
 
-    @GET("events/")
+    @GET("events/feed/")
     Call<EventsResponse> getEvents(@Query("page") int page);
-
-    @GET("events/")
+    @GET("events/feed/")
     Call<EventsResponse> getFilteredEvents(@Query("page") int page,
                                            @Query("start_date") String startDate,
                                            @Query("end_date") String endDate,
