@@ -10,4 +10,8 @@
     app:headerLayout="@layout/drawer_header"
     android:layout_alignParentBottom="true"
     android:layout_alignParentRight="true"
-    app:menu="@menu/drawer" />
+    app:menu="@menu/drawer"
+    android:overScrollMode="ifContentScrolls">
+
+
+</android.support.design.widget.NavigationView>

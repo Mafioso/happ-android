@@ -18,18 +18,6 @@
             android:title="@string/nav_item_organizer"
             android:icon="@drawable/ic_organizer"
             />
-    </group>
-    <group android:id="@+id/nav_controls_group" android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_item_settings"
-            android:title="@string/nav_item_settings"
-            android:icon="@drawable/ic_settings"
-            />
-        <item
-            android:id="@+id/nav_item_logout"
-            android:title="@string/nav_item_logout"
-            android:icon="@drawable/ic_logout"
-            />
         <item
             android:id="@+id/nav_item_privacy_policy"
             android:title="@string/privacy_policy"
@@ -40,6 +28,21 @@
             android:title="@string/organizer_rules"
             android:icon="@drawable/ic_organizer_rules"
             />
+    </group>
 
+    <group
+        android:id="@+id/nav_controls_group"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_item_settings"
+            android:title="@string/nav_item_settings"
+            android:icon="@drawable/ic_settings"
+            />
+        <item
+            android:id="@+id/nav_item_logout"
+            android:title="@string/nav_item_logout"
+            android:icon="@drawable/ic_logout"
+            />
     </group>
 </menu>

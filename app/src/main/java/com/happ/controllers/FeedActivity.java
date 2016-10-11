@@ -6,18 +6,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -30,9 +28,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.happ.App;
@@ -43,6 +42,10 @@ import com.happ.fragments.FavoriteFeedFragment;
 import com.happ.models.Event;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.ncapdevi.fragnav.FragNavController;
+import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabReselectListener;
+import com.roughike.bottombar.OnTabSelectListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -58,8 +61,8 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    protected final String[] mTabNames = {"Everything", "Favorites"};
-    protected ArrayList<Fragment> mTabFragments;
+//    protected final String[] mTabNames = {"Everything", "Favorites"};
+//    protected ArrayList<Fragment> mTabFragments;
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private Menu menu;
@@ -67,8 +70,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private String username;
     private NavigationView navigationView;
     private CoordinatorLayout rootLayout;
-
-
 
     private boolean isUnvoting = false;
     private boolean isUnfaving = false;
@@ -81,8 +82,15 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private RelativeLayout RLFeedFilter;
     private FloatingActionButton mFabFilterDone;
 
+    private FrameLayout container;
+    private FragmentManager myFragmentManager;
+    private FavoriteFeedFragment favoritesFeedFragment;
+    private EverythingFeedFragment everythingFeedFragment;
+    private BottomBar mBottomBar;
+    private FragNavController fragNavController;
 
-    private ImageView StartDate, EndDate;
+    private final int TAB_EVERYTHING = FragNavController.TAB1;
+    private final int TAB_FAVORITES = FragNavController.TAB2;
 
 
     private BroadcastReceiver userRequestDoneReceiver;
@@ -192,15 +200,75 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
-        mTabFragments = new ArrayList<>();
-        for (int i=0; i<mTabNames.length; i++) {
-            mTabFragments.add(null);
-        }
-        FeedPagerAdapter adapter = new FeedPagerAdapter(getSupportFragmentManager());
-        ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
-        viewPager.setAdapter(adapter);
-        TabLayout tabLayout = (TabLayout)findViewById(R.id.tablayout);
-        tabLayout.setupWithViewPager(viewPager);
+//        mTabFragments = new ArrayList<>();
+//        for (int i=0; i<mTabNames.length; i++) {
+//            mTabFragments.add(null);
+//        }
+//        FeedPagerAdapter adapter = new FeedPagerAdapter(getSupportFragmentManager());
+//        ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
+//        viewPager.setAdapter(adapter);
+
+        ArrayList<Fragment> fragments = new ArrayList<>(2);
+
+        //add fragments to list
+        fragments.add(EverythingFeedFragment.newInstance());
+        fragments.add(FavoriteFeedFragment.newInstance());
+
+        fragNavController = new FragNavController(getSupportFragmentManager(),R.id.feed_container,fragments);
+
+        mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        mBottomBar.setDefaultTabPosition(2);
+        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                switch (tabId) {
+                    case R.id.tab_explore:
+                        Toast.makeText(FeedActivity.this, "TAB_EXPLORE", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.tab_map:
+
+                        Toast.makeText(FeedActivity.this, "TAB_MAP", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.tab_feed:
+                        fragNavController.switchTab(TAB_EVERYTHING);
+                        break;
+                    case R.id.tab_favorites:
+                        fragNavController.switchTab(TAB_FAVORITES);
+                        break;
+                    case R.id.tab_chat:
+
+                        Toast.makeText(FeedActivity.this, "TAB_CHAT", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        });
+
+        mBottomBar.setOnTabReselectListener(new OnTabReselectListener() {
+            @Override
+            public void onTabReSelected(@IdRes int tabId) {
+                if (tabId == R.id.tab_explore) {
+                    fragNavController.clearStack();
+                }
+                if (tabId == R.id.tab_map) {
+                    fragNavController.clearStack();
+                }
+                if (tabId == R.id.tab_feed) {
+                    fragNavController.clearStack();
+                }
+                if (tabId == R.id.tab_favorites) {
+                    fragNavController.clearStack();
+                }
+                if (tabId == R.id.tab_chat) {
+                    fragNavController.clearStack();
+                }
+            }
+        });
+
+
+
+
+//        TabLayout tabLayout = (TabLayout)findViewById(R.id.tablayout);
+//        tabLayout.setupWithViewPager(viewPager);
 
 
 //        mStartDateText = (EditText) findViewById(R.id.filter_input_start_date);
@@ -209,7 +277,10 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         mDateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (endDate == null) endDate = new Date();
                 Calendar now = Calendar.getInstance();
+                now.setTime(endDate);
+
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
                         FeedActivity.this,
                         now.get(Calendar.YEAR),
@@ -227,6 +298,15 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         mFabFilterDone = (FloatingActionButton) findViewById(R.id.fab_filter_done);
         mFabFilterDone.setVisibility(View.GONE);
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fragNavController.getCurrentStack().size() > 1) {
+            fragNavController.pop();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -266,6 +346,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 //        mDateText.setText(format.format(endDate));
 //
 //    }
+
 //    private DatePickerDialog.OnDateSetListener createStartDateListener() {
 //        return new DatePickerDialog.OnDateSetListener() {
 //            @Override
@@ -366,38 +447,38 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         return isFree;
     }
 
-
-    protected class FeedPagerAdapter extends FragmentStatePagerAdapter {
-
-        public FeedPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            if (mTabFragments.get(position) == null) {
-                switch (position) {
-                    case 1:
-                        mTabFragments.set(position, FavoriteFeedFragment.newInstance());
-                        break;
-                    default:
-                        mTabFragments.set(position, EverythingFeedFragment.newInstance());
-                        break;
-                }
-            }
-            return mTabFragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mTabNames.length;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mTabNames[position];
-        }
-    }
+//
+//    protected class FeedPagerAdapter extends FragmentStatePagerAdapter {
+//
+//        public FeedPagerAdapter(FragmentManager fm) {
+//            super(fm);
+//        }
+//
+//        @Override
+//        public Fragment getItem(int position) {
+//            if (mTabFragments.get(position) == null) {
+//                switch (position) {
+//                    case 1:
+//                        mTabFragments.set(position, FavoriteFeedFragment.newInstance());
+//                        break;
+//                    default:
+//                        mTabFragments.set(position, EverythingFeedFragment.newInstance());
+//                        break;
+//                }
+//            }
+//            return mTabFragments.get(position);
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return mTabNames.length;
+//        }
+//
+//        @Override
+//        public CharSequence getPageTitle(int position) {
+//            return mTabNames[position];
+//        }
+//    }
 
     private BroadcastReceiver createLoginSuccessReceiver() {
         return new BroadcastReceiver() {

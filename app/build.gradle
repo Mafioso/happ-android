@@ -18,8 +18,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            resValue "string", "HOST", "http://happ.westeurope.cloudapp.azure.com/"
-//            resValue "string", "HOST", "http://192.168.0.104:8000/"
-            resValue "string", "HOST", "http://192.168.11.250:8000/"
+            resValue "string", "HOST", "http://192.168.0.104:8000/"
         }
     }
 }
@@ -63,4 +62,5 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.15.0'
 
     compile 'com.roughike:bottom-bar:2.0.2'
+    compile 'com.ncapdevi:frag-nav:1.0.3'
 }
