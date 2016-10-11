@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.os.StrictMode;
 import android.util.Log;
 
 import com.happ.controllers.LoginActivity;
@@ -12,7 +11,6 @@ import com.happ.models.City;
 import com.happ.models.Event;
 import com.happ.models.HappToken;
 import com.happ.models.User;
-import com.happ.retrofit.APIService;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -39,6 +37,9 @@ public class App extends Application {
         super.onCreate();
         context = this.getApplicationContext();
         JodaTimeAndroid.init(context);
+
+//        String language = getApplicationContext().getResources().getConfiguration().locale.getLanguage();
+//        System.out.print(language);
 
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(realmConfiguration);

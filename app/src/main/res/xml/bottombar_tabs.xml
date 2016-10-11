@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
-        id="@+id/tab_mail"
-        icon="@drawable/ic_content_mail"
+        id="@+id/tab_explore"
+        icon="@drawable/ic_bb_explore"
+        title="Explore" />
+    <tab
+        id="@+id/tab_map"
+        icon="@drawable/ic_bb_map"
+        title="Map" />
+    <tab
+        id="@+id/tab_feed"
+        icon="@drawable/ic_bb_feed"
+        title="Feed" />
+    <tab
+        id="@+id/tab_favorites"
+        icon="@drawable/ic_bb_favorites"
         title="Favorites" />
     <tab
-        id="@+id/tab_maps_place"
-        icon="@drawable/ic_maps_place"
-        title="Nearby" />
-    <tab
-        id="@+id/tab_looks_one"
-        icon="@drawable/ic_image_looks_one"
-        title="Friends" />
+        id="@+id/tab_chat"
+        icon="@drawable/ic_bb_chat"
+        title="Chat" />
+
 </tabs>

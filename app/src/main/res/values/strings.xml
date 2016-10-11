@@ -1,7 +1,7 @@
 <resources>
     <!--<string name="HOST">http://happ.westeurope.cloudapp.azure.com/</string>-->
-    <!--<string name="HOST">http://192.168.0.104:8000/</string>-->
-    <string name="HOST">http://192.168.11.175:8000/</string>
+    <string name="HOST">http://192.168.0.104:8000/</string>
+    <!--<string name="HOST">http://192.168.11.175:8000/</string>-->
     <string name="API_URL">api/v1/</string>
     <string name="facebook_app_id">1284244154932616</string>
     <string name="fb_login_protocol_scheme">fb1284244154932616</string>
