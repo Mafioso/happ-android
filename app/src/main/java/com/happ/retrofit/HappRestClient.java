@@ -37,6 +37,8 @@ import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -1030,14 +1032,48 @@ public class HappRestClient {
                 Log.d("HAPP_API", response.message());
 
                 if (response.isSuccessful()) {
+//                    User prevUser = App.getCurrentUser();
+//                    ArrayList<String> previousInterestsIds = prevUser.getInterestIds();
+//                    String previousCityId = prevUser.getSettings().getCity();
+
                     User user = response.body();
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
                     realm.copyToRealmOrUpdate(user);
                     realm.commitTransaction();
+
+                    boolean eventsChanged = false;
+
+//                    if (!previousCityId.equals(user.getSettings().getCity())) {
+//                        RealmResults<Event> events = realm.where(Event.class).equalTo("cityId",previousCityId).findAll();
+//                        realm.beginTransaction();
+//                        events.deleteAllFromRealm();
+//                        realm.commitTransaction();
+//                        eventsChanged = true;
+//                    }
+//
+//                    ArrayList<String> unsubscriberEvents = new ArrayList<String>();
+//                    ArrayList<String> newInterestsList = user.getInterestIds();
+//
+//                    for (int i = 0; i<previousInterestsIds.size(); i++) {
+//                        String interestId = previousInterestsIds.get(i);
+//                        if (!newInterestsList.contains(interestId)) {
+//                            unsubscriberEvents.add(interestId);
+//                        }
+//                    }
+//
+//                    if (unsubscriberEvents.size() > 0) {
+//                        RealmResults<Event> events = realm.where(Event.class).findAll();
+//                        realm.beginTransaction();
+//                        events.deleteAllFromRealm();
+//                        realm.commitTransaction();
+//                        eventsChanged = true;
+//                    }
+
                     realm.close();
 
                     Intent intent = new Intent(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK);
+                    intent.putExtra("EVENTS_CHANGED", eventsChanged);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
 

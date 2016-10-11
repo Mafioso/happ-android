@@ -34,6 +34,8 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver didUpvoteReceiver;
     private BroadcastReceiver didIsFavReceiver;
 
+    private BroadcastReceiver mUserSettingsChangedBroadcastReceiver;
+
     public static FavoriteFeedFragment newInstance() {
         return new FavoriteFeedFragment();
     }
@@ -57,6 +59,12 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         if (didIsFavReceiver == null) {
             didIsFavReceiver = createFavReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
+        }
+
+
+        if (mUserSettingsChangedBroadcastReceiver == null) {
+            mUserSettingsChangedBroadcastReceiver = createUserChangedBroadcastReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mUserSettingsChangedBroadcastReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
         }
         return view;
     }
@@ -110,6 +118,17 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         }
     }
 
+
+    protected BroadcastReceiver createUserChangedBroadcastReceiver() {
+        return  new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getBooleanExtra("EVENTS_CHANGED", false)) {
+                    getEvents(0, true);
+                }
+            }
+        };
+    }
 
 
 

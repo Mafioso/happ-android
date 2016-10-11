@@ -74,7 +74,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private boolean isUnfaving = false;
 
 
-    private EditText mStartDateText, mDateText;
+    private EditText mDateText;
     private SwitchCompat mFilterFree;
     private Date startDate, endDate;
     private String isFree = "";
@@ -97,8 +97,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-
-
 
         if (userRequestDoneReceiver == null) {
             userRequestDoneReceiver = createLoginSuccessReceiver();
@@ -205,7 +203,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         tabLayout.setupWithViewPager(viewPager);
 
 
-        mStartDateText = (EditText) findViewById(R.id.filter_input_start_date);
+//        mStartDateText = (EditText) findViewById(R.id.filter_input_start_date);
 
         mDateText = (EditText) findViewById(R.id.filter_input_end_date);
         mDateText.setOnClickListener(new View.OnClickListener() {
@@ -234,10 +232,21 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String startDate = year +""+ (monthOfYear++)+""+ (dayOfMonth++);
-        String endDate = yearEnd +""+ (monthOfYearEnd)+ "" + dayOfMonthEnd;
 
-        mStartDateText.setText(startDate);
+        java.text.DateFormat dateFormat = android.text.format.DateFormat.getMediumDateFormat(this);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, year);
+        cal.set(Calendar.MONTH, monthOfYear);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        String endDate = dateFormat.format(cal.getTime());
+
+        cal.set(Calendar.YEAR, yearEnd);
+        cal.set(Calendar.MONTH, monthOfYearEnd);
+        cal.set(Calendar.DAY_OF_MONTH, dayOfMonthEnd);
+        endDate = endDate = " – " + dateFormat.format(cal.getTime());
+
+//        mStartDateText.setText(startDate);
         mDateText.setText(endDate);
     }
 

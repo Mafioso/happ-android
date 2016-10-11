@@ -19,7 +19,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            resValue "string", "HOST", "http://happ.westeurope.cloudapp.azure.com/"
 //            resValue "string", "HOST", "http://192.168.0.104:8000/"
-            resValue "string", "HOST", "http://192.168.11.175:8000/"
+            resValue "string", "HOST", "http://192.168.11.250:8000/"
         }
     }
 }
@@ -35,8 +35,7 @@ dependencies {
         exclude module: 'okhttp'
     }
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'com.squareup.okhttp3:logging-intercepto' +
-            'r:3.4.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.4.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.android.support:cardview-v7:24.+'
     compile 'com.android.support:recyclerview-v7:24.+'

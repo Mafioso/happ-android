@@ -37,6 +37,8 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver didIsFavReceiver;
     private BroadcastReceiver filteredEventsDoneReceiver;
 
+    private BroadcastReceiver mUserSettingsChangedBroadcastReceiver;
+
     private boolean isUndoing = false;
 
     public static EverythingFeedFragment newInstance() {
@@ -70,6 +72,10 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
             }
 
+            if (mUserSettingsChangedBroadcastReceiver == null) {
+                mUserSettingsChangedBroadcastReceiver = createUserChangedBroadcastReceiver();
+                LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mUserSettingsChangedBroadcastReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+            }
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 //        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
 //        Date startDate = ((FeedActivity)getActivity()).getStartD();
@@ -97,6 +103,19 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();
+    }
+
+
+
+    protected BroadcastReceiver createUserChangedBroadcastReceiver() {
+        return  new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getBooleanExtra("EVENTS_CHANGED", false)) {
+                    getEvents(0, false);
+                }
+            }
+        };
     }
 
     protected void filteredEventsList() {
@@ -137,15 +156,17 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     @Override
     protected void getEvents(int page, boolean favs) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
-        Date startDate = ((FeedActivity)getActivity()).getStartD();
-        Date endDate = ((FeedActivity)getActivity()).getEndD();
-        if (startDate != null || endDate != null || (maxFree != null && maxFree.length() > 0)) {
-            String sD = sdf.format(startDate);
-            String eD = sdf.format(endDate);
-            APIService.getFilteredEvents(page, sD, eD, maxFree, false);
-        } else {
-            APIService.getEvents(page, false);
+        if ((FeedActivity)getActivity() != null) {
+            String maxFree = ((FeedActivity) getActivity()).getMaxFree();
+            Date startDate = ((FeedActivity) getActivity()).getStartD();
+            Date endDate = ((FeedActivity) getActivity()).getEndD();
+            if (startDate != null || endDate != null || (maxFree != null && maxFree.length() > 0)) {
+                String sD = sdf.format(startDate);
+                String eD = sdf.format(endDate);
+                APIService.getFilteredEvents(page, sD, eD, maxFree, false);
+            } else {
+                APIService.getEvents(page, false);
+            }
         }
     }
 

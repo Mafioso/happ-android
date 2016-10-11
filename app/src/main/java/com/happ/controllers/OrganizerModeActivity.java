@@ -245,16 +245,16 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
     public void functionToRun(final String eventId) {
         new MaterialDialog.Builder(this)
-                .title("String title")
-                .content("String context")
-                .positiveText("agree")
+                .title(getResources().getString(R.string.delete_confirm_title))
+                .content(getResources().getString(R.string.delete_confirm_description))
+                .positiveText(getResources().getString(R.string.agree))
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         APIService.doEventDelete(eventId);
                     }
                 })
-                .negativeText("cancel")
+                .negativeText(getResources().getString(R.string.cancel))
                 .show();
     }
 

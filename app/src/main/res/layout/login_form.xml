@@ -20,9 +20,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/form_layout2"
         android:layout_centerVertical="true"
-        android:background="@drawable/circle"
         android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="64dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp">
 
