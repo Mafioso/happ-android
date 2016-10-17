@@ -1,10 +1,14 @@
-package com.happ.controllers;
+package com.happ.controllers_drawer;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,13 +17,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.happ.App;
 import com.happ.R;
+import com.happ.controllers.PrivacyPolicyActivity;
+import com.happ.controllers.UserActivity;
 import com.happ.fragments.AboutFragment;
-
-import de.hdodenhof.circleimageview.CircleImageView;
+import com.happ.fragments.SelectCityFragment;
 
 /**
  * Created by dante on 9/22/16.
@@ -33,14 +39,17 @@ public class SettingsActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private Button mButtonUserSettings, mPrivacyPolice, mAbout;
-    private NavigationView navigationView;
+    private NavigationView navigationView, navigationHeader, navigationMenu;
+    private ViewPager mDrawerCityFragment;
+    private PagerAdapter cityPageAdapter;
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+
     }
 
     @Override
@@ -49,16 +58,19 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
+        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
+        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
+
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
 
@@ -96,40 +108,38 @@ public class SettingsActivity extends AppCompatActivity {
                     overridePendingTransition(0,0);
                 }
 
-                if (menuItem.getItemId() == R.id.nav_item_privacy_policy) {
-                    Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                    overridePendingTransition(0,0);
-                }
-                if (menuItem.getItemId() == R.id.nav_item_org_rules) {
-                    Intent intent = new Intent(SettingsActivity.this, PrivacyPolicyActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                    overridePendingTransition(0,0);
-                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
         });
-        navigationView.getMenu().findItem(R.id.nav_item_settings).setChecked(true);
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
 
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+        navigationMenu.getMenu().findItem(R.id.nav_item_settings).setChecked(true);
+        navigationMenu.getMenu().findItem(R.id.nav_item_settings).setIcon(R.drawable.happ_drawer_icon);
+
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this, UserActivity.class);
                 startActivity(intent);
-//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
             }
         });
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
+
+
+        cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
+        mDrawerCityFragment.setAdapter(cityPageAdapter);
+
+
+        ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, UserActivity.class);
-                startActivity(intent);
-//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+            public void onClick(View view) {
+                if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
+                    mDrawerCityFragment.setVisibility(View.VISIBLE);
+                } else {
+                    mDrawerCityFragment.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -167,6 +177,23 @@ public class SettingsActivity extends AppCompatActivity {
 
 
 
+    }
+
+    public class MyCityPageAdapter extends FragmentPagerAdapter {
+
+        public MyCityPageAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return SelectCityFragment.newInstance();
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
     }
 
     @Override

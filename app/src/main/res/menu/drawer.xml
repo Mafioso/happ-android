@@ -1,48 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group
-        android:id="@+id/nav_main_group"
-        android:checkableBehavior="single">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
         <item
             android:id="@+id/nav_item_feed"
             android:checked="true"
             android:title="@string/nav_item_feed"
-            android:icon="@drawable/ic_feed"
             />
         <item
             android:id="@+id/nav_item_interests"
             android:title="@string/nav_item_interests"
-            android:icon="@drawable/ic_interest"/>
+            />
         <item
             android:id="@+id/nav_item_organizer"
             android:title="@string/nav_item_organizer"
-            android:icon="@drawable/ic_organizer"
             />
-        <item
-            android:id="@+id/nav_item_privacy_policy"
-            android:title="@string/privacy_policy"
-            android:icon="@drawable/ic_privacy_policy"
-            />
-        <item
-            android:id="@+id/nav_item_org_rules"
-            android:title="@string/organizer_rules"
-            android:icon="@drawable/ic_organizer_rules"
-            />
-    </group>
-
-    <group
-        android:id="@+id/nav_controls_group"
-        android:checkableBehavior="single">
 
         <item
             android:id="@+id/nav_item_settings"
             android:title="@string/nav_item_settings"
-            android:icon="@drawable/ic_settings"
             />
         <item
             android:id="@+id/nav_item_logout"
             android:title="@string/nav_item_logout"
-            android:icon="@drawable/ic_logout"
             />
-    </group>
 </menu>

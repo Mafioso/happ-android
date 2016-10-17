@@ -32,34 +32,72 @@
         <item name="android:shadowRadius">16</item>
     </style>
 
+    <style name="CollapsedAppBar" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <style name="Theme.Splash" parent="android:Theme">
         <item name="android:windowBackground">@drawable/ic_menu</item>
         <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="LoginScreenEditText" parent="TextAppearance.AppCompat">
-        <!-- Hint color and label color in FALSE state -->
+        <!-- Hint action_navigation_item_text_color and label action_navigation_item_text_color in FALSE state -->
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textColorHint">@color/white57</item>
         <item name="android:textSize">16sp</item>
-        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <!-- Label action_navigation_item_text_color in TRUE state and bar action_navigation_item_text_color FALSE and TRUE State -->
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlNormal">@color/white24</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
+    <style name="StyleForEditText" parent="TextAppearance.AppCompat">
+        <!-- Hint action_navigation_item_text_color and label action_navigation_item_text_color in FALSE state -->
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@color/white57</item>
+        <item name="android:textSize">18dp</item>
+        <!-- Label action_navigation_item_text_color in TRUE state and bar action_navigation_item_text_color FALSE and TRUE State -->
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlNormal">@color/white24</item>
         <item name="colorControlActivated">@color/colorAccent</item>
     </style>
 
     <style name="CreateScreenEditText" parent="TextAppearance.AppCompat">
-        <!-- Hint color and label color in FALSE state -->
+        <!-- Hint action_navigation_item_text_color and label action_navigation_item_text_color in FALSE state -->
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textColorHint">@color/dark80</item>
         <item name="android:textSize">16sp</item>
-        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <!-- Label action_navigation_item_text_color in TRUE state and bar action_navigation_item_text_color FALSE and TRUE State -->
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlNormal">@color/dark38</item>
         <item name="colorControlActivated">@color/colorAccent</item>
     </style>
 
+    <style name="NavDrawerTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:itemBackground">@color/action_navigation_item_text_bg_color</item>
+        <item name="android:textColor">@color/action_navigation_item_text_color</item>
+    </style>
+
+    <style name="NavigationViewStyle">
+
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:listPreferredItemHeightSmall">40dp</item><!-- menu item height-->
+        <item name="listPreferredItemHeightSmall">40dp</item><!-- menu item height-->
+        <item name="android:listPreferredItemPaddingLeft">16dp</item>
+        <item name="listPreferredItemPaddingLeft">16dp</item>
+    </style>
+
+    <style name="EventActivityText" parent="Base.TextAppearance.AppCompat">
+        <item name="android:textColor">@color/background_title_event</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
     </style>
+
 
 </resources>

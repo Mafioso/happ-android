@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
-    android:paddingLeft="24dp"
+    android:paddingLeft="16dp"
     android:paddingRight="24dp">
+
+        <ImageView
+            android:id="@+id/city_fr_happ_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/happ_drawer_icon"
+            android:layout_alignParentLeft="true"
+            android:visibility="invisible"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="City"
             android:textSize="20dp"
-            android:id="@+id/city_title"
-            android:lines="1"
-            android:layout_alignParentLeft="true"/>
-
-        <TextView
-            android:id="@+id/country"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:textColor="@color/dark12"
-            android:textSize="20dp"
-            android:layout_toRightOf="@+id/city_title"
-            android:layout_alignParentRight="true"
-            android:lines="1"
-            android:text="Country"
-            />
+            android:textAllCaps="true"
+            android:id="@+id/city_title"
+            android:layout_toRightOf="@+id/city_fr_happ_icon"
+            android:lines="1"/>
+
 
 </RelativeLayout>

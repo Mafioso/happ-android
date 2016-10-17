@@ -37,8 +37,6 @@ import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.realm.Realm;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -307,6 +305,47 @@ public class HappRestClient {
             }
         });
     }
+//
+//    public void getEventsBySearch(int page, String feedSearchText) {
+//        happApi.getEventsBySearch(page, feedSearchText).enqueue(new Callback<EventsResponse>() {
+//            @Override
+//            public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
+//
+//                if (response.isSuccessful()){
+//                    List<Event> events = response.body().getEvents();
+//
+//                    Realm realm = Realm.getDefaultInstance();
+//                    realm.beginTransaction();
+//
+//                    realm.copyToRealmOrUpdate(events);
+//
+//                    realm.commitTransaction();
+//                    realm.close();
+//
+//                    Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_OK);
+//                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+//
+//                }
+//                else {
+//                    Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
+//                    intent.putExtra("CODE", response.code());
+//                    if (response.code() == 500) {
+//                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+//                    }
+//                    intent.putExtra("MESSAGE", response.message());
+//                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<EventsResponse> call, Throwable t) {
+//                Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
+//                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+//                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+//                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+//            }
+//        });
+//    }
 
     public void doLogin(String username, String password) {
 
@@ -832,14 +871,14 @@ public class HappRestClient {
         });
     }
 
-    public void getFilteredEvents(int page, String startDate, String endDate, String maxPrice, boolean favs) {
+    public void getFilteredEvents(int page, String feedSearchText, String startDate, String endDate, String maxPrice, boolean favs) {
 
         if (favs) {
-            getFilteredFavs(page, startDate, endDate, maxPrice);
+            getFilteredFavs(page, feedSearchText, startDate, endDate, maxPrice);
             return;
         }
 
-        happApi.getFilteredEvents(page, startDate, endDate, maxPrice).enqueue(new Callback<EventsResponse>() {
+        happApi.getFilteredEvents(page, feedSearchText,  startDate, endDate, maxPrice).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){
@@ -876,8 +915,8 @@ public class HappRestClient {
         });
     }
 
-    public void getFilteredFavs(int page, String startDate, String endDate, String maxPrice) {
-        happApi.getFilteredFavourites(page, startDate, endDate, maxPrice).enqueue(new Callback<EventsResponse>() {
+    public void getFilteredFavs(int page, String feedSearchText, String startDate, String endDate, String maxPrice) {
+        happApi.getFilteredFavourites(page, feedSearchText, startDate, endDate, maxPrice).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){
@@ -992,12 +1031,18 @@ public class HappRestClient {
 
                 if (response.isSuccessful()){
                     Realm realm = Realm.getDefaultInstance();
+
                     User user = App.getCurrentUser();
                     user.getSettings().setCity(cityId);
+
                     realm.beginTransaction();
+
                     realm.copyToRealmOrUpdate(user);
+
                     realm.commitTransaction();
+
                     realm.close();
+
                     Intent intent = new Intent(BroadcastIntents.SET_CITIES_OK);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
 
@@ -1132,6 +1177,7 @@ public class HappRestClient {
 
     public void getCurrentCity() {
         User user = App.getCurrentUser();
+
         happApi.getCity(user.getSettings().getCity()).enqueue(new Callback<City>() {
             @Override
             public void onResponse(Call<City> call, Response<City> response) {

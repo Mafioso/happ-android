@@ -7,34 +7,25 @@
     android:layout_margin="0dp"
     app:cardElevation="0dp"
     app:cardMaxElevation="0dp"
-    app:cardCornerRadius="1dp"
-    app:contentPaddingLeft="-1dp"
-    app:contentPaddingRight="-1dp"
-    app:contentPaddingTop="-1dp"
-    app:contentPaddingBottom="-1dp">
+    app:cardCornerRadius="1dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-
-        <ImageView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:background="@color/dark12"
-            android:scaleType="fitXY"
-            android:transitionName="event_image"
-            android:id="@+id/events_list_image_view"/>
+            android:layout_height="wrap_content"
+            android:id="@+id/rl_image">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="180dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="-180dp"
-            android:paddingBottom="60dp"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:background="@color/dark12"
+                android:scaleType="fitXY"
+                android:transitionName="event_image"
+                android:id="@+id/events_list_image_view"/>
 
 
             <ProgressBar
@@ -42,202 +33,184 @@
                 android:theme="@style/CircularProgress"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
                 android:id="@+id/events_list_image_preloader"/>
 
+        </RelativeLayout>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:background="@drawable/rounded_corners"
-                android:padding="8dp">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_watches"
-                        android:paddingRight="4dp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="100,000"
-                        android:textSize="16sp"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/white70"
-                        android:id="@+id/events_list_views_count" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_did_not_upvote"
-                        android:paddingRight="4dp"
-                        android:id="@+id/clickimage_like"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="63,000"
-                        android:textSize="16sp"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/white70"
-                        android:id="@+id/events_list_votes_count" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_not_in_favorites"
-                        android:id="@+id/clickimage_favorites"
-                        android:paddingRight="4dp"/>
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:color/white"
-        android:layout_marginTop="130dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center">
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="14dp"
-            android:id="@+id/events_list_item_title"
-            android:transitionName="event_title"
-            android:textSize="35sp"
-            android:textAllCaps="true"
-            android:text="Event Title Very Very long"
-            android:textColor="@color/header_title"
-            android:gravity="center"/>
+            android:orientation="vertical"
+            android:layout_below="@+id/rl_image"
+            android:background="@color/dark80">
 
 
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_calendar_start"
-                android:layout_marginRight="8dp"
-                android:alpha="0.4"
-                android:gravity="center_vertical"
-                />
-
-            <TextView
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/events_list_item_start_date"
-                android:textColor="@color/colorDate"
-                android:textSize="16sp"
-                android:textAllCaps="true"
-                android:text="August 16, 2016. 6:00 PM"
-                android:accessibilityLiveRegion="assertive"
-                android:gravity="center_vertical"/>
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <android.support.v7.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    android:theme="@style/EventToolbar"
+                    android:id="@+id/event_toolbar">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+                </android.support.v7.widget.Toolbar>
 
-            <ImageView
-                android:layout_width="wrap_content"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="14dp"
+                    android:id="@+id/events_list_item_title"
+                    android:transitionName="event_title"
+                    android:textSize="32sp"
+                    android:textAllCaps="true"
+                    android:text="Event Title Very Very Long"
+                    android:textColor="@android:color/white"
+                    android:gravity="center"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"/>
+
+                <TextView
+                    android:layout_below="@+id/events_list_item_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:text="Music "
+                    android:id="@+id/events_list_item_interest"
+                    android:textSize="16sp"
+                    android:transitionName="event_interest_name"
+                    android:gravity="center"
+                    />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_credit_card"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        android:text="19:00 " />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        android:text="— " />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        android:text="23:00" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_alignParentRight="true">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@android:color/white"
+                        android:text="от " />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:id="@+id/events_list_price"
+                        android:textColor="@android:color/white"
+                        android:text="500 тг" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:layout_marginRight="8dp"
-                android:alpha="0.24"
-                android:gravity="center_vertical"
-                />
+                android:layout_marginBottom="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textSize="16sp"
-                android:id="@+id/events_list_price"
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrice"
-                android:gravity="center_vertical"
-                android:text="PREVIEW_PRICE" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:text="Esentai Mall"
+                        android:textColor="@android:color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true">
+
+                    <LinearLayout
+                        android:id="@+id/ll_like"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_did_not_upvote"
+                            android:paddingRight="4dp"
+                            android:id="@+id/clickimage_like"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="63,000"
+                            android:textSize="16sp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@android:color/white"
+                            android:id="@+id/events_list_votes_count" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_favorites"
+                        android:layout_toRightOf="@+id/ll_like"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginRight="8dp">
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/ic_not_in_favorites"
+                            android:id="@+id/clickimage_favorites"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:orientation="horizontal"
-        android:background="@color/interestsBg"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:layout_marginTop="114dp"
-        android:id="@+id/events_list_interest_color"
-        android:transitionName="event_interest_bg">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:layout_gravity="center"
-            android:text="Music "
-            android:id="@+id/events_list_item_interest"
-            android:textSize="18sp"
-            android:textAllCaps="true"
-            android:transitionName="event_interest_name"
-            />
-    </LinearLayout>
-
-
-
-    <!--android:background="@android:color/transparent"-->
-    <android.support.v7.widget.Toolbar
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/transparent"
-        android:theme="@style/EventToolbar"
-        android:id="@+id/event_toolbar">
-
-    </android.support.v7.widget.Toolbar>
-
-    <!--<ImageButton-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@drawable/ic_overflow"-->
-    <!--android:layout_gravity="end"-->
-    <!--android:layout_margin="10dp"-->
-    <!--android:id="@+id/btn_overflow"/>-->
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

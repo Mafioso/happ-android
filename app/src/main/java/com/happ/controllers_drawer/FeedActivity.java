@@ -1,6 +1,6 @@
-package com.happ.controllers;
+package com.happ.controllers_drawer;
 
-import android.app.SearchManager;
+import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,32 +13,36 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.adapters.EventsListAdapter;
+import com.happ.controllers.UserActivity;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.FavoriteFeedFragment;
+import com.happ.fragments.SelectCityFragment;
+import com.happ.models.City;
 import com.happ.models.Event;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
@@ -47,12 +51,9 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 
 public class FeedActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
@@ -61,41 +62,47 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-//    protected final String[] mTabNames = {"Everything", "Favorites"};
-//    protected ArrayList<Fragment> mTabFragments;
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
     private Menu menu;
     protected User user;
-    private String username;
-    private NavigationView navigationView;
+    protected City city;
+    private String username, mCity;
+    private NavigationView navigationView, navigationViewRight, navigationMenu, navigationHeader;
     private CoordinatorLayout rootLayout;
+    private EventsListAdapter mEventAdapter;
+    protected ArrayList<Event> events;
+    private boolean dataLoading = false;
 
     private boolean isUnvoting = false;
     private boolean isUnfaving = false;
 
 
     private EditText mDateText;
+
     private SwitchCompat mFilterFree;
     private Date startDate, endDate;
     private String isFree = "";
-    private RelativeLayout RLFeedFilter;
     private FloatingActionButton mFabFilterDone;
-
-    private FrameLayout container;
-    private FragmentManager myFragmentManager;
-    private FavoriteFeedFragment favoritesFeedFragment;
-    private EverythingFeedFragment everythingFeedFragment;
+    private ImageView mCloseRightNavigation;
+    private String searchText = "";
+    private EditText mFeedSearchText;
     private BottomBar mBottomBar;
     private FragNavController fragNavController;
 
     private final int TAB_EVERYTHING = FragNavController.TAB1;
     private final int TAB_FAVORITES = FragNavController.TAB2;
 
-
     private BroadcastReceiver userRequestDoneReceiver;
     private BroadcastReceiver didUpvoteReceiver;
     private BroadcastReceiver didIsFavReceiver;
+    private BroadcastReceiver changeCityDoneReceiver;
+    private BroadcastReceiver changeCityDoneReceiver2;
+
+
+    private ViewPager mDrawerCityFragment;
+    private PagerAdapter cityPageAdapter;
+
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -106,34 +113,28 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
 
-        if (userRequestDoneReceiver == null) {
-            userRequestDoneReceiver = createLoginSuccessReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
-        }
-
-        if (didUpvoteReceiver == null) {
-            didUpvoteReceiver = createUpvoteReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
-        }
-        if (didIsFavReceiver == null) {
-            didIsFavReceiver = createFavReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
-        }
-
+        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
-
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
+        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
+        navigationViewRight = (NavigationView) findViewById(R.id.navigation_view_right);
+        mFeedSearchText = (EditText) findViewById(R.id.filter_search);
+        mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_navigation);
+        mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
+
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
         setTitle(App.getCurrentCity().getName());
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
 
@@ -163,50 +164,106 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
                     overridePendingTransition(0,0);
 
                 }
-                if (menuItem.getItemId() == R.id.nav_item_privacy_policy) {
-                    Intent intent = new Intent(FeedActivity.this, PrivacyPolicyActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                    overridePendingTransition(0,0);
-                }
-                if (menuItem.getItemId() == R.id.nav_item_org_rules) {
-                    Intent intent = new Intent(FeedActivity.this, OrganizerRulesActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                    overridePendingTransition(0,0);
-                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
         });
 
-        navigationView.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
+        navigationMenu.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
+        navigationMenu.getMenu().findItem(R.id.nav_item_feed).setIcon(R.drawable.happ_drawer_icon);
 
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
 
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FeedActivity.this, UserActivity.class);
                 startActivity(intent);
             }
         });
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
+
+
+        cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
+        mDrawerCityFragment.setAdapter(cityPageAdapter);
+
+        ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FeedActivity.this, UserActivity.class);
-                startActivity(intent);
+            public void onClick(View view) {
+                if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
+                    mDrawerCityFragment.setVisibility(View.VISIBLE);
+                } else {
+                    mDrawerCityFragment.setVisibility(View.GONE);
+                }
             }
         });
 
-//        mTabFragments = new ArrayList<>();
-//        for (int i=0; i<mTabNames.length; i++) {
-//            mTabFragments.add(null);
-//        }
-//        FeedPagerAdapter adapter = new FeedPagerAdapter(getSupportFragmentManager());
-//        ViewPager viewPager = (ViewPager)findViewById(R.id.viewpager);
-//        viewPager.setAdapter(adapter);
+        if (userRequestDoneReceiver == null) {
+            userRequestDoneReceiver = createLoginSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
+        }
+
+        if (changeCityDoneReceiver == null) {
+            changeCityDoneReceiver = changeCityReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+        }
+        if (changeCityDoneReceiver2 == null) {
+            changeCityDoneReceiver2 = changeCityReceiver2();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver2, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
+        }
+
+        if (didUpvoteReceiver == null) {
+            didUpvoteReceiver = createUpvoteReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
+        }
+        if (didIsFavReceiver == null) {
+            didIsFavReceiver = createFavReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
+        }
+
+        mCloseRightNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(navigationViewRight);
+            }
+        });
+
+//        mFabFilterDone.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                if (mFilterFree.isChecked()) {
+//                    isFree = "0";
+//                } else {
+//                    isFree = "";
+//                }
+//
+////                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//
+//                String max_free = "";
+//                String sD = "";
+//                String eD = "";
+//                String feedSearch = "";
+//
+//                if (mFeedSearchText != null && mFeedSearchText.length() > 0) {
+//                    feedSearch = mFeedSearchText.getText().toString();
+//                    searchText = mFeedSearchText.getText().toString();
+//                }
+//
+////                if (startDate != null) {
+////                    sD = sdf.format(startDate);
+////                }
+////                if (endDate != null) {
+////                    eD = sdf.format(endDate);
+////                }
+//                if (isFree != null) {
+//                    max_free = isFree;
+//                }
+//
+//                APIService.getFilteredEvents(1,feedSearch, sD, eD, max_free, false);
+//            }
+//        });
+
 
         ArrayList<Fragment> fragments = new ArrayList<>(2);
 
@@ -216,7 +273,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
         fragNavController = new FragNavController(getSupportFragmentManager(),R.id.feed_container,fragments);
 
-        mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
         mBottomBar.setDefaultTabPosition(2);
         mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -264,40 +320,54 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
-
-
-
-//        TabLayout tabLayout = (TabLayout)findViewById(R.id.tablayout);
-//        tabLayout.setupWithViewPager(viewPager);
-
-
 //        mStartDateText = (EditText) findViewById(R.id.filter_input_start_date);
+//        mDateText = (EditText) findViewById(R.id.filter_input_end_date);
+//        mDateText.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (endDate == null) endDate = new Date();
+//                Calendar now = Calendar.getInstance();
+//                now.setTime(endDate);
+//
+//                DatePickerDialog dpd = DatePickerDialog.newInstance(
+//                        FeedActivity.this,
+//                        now.get(Calendar.YEAR),
+//                        now.get(Calendar.MONTH),
+//                        now.get(Calendar.DAY_OF_MONTH)
+//                );
+//                dpd.show(getFragmentManager(), "Datepickerdialog");
+//            }
+//        });
+//
+//
+////        RLFeedFilter = (RelativeLayout) findViewById(R.id.filter_feed_ll);
+//        RLFeedFilter.setVisibility(View.GONE);
+//        mFabFilterDone.setVisibility(View.GONE);
 
-        mDateText = (EditText) findViewById(R.id.filter_input_end_date);
-        mDateText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (endDate == null) endDate = new Date();
-                Calendar now = Calendar.getInstance();
-                now.setTime(endDate);
 
-                DatePickerDialog dpd = DatePickerDialog.newInstance(
-                        FeedActivity.this,
-                        now.get(Calendar.YEAR),
-                        now.get(Calendar.MONTH),
-                        now.get(Calendar.DAY_OF_MONTH)
-                );
-                dpd.show(getFragmentManager(), "Datepickerdialog");
-            }
-        });
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+
+    }
 
 
-        mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
-        RLFeedFilter = (RelativeLayout) findViewById(R.id.filter_feed_ll);
-        RLFeedFilter.setVisibility(View.GONE);
-        mFabFilterDone = (FloatingActionButton) findViewById(R.id.fab_filter_done);
-        mFabFilterDone.setVisibility(View.GONE);
+    public class MyCityPageAdapter extends FragmentPagerAdapter {
 
+        public MyCityPageAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return SelectCityFragment.newInstance();
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
     }
 
     @Override
@@ -309,27 +379,27 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         }
     }
 
-    @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
-        java.text.DateFormat dateFormat = android.text.format.DateFormat.getMediumDateFormat(this);
-
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, monthOfYear);
-        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-        String endDate = dateFormat.format(cal.getTime());
-
-        cal.set(Calendar.YEAR, yearEnd);
-        cal.set(Calendar.MONTH, monthOfYearEnd);
-        cal.set(Calendar.DAY_OF_MONTH, dayOfMonthEnd);
-        endDate = endDate = " – " + dateFormat.format(cal.getTime());
-
-//        mStartDateText.setText(startDate);
-        mDateText.setText(endDate);
-    }
-
+//    @Override
+//    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//
+//        java.text.DateFormat dateFormat = android.text.format.DateFormat.getMediumDateFormat(this);
+//
+//        Calendar cal = Calendar.getInstance();
+//        cal.set(Calendar.YEAR, year);
+//        cal.set(Calendar.MONTH, monthOfYear);
+//        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//        String endDate = dateFormat.format(cal.getTime());
+//
+//        cal.set(Calendar.YEAR, yearEnd);
+//        cal.set(Calendar.MONTH, monthOfYearEnd);
+//        cal.set(Calendar.DAY_OF_MONTH, dayOfMonthEnd);
+//        endDate = endDate = " – " + dateFormat.format(cal.getTime());
+//
+////        mStartDateText.setText(startDate);
+//        mDateText.setText(endDate);
+//    }
 
 
 //    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth,int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
@@ -370,9 +440,9 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         getMenuInflater().inflate(R.menu.menu_feed, menu);
 
         // Retrieve the SearchView and plug it into SearchManager
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_search));
-        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+//        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_search));
+//        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
 
@@ -385,52 +455,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.menu_filter:
-
-                if (RLFeedFilter.getVisibility() == View.GONE ) {
-                    RLFeedFilter.setVisibility(View.VISIBLE);
-
-                    if (startDate == null) {
-                        startDate = new Date();
-                    }
-                    if (endDate == null) {
-                        endDate = new Date();
-                    }
-
-
-
-                    if (RLFeedFilter.getVisibility() == View.VISIBLE) {
-                        mFabFilterDone.setVisibility(View.VISIBLE);
-                        mFabFilterDone.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                if (mFilterFree.isChecked()) {
-                                    isFree = "0";
-                                } else {
-                                    isFree = "";
-                                }
-                                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
-                                String max_free = "";
-                                String sD = "";
-                                String eD = "";
-
-                                if (startDate != null) {
-                                    sD = sdf.format(startDate);
-                                }
-                                if (endDate != null) {
-                                    eD = sdf.format(endDate);
-                                }
-                                if (isFree != null) {
-                                    max_free = isFree;
-                                }
-
-                                APIService.getFilteredEvents(1, sD, eD, max_free, false);
-                            }
-                        });
-                    }
-                } else {
-                    RLFeedFilter.setVisibility(View.GONE);
-                }
+                mDrawerLayout.openDrawer(navigationViewRight);
                 return true;
         }
 
@@ -446,56 +471,22 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     public String getMaxFree() {
         return isFree;
     }
-
-//
-//    protected class FeedPagerAdapter extends FragmentStatePagerAdapter {
-//
-//        public FeedPagerAdapter(FragmentManager fm) {
-//            super(fm);
-//        }
-//
-//        @Override
-//        public Fragment getItem(int position) {
-//            if (mTabFragments.get(position) == null) {
-//                switch (position) {
-//                    case 1:
-//                        mTabFragments.set(position, FavoriteFeedFragment.newInstance());
-//                        break;
-//                    default:
-//                        mTabFragments.set(position, EverythingFeedFragment.newInstance());
-//                        break;
-//                }
-//            }
-//            return mTabFragments.get(position);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return mTabNames.length;
-//        }
-//
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            return mTabNames[position];
-//        }
-//    }
-
-    private BroadcastReceiver createLoginSuccessReceiver() {
-        return new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-//                updateUserList();
-            }
-        };
+    public String getFeedSearch() {
+        return searchText;
     }
+
 
     @Override
     public void onResume() {
         super.onResume();
-//        updateUserList();
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
-        java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
+
+        updateUser();
+        updateCity();
+
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+
+//        java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
 //        mStartDateText.setText(format.format(startDate));
 //        mDateText.setText(format.format(endDate));
 //        if (isFree != null && isFree.length() > 0) {
@@ -505,10 +496,18 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 //        }
     }
 
-    protected void updateUserList() {
+    protected void updateUser() {
         Realm realm = Realm.getDefaultInstance();
         User realmUser = realm.where(User.class).equalTo("username", username).findFirst();
-        user = realm.copyFromRealm(realmUser);
+        if (realmUser != null) user = realm.copyFromRealm(realmUser);
+        realm.close();
+    }
+
+    protected void updateCity() {
+        Realm realm = Realm.getDefaultInstance();
+        mCity = App.getCurrentCity().getName();
+        City realmCity = realm.where(City.class).equalTo("name", mCity).findFirst();
+        if (realmCity != null) city = realm.copyFromRealm(realmCity);
         realm.close();
     }
 
@@ -524,7 +523,42 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         if (didIsFavReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
         }
+        if (changeCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
+        }
+        if (changeCityDoneReceiver2 != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver2);
+        }
+
         super.onDestroy();
+    }
+
+    private BroadcastReceiver changeCityReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateCity();
+            }
+        };
+    }
+    private BroadcastReceiver changeCityReceiver2() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateCity();
+            }
+        };
+    }
+
+
+
+    private BroadcastReceiver createLoginSuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateUser();
+            }
+        };
     }
 
     private BroadcastReceiver createUpvoteReceiver() {

@@ -1,6 +1,10 @@
 <resources>
     <!--<string name="HOST">http://happ.westeurope.cloudapp.azure.com/</string>-->
-    <string name="HOST">http://192.168.0.104:8000/</string>
+    <!--<string name="HOST">http://192.168.0.104:8000/</string>-->
+    <string name="HOST">http://192.168.11.211:8000/</string>
+    <!--<string name="HOST">http://172.20.10.3:8000/</string>-->
+
+
     <string name="API_URL">api/v1/</string>
     <string name="facebook_app_id">1284244154932616</string>
     <string name="fb_login_protocol_scheme">fb1284244154932616</string>
@@ -76,7 +80,7 @@
     <string name="your_city_label">NOT SELECTED</string>
     <string name="city_name_label">Your City is</string>
     <string name="select_city_button">Select city</string>
-    <string name="city_search">Find City</string>
+    <string name="city_search">Find City... </string>
     <string name="organizer_title">Organizer Mode</string>
     <string name="user_settings">User Settings</string>
 
@@ -93,7 +97,7 @@
     <string name="undo">UNDO</string>
 
     <string name="filter_feed">Filter</string>
-    <string name="only_free">Only Free</string>
+    <string name="only_free">Only Free Events</string>
 
     <!-- For the welcome screen -->
 
@@ -343,6 +347,16 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="about">About</string>
     <string name="version_name">Version Name</string>
     <string name="date_filter">Filter by Date</string>
+    <string name="popular_first">Show Popular First</string>
+    <string name="customize_feed">Customize Feed</string>
+    <string name="show_only_events">Show only events</string>
+    <string name="click_to_edit_range">edit range</string>
+    <string name="from">from</string>
+    <string name="up_to">up to</string>
+    <string name="city">City</string>
+    <string name="ask_about_event">Ask about event</string>
+    <string name="want_to_go">I Want To Go!</string>
+    <string name="empty_city">Empty city</string>
 
 
 </resources>

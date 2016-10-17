@@ -36,6 +36,10 @@ public class InterestDeserializer implements JsonDeserializer<Interest>, JsonSer
         Interest interest = new Interest();
         interest.setId(interestJson.get("id").getAsString());
         interest.setTitle(interestJson.get("title").getAsString());
+
+        interest.setUrl("http://www.avatar-mix.ru/avatars_200x200/1425.jpg");
+        interest.setColor("#FF0000");
+
         if (!interestJson.get("color").isJsonNull()) {
             interest.setColor(interestJson.get("color").getAsString());
         }

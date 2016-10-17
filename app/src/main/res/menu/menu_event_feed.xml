@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".controllers.OrganizerModeActivity">
+    tools:context=".controllers_drawer.OrganizerModeActivity">
     <item android:id="@+id/org_more"
         android:icon="@drawable/ic_more_compat"
         android:title="nose"

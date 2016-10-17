@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.controllers_drawer.FeedActivity;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;

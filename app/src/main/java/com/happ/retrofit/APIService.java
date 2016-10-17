@@ -91,11 +91,16 @@ public class APIService extends IntentService {
         App.getContext().startService(intent);
     }
 
-    public static void getFilteredEvents(int page, String startDate, String endDate,
-                                         String isFree, boolean favs) {
+    public static void getFilteredEvents(int page,
+                                         String feedSearchText,
+                                         String startDate,
+                                         String endDate,
+                                         String isFree,
+                                         boolean favs) {
         Intent i = new Intent(App.getContext(), APIService.class);
         i.setAction(ACTION_GET_FILTERED_EVENTS);
         i.putExtra(EXTRA_PAGE, page);
+        i.putExtra(EXTRA_EVENT_SEARCH_TEXT, feedSearchText);
         i.putExtra(EXTRA_STARTDATE, startDate);
         i.putExtra(EXTRA_ENDDATE, endDate);
         i.putExtra(EXTRA_FREEEVENTS, isFree);
@@ -117,6 +122,13 @@ public class APIService extends IntentService {
         App.getContext().startService(intent);
     }
 
+    public static void getEventsBySearch(String searchText) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_EVENTS);
+        intent.putExtra(EXTRA_EVENT_SEARCH_TEXT, searchText);
+        App.getContext().startService(intent);
+    }
+
     public static void getCities(int page, String searchText) {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_CITIES);
@@ -124,6 +136,7 @@ public class APIService extends IntentService {
         intent.putExtra(EXTRA_PAGE, page);
         App.getContext().startService(intent);
     }
+
 
     public static void getCities(int page) {
         Intent intent = new Intent(App.getContext(), APIService.class);
@@ -282,11 +295,12 @@ public class APIService extends IntentService {
                 HappRestClient.getInstance().getEvents(page, favs);
             } else if (action.equals(ACTION_GET_FILTERED_EVENTS)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
+                String feedSearchText = intent.getStringExtra(EXTRA_EVENT_SEARCH_TEXT);
                 String startDate = intent.getStringExtra(EXTRA_STARTDATE);
                 String endDate = intent.getStringExtra(EXTRA_ENDDATE);
                 String isFree = intent.getStringExtra(EXTRA_FREEEVENTS);
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
-                HappRestClient.getInstance().getFilteredEvents(page, startDate, endDate, isFree, favs);
+                HappRestClient.getInstance().getFilteredEvents(page, feedSearchText, startDate, endDate, isFree, favs);
             } else if (action.equals(ACTION_GET_CITIES)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 String searchText = intent.getStringExtra(EXTRA_SEARCH_TEXT);

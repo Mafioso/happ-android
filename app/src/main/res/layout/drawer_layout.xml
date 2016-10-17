@@ -1,17 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.design.widget.NavigationView
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/navigation_view"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:layout_gravity="start"
-    app:headerLayout="@layout/drawer_header"
-    android:layout_alignParentBottom="true"
-    android:layout_alignParentRight="true"
-    app:menu="@menu/drawer"
-    android:overScrollMode="ifContentScrolls">
+    android:layout_gravity="start">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.NavigationView
+            android:id="@+id/navigation_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:paddingBottom="@dimen/design_navigation_separator_vertical_padding"
+            app:headerLayout="@layout/drawer_header" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/drawer_viewpager"
+            android:layout_below="@+id/navigation_header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+        <android.support.design.widget.NavigationView
+            android:layout_below="@+id/drawer_viewpager"
+            android:id="@+id/navigation_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            app:menu="@menu/drawer"
+            app:theme="@style/NavigationViewStyle"
+            app:itemIconTint="@color/colorAccent"
+            app:itemTextAppearance="@style/NavDrawerTextStyle"/>
+
+    </RelativeLayout>
 
 </android.support.design.widget.NavigationView>

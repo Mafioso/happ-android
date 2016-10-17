@@ -1,4 +1,4 @@
-package com.happ.controllers;
+package com.happ.controllers_drawer;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -12,8 +12,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +28,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -31,14 +37,16 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.EventsListAdapter;
+import com.happ.controllers.EditActivity;
+import com.happ.controllers.OrganizerRulesActivity;
+import com.happ.controllers.UserActivity;
+import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Event;
-import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -54,26 +62,22 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
-
     protected ArrayList<Event> events;
     protected RecyclerView eventsListView;
     protected LinearLayoutManager eventsListLayoutManager;
     private BroadcastReceiver eventsRequestDoneReceiver;
     private BroadcastReceiver deleteEventRequestDoneReceiver;
-
     private int eventsFeedPageSize;
     private boolean loading = true;
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
     private FloatingActionButton mOrganizerFab;
-    private Interest selectedInterest;
-    private Event event;
-    private NavigationView navigationView;
-
+    private NavigationView navigationMenu, navigationHeader;
     private SharedPreferences sPref;
     final String FIRST_CREATE_EVENT = "first_create_event";
-    private String first_create_event = "";
+    private ViewPager mDrawerCityFragment;
+    private PagerAdapter cityPageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,15 +85,20 @@ public class OrganizerModeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_organizer_mode);
 
 
+        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
+        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
+        mOrganizerFab = (FloatingActionButton) findViewById(R.id.organizer_fab);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        eventsListView = (RecyclerView) findViewById(R.id.events_organizer_list_view);
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.organizer_title);
 
-
-        mOrganizerFab = (FloatingActionButton) findViewById(R.id.organizer_fab);
         mOrganizerFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
@@ -117,10 +126,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
         });
 
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.nav_item_logout) {
@@ -156,49 +162,43 @@ public class OrganizerModeActivity extends AppCompatActivity {
                     overridePendingTransition(0,0);
                 }
 
-                if (menuItem.getItemId() == R.id.nav_item_privacy_policy) {
-                    Intent intent = new Intent(OrganizerModeActivity.this, PrivacyPolicyActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                    overridePendingTransition(0,0);
-                }
-
-                if (menuItem.getItemId() == R.id.nav_item_org_rules) {
-                    Intent intent = new Intent(OrganizerModeActivity.this, OrganizerRulesActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                    overridePendingTransition(0,0);
-                }
 
                 mDrawerLayout.closeDrawers();
                 return true;
             }
         });
-        navigationView.getMenu().findItem(R.id.nav_item_organizer).setChecked(true);
+        navigationMenu.getMenu().findItem(R.id.nav_item_organizer).setChecked(true);
+        navigationMenu.getMenu().findItem(R.id.nav_item_organizer).setIcon(R.drawable.happ_drawer_icon);
 
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
 
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(OrganizerModeActivity.this, UserActivity.class);
                 startActivity(intent);
             }
         });
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
+
+        cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
+        mDrawerCityFragment.setAdapter(cityPageAdapter);
+
+
+        ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(OrganizerModeActivity.this, UserActivity.class);
-                startActivity(intent);
+            public void onClick(View view) {
+                if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
+                    mDrawerCityFragment.setVisibility(View.VISIBLE);
+                } else {
+                    mDrawerCityFragment.setVisibility(View.GONE);
+                }
             }
         });
 
         eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
 
-
-        eventsListView = (RecyclerView) findViewById(R.id.events_organizer_list_view);
         eventsListLayoutManager = new LinearLayoutManager(this);
         eventsListView.setLayoutManager(eventsListLayoutManager);
         events = new ArrayList<>();
@@ -243,6 +243,25 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
     }
 
+
+    public class MyCityPageAdapter extends FragmentPagerAdapter {
+
+        public MyCityPageAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return SelectCityFragment.newInstance();
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
+    }
+
+
     public void functionToRun(final String eventId) {
         new MaterialDialog.Builder(this)
                 .title(getResources().getString(R.string.delete_confirm_title))
@@ -276,8 +295,9 @@ public class OrganizerModeActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         updateEventsList();
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+
     }
 
 

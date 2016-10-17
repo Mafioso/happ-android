@@ -1,27 +1,22 @@
 package com.happ.fragments;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.happ.App;
-import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.controllers.EventActivity;
 import com.happ.adapters.EventsListAdapter;
+import com.happ.controllers_drawer.EventActivity;
 import com.happ.models.Event;
 
 import java.util.ArrayList;
@@ -40,7 +35,6 @@ public class BaseFeedFragment extends Fragment {
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
-    private String searchText;
 
 
     public static BaseFeedFragment newInstance() {
@@ -94,6 +88,7 @@ public class BaseFeedFragment extends Fragment {
         });
         eventsListView.setAdapter(mEventAdapter);
 
+
         createScrollListener();
 
 
@@ -134,5 +129,4 @@ public class BaseFeedFragment extends Fragment {
 
     protected void getEvents(int page, boolean favs) {
     }
-
 }

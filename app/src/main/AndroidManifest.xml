@@ -38,11 +38,11 @@
         </activity>
 
         <activity
-            android:name=".controllers.FeedActivity">
+            android:name=".controllers_drawer.FeedActivity">
         </activity>
         <activity
-            android:name=".controllers.EventActivity"
-            android:label="Event Activity"
+            android:name=".controllers_drawer.EventActivity"
+            android:label=""
             />
 
         <activity
@@ -64,11 +64,11 @@
             android:name=".controllers.CityActivity"
             android:label="Edit Activity"
             />
-        <activity android:name=".controllers.SettingsActivity"
+        <activity android:name=".controllers_drawer.SettingsActivity"
             android:label="Settings"/>
 
         <activity
-            android:name=".controllers.SelectInterestsActivity"
+            android:name=".controllers_drawer.SelectInterestsActivity"
             android:label="Select Interests">
         </activity>
 
@@ -90,7 +90,7 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".controllers.OrganizerModeActivity" />
+        <activity android:name=".controllers_drawer.OrganizerModeActivity" />
 
         <service
             android:name=".retrofit.APIService"

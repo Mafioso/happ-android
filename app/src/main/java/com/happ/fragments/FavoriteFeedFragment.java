@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.adapters.EventsListAdapter;
-import com.happ.controllers.FeedActivity;
+import com.happ.controllers_drawer.FeedActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
 
@@ -109,10 +109,12 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         String maxFree = ((FeedActivity)getActivity()).getMaxFree();
         Date startDate = ((FeedActivity)getActivity()).getStartD();
         Date endDate = ((FeedActivity)getActivity()).getEndD();
+        String feedSearchText = ((FeedActivity)getActivity()).getFeedSearch();
+
         if (startDate != null || endDate != null || (maxFree != null && maxFree.length() > 0)) {
             String sD = sdf.format(startDate);
             String eD = sdf.format(endDate);
-            APIService.getFilteredEvents(page, sD, eD, maxFree, true);
+            APIService.getFilteredEvents(page,feedSearchText, sD, eD, maxFree, true);
         } else {
             APIService.getEvents(page, true);
         }

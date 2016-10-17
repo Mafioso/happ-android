@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.City;
 import com.happ.retrofit.APIService;

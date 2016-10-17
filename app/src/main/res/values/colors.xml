@@ -2,28 +2,34 @@
 <resources>
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#1976D2</color>
-    <color name="colorAccent">#ff8f07</color>
+    <color name="colorAccent">#FF681D </color>
+
+    <color name="colorAccent183">#b7ff681d</color>
+    <color name="colorAccentDark">#E55D1A</color>
     <color name="indigo">#3F51B5</color>
-    <color name="headerBg">#CCCCCC</color>
+    <color name="headerBg">#ECEAEB</color>
     <color name="white70">#b2ffffff</color>
     <color name="white57">#91ffffff</color>
     <color name="white24">#3dffffff</color>
+    <color name="white85">#d9ffffff</color>
     <color name="icon_color_light">#8a000000</color>
     <color name="dark80">#cd000000</color>
     <color name="dark57">#87000000</color>
     <color name="dark38">#61000000</color>
     <color name="dark28">#47000000</color>
     <color name="dark12">#1e000000</color>
-    <color name="header_title">#686868</color>
+    <color name="header_title">#5C5C5C</color>
     <color name="interestsBg">#90d738</color>
     <color name="green">#90d738</color>
     <color name="blueColor">#6ca5ea</color>
     <color name="colorDate">#AFAFAF</color>
     <color name="colorPrice">#CBCBCB</color>
     <color name="colorBlack8">#14000000</color>
+    <color name="background_title_event">#B79078</color>
+    <color name="second_circle">#FBDCCD</color>
 
     <!-- for welcome screen -->
-    <!-- Screens background color-->
+    <!-- Screens background action_navigation_item_text_color-->
     <color name="bg_screen1">#f64c73</color>
     <color name="bg_screen2">#20d2bb</color>
     <color name="bg_screen3">#3395ff</color>

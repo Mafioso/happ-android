@@ -29,10 +29,12 @@ import retrofit2.http.Query;
  */
 public interface HAPPapi {
 
+
     @GET("events/feed/")
     Call<EventsResponse> getEvents(@Query("page") int page);
     @GET("events/feed/")
     Call<EventsResponse> getFilteredEvents(@Query("page") int page,
+                                           @Query("feed_search") String feedSearchText,
                                            @Query("start_date") String startDate,
                                            @Query("end_date") String endDate,
                                            @Query("max_price") String price);
@@ -96,6 +98,7 @@ public interface HAPPapi {
 
     @GET("events/favourites/")
     Call<EventsResponse> getFilteredFavourites(@Query("page") int page,
+                                               @Query("feed_search") String feedSearchText,
                                                @Query("start_date") String startDate,
                                                @Query("end_date") String endDate,
                                                @Query("max_price") String price);

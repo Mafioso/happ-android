@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.adapters.EventsListAdapter;
-import com.happ.controllers.FeedActivity;
+import com.happ.controllers_drawer.FeedActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
@@ -55,6 +55,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         final View view = super.onCreateView(inflater, container, savedInstanceState);
 
 
+
             if(filteredEventsDoneReceiver == null) {
                 filteredEventsDoneReceiver = createFilteredEventsRequestDoneReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(filteredEventsDoneReceiver, new IntentFilter(BroadcastIntents.FILTERED_EVENTS_REQUEST_OK));
@@ -87,7 +88,6 @@ public class EverythingFeedFragment extends BaseFeedFragment {
 //        } else {
             HappRestClient.getInstance().getEvents(false);
 //        }
-
         return view;
     }
 
@@ -119,12 +119,17 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     }
 
     protected void filteredEventsList() {
+
         String maxFree = ((FeedActivity)getActivity()).getMaxFree();
         Date startDate = ((FeedActivity)getActivity()).getStartD();
         Date endDate = ((FeedActivity)getActivity()).getEndD();
 
+        String feedSearchText = ((FeedActivity) getActivity()).getFeedSearch();
+
         Realm realm = Realm.getDefaultInstance();
+
         RealmQuery q = realm.where(Event.class).equalTo("localOnly", false).beginGroup();
+        if (feedSearchText != null && feedSearchText.length() > 0) q.contains("title", feedSearchText);
         if (startDate != null) q.greaterThanOrEqualTo("startDate", startDate);
         if (endDate != null) q.lessThanOrEqualTo("startDate", endDate);
         if (maxFree != null && maxFree.length() > 0) q.equalTo("lowestPrice", 0);
@@ -133,7 +138,9 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();
+
     }
+
 
     @Override
     public void onDestroy() {
@@ -160,10 +167,15 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             String maxFree = ((FeedActivity) getActivity()).getMaxFree();
             Date startDate = ((FeedActivity) getActivity()).getStartD();
             Date endDate = ((FeedActivity) getActivity()).getEndD();
+            String feedSearchText = ((FeedActivity) getActivity()).getFeedSearch();
+
             if (startDate != null || endDate != null || (maxFree != null && maxFree.length() > 0)) {
-                String sD = sdf.format(startDate);
-                String eD = sdf.format(endDate);
-                APIService.getFilteredEvents(page, sD, eD, maxFree, false);
+//                String sD = sdf.format(startDate);
+                String sD = "";
+//                String eD = sdf.format(endDate);
+                String eD = "";
+
+                APIService.getFilteredEvents(page, feedSearchText, sD, eD, maxFree, false);
             } else {
                 APIService.getEvents(page, false);
             }

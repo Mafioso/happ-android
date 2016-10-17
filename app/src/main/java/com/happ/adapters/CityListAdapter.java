@@ -5,10 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.happ.App;
 import com.happ.R;
 import com.happ.models.City;
+import com.happ.models.User;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.util.ArrayList;
@@ -21,10 +24,12 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
     private ArrayList<String> selectedCity;
     private final Context context;
     SelectCityItemListener listener;
+    private User currentUser;
 
     public CityListAdapter(Context context, ArrayList<City> cities) {
         this.context = context;
         this.mCities = cities;
+        currentUser = App.getCurrentUser();
     }
 
     public void setOnCityItemSelectListener(SelectCityItemListener listener) {
@@ -46,12 +51,19 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
     @Override
     public void onBindViewHolder(CitiesListViewHolder holder, int position) {
         final City city = mCities.get(position);
-        String name = city.getName();
-        if (name.equals("")) {
-            name = "empty";
+        String name_city = city.getName();
+
+        if (city.getId().equals(currentUser.getSettings().getCity())) {
+
+            holder.mImageHappIcon.setVisibility(View.VISIBLE);
         }
-        holder.mTitleCities.setText(city.getName());
-        holder.mCountry.setText(city.getCountry());
+        if (name_city.equals("")) {
+//             city.getName() = "";
+            holder.mTitleCities.setText(context.getResources().getString(R.string.empty_city));
+        } else {
+            holder.mTitleCities.setText(city.getName());
+            holder.mCountry.setText(city.getCountry());
+        }
         holder.bind(city);
     }
 
@@ -69,11 +81,14 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
 
         public TextView mTitleCities;
         public TextView mCountry;
+        private ImageView mImageHappIcon;
 
         public CitiesListViewHolder(View itemView) {
             super(itemView);
             mTitleCities = (TextView)itemView.findViewById(R.id.city_title);
             mCountry = (TextView)itemView.findViewById(R.id.country);
+            mImageHappIcon = (ImageView)itemView.findViewById(R.id.city_fr_happ_icon);
+
         }
 
         public void bind(final City city) {

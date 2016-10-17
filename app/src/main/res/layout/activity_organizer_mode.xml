@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="@color/colorPrimary"
-    tools:context=".controllers.OrganizerModeActivity">
+    tools:context=".controllers_drawer.OrganizerModeActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -1,24 +1,22 @@
 package com.happ.fragments;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.happ.App;
@@ -55,11 +53,17 @@ public class SelectCityFragment extends DialogFragment {
     private int previousTotal = 0;
     private int visibleThreshold;
     private String searchText;
+    private City selectedCity;
+
 
     private EditText search;
 
     public SelectCityFragment() {
 
+    }
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     public static SelectCityFragment newInstance() {
@@ -78,25 +82,31 @@ public class SelectCityFragment extends DialogFragment {
         void onCitySelected(City city);
     }
 
-    @NonNull
+//    @NonNull
+//    @Override
+//    public Dialog onCreateDialog(Bundle savedInstanceState) {
+////        super.onCreate(savedInstanceState);
+//
+//        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.select_city_fragment, null);
+//        final Activity activity = getActivity();
+    @Nullable
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.select_city_fragment, null);
-        final Activity activity = getActivity();
+    final View contentView = inflater.inflate(R.layout.select_city_fragment, container, false);
+    final Activity activity = getActivity();
 
-        final AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle(getContext().getString(R.string.select_city_string))
-                .setView(contentView)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create();
-        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+//        final AlertDialog dialog = new AlertDialog.Builder(getContext())
+//                .setTitle(getContext().getString(R.string.select_city_string))
+//                .setView(contentView)
+//                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                })
+//                .create();
+//        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
 
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
@@ -113,8 +123,10 @@ public class SelectCityFragment extends DialogFragment {
         mCitiesListAdapter.setOnCityItemSelectListener(new CityListAdapter.SelectCityItemListener() {
             @Override
             public void onCityItemSelected(City city) {
-                listener.onCitySelected(city);
-                SelectCityFragment.this.dismiss();
+//                listener.onCitySelected(city);
+//                SelectCityFragment.this.dismiss();
+                selectedCity = city;
+                APIService.setCity(selectedCity.getId());
             }
         });
         mCityRecyclerView.setAdapter(mCitiesListAdapter);
@@ -127,6 +139,7 @@ public class SelectCityFragment extends DialogFragment {
         mLoadingProgress = (MaterialProgressBar) contentView.findViewById(R.id.cities_progress);
 
         APIService.getCities();
+
         dataLoading = true;
         if (dataLoading) {
             mLoadingProgress.setVisibility(View.VISIBLE);
@@ -137,7 +150,7 @@ public class SelectCityFragment extends DialogFragment {
 
         addTextListener();
 
-        return dialog;
+        return contentView;
     }
 
     private BroadcastReceiver createCitiesRequestDoneReceiver() {

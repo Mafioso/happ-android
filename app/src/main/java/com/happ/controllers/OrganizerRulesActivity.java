@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.happ.R;
+import com.happ.controllers_drawer.OrganizerModeActivity;
 
 /**
  * Created by dante on 10/1/16.

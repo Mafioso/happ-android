@@ -29,6 +29,8 @@ import android.widget.Toast;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.controllers_drawer.FeedActivity;
+import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 

@@ -1,4 +1,4 @@
-package com.happ.controllers;
+package com.happ.controllers_drawer;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,30 +7,38 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.InterestsListAdapter;
+import com.happ.controllers.UserActivity;
+import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import io.realm.Realm;
 import io.realm.RealmResults;
 
@@ -44,6 +52,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
     }
 
     protected RecyclerView mInterestsRecyclerView;
+    private GridLayoutManager mInterestsGridLayout;
     private ArrayList<Interest> interests;
     private InterestsListAdapter mInterestsListAdapter;
     private BroadcastReceiver interestsRequestDoneReceiver;
@@ -53,6 +62,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private FloatingActionButton mFab;
     private int interestsPageSize;
     private DrawerLayout mDrawerLayout;
+    private Toolbar toolbar;
 
     private boolean loading = true;
     private int firstVisibleItem, visibleItemCount, totalItemCount;
@@ -60,30 +70,34 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private int visibleThreshold;
 
     private boolean fullActivity = false;
-    private NavigationView navigationView;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
-    }
+    private NavigationView navigationMenu, navigationHeader, navigationView;
+    private ViewPager mDrawerCityFragment;
+    private PagerAdapter cityPageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_interests);
         Intent intent = getIntent();
         fullActivity = intent.getBooleanExtra("is_full", false);
+
+        setContentView(R.layout.activity_select_interests);
+
+        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
+        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
+
 
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
 
         setTitle(getResources().getString(R.string.select_interest_title));
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
         mFab.setVisibility(View.GONE);
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,9 +111,10 @@ public class SelectInterestsActivity extends AppCompatActivity {
         });
 
 
-        mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
-        interestsListLayoutManager = new LinearLayoutManager(this);
-        mInterestsRecyclerView.setLayoutManager(interestsListLayoutManager);
+        mInterestsGridLayout = new GridLayoutManager(this, 3);
+//        interestsListLayoutManager = new LinearLayoutManager(this);
+        mInterestsRecyclerView.setHasFixedSize(true);
+        mInterestsRecyclerView.setLayoutManager(mInterestsGridLayout);
 
         Realm realm = Realm.getDefaultInstance();
         interests = new ArrayList<>();
@@ -120,31 +135,15 @@ public class SelectInterestsActivity extends AppCompatActivity {
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
         mFab.setVisibility(View.VISIBLE);
 
-        if (interestsRequestDoneReceiver == null) {
-            interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
-        }
-        if (setInterestsOKReceiver == null) {
-            setInterestsOKReceiver = createSetInterestsOKReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
-        }
-        if (getCurrentUserReceiver == null) {
-            getCurrentUserReceiver = createGetUserDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(getCurrentUserReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
-        }
-
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+
         if (fullActivity) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
             actionBar.setDisplayHomeAsUpEnabled(true);
 
-            navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem menuItem) {
 
@@ -187,33 +186,83 @@ public class SelectInterestsActivity extends AppCompatActivity {
                 }
             });
 
-            navigationView.getMenu().findItem(R.id.nav_item_interests).setChecked(true);
-            ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-            ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
+            navigationMenu.getMenu().findItem(R.id.nav_item_interests).setChecked(true);
+            navigationMenu.getMenu().findItem(R.id.nav_item_interests).setIcon(R.drawable.happ_drawer_icon);
 
-            ((TextView)navigationView.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+            ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+            ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+
+            ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(SelectInterestsActivity.this, UserActivity.class);
                     startActivity(intent);
                 }
             });
-            ((CircleImageView)navigationView.getHeaderView(0).findViewById(R.id.drawer_avatar)).setOnClickListener(new View.OnClickListener() {
+
+            cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
+            mDrawerCityFragment.setAdapter(cityPageAdapter);
+
+
+            ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(SelectInterestsActivity.this, UserActivity.class);
-                    startActivity(intent);
+                public void onClick(View view) {
+                    if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
+                        mDrawerCityFragment.setVisibility(View.VISIBLE);
+                    } else {
+                        mDrawerCityFragment.setVisibility(View.GONE);
+                    }
                 }
             });
+
         } else {
 //            mDrawerLayout.setVisibility(View.GONE);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             navigationView.setVisibility(View.GONE);
         }
 
+        if (interestsRequestDoneReceiver == null) {
+            interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
+        }
+        if (setInterestsOKReceiver == null) {
+            setInterestsOKReceiver = createSetInterestsOKReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
+        }
+        if (getCurrentUserReceiver == null) {
+            getCurrentUserReceiver = createGetUserDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(getCurrentUserReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+        }
 
         APIService.getInterests();
         createScrollListener();
+    }
+
+
+
+    public class MyCityPageAdapter extends FragmentPagerAdapter {
+
+        public MyCityPageAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return SelectCityFragment.newInstance();
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
     }
 
     @Override
@@ -258,8 +307,6 @@ public class SelectInterestsActivity extends AppCompatActivity {
             }
         };
     }
-
-
 
 
     public interface OnInterestSelectListener {

@@ -70,15 +70,22 @@ public class UserActivity extends AppCompatActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fromSettings = getIntent().getBooleanExtra("from_settings", false);
-
         setContentView(R.layout.activity_user);
 
+        mPhoneNumber = (EditText) findViewById(R.id.input_user_phonenumber);
+        mEmail = (EditText) findViewById(R.id.input_user_email);
+        mFullName = (EditText) findViewById(R.id.input__user_fullname);
+        mBirthday = (EditText) findViewById(R.id.input_user_birthday);
+        mButtonBirthday = (Button) findViewById(R.id.btn_choice_birthday);
+        mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
+        mGenderSwitch = (SwitchCompat) findViewById(R.id.user_gender);
+        mUserEditFab = (FloatingActionButton) findViewById(R.id.useredit_fab);
+        mButtonChangePW = (Button) findViewById(R.id.btn_user_change_password);
         mRootLayout = (CoordinatorLayout)findViewById(R.id.root_layout);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         ((CircleImageView)findViewById(R.id.avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
 
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (fromSettings) {
             toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
@@ -95,17 +102,9 @@ public class UserActivity extends AppCompatActivity implements
             }
         });
 
-        mFullName = (EditText) findViewById(R.id.input__user_fullname);
         mFullName.setText(App.getCurrentUser().getFullName());
-
-        mEmail = (EditText) findViewById(R.id.input_user_email);
         mEmail.setText(App.getCurrentUser().getEmail());
-
-        mPhoneNumber = (EditText) findViewById(R.id.input_user_phonenumber);
         mPhoneNumber.setText(App.getCurrentUser().getPhone());
-
-        mBirthday = (EditText) findViewById(R.id.input_user_birthday);
-
         birthday = App.getCurrentUser().getBirthDate();
         if (birthday == null) {
             Calendar cal = Calendar.getInstance();
@@ -113,24 +112,15 @@ public class UserActivity extends AppCompatActivity implements
             cal.set(Calendar.YEAR, currentYear-18);
             birthday = cal.getTime();
         }
-
         java.text.DateFormat format = DateFormat.getLongDateFormat(this);
         mBirthday.setText(format.format(birthday));
-
-        mButtonBirthday = (Button) findViewById(R.id.btn_choice_birthday);
         mButtonBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 btn_click_birthday(v);
             }
         });
-
-        mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
-
-        mGenderSwitch = (SwitchCompat) findViewById(R.id.user_gender);
         mGenderSwitch.setChecked(App.getCurrentUser().getGender()>0);
-
-        mUserEditFab = (FloatingActionButton) findViewById(R.id.useredit_fab);
         mUserEditFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 hideSoftKeyboard(UserActivity.this, v);
@@ -144,8 +134,6 @@ public class UserActivity extends AppCompatActivity implements
             setUserEditOKReceiver = createSetUserEditOKReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setUserEditOKReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
         }
-
-        mButtonChangePW = (Button) findViewById(R.id.btn_user_change_password);
         mButtonChangePW.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
