@@ -142,7 +142,7 @@ public class SelectCityFragment extends DialogFragment {
 
         dataLoading = true;
         if (dataLoading) {
-            mLoadingProgress.setVisibility(View.VISIBLE);
+//            mLoadingProgress.setVisibility(View.VISIBLE);
         } else {
             mLoadingProgress.setVisibility(View.GONE);
         }
@@ -201,7 +201,7 @@ public class SelectCityFragment extends DialogFragment {
                         loading = true;
                         int nextPage = (totalItemCount / interestsPageSize) + 1;
                         dataLoading = true;
-                        mLoadingProgress.setVisibility(View.VISIBLE);
+//                        mLoadingProgress.setVisibility(View.VISIBLE);
                         APIService.getCities(nextPage, searchText);
                     }
                 }
@@ -240,7 +240,7 @@ public class SelectCityFragment extends DialogFragment {
 
                 mCitiesListAdapter.updateData(filteredList);
                 dataLoading = true;
-                mLoadingProgress.setVisibility(View.VISIBLE);
+//                mLoadingProgress.setVisibility(View.VISIBLE);
                 APIService.getCities(searchText);
             }
         });

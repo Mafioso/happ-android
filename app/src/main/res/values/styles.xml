@@ -83,7 +83,6 @@
     </style>
 
     <style name="NavigationViewStyle">
-
         <item name="android:paddingTop">2dp</item>
         <item name="android:listPreferredItemHeightSmall">40dp</item><!-- menu item height-->
         <item name="listPreferredItemHeightSmall">40dp</item><!-- menu item height-->

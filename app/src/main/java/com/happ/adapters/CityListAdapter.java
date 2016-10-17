@@ -54,15 +54,17 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
         String name_city = city.getName();
 
         if (city.getId().equals(currentUser.getSettings().getCity())) {
-
             holder.mImageHappIcon.setVisibility(View.VISIBLE);
+            holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        } else {
+            holder.mImageHappIcon.setVisibility(View.INVISIBLE);
+            holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.dark57));
         }
         if (name_city.equals("")) {
 //             city.getName() = "";
             holder.mTitleCities.setText(context.getResources().getString(R.string.empty_city));
         } else {
             holder.mTitleCities.setText(city.getName());
-            holder.mCountry.setText(city.getCountry());
         }
         holder.bind(city);
     }
@@ -80,13 +82,11 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
     public class CitiesListViewHolder extends RecyclerView.ViewHolder {
 
         public TextView mTitleCities;
-        public TextView mCountry;
         private ImageView mImageHappIcon;
 
         public CitiesListViewHolder(View itemView) {
             super(itemView);
             mTitleCities = (TextView)itemView.findViewById(R.id.city_title);
-            mCountry = (TextView)itemView.findViewById(R.id.country);
             mImageHappIcon = (ImageView)itemView.findViewById(R.id.city_fr_happ_icon);
 
         }

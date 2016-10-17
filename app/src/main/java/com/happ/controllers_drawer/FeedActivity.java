@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
@@ -27,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -102,6 +104,9 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
+
+    private boolean isKeyboarShown = false;
+    private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
 
 
     static {
@@ -344,12 +349,44 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 //        RLFeedFilter.setVisibility(View.GONE);
 //        mFabFilterDone.setVisibility(View.GONE);
 
+        setListenerToRootView();
 
     }
 
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
 
+    }
+
+
+    public void setListenerToRootView() {
+        final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        if (mKeyboardListener == null) {
+            mKeyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+
+                    Rect r = new Rect();
+                    activityRootView.getWindowVisibleDisplayFrame(r);
+                    int screenHeight = activityRootView.getRootView().getHeight();
+
+                    int keypadHeight = screenHeight - r.bottom;
+                    if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                        if (!isKeyboarShown) {
+                            navigationHeader.setVisibility(View.GONE);
+                        }
+                        isKeyboarShown = true;
+                    }
+                    else {
+                        navigationHeader.setVisibility(View.VISIBLE);
+                        isKeyboarShown = false;
+                    }
+                }
+            };
+        } else {
+            activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
+        }
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
     }
 
 
