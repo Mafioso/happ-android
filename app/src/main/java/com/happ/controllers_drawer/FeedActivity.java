@@ -23,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -69,6 +70,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private Menu menu;
     protected User user;
     protected City city;
+    protected ArrayList<City> cities;
     private String username, mCity;
     private NavigationView navigationView, navigationViewRight, navigationMenu, navigationHeader;
     private CoordinatorLayout rootLayout;
@@ -99,11 +101,11 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private BroadcastReceiver didUpvoteReceiver;
     private BroadcastReceiver didIsFavReceiver;
     private BroadcastReceiver changeCityDoneReceiver;
-    private BroadcastReceiver changeCityDoneReceiver2;
-
 
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
+
+    private RecyclerView mCityRecyclerView;
 
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
@@ -130,6 +132,8 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_navigation);
         mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
         mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
+
+        mCityRecyclerView = (RecyclerView) findViewById(R.id.activity_cities_rv);
 
 
         setSupportActionBar(toolbar);
@@ -211,10 +215,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         if (changeCityDoneReceiver == null) {
             changeCityDoneReceiver = changeCityReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
-        }
-        if (changeCityDoneReceiver2 == null) {
-            changeCityDoneReceiver2 = changeCityReceiver2();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver2, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
         }
 
         if (didUpvoteReceiver == null) {
@@ -358,7 +358,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
     }
 
-
     public void setListenerToRootView() {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
         if (mKeyboardListener == null) {
@@ -476,10 +475,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         this.menu = menu;
         getMenuInflater().inflate(R.menu.menu_feed, menu);
 
-        // Retrieve the SearchView and plug it into SearchManager
-//        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_search));
-//        SearchManager searchManager = (SearchManager) getSystemService(SEARCH_SERVICE);
-//        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
 
@@ -492,6 +487,8 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.menu_filter:
+//                Intent i = new Intent(FeedActivity.this, CityActivity.class);
+//                startActivity(i);
                 mDrawerLayout.openDrawer(navigationViewRight);
                 return true;
         }
@@ -562,9 +559,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         }
         if (changeCityDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
-        }
-        if (changeCityDoneReceiver2 != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver2);
+            changeCityDoneReceiver = null;
         }
 
         super.onDestroy();
@@ -575,19 +570,10 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateCity();
+                ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
             }
         };
     }
-    private BroadcastReceiver changeCityReceiver2() {
-        return new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updateCity();
-            }
-        };
-    }
-
-
 
     private BroadcastReceiver createLoginSuccessReceiver() {
         return new BroadcastReceiver() {

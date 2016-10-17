@@ -42,7 +42,6 @@
         </activity>
         <activity
             android:name=".controllers_drawer.EventActivity"
-            android:label=""
             />
 
         <activity
@@ -61,9 +60,8 @@
 
 
         <activity
-            android:name=".controllers.CityActivity"
-            android:label="Edit Activity"
-            />
+            android:name=".controllers.CityActivity" />
+
         <activity android:name=".controllers_drawer.SettingsActivity"
             android:label="Settings"/>
 

@@ -1,17 +1,20 @@
 package com.happ.fragments;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -36,12 +39,17 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 /**
  * Created by dante on 9/5/16.
  */
-public class SelectCityFragment extends DialogFragment {
+public class SelectCityFragment extends Fragment {
 
     protected RecyclerView mCityRecyclerView;
     private ArrayList<City> cities;
     private CityListAdapter mCitiesListAdapter;
+    private String mCity = "";
+    private City city;
+
     private BroadcastReceiver citiesRequestDoneReceiver;
+    private BroadcastReceiver changeCityDoneReceiver;
+
     private LinearLayoutManager citiesListLayoutManager;
     private OnCitySelectListener listener;
     private MaterialProgressBar mLoadingProgress;
@@ -55,6 +63,7 @@ public class SelectCityFragment extends DialogFragment {
     private String searchText;
     private City selectedCity;
 
+    private boolean fromCityActivity = false;
 
     private EditText search;
 
@@ -74,6 +83,8 @@ public class SelectCityFragment extends DialogFragment {
         return fragment;
     }
 
+
+
     public void setOnCitySelectListener(OnCitySelectListener listener) {
         this.listener = listener;
     }
@@ -92,27 +103,32 @@ public class SelectCityFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        fromCityActivity = getArguments().getBoolean("from_city_activity");
     final View contentView = inflater.inflate(R.layout.select_city_fragment, container, false);
-    final Activity activity = getActivity();
 
-//        final AlertDialog dialog = new AlertDialog.Builder(getContext())
-//                .setTitle(getContext().getString(R.string.select_city_string))
-//                .setView(contentView)
-//                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                })
-//                .create();
-//        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        Toolbar mToolbar = (Toolbar) contentView.findViewById(R.id.select_city_toolbar);
+        final AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+
+        if (fromCityActivity) {
+            activity.setSupportActionBar(mToolbar);
+            mToolbar.setNavigationIcon(R.drawable.ic_close_orange);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clearFragment();
+                }
+            });
+        } else {
+            mToolbar.setVisibility(View.GONE);
+        }
+
 
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
 
-        search = (EditText)contentView.findViewById( R.id.search);
 
+        search = (EditText)contentView.findViewById( R.id.search);
         mCityRecyclerView = (RecyclerView)contentView.findViewById(R.id.activity_cities_rv);
         citiesListLayoutManager = new LinearLayoutManager(activity);
         mCityRecyclerView.setLayoutManager(citiesListLayoutManager);
@@ -123,18 +139,17 @@ public class SelectCityFragment extends DialogFragment {
         mCitiesListAdapter.setOnCityItemSelectListener(new CityListAdapter.SelectCityItemListener() {
             @Override
             public void onCityItemSelected(City city) {
-//                listener.onCitySelected(city);
-//                SelectCityFragment.this.dismiss();
-                selectedCity = city;
-                APIService.setCity(selectedCity.getId());
+                if (fromCityActivity) {
+                    listener.onCitySelected(city);
+                    clearFragment();
+                } else {
+                    selectedCity = city;
+                    APIService.setCity(selectedCity.getId());
+                }
+
             }
         });
         mCityRecyclerView.setAdapter(mCitiesListAdapter);
-
-        if (citiesRequestDoneReceiver == null) {
-            citiesRequestDoneReceiver = createCitiesRequestDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(citiesRequestDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
-        }
 
         mLoadingProgress = (MaterialProgressBar) contentView.findViewById(R.id.cities_progress);
 
@@ -150,7 +165,27 @@ public class SelectCityFragment extends DialogFragment {
 
         addTextListener();
 
+        if (citiesRequestDoneReceiver == null) {
+            citiesRequestDoneReceiver = createCitiesRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(citiesRequestDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
+        }
+
+        if (changeCityDoneReceiver == null) {
+            changeCityDoneReceiver = changeCityReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+        }
+
         return contentView;
+    }
+
+
+
+    private void clearFragment() {
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        FragmentTransaction trans = manager.beginTransaction();
+        trans.remove(SelectCityFragment.this);
+        trans.commit();
+        manager.popBackStack();
     }
 
     private BroadcastReceiver createCitiesRequestDoneReceiver() {
@@ -159,11 +194,37 @@ public class SelectCityFragment extends DialogFragment {
             public void onReceive(Context context, Intent intent) {
                 dataLoading = false;
                 mLoadingProgress.setVisibility(View.GONE);
+                updateCity();
                 updateCitiesList();
             }
         };
     }
 
+    private BroadcastReceiver changeCityReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateCity();
+                updateCitiesList();
+            }
+        };
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateCity();
+        updateCitiesList();
+    }
+
+
+    protected void updateCity() {
+        Realm realm = Realm.getDefaultInstance();
+        mCity = App.getCurrentCity().getName();
+        City realmCity = realm.where(City.class).equalTo("name", mCity).findFirst();
+        if (realmCity != null) city = realm.copyFromRealm(realmCity);
+        realm.close();
+    }
 
     protected void updateCitiesList() {
         Realm realm = Realm.getDefaultInstance();
@@ -248,10 +309,15 @@ public class SelectCityFragment extends DialogFragment {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         if (citiesRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(citiesRequestDoneReceiver);
             citiesRequestDoneReceiver = null;
         }
+
+        if (changeCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
+            changeCityDoneReceiver = null;
+        }
+        super.onDestroy();
     }
 }

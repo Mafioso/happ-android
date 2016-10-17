@@ -6,6 +6,23 @@
     android:background="@android:color/white"
     android:orientation="horizontal">
 
+    <android.support.v7.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/select_city_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/select_city_string"
+            android:textSize="18dp"
+            android:layout_marginRight="72dp"
+            android:gravity="center"/>
+
+    </android.support.v7.widget.Toolbar>
+
     <LinearLayout
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -18,8 +35,8 @@
         android:id="@+id/edit_input_layout_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/customize_feed"
-        android:paddingTop="6dp"
+        android:layout_below="@+id/select_city_toolbar"
+        android:paddingTop="2dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingBottom="6dp"
@@ -63,8 +80,7 @@
         android:layout_below="@+id/edit_input_layout_search"
         android:id="@+id/activity_cities_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="16dp">
+        android:layout_height="match_parent">
     </android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>
