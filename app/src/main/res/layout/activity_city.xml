@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:id="@+id/root">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,60 +16,90 @@
             android:layout_height="match_parent"
             android:background="@color/white85">
 
-            <TextView
-                android:id="@+id/tv_your_city"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/city_name_label"
-                android:gravity="center"
-                android:textSize="14dp"
-                android:textColor="@color/dark38"
-                android:layout_marginTop="160dp"/>
 
-            <ImageView
-                android:id="@+id/imageview_place"
-                android:layout_below="@+id/tv_your_city"
-                android:layout_toLeftOf="@+id/tv_not_selected"
+            <RelativeLayout
+                android:id="@+id/city_select_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_place_orange"/>
-
-            <ImageView
-                android:id="@+id/imageview_arrow_down"
-                android:layout_below="@+id/tv_your_city"
-                android:layout_toRightOf="@+id/tv_not_selected"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_arrow_down"/>
-
-            <TextView
-                android:id="@+id/tv_not_selected"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/your_city_label"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/tv_your_city"
-                android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
-                android:textColorHint="@color/dark38"
-                android:textSize="18dp"/>
+                android:layout_marginTop="180dp"
+                android:padding="16dp">
 
-            <TextView
-                android:layout_below="@+id/tv_not_selected"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:textSize="14dp"
-                android:textColor="@color/dark38"
-                android:text="@string/click_to_change_city"/>
+                <TextView
+                    android:id="@+id/tv_your_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/city_name_label"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:textColor="@color/dark38"
+                    android:layout_centerHorizontal="true"/>
+
+                <LinearLayout
+                    android:layout_marginTop="4dp"
+                    android:id="@+id/city_view"
+                    android:layout_below="@+id/tv_your_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center_vertical">
+
+
+                    <ImageView
+                        android:id="@+id/imageview_place"
+                        android:layout_below="@+id/tv_your_city"
+                        android:layout_toLeftOf="@+id/tv_not_selected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_place_orange"/>
+
+                    <TextView
+                        android:id="@+id/tv_not_selected"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/your_city_label"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@+id/tv_your_city"
+                        android:textAllCaps="true"
+                        android:textColor="@color/colorAccent"
+                        android:textColorHint="@color/dark38"
+                        android:textSize="18dp"/>
+
+                    <ImageView
+                        android:id="@+id/imageview_arrow_down"
+                        android:layout_below="@+id/tv_your_city"
+                        android:layout_toRightOf="@+id/tv_not_selected"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_arrow_down"/>
+
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/city_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:textSize="14dp"
+                    android:textColor="@color/dark38"
+                    android:text="@string/click_to_change_city"/>
+
+            </RelativeLayout>
+
 
         </RelativeLayout>
 
     </LinearLayout>
 
+
+    <include layout="@layout/city_list_scene_1"/>
 
     <FrameLayout
         android:id="@+id/fl_select_city"

@@ -3,6 +3,7 @@ package com.happ.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -84,6 +85,9 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
         public TextView mTitleCities;
         private ImageView mImageHappIcon;
 
+        private float x;
+        private float y;
+
         public CitiesListViewHolder(View itemView) {
             super(itemView);
             mTitleCities = (TextView)itemView.findViewById(R.id.city_title);
@@ -92,17 +96,28 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
         }
 
         public void bind(final City city) {
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onCityItemSelected(city);
+                    listener.onCityItemSelected(city,x, y);
+                }
+            });
+            itemView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        x = event.getRawX();
+                        y = event.getRawY();
+                    }
+                    return false;
                 }
             });
         }
     }
 
     public interface SelectCityItemListener {
-        void onCityItemSelected(City city);
+        void onCityItemSelected(City city, float x, float y);
     }
 
 }
