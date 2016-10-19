@@ -16,6 +16,7 @@
     <color name="white85">#d9ffffff</color>
     <color name="icon_color_light">#8a000000</color>
     <color name="dark80">#cd000000</color>
+    <color name="dark87">#de000000</color>
     <color name="dark57">#87000000</color>
     <color name="dark38">#61000000</color>
     <color name="dark28">#47000000</color>
@@ -48,6 +49,7 @@
     <color name="dot_light_screen2">#8cf9eb</color>
     <color name="dot_light_screen3">#93c6fd</color>
     <color name="dot_light_screen4">#e4b5fc</color>
+    <color name="background">#fafafa</color>
 
     <array name="array_dot_active">
         <item>@color/dot_light_screen1</item>

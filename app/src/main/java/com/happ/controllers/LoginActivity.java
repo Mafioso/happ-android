@@ -33,6 +33,7 @@ import com.happ.controllers_drawer.FeedActivity;
 import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.transitionseverywhere.TransitionManager;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -274,10 +275,10 @@ public class LoginActivity extends AppCompatActivity {
 
                 } else {
 
-//                    Intent goToFeedIntent = new Intent(LoginActivity.this, SelectInterestsActivity.class);
-//                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                    startActivity(goToFeedIntent);
-//                    overridePendingTransition(0, 0);
+                    Intent goToFeedIntent = new Intent(LoginActivity.this, SelectInterestsActivity.class);
+                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(goToFeedIntent);
+                    overridePendingTransition(0, 0);
 
                 }
 

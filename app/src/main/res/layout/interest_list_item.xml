@@ -3,79 +3,69 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/interest_container"
+    android:paddingBottom="1dp"
+    android:paddingLeft="0dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="0.5dp"
-            android:paddingTop="0.5dp"
-            android:paddingRight="0.8dp"
-            android:paddingLeft="0.8dp"
+        <RelativeLayout
+            android:id="@+id/interest_image_container"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:background="@color/mdtp_red"
+            android:gravity="center">
 
-            android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/ll_imageinterest"
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:orientation="horizontal"
-                android:background="@color/mdtp_red"
-                android:gravity="center">
-
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/dark12"
-                    android:scaleType="fitXY"
-                    android:transitionName="interest_image"
-                    android:id="@+id/interest_imageview"/>
-
-                <CheckBox
-                    android:id="@+id/interest_checkbox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:button="@drawable/checkbox_done"
-                    />
-
-
-                <ImageButton
-                    android:id="@+id/interest_show_children"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/ic_chevron_down"
-                    android:background="@android:color/transparent"
-                    />
-            </RelativeLayout>
+                android:layout_height="match_parent"
+                android:background="@color/dark12"
+                android:scaleType="fitXY"
+                android:id="@+id/interest_imageview"/>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/dark80"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:paddingRight="16dp"
-                android:paddingLeft="16dp"
-                android:gravity="center">
+                android:layout_centerInParent="true"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="Animals"
-                    android:gravity="center"
-                    android:lines="1"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white70"
-                    android:textSize="16sp"
-                    android:id="@+id/interest_title"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3/4"
+                    android:textColor="@android:color/white"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_check_all_white"
+                    android:layout_marginLeft="4dp"/>
 
             </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/interest_bg"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:background="@color/dark80"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Animals"
+                android:gravity="center"
+                android:lines="1"
+                android:textAllCaps="true"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:id="@+id/interest_title"/>
 
         </LinearLayout>
 

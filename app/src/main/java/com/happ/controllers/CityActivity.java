@@ -134,6 +134,9 @@ public class CityActivity extends AppCompatActivity {
                         .commit();
 
                 final ViewGroup sceneRoot = (ViewGroup)findViewById(R.id.scene_root);
+
+
+
                 TransitionSet set = new TransitionSet();
                 set.addTransition(new ChangeBounds());
                 set.setOrdering(TransitionSet.ORDERING_TOGETHER);

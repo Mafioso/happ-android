@@ -15,11 +15,32 @@
     <style name="AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
     </style>
 
+    <style name="LightAppBar" parent="ThemeOverlay.AppCompat.Light">
+    </style>
+
     <style name="AppTheme" parent="AppTheme.Base">
     </style>
 
     <style name="CircularProgress" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="TransparentActionBar" parent="Theme.AppCompat.Light">
+        <item name="android:actionBarStyle">@style/TransparentBackground</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/TransparentBackground</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:textColorPrimary">@color/dark38</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="TransparentBackground"
+        parent="Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="android:background">@null</item>
+        <!-- Support library compatibility -->
+        <item name="background">@null</item>
     </style>
 
     <style name="TextAppearance.ExpandedTitle"

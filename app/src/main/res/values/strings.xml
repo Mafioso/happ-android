@@ -359,6 +359,12 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="empty_city">Empty city</string>
     <string name="click_to_change_city">Click on city name to change it</string>
     <string name="save">save</string>
+    <string name="interests_view_header_hint">Select Interests for</string>
+    <string name="interests_view_header_city">City Name</string>
+    <string name="interests_view_select_all">Select All Interests</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

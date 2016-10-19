@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -14,7 +16,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.PathInterpolatorCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -25,7 +29,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.happ.App;
@@ -36,6 +45,9 @@ import com.happ.controllers.UserActivity;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
+import com.transitionseverywhere.ChangeBounds;
+import com.transitionseverywhere.TransitionManager;
+import com.transitionseverywhere.TransitionSet;
 
 import java.util.ArrayList;
 
@@ -64,6 +76,9 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
 
+    private RelativeLayout selectedRow;
+    private RelativeLayout selectedRowContainer;
+
     private boolean loading = true;
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
@@ -74,6 +89,10 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
 
+    private FrameLayout
+
+    private int titleBarHeight;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +100,12 @@ public class SelectInterestsActivity extends AppCompatActivity {
         fullActivity = intent.getBooleanExtra("is_full", false);
 
         setContentView(R.layout.activity_select_interests);
+
+        titleBarHeight = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            titleBarHeight = getResources().getDimensionPixelSize(resourceId);
+        }
 
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -91,11 +116,23 @@ public class SelectInterestsActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
 
+        selectedRow = (RelativeLayout) findViewById(R.id.selected_row);
+        selectedRowContainer = (RelativeLayout) findViewById(R.id.selected_row_container);
+
+        selectedRow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedRow.setVisibility(View.GONE);
+            }
+        });
+//        nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll);
+
 
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
 
-        setTitle(getResources().getString(R.string.select_interest_title));
+//        setTitle(getResources().getString(R.string.select_interest_title));
+        setTitle("");
         setSupportActionBar(toolbar);
 
         mFab.setVisibility(View.GONE);
@@ -116,6 +153,9 @@ public class SelectInterestsActivity extends AppCompatActivity {
         mInterestsRecyclerView.setHasFixedSize(true);
         mInterestsRecyclerView.setLayoutManager(mInterestsGridLayout);
 
+
+//        mInterestsRecyclerView.setNestedScrollingEnabled(false);
+
         Realm realm = Realm.getDefaultInstance();
         interests = new ArrayList<>();
 
@@ -134,13 +174,58 @@ public class SelectInterestsActivity extends AppCompatActivity {
         }
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
         mFab.setVisibility(View.VISIBLE);
+        mInterestsListAdapter.setOnInterestsSelectListener(new InterestsListAdapter.OnInterestsSelectListener() {
+            @Override
+            public void onInterestsSelected(ArrayList<String> selectedChildren, String parentId) {
 
+            }
+
+            @Override
+            public void onInterestExpandRequested(String interestId, int position, int top, int height) {
+                RelativeLayout.LayoutParams lparams = (RelativeLayout.LayoutParams)selectedRow.getLayoutParams();
+                lparams.setMargins(0,top-titleBarHeight,0,0);
+                lparams.height = height;
+                selectedRow.setLayoutParams(lparams);
+//                selectedRow.setVisibility(View.VISIBLE);
+
+                final ViewGroup sceneRoot = (ViewGroup)findViewById(R.id.selected_row_container);
+
+                final int prevVisibility = sceneRoot.getVisibility();
+                sceneRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (sceneRoot.getVisibility() == View.VISIBLE && sceneRoot.getVisibility() != prevVisibility) {
+                            sceneRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            TransitionSet set = new TransitionSet();
+                            set.addTransition(new ChangeBounds());
+//                set.setOrdering(TransitionSet.ORDERING_TOGETHER);
+                            set.setDuration(500);
+                            set.setInterpolator(PathInterpolatorCompat.create(0.4f, 0.0f, 0.6f, 1.0f));
+                            TransitionManager.beginDelayedTransition(sceneRoot, set);
+
+                            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) selectedRow.getLayoutParams();
+                            params.setMargins(0, 0, 0, 0);
+                            sceneRoot.setBackgroundColor(getResources().getColor(R.color.background));
+                            selectedRow.setLayoutParams(params);
+
+                        }
+                    }
+                });
+
+
+
+                selectedRowContainer.setVisibility(View.VISIBLE);
+
+            }
+        });
+
+        toolbar.setBackgroundResource(android.R.color.transparent);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
 
         if (fullActivity) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
             actionBar.setDisplayHomeAsUpEnabled(true);
 
             navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -235,6 +320,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
         }
 
         APIService.getInterests();
+        APIService.getInterests(2);
         createScrollListener();
     }
 
@@ -327,9 +413,9 @@ public class SelectInterestsActivity extends AppCompatActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
                     if (mFab.getVisibility() != View.GONE) mFab.hide();
-                    visibleItemCount = interestsListLayoutManager.getChildCount();
-                    totalItemCount = interestsListLayoutManager.getItemCount();
-                    firstVisibleItem = interestsListLayoutManager.findFirstVisibleItemPosition();
+                    visibleItemCount = mInterestsGridLayout.getChildCount();
+                    totalItemCount = mInterestsGridLayout.getItemCount();
+                    firstVisibleItem = mInterestsGridLayout.findFirstVisibleItemPosition();
 
                     if (loading) {
                         if (totalItemCount > previousTotal) {
