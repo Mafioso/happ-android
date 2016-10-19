@@ -3,7 +3,8 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FF681D </color>
-    <color name="buttonSave">#FAFAFA</color>
+    <color name="bg_light">#FAFAFA</color>
+    <color name="black_alpha_40">#66000000</color>
 
     <color name="colorAccent183">#b7ff681d</color>
     <color name="colorAccentDark">#E55D1A</color>

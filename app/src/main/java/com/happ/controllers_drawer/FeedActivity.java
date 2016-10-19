@@ -1,5 +1,7 @@
 package com.happ.controllers_drawer;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,13 +25,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -41,8 +43,10 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.EventsListAdapter;
+import com.happ.controllers.CityActivity;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.EverythingFeedFragment;
+import com.happ.fragments.ExploreEventsFragment;
 import com.happ.fragments.FavoriteFeedFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.City;
@@ -96,6 +100,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
     private final int TAB_EVERYTHING = FragNavController.TAB1;
     private final int TAB_FAVORITES = FragNavController.TAB2;
+    private final int TAB_EXPLORE = FragNavController.TAB3;
 
     private BroadcastReceiver userRequestDoneReceiver;
     private BroadcastReceiver didUpvoteReceiver;
@@ -105,7 +110,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
 
-    private RecyclerView mCityRecyclerView;
+    private Animation anim = null;
 
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
@@ -132,8 +137,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_navigation);
         mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
         mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
-
-        mCityRecyclerView = (RecyclerView) findViewById(R.id.activity_cities_rv);
 
 
         setSupportActionBar(toolbar);
@@ -200,9 +203,40 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
             @Override
             public void onClick(View view) {
                 if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
-                    mDrawerCityFragment.setVisibility(View.VISIBLE);
+                    mDrawerCityFragment.animate()
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationStart(Animator animation) {
+                                    super.onAnimationStart(animation);
+                                    mDrawerCityFragment.setVisibility(View.VISIBLE);
+                                }
+                            })
+                            .alpha(1.0f)
+                            .translationY(0.0f)
+                            .setDuration(2000);
                 } else {
-                    mDrawerCityFragment.setVisibility(View.GONE);
+                    mDrawerCityFragment.animate()
+                            .alpha(0.0f)
+                            .translationY(700.0f)
+                            .setDuration(2000)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                    mDrawerCityFragment.setVisibility(View.GONE);
+                                    navigationMenu.animate()
+                                            .alpha(1.0f)
+                                            .setDuration(2000)
+                                            .translationX(0.0f)
+                                            .setListener(new AnimatorListenerAdapter() {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
+                                                    super.onAnimationEnd(animation);
+                                                    navigationMenu.setVisibility(View.VISIBLE);
+                                                }
+                                            });
+                                }
+                            });
                 }
             }
         });
@@ -270,11 +304,12 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 //        });
 
 
-        ArrayList<Fragment> fragments = new ArrayList<>(2);
+        ArrayList<Fragment> fragments = new ArrayList<>(3);
 
         //add fragments to list
         fragments.add(EverythingFeedFragment.newInstance());
         fragments.add(FavoriteFeedFragment.newInstance());
+        fragments.add(ExploreEventsFragment.newInstance());
 
         fragNavController = new FragNavController(getSupportFragmentManager(),R.id.feed_container,fragments);
 
@@ -284,7 +319,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
             public void onTabSelected(@IdRes int tabId) {
                 switch (tabId) {
                     case R.id.tab_explore:
-                        Toast.makeText(FeedActivity.this, "TAB_EXPLORE", Toast.LENGTH_SHORT).show();
+                        fragNavController.switchTab(TAB_EXPLORE);
                         break;
                     case R.id.tab_map:
 
@@ -487,9 +522,9 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.menu_filter:
-//                Intent i = new Intent(FeedActivity.this, CityActivity.class);
-//                startActivity(i);
-                mDrawerLayout.openDrawer(navigationViewRight);
+                Intent i = new Intent(FeedActivity.this, CityActivity.class);
+                startActivity(i);
+//                mDrawerLayout.openDrawer(navigationViewRight);
                 return true;
         }
 
@@ -536,7 +571,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         if (realmUser != null) user = realm.copyFromRealm(realmUser);
         realm.close();
     }
-
     protected void updateCity() {
         Realm realm = Realm.getDefaultInstance();
         mCity = App.getCurrentCity().getName();

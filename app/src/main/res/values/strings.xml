@@ -1,7 +1,7 @@
 <resources>
     <!--<string name="HOST">http://happ.westeurope.cloudapp.azure.com/</string>-->
-    <string name="HOST">http://192.168.0.104:8000/</string>
-    <!--<string name="HOST">http://192.168.11.211:8000/</string>-->
+    <!--<string name="HOST">http://192.168.0.104:8000/</string>-->
+    <string name="HOST">http://192.168.11.211:8000/</string>
     <!--<string name="HOST">http://172.20.10.3:8000/</string>-->
 
 
@@ -82,7 +82,7 @@
     <string name="select_city_button">Select city</string>
     <string name="city_search">Find City... </string>
     <string name="organizer_title">Organizer Mode</string>
-    <string name="user_settings">User Settings</string>
+    <string name="user_settings">Profile Settings</string>
 
     <string name="did_upvote">You Like Event </string>
     <string name="did_downvote">You No Longer Like Event </string>
@@ -359,6 +359,15 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="empty_city">Empty city</string>
     <string name="click_to_change_city">Click on city name to change it</string>
     <string name="save">save</string>
+    <string name="push_notifications">Push notifications</string>
+    <string name="cities_manager">Cities Manager</string>
+    <string name="contact_happ">Contact Happ</string>
+    <string name="faq_help">Faq/Help</string>
+    <string name="terms_of_service">Terms of Service</string>
+    <string name="personal_inforamation">Personal Information</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="warning_for_chp">Leave fields blank if you want to leave old password</string>
 
 
 </resources>

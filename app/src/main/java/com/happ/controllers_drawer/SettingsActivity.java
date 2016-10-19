@@ -19,12 +19,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.R;
 import com.happ.controllers.PrivacyPolicyActivity;
 import com.happ.controllers.UserActivity;
-import com.happ.fragments.AboutFragment;
 import com.happ.fragments.SelectCityFragment;
 
 /**
@@ -38,19 +38,17 @@ public class SettingsActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
-    private Button mButtonUserSettings, mPrivacyPolice, mAbout;
     private NavigationView navigationView, navigationHeader, navigationMenu;
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
-
-    }
+    private Button mBtnProfile,
+            mBtnPushNotif,
+            mBtnCitiesManager,
+            mBtnContactHapp,
+            mBtnFaqHelp,
+            mBtnTermsOfService,
+            mBtnPrivacyPolice;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,6 +61,16 @@ public class SettingsActivity extends AppCompatActivity {
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
         navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
+
+        //Buttons
+            mBtnProfile = (Button) findViewById(R.id.btn_profile_settings);
+            mBtnPushNotif = (Button) findViewById(R.id.btn_push_notif);
+            mBtnCitiesManager = (Button) findViewById(R.id.btn_cities_manager);
+            mBtnContactHapp = (Button) findViewById(R.id.btn_contact_happ);
+            mBtnFaqHelp = (Button) findViewById(R.id.btn_faq);
+            mBtnTermsOfService = (Button) findViewById(R.id.btn_terms_service);
+            mBtnPrivacyPolice = (Button) findViewById(R.id.btn_privacy_policy);
+
 
 
         setSupportActionBar(toolbar);
@@ -131,7 +139,6 @@ public class SettingsActivity extends AppCompatActivity {
         cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
         mDrawerCityFragment.setAdapter(cityPageAdapter);
 
-
         ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,8 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        mButtonUserSettings = (Button) findViewById(R.id.btn_user_settings);
-        mButtonUserSettings.setOnClickListener(new View.OnClickListener() {
+        mBtnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), UserActivity.class);
@@ -154,24 +160,48 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        mPrivacyPolice = (Button) findViewById(R.id.btn_privacy_policy);
-        mPrivacyPolice.setOnClickListener(new View.OnClickListener() {
+        mBtnPushNotif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SettingsActivity.this, "Push Notifications", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mBtnCitiesManager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SettingsActivity.this, "Cities Manager", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mBtnContactHapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SettingsActivity.this, "Contact Happ", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mBtnFaqHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SettingsActivity.this, "Faq / Help", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mBtnTermsOfService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SettingsActivity.this, "Terms of Service", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        mBtnPrivacyPolice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(getApplicationContext(), PrivacyPolicyActivity.class);
                 i.putExtra("from_settings", true);
                 startActivity(i);
                 overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
-            }
-        });
-
-        mAbout = (Button) findViewById(R.id.btn_about_settings);
-        mAbout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fm = getSupportFragmentManager();
-                AboutFragment aboutFragment = AboutFragment.newInstance();
-                aboutFragment.show(fm, "fragment_about");
             }
         });
 
@@ -194,6 +224,15 @@ public class SettingsActivity extends AppCompatActivity {
         public int getCount() {
             return 1;
         }
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
+        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+
     }
 
     @Override

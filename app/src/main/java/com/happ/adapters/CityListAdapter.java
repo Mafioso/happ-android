@@ -41,6 +41,9 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
         this.notifyDataSetChanged();
     }
 
+    public void updateData() {
+        this.notifyDataSetChanged();
+    }
 
     @Override
     public CitiesListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -61,7 +64,6 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
             holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.dark57));
         }
         if (name_city.equals("")) {
-//             city.getName() = "";
             holder.mTitleCities.setText(context.getResources().getString(R.string.empty_city));
         } else {
             holder.mTitleCities.setText(city.getName());
@@ -78,6 +80,8 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
     public Character getCharacterForElement(int element) {
         return mCities.get(element).getName().charAt(0);
     }
+
+
 
     public class CitiesListViewHolder extends RecyclerView.ViewHolder {
 

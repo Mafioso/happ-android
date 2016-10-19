@@ -32,11 +32,11 @@ import io.realm.Sort;
  * Created by iztiev on 8/15/16.
  */
 public class EverythingFeedFragment extends BaseFeedFragment {
+
     private BroadcastReceiver eventsRequestDoneReceiver;
     private BroadcastReceiver didUpvoteReceiver;
     private BroadcastReceiver didIsFavReceiver;
     private BroadcastReceiver filteredEventsDoneReceiver;
-
     private BroadcastReceiver mUserSettingsChangedBroadcastReceiver;
 
     private boolean isUndoing = false;
@@ -144,6 +144,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
 
     @Override
     public void onDestroy() {
+
         if (filteredEventsDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(filteredEventsDoneReceiver);
         }

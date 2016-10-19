@@ -5,34 +5,34 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.view.Display;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.Toast;
 
 import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.fragments.ChangePasswordFragment;
 import com.happ.retrofit.APIService;
 
 import java.util.Calendar;
 import java.util.Date;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by dante on 9/22/16.
@@ -46,15 +46,19 @@ public class UserActivity extends AppCompatActivity implements
     }
 
     private Toolbar toolbar;
-    private EditText mFullName, mEmail, mPhoneNumber, mBirthday;
-    private Button mButtonBirthday, mButtonChangePW;
-    private FloatingActionButton mUserEditFab;
     private NestedScrollView mScrollView;
-    private SwitchCompat mGenderSwitch;
+    private CoordinatorLayout mRootLayout;
+
+    private EditText mUsername, mEmail, mPhoneNumber, mBirthday;
     private Date birthday;
+    private Button mUserSave;
+    private ImageView mBtnEditBirthday, mBtnEditPhoto;
+    private ImageView mUserPhoto;
+    private RadioButton mMale, mFemale;
+    private CollapsingToolbarLayout ctl;
+
     private BroadcastReceiver setUserEditOKReceiver;
     private boolean fromSettings = false;
-    private CoordinatorLayout mRootLayout;
 
 
     @Override
@@ -72,26 +76,38 @@ public class UserActivity extends AppCompatActivity implements
         fromSettings = getIntent().getBooleanExtra("from_settings", false);
         setContentView(R.layout.activity_user);
 
-        mPhoneNumber = (EditText) findViewById(R.id.input_user_phonenumber);
-        mEmail = (EditText) findViewById(R.id.input_user_email);
-        mFullName = (EditText) findViewById(R.id.input__user_fullname);
-        mBirthday = (EditText) findViewById(R.id.input_user_birthday);
-        mButtonBirthday = (Button) findViewById(R.id.btn_choice_birthday);
-        mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
-        mGenderSwitch = (SwitchCompat) findViewById(R.id.user_gender);
-        mUserEditFab = (FloatingActionButton) findViewById(R.id.useredit_fab);
-        mButtonChangePW = (Button) findViewById(R.id.btn_user_change_password);
+        Display display = getWindowManager().getDefaultDisplay();
+        int width = display.getWidth();  // deprecated
+        int height = display.getHeight();  // deprecated
+
         mRootLayout = (CoordinatorLayout)findViewById(R.id.root_layout);
+        mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        ((CircleImageView)findViewById(R.id.avatar)).setImageDrawable(getResources().getDrawable(R.drawable.avatar));
-
         setSupportActionBar(toolbar);
+
+        mUsername = (EditText) findViewById(R.id.input__user_username);
+        mPhoneNumber = (EditText) findViewById(R.id.input_user_phone);
+        mEmail = (EditText) findViewById(R.id.input_user_email);
+        mBirthday = (EditText) findViewById(R.id.input_user_birthday);
+        mUserSave = (Button) findViewById(R.id.btn_user_save);
+        mBtnEditBirthday = (ImageView) findViewById(R.id.iv_edit_birthday);
+        mBtnEditPhoto = (ImageView) findViewById(R.id.edit_user_photo);
+        mMale = (RadioButton) findViewById(R.id.btn_user_male);
+        mFemale = (RadioButton) findViewById(R.id.btn_user_female);
+        mUserPhoto = (ImageView) findViewById(R.id.iv_user_avatar);
+
+        mUserPhoto.setMaxHeight(width);
+        mUserPhoto.setMinimumHeight(width);
+
+
+
+
         if (fromSettings) {
-            toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+            toolbar.setNavigationIcon(R.drawable.ic_right_arrow_dark);
         } else {
-            toolbar.setNavigationIcon(R.drawable.ic_close_white);
+            toolbar.setNavigationIcon(R.drawable.ic_close_dark);
         }
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,7 +118,12 @@ public class UserActivity extends AppCompatActivity implements
             }
         });
 
-        mFullName.setText(App.getCurrentUser().getFullName());
+        ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        ctl.setExpandedTitleColor(Color.TRANSPARENT);
+
+
+
+        mUsername.setText(App.getCurrentUser().getFullName());
         mEmail.setText(App.getCurrentUser().getEmail());
         mPhoneNumber.setText(App.getCurrentUser().getPhone());
         birthday = App.getCurrentUser().getBirthDate();
@@ -114,19 +135,30 @@ public class UserActivity extends AppCompatActivity implements
         }
         java.text.DateFormat format = DateFormat.getLongDateFormat(this);
         mBirthday.setText(format.format(birthday));
-        mButtonBirthday.setOnClickListener(new View.OnClickListener() {
+        mBtnEditBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 btn_click_birthday(v);
             }
         });
-        mGenderSwitch.setChecked(App.getCurrentUser().getGender()>0);
-        mUserEditFab.setOnClickListener(new View.OnClickListener() {
+
+//        mGenderSwitch.setChecked(App.getCurrentUser().getGender()>0);
+        mMale.setChecked(App.getCurrentUser().getGender() == 0);
+        mFemale.setChecked(App.getCurrentUser().getGender() > 0);
+
+        mBtnEditPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(UserActivity.this, "Change Photo", Toast.LENGTH_SHORT).show();
+            }
+        });
+        mUserSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 hideSoftKeyboard(UserActivity.this, v);
                 int gender = 0;
-                if (mGenderSwitch.isChecked()) gender = 1;
-                APIService.doUserEdit(mFullName.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), birthday, gender);
+//                if (mGenderSwitch.isChecked()) gender = 1;
+                if (mFemale.isChecked()) gender = 1;
+                APIService.doUserEdit(mUsername.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), birthday, gender);
             }
         });
 
@@ -134,14 +166,14 @@ public class UserActivity extends AppCompatActivity implements
             setUserEditOKReceiver = createSetUserEditOKReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setUserEditOKReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
         }
-        mButtonChangePW.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fm = getSupportFragmentManager();
-                ChangePasswordFragment changePasswordFragment = ChangePasswordFragment.newInstance();
-                changePasswordFragment.show(fm, "fragment_change_password");
-            }
-        });
+//        mButtonChangePW.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                FragmentManager fm = getSupportFragmentManager();
+//                ChangePasswordFragment changePasswordFragment = ChangePasswordFragment.newInstance();
+//                changePasswordFragment.show(fm, "fragment_change_password");
+//            }
+//        });
 
     }
 

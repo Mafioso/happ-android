@@ -84,7 +84,7 @@
         android:textSize="16sp"
         android:textAllCaps="true"
         android:layout_alignParentBottom="true"
-        android:background="@color/buttonSave"
+        android:background="@color/bg_light"
         android:text="@string/save"
         android:gravity="center"
         />

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    android:id="@+id/root_layout"
+<android.support.design.widget.CoordinatorLayout android:id="@+id/root_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    android:background="@color/colorPrimary">
+    xmlns:segmentedgroup="http://schemas.android.com/tools">
 
     <LinearLayout
         android:focusable="true"
@@ -17,9 +16,54 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppBarUser">
 
-        <include layout="@layout/toolbar"/>
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/toolbar_layout"
+            android:fitsSystemWindows="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="@color/bg_light"
+            >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="parallax">
+
+                <ImageView
+                    android:id="@+id/iv_user_avatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/my_avatar"/>
+
+                <ImageView
+                    android:id="@+id/edit_user_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_camera_white"
+                    />
+            </RelativeLayout>
+
+
+            <android.support.v7.widget.Toolbar
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlways"
+                android:background="@android:color/transparent"/>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+
 
     </android.support.design.widget.AppBarLayout>
 
@@ -27,260 +71,299 @@
         android:id="@+id/event_edit_srollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/background_light"
+        android:background="@color/bg_light"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingTop="8dp">
+            android:paddingBottom="150dp">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="28dp"
-                    android:layout_width="88dp"
-                    android:layout_height="88dp"
-                    app:civ_border_color="@android:color/white"
-                    app:civ_border_width="4dp"
-                    android:id="@+id/avatar"/>
-
-                <RelativeLayout
-                    android:layout_toRightOf="@id/avatar"
-                    android:layout_alignParentTop="true"
-                    android:id="@+id/username_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp">
-
-                    <ImageView
-                        android:visibility="gone"
-                        android:id="@+id/username_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_user"
-                        android:layout_alignParentBottom="true"
-                        android:paddingBottom="10dp"
-                        android:alpha="0.57"/>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_user_fullname"
-                        android:layout_toRightOf="@+id/username_icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="0dp">
-
-                        <EditText
-                            android:id="@+id/input__user_fullname"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:maxLines="1"
-                            android:hint="@string/username"
-                            android:inputType="textNoSuggestions"/>
-                    </android.support.design.widget.TextInputLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_below="@+id/username_layout"
-                    android:layout_toRightOf="@id/avatar"
-                    android:id="@+id/email_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp">
-
-                    <ImageView
-                        android:visibility="gone"
-                        android:id="@+id/email_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_mail"
-                        android:layout_alignParentBottom="true"
-                        android:paddingBottom="10dp"
-                        android:alpha="0.57"/>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input__user_layout_email"
-                        android:layout_toRightOf="@+id/email_icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="0dp">
-
-                        <EditText
-                            android:id="@+id/input_user_email"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:maxLines="1"
-                            android:hint="@string/email"
-                            android:inputType="textNoSuggestions|textEmailAddress"/>
-                    </android.support.design.widget.TextInputLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_below="@+id/email_layout"
-                    android:id="@+id/phone_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp">
-
-                    <ImageView
-                        android:id="@+id/phone_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_phone"
-                        android:layout_alignParentBottom="true"
-                        android:paddingBottom="10dp"
-                        android:alpha="0.57"/>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input__user_layout_phonenumber"
-                        android:layout_toRightOf="@+id/phone_icon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="24dp">
-
-                        <EditText
-                            android:id="@+id/input_user_phonenumber"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:maxLines="1"
-                            android:hint="@string/phone_number"
-                            android:inputType="textNoSuggestions|phone"/>
-                    </android.support.design.widget.TextInputLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_below="@+id/phone_layout"
-                    android:id="@+id/birth_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="8dp">
-
-                        <ImageView
-                            android:id="@+id/calendar_icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_event_black_24dp"
-                            android:layout_alignParentBottom="true"
-                            android:paddingBottom="10dp"
-                            android:alpha="0.57"/>
-
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/input_user_layout_birthday"
-                            android:layout_toRightOf="@+id/calendar_icon"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="24dp">
-
-                            <EditText
-                                android:id="@+id/input_user_birthday"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:maxLines="1"
-                                android:hint="@string/birthday"
-                                android:enabled="false"
-                                android:textColor="@android:color/primary_text_light_nodisable"/>
-                        </android.support.design.widget.TextInputLayout>
-
-
-
-                        <Button
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:id="@+id/btn_choice_birthday"
-                            android:onClick="btn_click_birthday"
-                            android:drawableTop="@drawable/ic_edit_compat"
-                            android:layout_alignParentRight="true"
-                            android:paddingTop="12dp"
-                            android:layout_alignParentBottom="true"
-                            style="?attr/borderlessButtonStyle">
-
-                        </Button>
-                    <!--android:drawablePadding="-15sp"-->
-
-                    </RelativeLayout>
-
-
-                    <LinearLayout
-                        android:layout_below="@+id/birth_layout"
-                        android:id="@+id/gender_layout"
-                        android:layout_centerInParent="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginRight="16dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_marginRight="16dp"
-                            android:textSize="18sp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="Male"/>
-
-                        <android.support.v7.widget.SwitchCompat
-                            android:id="@+id/user_gender"
-                            android:layout_gravity="center_vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="56dp" />
-
-                        <TextView
-                            android:layout_marginLeft="16dp"
-                            android:textSize="18sp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:text="Female"/>
-
-                    </LinearLayout>
-
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dp"
-                android:layout_below="@+id/gender_layout"
-                android:background="@color/colorBlack8" />
-
-            <Button
-                android:id="@+id/btn_user_change_password"
+            <TextView
+                android:paddingTop="24dp"
+                android:id="@+id/tv_pi"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:layout_below="@+id/gender_layout"
-                style="?attr/borderlessButtonStyle"
-                android:textSize="16sp"
-                android:textAllCaps="false"
-                android:text="@string/change_password"
-                android:drawableLeft="@drawable/ic_password_compat"
-                android:paddingLeft="16dp"
-                android:drawablePadding="24dp"
-                android:gravity="left|center"
-                />
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:layout_marginLeft="16dp"
+                android:textColor="@color/dark80"
+                android:text="@string/personal_inforamation"/>
+            
+            <LinearLayout
+                android:id="@+id/username_layout"
+                android:layout_below="@+id/tv_pi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_user"
+                    android:layout_alignParentBottom="true"
+                    android:paddingBottom="8dp"
+                    android:layout_gravity="bottom"
+                    android:alpha="0.57"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_user_fullname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp">
+
+                    <EditText
+                        android:id="@+id/input__user_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:hint="@string/username"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/useremail_layout"
+                android:layout_below="@+id/username_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_email_dark"
+                    android:paddingBottom="8dp"
+                    android:layout_gravity="bottom"
+                    android:alpha="0.57"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_user_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp">
+
+                    <EditText
+                        android:id="@+id/input_user_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:hint="@string/email"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/userphone_layout"
+                android:layout_below="@+id/useremail_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_phone_dark"
+                    android:paddingBottom="8dp"
+                    android:layout_gravity="bottom"
+                    android:alpha="0.57"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_user_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp">
+
+                    <EditText
+                        android:id="@+id/input_user_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:hint="@string/phone_number"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/userbirthday_layout"
+                android:layout_below="@+id/userphone_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:orientation="horizontal"
+                android:layout_marginRight="16dp">
+
+                <ImageView
+                    android:id="@+id/iv_calendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_calendar_dark"
+                    android:paddingBottom="8dp"
+                    android:layout_alignParentBottom="true"
+                    android:alpha="0.57"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_toRightOf="@+id/iv_calendar"
+                    android:id="@+id/input_layout_user_birthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp">
+
+                    <EditText
+                        android:id="@+id/input_user_birthday"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:hint="@string/birthday"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageView
+                    android:layout_alignParentRight="true"
+                    android:id="@+id/iv_edit_birthday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_edit"
+                    android:paddingBottom="8dp"
+                    android:layout_alignParentBottom="true"
+                    android:alpha="0.57"/>
+            </RelativeLayout>
 
 
+            <LinearLayout
+                android:id="@+id/usergender_layout"
+                android:layout_below="@+id/userbirthday_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_gender_dark"
+                    android:paddingBottom="8dp"
+                    android:layout_gravity="center_vertical"
+                    android:alpha="0.57"/>
+
+                <info.hoang8f.android.segmented.SegmentedGroup
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="24dp"
+                    android:orientation="horizontal"
+                    segmentedgroup:sc_border_width="1dp"
+                    segmentedgroup:sc_corner_radius="10dp"
+                    app:sc_tint_color="@color/colorAccent">
+
+                    <RadioButton
+                        android:id="@+id/btn_user_male"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/male"
+                        style="@style/RadioButton" />
+
+                    <RadioButton
+                        android:id="@+id/btn_user_female"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/female"
+                        style="@style/RadioButton" />
+                </info.hoang8f.android.segmented.SegmentedGroup>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_chp"
+                android:layout_below="@+id/usergender_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark80"
+                android:textSize="18dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/personal_inforamation"/>
+
+            <TextView
+                android:id="@+id/tv_chp_warning"
+                android:layout_below="@+id/tv_chp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark28"
+                android:textSize="14dp"
+                android:layout_marginLeft="16dp"
+                android:text="@string/warning_for_chp"/>
+
+
+            <LinearLayout
+                android:layout_below="@+id/tv_chp_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:theme="@style/CreateScreenEditText"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/old_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/old_password"
+                        android:inputType="textNoSuggestions|textPassword"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/new_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/new_password"
+                        android:inputType="textNoSuggestions|textPassword"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/repeat_new_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/repeat_new_password"
+                        android:inputType="textNoSuggestions|textPassword"/>
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:id="@+id/useredit_fab"
-        app:fabSize="normal"
-        android:layout_margin="16dp"
-        app:srcCompat="@drawable/ic_done" />
+    <Button
+        android:id="@+id/btn_user_save"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        style="?attr/borderlessButtonStyle"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_light"
+        android:text="@string/save"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

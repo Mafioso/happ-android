@@ -224,6 +224,7 @@ public class SelectCityFragment extends Fragment {
         City realmCity = realm.where(City.class).equalTo("name", mCity).findFirst();
         if (realmCity != null) city = realm.copyFromRealm(realmCity);
         realm.close();
+        mCitiesListAdapter.updateData();
     }
 
     protected void updateCitiesList() {
@@ -235,7 +236,7 @@ public class SelectCityFragment extends Fragment {
             citiesRealmResults = realm.where(City.class).findAll();
         }
         cities = (ArrayList<City>)realm.copyFromRealm(citiesRealmResults);
-        mCitiesListAdapter.updateData(cities);
+
         realm.close();
     }
 

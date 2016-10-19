@@ -15,6 +15,9 @@
     <style name="AppBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
     </style>
 
+    <style name="AppBarUser" parent="ThemeOverlay.AppCompat.Light">
+    </style>
+
     <style name="AppTheme" parent="AppTheme.Base">
     </style>
 
@@ -35,6 +38,11 @@
     <style name="CollapsedAppBar" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">32sp</item>
         <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="CollapsedAppBar2" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">32sp</item>
+        <item name="android:textColor">@color/dark38</item>
     </style>
 
     <style name="Theme.Splash" parent="android:Theme">
@@ -66,8 +74,8 @@
 
     <style name="CreateScreenEditText" parent="TextAppearance.AppCompat">
         <!-- Hint action_navigation_item_text_color and label action_navigation_item_text_color in FALSE state -->
-        <item name="android:textColor">@android:color/black</item>
-        <item name="android:textColorHint">@color/dark80</item>
+        <item name="android:textColor">@color/dark57</item>
+        <item name="android:textColorHint">@color/dark38</item>
         <item name="android:textSize">16sp</item>
         <!-- Label action_navigation_item_text_color in TRUE state and bar action_navigation_item_text_color FALSE and TRUE State -->
         <item name="colorAccent">@color/colorAccent</item>
@@ -75,10 +83,16 @@
         <item name="colorControlActivated">@color/colorAccent</item>
     </style>
 
+    <style name="SettingsTypeText">
+        <item name="android:fontFamily">roboto-medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/dark57</item>
+    </style>
+
     <style name="NavDrawerTextStyle">
         <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:itemBackground">@color/action_navigation_item_text_bg_color</item>
         <item name="android:textColor">@color/action_navigation_item_text_color</item>
     </style>
 
