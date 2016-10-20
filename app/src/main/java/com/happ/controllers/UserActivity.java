@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -48,6 +49,8 @@ public class UserActivity extends AppCompatActivity implements
     private Toolbar toolbar;
     private NestedScrollView mScrollView;
     private CoordinatorLayout mRootLayout;
+    private CollapsingToolbarLayout ctl;
+    private AppBarLayout mAppBarLayout;
 
     private EditText mUsername, mEmail, mPhoneNumber, mBirthday;
     private Date birthday;
@@ -55,7 +58,6 @@ public class UserActivity extends AppCompatActivity implements
     private ImageView mBtnEditBirthday, mBtnEditPhoto;
     private ImageView mUserPhoto;
     private RadioButton mMale, mFemale;
-    private CollapsingToolbarLayout ctl;
 
     private BroadcastReceiver setUserEditOKReceiver;
     private boolean fromSettings = false;
@@ -84,6 +86,7 @@ public class UserActivity extends AppCompatActivity implements
         mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
 
         mUsername = (EditText) findViewById(R.id.input__user_username);
         mPhoneNumber = (EditText) findViewById(R.id.input_user_phone);
@@ -98,15 +101,7 @@ public class UserActivity extends AppCompatActivity implements
 
         mUserPhoto.setMaxHeight(width);
         mUserPhoto.setMinimumHeight(width);
-
-
-
-
-        if (fromSettings) {
-            toolbar.setNavigationIcon(R.drawable.ic_right_arrow_dark);
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_close_dark);
-        }
+        
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +115,6 @@ public class UserActivity extends AppCompatActivity implements
 
         ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         ctl.setExpandedTitleColor(Color.TRANSPARENT);
-
 
 
         mUsername.setText(App.getCurrentUser().getFullName());
@@ -142,7 +136,6 @@ public class UserActivity extends AppCompatActivity implements
             }
         });
 
-//        mGenderSwitch.setChecked(App.getCurrentUser().getGender()>0);
         mMale.setChecked(App.getCurrentUser().getGender() == 0);
         mFemale.setChecked(App.getCurrentUser().getGender() > 0);
 
@@ -174,6 +167,8 @@ public class UserActivity extends AppCompatActivity implements
 //                changePasswordFragment.show(fm, "fragment_change_password");
 //            }
 //        });
+
+        initViews();
 
     }
 
@@ -254,6 +249,50 @@ public class UserActivity extends AppCompatActivity implements
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(setUserEditOKReceiver);
             setUserEditOKReceiver = null;
         }
+    }
+
+    private enum State {
+        EXPANDED,
+        COLLAPSED,
+        IDLE
+    }
+
+    private void initViews() {
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            private State state;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (verticalOffset == 0) {
+                    if (state != State.EXPANDED) {
+                        if (fromSettings) {
+                            toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+                        } else {
+                            toolbar.setNavigationIcon(R.drawable.ic_close_white);
+                        }
+                    }
+                    state = State.EXPANDED;
+                } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
+                    if (state != State.COLLAPSED) {
+                        if (fromSettings) {
+                            toolbar.setNavigationIcon(R.drawable.ic_right_arrow_dark);
+                        } else {
+                            toolbar.setNavigationIcon(R.drawable.ic_close_dark);
+                        }
+                    }
+                    state = State.COLLAPSED;
+                } else {
+                    if (state != State.IDLE) {
+                        if (fromSettings) {
+                            toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+                        } else {
+                            toolbar.setNavigationIcon(R.drawable.ic_close_white);
+                        }
+                    }
+                    state = State.IDLE;
+                }
+            }
+        });
     }
 
 }
