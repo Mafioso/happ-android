@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -42,6 +43,7 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.InterestsListAdapter;
 import com.happ.controllers.UserActivity;
+import com.happ.fragments.InterestChildrenFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
@@ -57,7 +59,8 @@ import io.realm.RealmResults;
 /**
  * Created by dante on 9/6/16.
  */
-public class SelectInterestsActivity extends AppCompatActivity {
+public class SelectInterestsActivity extends AppCompatActivity
+    implements InterestChildrenFragment.OnInterestChildrenInteractionListener {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -89,7 +92,7 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
 
-    private FrameLayout
+    private FrameLayout childrenContainer;
 
     private int titleBarHeight;
 
@@ -115,16 +118,17 @@ public class SelectInterestsActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
+        childrenContainer = (FrameLayout) findViewById(R.id.city_children_fragment_container);
 
         selectedRow = (RelativeLayout) findViewById(R.id.selected_row);
         selectedRowContainer = (RelativeLayout) findViewById(R.id.selected_row_container);
 
-        selectedRow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedRow.setVisibility(View.GONE);
-            }
-        });
+//        selectedRow.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                selectedRow.setVisibility(View.GONE);
+//            }
+//        });
 //        nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll);
 
 
@@ -182,39 +186,41 @@ public class SelectInterestsActivity extends AppCompatActivity {
 
             @Override
             public void onInterestExpandRequested(String interestId, int position, int top, int height) {
-                RelativeLayout.LayoutParams lparams = (RelativeLayout.LayoutParams)selectedRow.getLayoutParams();
-                lparams.setMargins(0,top-titleBarHeight,0,0);
-                lparams.height = height;
-                selectedRow.setLayoutParams(lparams);
-//                selectedRow.setVisibility(View.VISIBLE);
+                final ArrayList<String> children = new ArrayList<String>();
+                ArrayList<String> parents = new ArrayList<String>();
 
-                final ViewGroup sceneRoot = (ViewGroup)findViewById(R.id.selected_row_container);
-
-                final int prevVisibility = sceneRoot.getVisibility();
-                sceneRoot.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        if (sceneRoot.getVisibility() == View.VISIBLE && sceneRoot.getVisibility() != prevVisibility) {
-                            sceneRoot.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            TransitionSet set = new TransitionSet();
-                            set.addTransition(new ChangeBounds());
-//                set.setOrdering(TransitionSet.ORDERING_TOGETHER);
-                            set.setDuration(500);
-                            set.setInterpolator(PathInterpolatorCompat.create(0.4f, 0.0f, 0.6f, 1.0f));
-                            TransitionManager.beginDelayedTransition(sceneRoot, set);
-
-                            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) selectedRow.getLayoutParams();
-                            params.setMargins(0, 0, 0, 0);
-                            sceneRoot.setBackgroundColor(getResources().getColor(R.color.background));
-                            selectedRow.setLayoutParams(params);
-
-                        }
+                parents.add(interestId);
+                int row_pos = position % 3;
+                int row = position / 3;
+                for (int i=1; i<3; i++) {
+                    int pos;
+                    if ((position + i) / 3 > row) {
+                        pos = position + i - 3;
+                        if (interests.size() > pos) parents.add(0, interests.get(pos).getId());
+                    } else {
+                        pos = position + i;
+                        if (interests.size() > pos) parents.add(interests.get(pos).getId());
                     }
-                });
+                }
+
+                Realm realm = Realm.getDefaultInstance();
+                RealmResults<Interest> child_results = realm.where(Interest.class).equalTo("parentId", interestId).findAll();
+                if (child_results != null) {
+                    ArrayList<Interest> children_interests = (ArrayList<Interest>) realm.copyFromRealm(child_results);
+
+                    for (int i=0; i<children_interests.size(); i++) {
+                        children.add(children_interests.get(i).getId());
+                    }
+                }
+                realm.close();
 
 
+                InterestChildrenFragment icf = InterestChildrenFragment.newInstance(interestId,
+                        children, parents, top-titleBarHeight, height);
 
-                selectedRowContainer.setVisibility(View.VISIBLE);
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.city_children_fragment_container, icf)
+                        .commit();
 
             }
         });
@@ -324,6 +330,10 @@ public class SelectInterestsActivity extends AppCompatActivity {
         createScrollListener();
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 
 
     public class MyCityPageAdapter extends FragmentPagerAdapter {

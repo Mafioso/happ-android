@@ -18,10 +18,29 @@
             android:id="@+id/selected_row"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:orientation="horizontal"
-            android:background="@color/colorAccent">
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/parents_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+            </android.support.v7.widget.RecyclerView>
 
         </RelativeLayout>
+
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/children_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/selected_row"
+            >
+
+
+        </android.support.v7.widget.RecyclerView>
 
     </RelativeLayout>
 

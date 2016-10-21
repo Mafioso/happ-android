@@ -2,7 +2,10 @@ package com.happ.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,11 +23,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.happ.App;
 import com.happ.R;
+import com.happ.fragments.InterestChildrenFragment;
 import com.happ.models.Interest;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
@@ -46,6 +54,7 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     private OnInterestClickedListener interestSelectedListener;
     private boolean selectSingle = false;
     private ArrayList<String> userInterestIds;
+    private String activeInterestId;
 
     private ArrayList<String> expandedInterests;
 
@@ -57,6 +66,32 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     private int itemWidth;
     private int margin;
     private int middleItemWidth;
+
+    private String[] urls = {
+            "http://www.freedigitalphotos.net/images/img/homepage/87357.jpg",
+            "http://assets.barcroftmedia.com.s3-website-eu-west-1.amazonaws.com/assets/images/recent-images-11.jpg",
+            "http://7606-presscdn-0-74.pagely.netdna-cdn.com/wp-content/uploads/2016/03/Dubai-Photos-Images-Oicture-Dubai-Landmarks-800x600.jpg",
+            "http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg",
+            "http://www.w3schools.com/css/trolltunga.jpg",
+            "http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg",
+            "http://www.planwallpaper.com/static/images/desktop-year-of-the-tiger-images-wallpaper.jpg",
+            "http://www.gettyimages.pt/gi-resources/images/Homepage/Hero/PT/PT_hero_42_153645159.jpg",
+            "http://www.planwallpaper.com/static/images/beautiful-sunset-images-196063.jpg",
+            "http://www.w3schools.com/css/img_fjords.jpg"
+    };
+
+    private String[] avg_colors = {
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+    };
 
     public InterestsListAdapter(Context context, List<Interest> interests) {
         this.context = context;
@@ -88,6 +123,11 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     public void setUserAcivityIds(ArrayList<String> interestIds) {
         userInterestIds = interestIds;
         updateSelectedInterests();
+    }
+
+    public void setActiveInterestId(String interestId) {
+        activeInterestId = interestId;
+        notifyDataSetChanged();
     }
 
     private void updateSelectedInterests() {
@@ -147,15 +187,15 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     }
 
     @Override
-    public void onBindViewHolder(final InterestsListViewHolder holder, int position) {
+    public void onBindViewHolder(final InterestsListViewHolder holder, final int position) {
 
         final Interest interest = mInterests.get(position);
         int row = position/3;
 
 
         RecyclerView.LayoutParams containerParams = (RecyclerView.LayoutParams) holder.mInterestContainer.getLayoutParams();
-        LinearLayout.LayoutParams ivParams = (LinearLayout.LayoutParams) holder.mImageContainer.getLayoutParams();
-        LinearLayout.LayoutParams bgParams = (LinearLayout.LayoutParams) holder.mInterestBackground.getLayoutParams();
+        RelativeLayout.LayoutParams ivParams = (RelativeLayout.LayoutParams) holder.mImageContainer.getLayoutParams();
+        RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) holder.mInterestBackground.getLayoutParams();
 
 
         ivParams.height = itemWidth;
@@ -178,35 +218,13 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
         holder.mInterestTitle.setText(interest.getTitle());
 
-        if(interest.getUrl().length() > 0 || interest.getUrl() != null ){
+//        if(interest.getUrl().length() > 0 || interest.getUrl() != null ){
 //            final String url = interest.getUrl();
-            final String url = "http://lorempixel.com/320/320/sports/" + position + "/";
-
+        final String url = urls[position%10];
+        if (holder.url == null || !holder.url.equals(url)) {
+            holder.url = url;
             Glide.clear(holder.mInterestImageView);
             try {
-                int viewWidth = holder.mInterestImageView.getWidth();
-                int viewHeight = holder.mInterestImageView.getHeight();
-                if (viewHeight > 0 && viewHeight > 0) {
-                    Glide.with(App.getContext())
-                            .load(url)
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-
-                                    return false;
-                                }
-                            })
-                            .override(viewWidth, viewHeight)
-                            .centerCrop()
-                            .into(holder.mInterestImageView);
-                }
-            } catch (Exception ex) {
                 ViewTreeObserver viewTreeObserver = holder.mInterestImageView.getViewTreeObserver();
                 if (viewTreeObserver.isAlive()) {
                     viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -215,32 +233,50 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
                             holder.mInterestImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                             int viewWidth = holder.mInterestImageView.getWidth();
                             int viewHeight = holder.mInterestImageView.getHeight();
-                            Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth)+" "+String.valueOf(viewHeight));
+                            Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth) + " " + String.valueOf(viewHeight));
 
                             Glide.with(App.getContext())
                                     .load(url)
                                     .listener(new RequestListener<String, GlideDrawable>() {
                                         @Override
                                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                            Log.e("GLIDE_ERR", url + " " + e.getMessage());
                                             return false;
                                         }
 
                                         @Override
                                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//
+                                            Log.d("GLIDE_OK", url);
+                                            Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
+                                            Palette p = Palette.from(bm).generate();
+                                            holder.mInterestBackground.setBackgroundColor(p.getMutedSwatch().getRgb());
+//                                            setBlurs(holder,position);
                                             return false;
                                         }
                                     })
                                     .override(viewWidth, viewHeight)
                                     .centerCrop()
                                     .into(holder.mInterestImageView);
+
+                            final Drawable image = holder.mInterestImageView.getDrawable();
+                            if (holder.mInterestImageView.getViewTreeObserver().isAlive()) {
+                                holder.mInterestImageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                                    @Override
+                                    public void onGlobalLayout() {
+                                        if (image != null && !image.equals(holder.mInterestImageView.getDrawable())) {
+                                            holder.mInterestImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                            setBlurs(holder, position);
+                                        }
+                                    }
+                                });
+
+                            }
                         }
                     });
                 }
+            } catch (Exception ex) {
+                Log.e("INTERESTS", ex.getLocalizedMessage());
             }
-        } else{
-            Glide.clear(holder.mInterestImageView);
-            holder.mInterestImageView.setImageDrawable(null);
         }
 
         String id = interest.getId();
@@ -328,7 +364,68 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 //            holder.mExpandChildrenButton.setVisibility(View.GONE);
 //            holder.mExpandChildrenButton.setEnabled(false);
 //        }
+
+//        if ()
+
+
+        if (activeInterestId != null) {
+            if (!mInterests.get(position).getId().equals(activeInterestId)) {
+//                Blurry.delete(holder.mImageContainer);
+//                        .with(context).radius(0)
+//                        .sampling(0).async()
+//                        .capture(holder.mInterestImageView)
+//                        .into(holder.mInterestImageView);
+                holder.mInactiveOverlay.setVisibility(View.GONE);
+                holder.mImageContainer.setAlpha(0.2f);
+                holder.mInterestBackground.setAlpha(0.2f);
+            } else {
+//                Blurry.with(context)
+//                        .radius(4)
+//                        .sampling(1)
+//                        .async()
+//                        .capture(holder.mInterestImageView)
+//                        .into(holder.mInterestImageView);
+                holder.mInactiveOverlay.setVisibility(View.VISIBLE);
+                holder.mImageContainer.setAlpha(1f);
+                holder.mInterestBackground.setAlpha(1f);
+            }
+        } else {
+            setBlurs(holder, position);
+        }
+
+
         holder.bind(interest.getId(), listener, position);
+    }
+
+    private void setBlurs(InterestsListViewHolder holder, int position) {
+        if (position % 7 == 0) {
+//            Blurry.with(context)
+//                    .radius(20)
+//                    .sampling(1)
+//                    .async()
+//                    .capture(holder.mInterestImageView)
+//                    .into(holder.mInterestImageView);
+            holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_white));
+            holder.mCountText.setVisibility(View.GONE);
+            holder.mCheckImage.setVisibility(View.VISIBLE);
+        } else if (position % 5 == 0) {
+//            Blurry.with(context)
+//                    .radius(20)
+//                    .sampling(1)
+//                    .async()
+//                    .capture(holder.mInterestImageView)
+//                    .into(holder.mInterestImageView);
+            int max = (int)Math.floor(20 * Math.random())+5;
+            int curr = (int)Math.floor((max-1) * Math.random())+1;
+            holder.mCountText.setText(""+curr + "/"+ max);
+            holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_all_white));
+            holder.mCountText.setVisibility(View.VISIBLE);
+            holder.mCheckImage.setVisibility(View.VISIBLE);
+        } else {
+//            Blurry.delete(holder.mImageContainer);
+            holder.mCountText.setVisibility(View.GONE);
+            holder.mCheckImage.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -346,16 +443,25 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         private RecyclerView mChildrenRecyclerView;
         private ImageView mInterestImageView;
         private LinearLayout mInterestBackground;
-        private LinearLayout mInterestContainer;
+        private RelativeLayout mInterestContainer;
         private RelativeLayout mImageContainer;
+        private String url;
+        private RelativeLayout mInactiveOverlay;
+
+        private TextView mCountText;
+        private ImageView mCheckImage;
 
         public InterestsListViewHolder(View itemView) {
             super(itemView);
             mInterestTitle = (TextView) itemView.findViewById(R.id.interest_title);
             mInterestImageView = (ImageView) itemView.findViewById(R.id.interest_imageview);
             mInterestBackground = (LinearLayout) itemView.findViewById(R.id.interest_bg);
-            mInterestContainer = (LinearLayout) itemView.findViewById(R.id.interest_container);
+            mInterestContainer = (RelativeLayout) itemView.findViewById(R.id.interest_container);
             mImageContainer = (RelativeLayout) itemView.findViewById(R.id.interest_image_container) ;
+            mInactiveOverlay= (RelativeLayout) itemView.findViewById(R.id.inactive_overlay);
+
+            mCountText = (TextView) itemView.findViewById(R.id.selected_count_text) ;
+            mCheckImage = (ImageView) itemView.findViewById(R.id.selected_check);
 
             mChildrenRecyclerView = (RecyclerView) itemView.findViewById(R.id.interest_children_list);
             mChildrenRecyclerView.setLayoutManager(new LinearLayoutManager(context));
