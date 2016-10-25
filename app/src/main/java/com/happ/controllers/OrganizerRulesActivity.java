@@ -71,7 +71,7 @@ public class OrganizerRulesActivity extends AppCompatActivity {
         mBtnAgree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(OrganizerRulesActivity.this, EditActivity.class);
+                Intent intent = new Intent(OrganizerRulesActivity.this, EditCreateActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
                 overridePendingTransition(0,0);

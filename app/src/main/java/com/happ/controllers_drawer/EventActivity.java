@@ -35,7 +35,7 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.Typefaces;
 import com.happ.adapters.EventImagesSwipeAdapter;
-import com.happ.controllers.EditActivity;
+import com.happ.controllers.EditCreateActivity;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Event;
@@ -134,7 +134,7 @@ public class EventActivity extends AppCompatActivity {
             mFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent editIntent = new Intent(EventActivity.this, EditActivity.class);
+                    Intent editIntent = new Intent(EventActivity.this, EditCreateActivity.class);
                     editIntent.putExtra("event_id", eventId);
                     EventActivity.this.startActivity(editIntent);
                 }

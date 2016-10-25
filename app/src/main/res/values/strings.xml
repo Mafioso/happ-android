@@ -17,10 +17,10 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="event_title">Event Title</string>
-    <string name="event_description">Event Description</string>
+    <string name="event_description">Description</string>
     <string name="event_min_price">Minimal Price</string>
     <string name="event_max_price">Maximal Price</string>
-    <string name="event_place">Address</string>
+    <string name="event_place">Place</string>
     <string name="event_email">Email</string>
     <string name="event_website">Website</string>
     <string name="event_interest">Interest</string>
@@ -371,6 +371,9 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="warning_for_chp">Leave fields blank if you want to leave old password</string>
+    <string name="warning_add_image_in_ec">First image will be used as event cover photo</string>
+    <string name="warning_for_empty_box_email">Leave field blank to use your profile email</string>
+    <string name="warning_for_empty_box_phone">Leave field blank to use your profile phone number</string>
     <string name="interests_view_header_hint">Select Interests for</string>
     <string name="interests_view_header_city">City Name</string>
     <string name="interests_view_select_all">Select All Interests</string>
@@ -382,6 +385,13 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="filter_pending">Pending</string>
     <string name="filter_finished">Finished</string>
     <string name="customize_my_events">Customize my events</string>
+    <string name="event_name">Event Name</string>
+    <string name="event_currency">Currency</string>
+    <string name="event_date">Event Date</string>
+    <string name="event_tickets_link">Tickets Link</string>
+    <string name="event_phone">Phone</string>
+    <string name="tap_here_description">Tap here to add description</string>
+    <string name="continuing_event">Continuing Event</string>
 
 
 </resources>

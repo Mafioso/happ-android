@@ -22,7 +22,7 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.OrgEventsListAdapter;
-import com.happ.controllers.EditActivity;
+import com.happ.controllers.EditCreateActivity;
 import com.happ.controllers_drawer.EventActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
@@ -97,7 +97,7 @@ public class EventsOrganizerFragment extends Fragment {
 
             @Override
             public void onEventEditSelected(String eventId) {
-                Intent intent = new Intent(activity, EditActivity.class);
+                Intent intent = new Intent(activity, EditCreateActivity.class);
                 intent.putExtra("event_id", eventId);
                 startActivity(intent);
             }

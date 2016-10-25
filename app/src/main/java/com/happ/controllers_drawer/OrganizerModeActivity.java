@@ -30,7 +30,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.happ.App;
 import com.happ.R;
-import com.happ.controllers.EditActivity;
+import com.happ.controllers.EditCreateActivity;
 import com.happ.controllers.OrganizerRulesActivity;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.EventsOrganizerFragment;
@@ -211,7 +211,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
                             startActivity(i);
 
                         } else {
-                            Intent i = new Intent(getApplicationContext(), EditActivity.class);
+                            Intent i = new Intent(getApplicationContext(), EditCreateActivity.class);
                             startActivity(i);
                         }
 

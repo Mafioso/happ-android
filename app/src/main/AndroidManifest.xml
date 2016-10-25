@@ -49,7 +49,7 @@
             />
 
         <activity
-            android:name=".controllers.EditActivity"
+            android:name=".controllers.EditCreateActivity"
             android:label="Edit Activity"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity android:name=".controllers.UserActivity"
