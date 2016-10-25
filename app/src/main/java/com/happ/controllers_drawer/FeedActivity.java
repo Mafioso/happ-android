@@ -31,7 +31,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -43,7 +42,6 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.EventsListAdapter;
-import com.happ.controllers.CityActivity;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.ExploreEventsFragment;
@@ -92,7 +90,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private Date startDate, endDate;
     private String isFree = "";
     private FloatingActionButton mFabFilterDone;
-    private ImageView mCloseRightNavigation;
+    private ImageView mCloseRightNavigation, mCLoseLeftNavigation;
     private String searchText = "";
     private EditText mFeedSearchText;
     private BottomBar mBottomBar;
@@ -109,8 +107,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
-
-    private Animation anim = null;
 
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
@@ -135,14 +131,18 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         navigationViewRight = (NavigationView) findViewById(R.id.navigation_view_right);
         mFeedSearchText = (EditText) findViewById(R.id.filter_search);
         mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_navigation);
-        mBottomBar = (BottomBar) findViewById(R.id.bottomBar);
+        mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
+        mBottomBar = (BottomBar) findViewById(R.id.bottombar_feed);
         mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
 
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null){
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
+        }
         setTitle(App.getCurrentCity().getName());
 
 
@@ -264,6 +264,12 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
             @Override
             public void onClick(View view) {
                 mDrawerLayout.closeDrawer(navigationViewRight);
+            }
+        });
+        mCLoseLeftNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(navigationView);
             }
         });
 
@@ -522,9 +528,9 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.menu_filter:
-                Intent i = new Intent(FeedActivity.this, CityActivity.class);
-                startActivity(i);
-//                mDrawerLayout.openDrawer(navigationViewRight);
+//                Intent i = new Intent(FeedActivity.this, CityActivity.class);
+//                startActivity(i);
+                mDrawerLayout.openDrawer(navigationViewRight);
                 return true;
         }
 

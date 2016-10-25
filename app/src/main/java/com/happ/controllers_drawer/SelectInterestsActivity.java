@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -26,6 +27,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.happ.App;
@@ -33,6 +37,7 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.InterestsListAdapter;
 import com.happ.controllers.UserActivity;
+import com.happ.fragments.InterestChildrenFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
@@ -45,7 +50,8 @@ import io.realm.RealmResults;
 /**
  * Created by dante on 9/6/16.
  */
-public class SelectInterestsActivity extends AppCompatActivity {
+public class SelectInterestsActivity extends AppCompatActivity
+    implements InterestChildrenFragment.OnInterestChildrenInteractionListener {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -64,6 +70,9 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
 
+    private RelativeLayout selectedRow;
+    private RelativeLayout selectedRowContainer;
+
     private boolean loading = true;
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
@@ -74,6 +83,12 @@ public class SelectInterestsActivity extends AppCompatActivity {
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
 
+    private ImageView mCLoserLeftNavigation;
+
+    private FrameLayout childrenContainer;
+
+    private int titleBarHeight;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +96,12 @@ public class SelectInterestsActivity extends AppCompatActivity {
         fullActivity = intent.getBooleanExtra("is_full", false);
 
         setContentView(R.layout.activity_select_interests);
+
+        titleBarHeight = 0;
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            titleBarHeight = getResources().getDimensionPixelSize(resourceId);
+        }
 
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -90,12 +111,26 @@ public class SelectInterestsActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
+        childrenContainer = (FrameLayout) findViewById(R.id.city_children_fragment_container);
+        mCLoserLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
+
+        selectedRow = (RelativeLayout) findViewById(R.id.selected_row);
+        selectedRowContainer = (RelativeLayout) findViewById(R.id.selected_row_container);
+
+//        selectedRow.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                selectedRow.setVisibility(View.GONE);
+//            }
+//        });
+//        nestedScrollView = (NestedScrollView) findViewById(R.id.nested_scroll);
 
 
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
 
-        setTitle(getResources().getString(R.string.select_interest_title));
+//        setTitle(getResources().getString(R.string.select_interest_title));
+        setTitle("");
         setSupportActionBar(toolbar);
 
         mFab.setVisibility(View.GONE);
@@ -116,6 +151,9 @@ public class SelectInterestsActivity extends AppCompatActivity {
         mInterestsRecyclerView.setHasFixedSize(true);
         mInterestsRecyclerView.setLayoutManager(mInterestsGridLayout);
 
+
+//        mInterestsRecyclerView.setNestedScrollingEnabled(false);
+
         Realm realm = Realm.getDefaultInstance();
         interests = new ArrayList<>();
 
@@ -134,13 +172,60 @@ public class SelectInterestsActivity extends AppCompatActivity {
         }
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
         mFab.setVisibility(View.VISIBLE);
+        mInterestsListAdapter.setOnInterestsSelectListener(new InterestsListAdapter.OnInterestsSelectListener() {
+            @Override
+            public void onInterestsSelected(ArrayList<String> selectedChildren, String parentId) {
 
+            }
+
+            @Override
+            public void onInterestExpandRequested(String interestId, int position, int top, int height) {
+                final ArrayList<String> children = new ArrayList<String>();
+                ArrayList<String> parents = new ArrayList<String>();
+
+                parents.add(interestId);
+                int row_pos = position % 3;
+                int row = position / 3;
+                for (int i=1; i<3; i++) {
+                    int pos;
+                    if ((position + i) / 3 > row) {
+                        pos = position + i - 3;
+                        if (interests.size() > pos) parents.add(0, interests.get(pos).getId());
+                    } else {
+                        pos = position + i;
+                        if (interests.size() > pos) parents.add(interests.get(pos).getId());
+                    }
+                }
+
+                Realm realm = Realm.getDefaultInstance();
+                RealmResults<Interest> child_results = realm.where(Interest.class).equalTo("parentId", interestId).findAll();
+                if (child_results != null) {
+                    ArrayList<Interest> children_interests = (ArrayList<Interest>) realm.copyFromRealm(child_results);
+
+                    for (int i=0; i<children_interests.size(); i++) {
+                        children.add(children_interests.get(i).getId());
+                    }
+                }
+                realm.close();
+
+
+                InterestChildrenFragment icf = InterestChildrenFragment.newInstance(interestId,
+                        children, parents, top-titleBarHeight, height);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.city_children_fragment_container, icf)
+                        .commit();
+
+            }
+        });
+
+        toolbar.setBackgroundResource(android.R.color.transparent);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
 
 
         if (fullActivity) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
             actionBar.setDisplayHomeAsUpEnabled(true);
 
             navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -233,11 +318,22 @@ public class SelectInterestsActivity extends AppCompatActivity {
             getCurrentUserReceiver = createGetUserDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(getCurrentUserReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
         }
+        mCLoserLeftNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(navigationView);
+            }
+        });
 
         APIService.getInterests();
+        APIService.getInterests(2);
         createScrollListener();
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 
 
     public class MyCityPageAdapter extends FragmentPagerAdapter {
@@ -327,9 +423,9 @@ public class SelectInterestsActivity extends AppCompatActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
                     if (mFab.getVisibility() != View.GONE) mFab.hide();
-                    visibleItemCount = interestsListLayoutManager.getChildCount();
-                    totalItemCount = interestsListLayoutManager.getItemCount();
-                    firstVisibleItem = interestsListLayoutManager.findFirstVisibleItemPosition();
+                    visibleItemCount = mInterestsGridLayout.getChildCount();
+                    totalItemCount = mInterestsGridLayout.getItemCount();
+                    firstVisibleItem = mInterestsGridLayout.findFirstVisibleItemPosition();
 
                     if (loading) {
                         if (totalItemCount > previousTotal) {

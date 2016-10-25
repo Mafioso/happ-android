@@ -90,7 +90,7 @@ public interface HAPPapi {
     @POST("interests/set/")
     Call<Void> setInterests(@Body List<String> data);
 
-    @GET("cities/{id}/set/")
+    @POST("cities/{id}/set/")
     Call<Void> setCity(@Path("id") String cityId);
 
     @GET("events/favourites/")

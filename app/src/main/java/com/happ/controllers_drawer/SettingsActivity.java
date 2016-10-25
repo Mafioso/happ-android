@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class SettingsActivity extends AppCompatActivity {
             mBtnFaqHelp,
             mBtnTermsOfService,
             mBtnPrivacyPolice;
+    private ImageView mCloseLeftNavigation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
         navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
+        mCloseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
 
         //Buttons
             mBtnProfile = (Button) findViewById(R.id.btn_profile_settings);
@@ -75,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -202,6 +205,13 @@ public class SettingsActivity extends AppCompatActivity {
                 i.putExtra("from_settings", true);
                 startActivity(i);
                 overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+            }
+        });
+
+        mCloseLeftNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(navigationView);
             }
         });
 

@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<tabs>
+    <tab
+        id="@+id/tab_analytics"
+        icon="@drawable/ic_bb_analytics"
+        title="Analytics" />
+    <tab
+        id="@+id/tab_pro_function"
+        icon="@drawable/ic_bb_pro_functions"
+        title="Pro-Functions" />
+    <tab
+        id="@+id/tab_my_events"
+        icon="@drawable/ic_bb_feed"
+        title="My events" />
+    <tab
+        id="@+id/tab_add_event"
+        icon="@drawable/ic_bb_add_event"
+        title="Add event" />
+    <tab
+        id="@+id/tab_chat"
+        icon="@drawable/ic_bb_chat"
+        title="Chat" />
 
-</PreferenceScreen>
+</tabs>

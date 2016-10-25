@@ -7,53 +7,122 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".controllers_drawer.SelectInterestsActivity"
-    android:background="@color/colorPrimary"
+    android:background="@android:color/transparent"
     android:orientation="vertical"
+    android:theme="@style/TransparentActionBar"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/interests_app_bar"
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/toolbar" />
+                <android.support.design.widget.AppBarLayout
+                    android:id="@+id/header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="vertical"
+                    android:padding="0dp"
+                    android:gravity="center_horizontal"
+                    app:elevation="0dp"
+                    android:layout_margin="0dp">
 
-        </android.support.design.widget.AppBarLayout>
+                    <TextView
+                        android:layout_marginTop="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/interests_view_header_hint"
+                        android:textColor="@color/dark38"
+                        android:textSize="14sp"
+                        app:layout_scrollFlags="scroll"/>
 
-        <android.support.v4.widget.NestedScrollView
+                    <TextView
+                        android:id="@+id/header_city_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/interests_view_header_city"
+                        android:textColor="@color/dark87"
+                        android:textSize="18sp"
+                        android:textAllCaps="true"
+                        android:layout_marginTop="4dp"
+                        app:layout_scrollFlags="scroll"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="?attr/borderlessButtonStyle"
+                        android:textSize="16sp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorAccent"
+                        android:textStyle="normal"
+                        android:text="@string/interests_view_select_all"
+                        android:drawableLeft="@drawable/ic_check_all_compat"
+                        android:paddingLeft="24dp"
+                        android:paddingRight="24dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
+                        android:drawablePadding="8dp"
+                        android:layout_marginTop="2dp"
+                        android:gravity="left|center"
+                        app:layout_scrollFlags="scroll"
+                        android:layout_marginBottom="8dp"
+                        />
+
+                </android.support.design.widget.AppBarLayout>
+
+            <!--<android.support.v4.widget.NestedScrollView-->
+                <!--android:id="@+id/nested_scroll"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_below="@+id/header"
+                    android:id="@+id/activity_interests_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/background"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    >
+                </android.support.v7.widget.RecyclerView>
+
+            <!--</android.support.v4.widget.NestedScrollView>-->
+
+
+
+            <include layout="@layout/toolbar"/>
+
+            <!--<android.support.v7.widget.Toolbar-->
+                <!--android:id="@+id/toolbar"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="?attr/actionBarSize"-->
+                <!--android:background="@android:color/transparent"-->
+                <!--android:elevation="0dp" />-->
+
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/ic_done_compat"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="24dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                />
+
+        <FrameLayout
+            android:id="@+id/city_children_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/background_light"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:background="@android:color/transparent">
+        </FrameLayout>
 
-
-        <android.support.v7.widget.RecyclerView
-            android:layout_below="@+id/interests_app_bar"
-            android:id="@+id/activity_interests_rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/background_light">
-        </android.support.v7.widget.RecyclerView>
-
-        </android.support.v4.widget.NestedScrollView>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:fabSize="normal"
-            app:srcCompat="@drawable/ic_done_compat"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="24dp"
-            />
-
-    </android.support.design.widget.CoordinatorLayout>
+        </android.support.design.widget.CoordinatorLayout>
 
     <include layout="@layout/drawer_layout" />
 

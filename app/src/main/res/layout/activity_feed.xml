@@ -11,16 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".controllers_drawer.FeedActivity">
+        tools:context=".controllers_drawer.FeedActivity"
+        android:background="@color/bg_light">
 
         <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/root_layout">
+            android:id="@+id/root_layout"
+            android:background="@color/bg_light">
 
                 <android.support.design.widget.AppBarLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:background="@color/bg_light">
 
                     <include layout="@layout/toolbar"/>
 
@@ -34,11 +37,16 @@
                     android:layout_height="match_parent" />
 
             <com.roughike.bottombar.BottomBar
-                android:id="@+id/bottomBar"
+                android:id="@+id/bottombar_feed"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom"
-                app:bb_tabXmlResource="@xml/bottombar_tabs"/>
+                android:background="@color/bg_light"
+                app:bb_inActiveTabAlpha="0.6"
+                app:bb_activeTabAlpha="1"
+                app:bb_inActiveTabColor="@color/bb_darkBackgroundColor"
+                app:bb_activeTabColor="@color/colorAccent"
+                app:bb_tabXmlResource="@xml/bottombar_feed_tabs"/>
 
         </android.support.design.widget.CoordinatorLayout>
 

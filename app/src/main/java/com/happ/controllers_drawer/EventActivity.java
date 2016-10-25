@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -43,6 +42,8 @@ import com.happ.models.Event;
 import com.happ.models.EventImage;
 import com.happ.models.User;
 
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
+
 import io.realm.Realm;
 import io.realm.RealmList;
 
@@ -76,7 +77,7 @@ public class EventActivity extends AppCompatActivity {
                         mTitle,
                         mVotesCount;
 
-    private ImageView mFavoritesImage;
+    private ImageView mFavoritesImage, mCLoseLeftNavigation;
 
     private LinearLayout mEventWEbSite, mEventEmail;
     private RelativeLayout mEventAuthor;
@@ -86,8 +87,8 @@ public class EventActivity extends AppCompatActivity {
     private BroadcastReceiver didIsFavReceiver;
 
     private boolean isOrg;
-    CollapsingToolbarLayout ctl;
-    private NavigationView navigationMenu, navigationHeader;
+    private CollapsingToolbarLayout ctl;
+    private NavigationView navigationMenu, navigationHeader, navigationView;
 
 
     @Override
@@ -123,7 +124,9 @@ public class EventActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
         navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
+        mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
 
 
         mFab.setVisibility(View.GONE);
@@ -240,6 +243,13 @@ public class EventActivity extends AppCompatActivity {
                     ctl.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
                     isShow = false;
                 }
+            }
+        });
+
+        mCLoseLeftNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mDrawerLayout.closeDrawer(navigationView);
             }
         });
 

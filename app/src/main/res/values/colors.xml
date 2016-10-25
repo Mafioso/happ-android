@@ -3,8 +3,14 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FF681D </color>
+
     <color name="bg_light">#FAFAFA</color>
     <color name="black_alpha_40">#66000000</color>
+
+    <color name="colorElementsToolbar">#9b9b9b</color>
+
+    <color name="rippleAccent">#0fff681d</color>
+    <color name="buttonSave">#FAFAFA</color>
 
     <color name="colorAccent183">#b7ff681d</color>
     <color name="colorAccentDark">#E55D1A</color>
@@ -16,6 +22,7 @@
     <color name="white85">#d9ffffff</color>
     <color name="icon_color_light">#8a000000</color>
     <color name="dark80">#cd000000</color>
+    <color name="dark87">#de000000</color>
     <color name="dark57">#87000000</color>
     <color name="dark38">#61000000</color>
     <color name="dark28">#47000000</color>
@@ -48,6 +55,7 @@
     <color name="dot_light_screen2">#8cf9eb</color>
     <color name="dot_light_screen3">#93c6fd</color>
     <color name="dot_light_screen4">#e4b5fc</color>
+    <color name="background">#fafafa</color>
 
     <array name="array_dot_active">
         <item>@color/dot_light_screen1</item>

@@ -90,7 +90,8 @@ public class SelectCityFragment extends Fragment {
     }
 
     public interface OnCitySelectListener {
-        void onCitySelected(City city);
+        void onCitySelected(City city, float x, float y);
+        void onCancel(float x, float y);
     }
 
 //    @NonNull
@@ -116,7 +117,10 @@ public class SelectCityFragment extends Fragment {
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    clearFragment();
+//                    clearFragment();
+                    float middleX = v.getX() + (v.getWidth()/2);
+                    float middleY = v.getY() + (v.getHeight()/2);
+                    if (listener != null) listener.onCancel(middleX, middleY);
                 }
             });
         } else {
@@ -138,10 +142,10 @@ public class SelectCityFragment extends Fragment {
         mCitiesListAdapter = new CityListAdapter(getContext(), cities);
         mCitiesListAdapter.setOnCityItemSelectListener(new CityListAdapter.SelectCityItemListener() {
             @Override
-            public void onCityItemSelected(City city) {
+            public void onCityItemSelected(City city, float x, float y) {
                 if (fromCityActivity) {
-                    listener.onCitySelected(city);
-                    clearFragment();
+                    listener.onCitySelected(city, x, y);
+//                    clearFragment();
                 } else {
                     selectedCity = city;
                     APIService.setCity(selectedCity.getId());
@@ -238,6 +242,15 @@ public class SelectCityFragment extends Fragment {
         cities = (ArrayList<City>)realm.copyFromRealm(citiesRealmResults);
 
         realm.close();
+
+        if (mCityRecyclerView != null && cities.size() > 0 && mCityRecyclerView.getChildAt(0) != null) {
+            int itemHeight = mCityRecyclerView.getChildAt(0).getHeight();
+            int rvHeight = mCityRecyclerView.getHeight();
+            if (itemHeight * cities.size() < rvHeight) {
+                int nextPage = (cities.size() / interestsPageSize) + 1;
+                APIService.getCities(nextPage, searchText);
+            }
+        }
     }
 
 

@@ -11,6 +11,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
@@ -87,6 +88,8 @@ public class UserActivity extends AppCompatActivity implements
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
+        ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+
 
         mUsername = (EditText) findViewById(R.id.input__user_username);
         mPhoneNumber = (EditText) findViewById(R.id.input_user_phone);
@@ -112,10 +115,6 @@ public class UserActivity extends AppCompatActivity implements
                 }
             }
         });
-
-        ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-        ctl.setExpandedTitleColor(Color.TRANSPARENT);
-
 
         mUsername.setText(App.getCurrentUser().getFullName());
         mEmail.setText(App.getCurrentUser().getEmail());
@@ -266,8 +265,10 @@ public class UserActivity extends AppCompatActivity implements
                 if (verticalOffset == 0) {
                     if (state != State.EXPANDED) {
                         if (fromSettings) {
+                            ctl.setExpandedTitleColor(Color.TRANSPARENT);
                             toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
                         } else {
+                            ctl.setExpandedTitleColor(Color.TRANSPARENT);
                             toolbar.setNavigationIcon(R.drawable.ic_close_white);
                         }
                     }
@@ -275,17 +276,21 @@ public class UserActivity extends AppCompatActivity implements
                 } else if (Math.abs(verticalOffset) >= appBarLayout.getTotalScrollRange()) {
                     if (state != State.COLLAPSED) {
                         if (fromSettings) {
-                            toolbar.setNavigationIcon(R.drawable.ic_right_arrow_dark);
+                            ctl.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorElementsToolbar));
+                            toolbar.setNavigationIcon(R.drawable.ic_right_arrow_grey);
                         } else {
-                            toolbar.setNavigationIcon(R.drawable.ic_close_dark);
+                            ctl.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorElementsToolbar));
+                            toolbar.setNavigationIcon(R.drawable.ic_close_grey);
                         }
                     }
                     state = State.COLLAPSED;
                 } else {
                     if (state != State.IDLE) {
                         if (fromSettings) {
+                            ctl.setExpandedTitleColor(Color.TRANSPARENT);
                             toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
                         } else {
+                            ctl.setExpandedTitleColor(Color.TRANSPARENT);
                             toolbar.setNavigationIcon(R.drawable.ic_close_white);
                         }
                     }

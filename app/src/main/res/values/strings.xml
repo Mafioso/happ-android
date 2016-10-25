@@ -1,8 +1,10 @@
 <resources>
     <!--<string name="HOST">http://happ.westeurope.cloudapp.azure.com/</string>-->
+
     <!--<string name="HOST">http://192.168.0.104:8000/</string>-->
-    <string name="HOST">http://192.168.11.211:8000/</string>
-    <!--<string name="HOST">http://172.20.10.3:8000/</string>-->
+    <!--<string name="HOST">http://192.168.11.211:8000/</string>-->
+
+    <string name="HOST">http://172.20.10.3:8000/</string>
 
 
     <string name="API_URL">api/v1/</string>
@@ -359,6 +361,7 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="empty_city">Empty city</string>
     <string name="click_to_change_city">Click on city name to change it</string>
     <string name="save">save</string>
+
     <string name="push_notifications">Push notifications</string>
     <string name="cities_manager">Cities Manager</string>
     <string name="contact_happ">Contact Happ</string>
@@ -368,6 +371,17 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="warning_for_chp">Leave fields blank if you want to leave old password</string>
+    <string name="interests_view_header_hint">Select Interests for</string>
+    <string name="interests_view_header_city">City Name</string>
+    <string name="interests_view_select_all">Select All Interests</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="interest_placeholder">Default child interest</string>
+    <string name="show_events_by_status">Show events by status</string>
+    <string name="filter_active">Activ</string>
+    <string name="filter_pending">Pending</string>
+    <string name="filter_finished">Finished</string>
+    <string name="customize_my_events">Customize my events</string>
 
 
 </resources>

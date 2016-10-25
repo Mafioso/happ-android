@@ -33,6 +33,7 @@ import com.happ.controllers_drawer.FeedActivity;
 import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.transitionseverywhere.TransitionManager;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 

@@ -19,14 +19,13 @@
             android:layout_height="wrap_content"
             android:theme="@style/AppBar">
 
-            <android.support.design.widget.CollapsingToolbarLayout
+            <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/event_collapsing_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                app:collapsedTitleTextAppearance="@style/CollapsedAppBar"
                 app:contentScrim="@color/background_title_event"
-                android:fitsSystemWindows="true">
+                app:maxLines="3">
 
                 <android.support.v4.view.ViewPager
                     android:layout_width="match_parent"
@@ -45,7 +44,7 @@
                     android:layout_height="90dp"
                     app:layout_collapseMode="pin" />
 
-            </android.support.design.widget.CollapsingToolbarLayout>
+            </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
 
