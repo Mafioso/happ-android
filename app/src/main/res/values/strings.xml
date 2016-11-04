@@ -3,10 +3,7 @@
 
     <!--<string name="HOST">http://192.168.0.104:8000/</string>-->
     <!--<string name="HOST">http://192.168.11.211:8000/</string>-->
-
-    <string name="HOST">http://172.20.10.3:8000/</string>
-
-
+    <string name="HOST">http://192.168.43.16:8000/</string>
     <string name="API_URL">api/v1/</string>
     <string name="facebook_app_id">1284244154932616</string>
     <string name="fb_login_protocol_scheme">fb1284244154932616</string>
@@ -121,7 +118,7 @@
     <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
 
     <!-- END -->
-    <string name="login_facebook">Login in with Facebook</string>
+    <string name="login_facebook">Login with Facebook</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="organizer_rules">Organizer rules</string>
     <string name="privacy_policy_text">
@@ -382,8 +379,9 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="interest_placeholder">Default child interest</string>
     <string name="show_events_by_status">Show events by status</string>
     <string name="filter_active">Activ</string>
-    <string name="filter_pending">Pending</string>
+    <string name="filter_inactive">Inactive</string>
     <string name="filter_finished">Finished</string>
+    <string name="filter_on_review">On Review</string>
     <string name="customize_my_events">Customize my events</string>
     <string name="event_name">Event Name</string>
     <string name="event_currency">Currency</string>
@@ -392,6 +390,9 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="event_phone">Phone</string>
     <string name="tap_here_description">Tap here to add description</string>
     <string name="continuing_event">Continuing Event</string>
+    <string name="tap_to_add">Tap to add a photo</string>
+    <string name="create_account">Create Account</string>
+    <string name="title_activity_maps">Map</string>
 
 
 </resources>

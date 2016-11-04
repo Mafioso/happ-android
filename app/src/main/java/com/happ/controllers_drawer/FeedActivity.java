@@ -46,6 +46,7 @@ import com.happ.controllers.UserActivity;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.ExploreEventsFragment;
 import com.happ.fragments.FavoriteFeedFragment;
+import com.happ.fragments.MapFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.City;
 import com.happ.models.Event;
@@ -99,6 +100,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private final int TAB_EVERYTHING = FragNavController.TAB1;
     private final int TAB_FAVORITES = FragNavController.TAB2;
     private final int TAB_EXPLORE = FragNavController.TAB3;
+    private final int TAB_MAP = FragNavController.TAB4;
 
     private BroadcastReceiver userRequestDoneReceiver;
     private BroadcastReceiver didUpvoteReceiver;
@@ -310,12 +312,13 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 //        });
 
 
-        ArrayList<Fragment> fragments = new ArrayList<>(3);
+        ArrayList<Fragment> fragments = new ArrayList<>(4);
 
         //add fragments to list
         fragments.add(EverythingFeedFragment.newInstance());
         fragments.add(FavoriteFeedFragment.newInstance());
         fragments.add(ExploreEventsFragment.newInstance());
+        fragments.add(MapFragment.newInstance());
 
         fragNavController = new FragNavController(getSupportFragmentManager(),R.id.feed_container,fragments);
 
@@ -328,8 +331,8 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
                         fragNavController.switchTab(TAB_EXPLORE);
                         break;
                     case R.id.tab_map:
-
-                        Toast.makeText(FeedActivity.this, "TAB_MAP", Toast.LENGTH_SHORT).show();
+                        fragNavController.switchTab(TAB_MAP);
+//                        Toast.makeText(FeedActivity.this, "TAB_MAP", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.tab_feed:
                         fragNavController.switchTab(TAB_EVERYTHING);

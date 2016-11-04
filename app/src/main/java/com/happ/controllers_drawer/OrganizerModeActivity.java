@@ -53,16 +53,12 @@ public class OrganizerModeActivity extends AppCompatActivity {
     private Menu menu;
     private DrawerLayout mDrawerLayout;
     private NavigationView navigationMenu, navigationHeader, navigationViewRightOrg, navigationView;
-
     private SharedPreferences sPref;
     final String FIRST_CREATE_EVENT = "first_create_event";
-
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
-
     private BottomBar mBottomBar;
     private FragNavController fragNavController;
-
     private ImageView mCloseRightNavigation, mCLoserLeftNavigation;
 
     private final int TAB_MY_EVENTS = FragNavController.TAB1;
@@ -149,7 +145,6 @@ public class OrganizerModeActivity extends AppCompatActivity {
         cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
         mDrawerCityFragment.setAdapter(cityPageAdapter);
 
-
         ((CheckBox) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -173,7 +168,6 @@ public class OrganizerModeActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawer(navigationView);
             }
         });
-
 
 
         ArrayList<Fragment> fragments = new ArrayList<>(1);

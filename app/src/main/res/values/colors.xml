@@ -70,4 +70,7 @@
         <item>@color/dot_dark_screen3</item>
         <item>@color/dot_dark_screen4</item>
     </array>
+
+
+    <color name="fb_bg">#cc3b5898</color>
 </resources>

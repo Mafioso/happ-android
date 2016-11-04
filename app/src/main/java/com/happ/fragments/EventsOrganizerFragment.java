@@ -70,7 +70,6 @@ public class EventsOrganizerFragment extends Fragment {
         final View view = inflater.inflate(R.layout.org_events_fragment, container, false);
         final Activity activity = getActivity();
 
-
         orgEventsRecyclerView = (RecyclerView) view.findViewById(R.id.org_events_list_view);
 
         eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
@@ -120,15 +119,11 @@ public class EventsOrganizerFragment extends Fragment {
         return view;
     }
 
-
-
-
     @Override
     public void onResume() {
         super.onResume();
         updateEventsList();
     }
-
 
     protected void updateEventsList() {
         Realm realm = Realm.getDefaultInstance();
@@ -144,7 +139,6 @@ public class EventsOrganizerFragment extends Fragment {
         ((OrgEventsListAdapter) orgEventsRecyclerView.getAdapter()).updateData(orgEvents);
         realm.close();
     }
-
 
     private BroadcastReceiver createEventsRequestDoneReceiver() {
         return new BroadcastReceiver() {

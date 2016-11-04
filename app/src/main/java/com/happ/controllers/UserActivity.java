@@ -162,7 +162,7 @@ public class UserActivity extends AppCompatActivity implements
 //            @Override
 //            public void onClick(View view) {
 //                FragmentManager fm = getSupportFragmentManager();
-//                ChangePasswordFragment changePasswordFragment = ChangePasswordFragment.newInstance();
+//                AboutFragment changePasswordFragment = AboutFragment.newInstance();
 //                changePasswordFragment.show(fm, "fragment_change_password");
 //            }
 //        });

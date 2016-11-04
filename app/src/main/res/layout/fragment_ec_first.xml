@@ -12,22 +12,20 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="24dp">
 
             <RelativeLayout
-                android:id="@+id/rl_ec_images"
+                android:id="@+id/container_ec_images"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:background="@color/dark12">
 
-                <ImageView
-                    android:id="@+id/ll_bg_images"
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/ec_image_rv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:background="@color/colorAccent"
                     android:layout_above="@+id/tv_images_warning"/>
-
                 <TextView
                     android:id="@+id/tv_images_warning"
                     android:layout_width="match_parent"
@@ -41,7 +39,7 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_below="@+id/rl_ec_images"
+                android:layout_below="@+id/container_ec_images"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="24dp"

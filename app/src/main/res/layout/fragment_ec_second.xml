@@ -14,7 +14,8 @@
             android:layout_height="match_parent"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="24dp">
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp">
 
             <TextView
                 android:id="@+id/tv_ec_event_date"
@@ -182,15 +183,15 @@
                     android:layout_toLeftOf="@+id/switch_ec_continuing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16dp"
-                    android:textColor="@string/start" />
+                    android:textSize="16sp"
+                    android:text="@string/continuing_event" />
+
                 <TextView
                     android:layout_below="@+id/tv_ec_continuing_event"
                     android:layout_toLeftOf="@+id/switch_ec_continuing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="2"
-                    android:lines="2"
                     android:text="New visitors can enter event even if it already started"/>
 
                 <android.support.v7.widget.SwitchCompat

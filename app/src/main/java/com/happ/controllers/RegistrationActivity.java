@@ -8,13 +8,11 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -55,13 +54,27 @@ public class RegistrationActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
 
     private EditText mUsername, mPassword, mRepeatPassword;
-    private TextInputLayout mInputLayoutUsername, mInputLayoutRepeatPassword, mInputLayoutPassword;
-    private FloatingActionButton mSignUpFab;
+//    private FloatingActionButton mSignUpFab;
     private BroadcastReceiver signUpRequestDoneReceiver;
     private BroadcastReceiver getSignUpRequestFail;
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
     private Button facebookButton;
+    private RelativeLayout mRLbg;
+    private Toolbar toolbar;
+
+    private int[] login_bg = {
+            R.drawable.login_bg_1,
+            R.drawable.login_bg_2,
+            R.drawable.login_bg_3,
+            R.drawable.login_bg_4,
+            R.drawable.login_bg_5,
+            R.drawable.login_bg_6,
+            R.drawable.login_bg_7,
+            R.drawable.login_bg_8,
+            R.drawable.login_bg_9,
+            R.drawable.login_bg_10,
+    };
 
     boolean isKeyboarShown = false;
     ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
@@ -137,8 +150,61 @@ public class RegistrationActivity extends AppCompatActivity {
 
         setContentView(R.layout.registration_form);
 
+        int idx = new Random().nextInt(login_bg.length);
+        int randomBg = login_bg[idx];
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        setTitle("");
+
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_rigth_arrow);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        }
+
+
+        mRLbg = (RelativeLayout) findViewById(R.id.rl_registration_bg);
         facebookButton = (Button) findViewById(R.id.button_fb_login);
+        mUsername = (EditText) findViewById(R.id.input_signup_username);
+        mPassword = (EditText) findViewById(R.id.input_signup_password);
+        mRepeatPassword = (EditText) findViewById(R.id.input_signup_repeat_password);
+//        mSignUpFab = (FloatingActionButton) findViewById(R.id.signup_fab);
+        mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_signup);
+        mFormLayout = (RelativeLayout) findViewById(R.id.form_layout);
+
+
+        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(0);
+        }
+
+        mUsername.addTextChangedListener(mWatcher);
+        mPassword.addTextChangedListener(mWatcher);
+        mRepeatPassword.addTextChangedListener(mWatcher);
+
+//        mSignUpFab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if (mPassword.getText().toString().equals(mRepeatPassword.getText().toString())) {
+//                    hideSoftKeyboard(RegistrationActivity.this, v);
+//                    mSignUpFab.setVisibility(View.INVISIBLE);
+//                    mProgressBar.setVisibility(View.VISIBLE);
+//                    APIService.doSignUp(mUsername.getText().toString(), mPassword.getText().toString());
+//                } else {
+//                    Toast.makeText(RegistrationActivity.this, "Пароли не совпадают", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
+
         facebookButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -150,83 +216,25 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        if (signUpRequestDoneReceiver == null) signUpRequestDoneReceiver = createSignUpSuccessReceiver();
-        if (currentUserDoneReceiver == null) currentUserDoneReceiver = createGetCurrentUserSuccessReceiver();
-
-        if (getSignUpRequestFail == null) getSignUpRequestFail = createSignUpFailureReceiver();
-        if (currentCityDoneReceiver == null) currentCityDoneReceiver = createGetCurrentCitySuccessReceiver();
-
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(signUpRequestDoneReceiver, new IntentFilter(BroadcastIntents.SIGNUP_REQUEST_OK));
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(getSignUpRequestFail, new IntentFilter(BroadcastIntents.SIGNUP_REQUEST_FAIL));
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentUserDoneReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
-
-
-        mUsername = (EditText) findViewById(R.id.input_signup_username);
-        mPassword = (EditText) findViewById(R.id.input_signup_password);
-        mRepeatPassword = (EditText) findViewById(R.id.input_signup_repeat_password);
-        mInputLayoutUsername = (TextInputLayout) findViewById(R.id.input_layout_signup_username);
-        mInputLayoutRepeatPassword = (TextInputLayout) findViewById(R.id.input_layout_signup_repeat_password);
-        mInputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_signup_password);
-//        mPWVisibility = (ImageButton) findViewById(R.id.btn_signup_pw_visibility);
-//        mPWVisibilityOff = (ImageButton) findViewById(R.id.btn_signup_pw_visibility_off);
-//        mPWRVisibility = (ImageButton) findViewById(R.id.btn_signup_pwr_visibility);
-//        mPWRVisibilityOff = (ImageButton) findViewById(R.id.btn_signup_pwr_visibility_off);
-//        mPWRVisibilityOff.setVisibility(View.GONE);
-//        mPWVisibilityOff.setVisibility(View.GONE);
-        mSignUpFab = (FloatingActionButton) findViewById(R.id.signup_fab);
-        mSignUpFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                APIService.doSignUp(mUsername.getText().toString(), mPassword.getText().toString());
-            }
-        });
-        signUpRequestDoneReceiver = createSignUpSuccessReceiver();
-        mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_signup);
-        mFormLayout = (RelativeLayout) findViewById(R.id.form_layout);
-
-        checkValidation();
-
-        mUsername.addTextChangedListener(mWatcher);
-        mPassword.addTextChangedListener(mWatcher);
-        mRepeatPassword.addTextChangedListener(mWatcher);
-
-        mSignUpFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (mPassword.getText().toString().equals(mRepeatPassword.getText().toString())) {
-                    hideSoftKeyboard(RegistrationActivity.this, v);
-                    mSignUpFab.setVisibility(View.INVISIBLE);
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    APIService.doSignUp(mUsername.getText().toString(), mPassword.getText().toString());
-                } else {
-                    Toast.makeText(RegistrationActivity.this, "Пароли не совпадают", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        toolbar.getBackground().setAlpha(0);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setElevation(0);
-        }
-        setTitle("");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                RegistrationActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
-            }
-        });
-
+//        checkValidation();
         setListenerToRootView();
+
+        if (signUpRequestDoneReceiver == null) {
+            signUpRequestDoneReceiver = createSignUpSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(signUpRequestDoneReceiver, new IntentFilter(BroadcastIntents.SIGNUP_REQUEST_OK));
+        }
+        if (currentUserDoneReceiver == null) {
+            currentUserDoneReceiver = createGetCurrentUserSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentUserDoneReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+        }
+        if (getSignUpRequestFail == null) {
+            getSignUpRequestFail = createSignUpFailureReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(getSignUpRequestFail, new IntentFilter(BroadcastIntents.SIGNUP_REQUEST_FAIL));
+        }
+        if (currentCityDoneReceiver == null) {
+            currentCityDoneReceiver = createGetCurrentCitySuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
+        }
     }
 
     public void setListenerToRootView() {
@@ -271,17 +279,17 @@ public class RegistrationActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
-    private void checkValidation() {
-
-        if ((TextUtils.isEmpty(mUsername.getText()))
-                || (TextUtils.isEmpty(mPassword.getText()))
-                || (TextUtils.isEmpty(mRepeatPassword.getText()))
-                )
-            mSignUpFab.setVisibility(View.INVISIBLE);
-        else
-            mSignUpFab.setVisibility(View.VISIBLE);
-
-    }
+//    private void checkValidation() {
+//
+//        if ((TextUtils.isEmpty(mUsername.getText()))
+//                || (TextUtils.isEmpty(mPassword.getText()))
+//                || (TextUtils.isEmpty(mRepeatPassword.getText()))
+//                )
+//            mSignUpFab.setVisibility(View.INVISIBLE);
+//        else
+//            mSignUpFab.setVisibility(View.VISIBLE);
+//
+//    }
 
     TextWatcher mWatcher = new TextWatcher() {
 
@@ -289,7 +297,7 @@ public class RegistrationActivity extends AppCompatActivity {
         public void onTextChanged(CharSequence s, int start, int before,
                                   int count) {
             // TODO Auto-generated method stub
-            checkValidation();
+//            checkValidation();
         }
 
         @Override
@@ -327,7 +335,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
-                mSignUpFab.setVisibility(View.VISIBLE);
+//                mSignUpFab.setVisibility(View.VISIBLE);
                 Toast.makeText(RegistrationActivity.this, "Wrong Username or Password", Toast.LENGTH_LONG).show();
             }
         };
@@ -377,7 +385,6 @@ public class RegistrationActivity extends AppCompatActivity {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(signUpRequestDoneReceiver);
             signUpRequestDoneReceiver = null;
         }
-
         if (getSignUpRequestFail != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(getSignUpRequestFail);
             getSignUpRequestFail = null;

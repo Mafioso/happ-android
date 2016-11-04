@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -33,7 +34,8 @@ import com.happ.controllers_drawer.FeedActivity;
 import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
-import com.transitionseverywhere.TransitionManager;
+
+import java.util.Random;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -55,7 +57,22 @@ public class LoginActivity extends AppCompatActivity {
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     private RelativeLayout mFormLayout;
     private MaterialProgressBar mProgressBar;
+    private RelativeLayout mRLbg;
     private int[] mInsets = new int[3];
+
+    private int[] login_bg = {
+            R.drawable.login_bg_1,
+            R.drawable.login_bg_2,
+            R.drawable.login_bg_3,
+            R.drawable.login_bg_4,
+            R.drawable.login_bg_5,
+            R.drawable.login_bg_6,
+            R.drawable.login_bg_7,
+            R.drawable.login_bg_8,
+            R.drawable.login_bg_9,
+            R.drawable.login_bg_10,
+    };
+
 
     private BroadcastReceiver loginRequestDoneReceiver;
     private BroadcastReceiver loginFailedReceiver;
@@ -63,18 +80,18 @@ public class LoginActivity extends AppCompatActivity {
     private BroadcastReceiver currentCityDoneReceiver;
     private PrefManager prefManager;
 
-    @Override
-    public void onBackPressed() {
-//        super.onBackPressed();
-    }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        int idx = new Random().nextInt(login_bg.length);
+        int randomBg = login_bg[idx];
+
         setContentView(R.layout.login_form);
 
+        mRLbg = (RelativeLayout) findViewById(R.id.rl_login_bg);
+        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setEnterTransition(new Explode());
@@ -83,32 +100,37 @@ public class LoginActivity extends AppCompatActivity {
 
         mEmail = (EditText) findViewById(R.id.input_login_email);
         mPassword = (EditText) findViewById(R.id.input_login_password);
+
         mButtonFablogin = (FloatingActionButton) findViewById(R.id.login_fab);
         mButtonFablogin.setVisibility(View.GONE);
         mButtonRegistration = (Button) findViewById(R.id.btn_registration_page);
         mImageLogo = (ImageView) findViewById(R.id.img_login_logo);
-
-//        mInputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_login_email);
-//        mInputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_login_password);
-//        mVisibility = (ImageButton) findViewById(R.id.btn_login_visibility);
-//        mVisibilityOff = (ImageButton) findViewById(R.id.btn_login_visibility_off);
-//        mVisibilityOff.setVisibility(View.GONE);
-
         mRegisterView = (LinearLayout) findViewById(R.id.ll_footer);
         mFormLayout = (RelativeLayout) findViewById(R.id.form_layout2);
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_login);
         mProgressBar.setVisibility(View.GONE);
 
 
-        if (loginRequestDoneReceiver == null) loginRequestDoneReceiver = createLoginSuccessReceiver();
-        if (loginFailedReceiver == null) loginFailedReceiver = createLoginFailureReceiver();
-        if (currentUserDoneReceiver == null) currentUserDoneReceiver = createGetCurrentUserSuccessReceiver();
-        if (currentCityDoneReceiver == null) currentCityDoneReceiver = createGetCurrentCitySuccessReceiver();
+        if (loginRequestDoneReceiver == null) {
+            loginRequestDoneReceiver = createLoginSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginRequestDoneReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_OK));
+        }
 
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginRequestDoneReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_OK));
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginFailedReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_FAIL));
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentUserDoneReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
-        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
+        if (loginFailedReceiver == null) {
+            loginFailedReceiver = createLoginFailureReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginFailedReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_FAIL));
+        }
+
+        if (currentUserDoneReceiver == null) {
+            currentUserDoneReceiver = createGetCurrentUserSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentUserDoneReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+        }
+
+        if (currentCityDoneReceiver == null) {
+            currentCityDoneReceiver = createGetCurrentCitySuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
+        }
+
 
         checkValidation();
 
@@ -128,14 +150,16 @@ public class LoginActivity extends AppCompatActivity {
         mButtonRegistration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btn_click_registration_page(v);
+                Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
             }
         });
 
         setListenerToRootView();
 
     }
-
 
 
 //    private void isLoggedIn() {
@@ -214,24 +238,6 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     };
-
-    public void btn_click_registration_page(View view) {
-        Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
-    }
-//
-//    public void btn_click_login_visibility(View view) {
-//        mVisibilityOff.setVisibility(View.VISIBLE);
-//        mVisibility.setVisibility(View.GONE);
-//        mPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-//    }
-//
-//    public void btn_click_login_visibility_off(View view) {
-//        mVisibility.setVisibility(View.VISIBLE);
-//        mVisibilityOff.setVisibility(View.GONE);
-//        mPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-//    }
 
     private BroadcastReceiver createLoginSuccessReceiver() {
         return new BroadcastReceiver() {

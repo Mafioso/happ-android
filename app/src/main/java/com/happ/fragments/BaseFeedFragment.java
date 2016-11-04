@@ -36,7 +36,6 @@ public class BaseFeedFragment extends Fragment {
     private int previousTotal = 0;
     private int visibleThreshold;
 
-
     public static BaseFeedFragment newInstance() {
         return new BaseFeedFragment();
     }
@@ -44,14 +43,11 @@ public class BaseFeedFragment extends Fragment {
     public BaseFeedFragment() {
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
         eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
-
     }
 
     @Nullable
@@ -91,7 +87,6 @@ public class BaseFeedFragment extends Fragment {
 
         createScrollListener();
 
-
         return view;
     }
 
@@ -119,6 +114,7 @@ public class BaseFeedFragment extends Fragment {
 
                         getEvents(nextPage, false);
                     }
+
                 }
 
                 super.onScrolled(recyclerView, dx, dy);
@@ -126,7 +122,7 @@ public class BaseFeedFragment extends Fragment {
         });
     }
 
-
     protected void getEvents(int page, boolean favs) {
+
     }
 }

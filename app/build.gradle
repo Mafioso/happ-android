@@ -11,14 +11,16 @@ android {
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+
         vectorDrawables.useSupportLibrary = "true"
+        multiDexEnabled = "true"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            resValue "string", "HOST", "http://happ.westeurope.cloudapp.azure.com/"
-            resValue "string", "HOST", "http://192.168.0.104:8000/"
+            resValue "string", "HOST", "http://192.168.43.16:8000/"
         }
     }
 }
@@ -31,13 +33,11 @@ dependencies {
     }
 
 //    compile 'com.wdullaer:materialdatetimepicker:2.5.0'
+//    compile 'com.google.android.gms:play-services-appindexing:9.6.1'
     
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
 
-    // JSON Web Token
-    
-    
-    
-    // Ripple
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
     compile 'com.android.support:palette-v7:24.2.1'
@@ -54,24 +54,20 @@ dependencies {
     compile 'net.opacapp:multiline-collapsingtoolbar:1.2.2'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.turingtechnologies.materialscrollbar:lib:10.1.2'
-//    compile 'com.google.android.gms:play-services-appindexing:9.6.1'
     compile 'me.zhanghai.android.materialprogressbar:library:1.1.7'
     compile 'io.jsonwebtoken:jjwt:0.6.0'
     compile 'org.jetbrains:annotations-java5:15.0'
     compile 'com.facebook.android:facebook-android-sdk:4.15.0'
     compile 'com.roughike:bottom-bar:2.0.2'
     compile 'com.ncapdevi:frag-nav:1.0.3'
-//  Blur
     compile 'jp.wasabeef:blurry:2.0.3'
-
-//  Swith
     compile 'info.hoang8f:android-segmented:1.0.6'
-
     compile 'com.github.ozodrukh:RippleDrawable:2.0.0'
     compile 'com.andkulikov:transitionseverywhere:1.6.9'
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:1.10.19'
-
+    compile 'me.relex:circleindicator:1.2.2@aar'
+    compile 'com.google.android.gms:play-services-maps:9.8.0'
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
+    compile 'com.google.android.gms:play-services:9.8.0'
 }

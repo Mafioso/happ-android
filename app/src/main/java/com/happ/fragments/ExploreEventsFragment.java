@@ -12,7 +12,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,7 +40,6 @@ public class ExploreEventsFragment extends Fragment {
     private ArrayList<Event> events;
     private ExploreListAdapter mExploreListAdapter;
 
-    private LinearLayoutManager mExploreEventLayoutManager;
     private GridLayoutManager mExploreEventGridLayoutManager;
 
     private int interestsPageSize;
@@ -78,8 +76,6 @@ public class ExploreEventsFragment extends Fragment {
         mExploreRecyclerView.setHasFixedSize(true);
         mExploreRecyclerView.setLayoutManager(mExploreEventGridLayoutManager);
 
-//        mExploreEventLayoutManager = new LinearLayoutManager(activity);
-//        mExploreRecyclerView.setLayoutManager(mExploreEventLayoutManager);
         events = new ArrayList<>();
 
         mExploreListAdapter = new ExploreListAdapter(activity, events);
@@ -119,8 +115,8 @@ public class ExploreEventsFragment extends Fragment {
 
     protected void updateExploreEvents() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).findAll();
-        events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
+        RealmResults<Event> eventRealmResults = realm.where(Event.class).findAll();
+        events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
         ((ExploreListAdapter)mExploreRecyclerView.getAdapter()).updateData(events);
         realm.close();
     }
@@ -131,9 +127,9 @@ public class ExploreEventsFragment extends Fragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
 
-                    visibleItemCount = mExploreEventLayoutManager.getChildCount();
-                    totalItemCount = mExploreEventLayoutManager.getItemCount();
-                    firstVisibleItem = mExploreEventLayoutManager.findFirstVisibleItemPosition();
+                    visibleItemCount = mExploreEventGridLayoutManager.getChildCount();
+                    totalItemCount = mExploreEventGridLayoutManager.getItemCount();
+                    firstVisibleItem = mExploreEventGridLayoutManager.findFirstVisibleItemPosition();
 
                     if (loading) {
                         if (totalItemCount > previousTotal) {

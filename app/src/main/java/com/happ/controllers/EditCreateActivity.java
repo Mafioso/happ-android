@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,9 +21,11 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.EventImagesSwipeAdapter;
 import com.happ.controllers_drawer.EventActivity;
+import com.happ.fragments.First_EC_Fragment;
+import com.happ.fragments.Second_EC_Fragment;
 import com.happ.models.Event;
 
-import io.realm.Realm;
+import me.relex.circleindicator.CircleIndicator;
 
 
 /**
@@ -30,6 +35,7 @@ public class EditCreateActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private ViewPager mViewPager;
+    private FragmentPagerAdapter adapterViewPager;
 
     private Event event;
     private String eventId;
@@ -42,16 +48,6 @@ public class EditCreateActivity extends AppCompatActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        final Intent intent = getIntent();
-        eventId = intent.getStringExtra("event_id");
-        if (eventId != null) {
-            Realm realm = Realm.getDefaultInstance();
-            event = realm.where(Event.class).equalTo("id", eventId).findFirst();
-            event = realm.copyFromRealm(event);
-            realm.close();
-        } else {
-            event = new Event();
-        }
         setContentView(R.layout.activity_edit_create);
 
         if (eventId == null) {
@@ -60,9 +56,13 @@ public class EditCreateActivity extends AppCompatActivity {
             setTitle(getString(R.string.edit_event));
         }
 
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPager = (ViewPager) findViewById(R.id.ec_viewpager);
+
+        CircleIndicator indicator = (CircleIndicator) findViewById(R.id.ec_indicator);
+        adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(adapterViewPager);
+        indicator.setViewPager(mViewPager);
 
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_right_arrow_grey);
@@ -73,9 +73,22 @@ public class EditCreateActivity extends AppCompatActivity {
             }
         });
 
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+//                Toast.makeText(EditCreateActivity.this, "Selected page position: " + position, Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
 //        mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
 //        mScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
@@ -218,6 +231,43 @@ public class EditCreateActivity extends AppCompatActivity {
         if (saveDoneReceiver == null) {
             saveDoneReceiver = createSaveDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(saveDoneReceiver, new IntentFilter(BroadcastIntents.EVENTEDIT_REQUEST_OK));
+        }
+
+    }
+
+
+    public static class MyPagerAdapter extends FragmentPagerAdapter {
+        private static int NUM_ITEMS = 2;
+
+        public MyPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        // Returns total number of pages
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        // Returns the fragment to display for that page
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0: // Fragment # 0 - This will show FirstFragment
+                    return First_EC_Fragment.newInstance();
+                case 1: // Fragment # 0 - This will show FirstFragment different title
+                    return Second_EC_Fragment.newInstance();
+//                case 2: // Fragment # 1 - This will show SecondFragment
+//                    return SecondFragment.newInstance(2, "Page # 3");
+                default:
+                    return null;
+            }
+        }
+
+        // Returns the page title for the top indicator
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return "Page " + position;
         }
 
     }

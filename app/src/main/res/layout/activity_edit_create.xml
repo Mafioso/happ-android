@@ -1,7 +1,7 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include layout="@layout/toolbar"/>
 
@@ -9,6 +9,31 @@
         android:id="@+id/ec_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar"/>
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/ec_indicator"/>
+
+    <me.relex.circleindicator.CircleIndicator
+        android:id="@+id/ec_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:ci_drawable="@drawable/ic_indicator_selected"
+        app:ci_drawable_unselected="@drawable/ic_indicator_un_selected"
+        android:layout_above="@+id/btn_editcreate_save"/>
+
+
+    <Button
+        android:id="@+id/btn_editcreate_save"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        style="?attr/borderlessButtonStyle"
+        android:textColor="@color/colorAccent"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_light"
+        android:text="@string/save"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        />
 
 </RelativeLayout>

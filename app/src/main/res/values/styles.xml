@@ -90,7 +90,7 @@
         <item name="colorControlActivated">@color/colorAccent</item>
     </style>
 
-    <style name="CreateScreenEditText" parent="TextAppearance.AppCompat">
+    <style name="DarkStyleEditText" parent="TextAppearance.AppCompat">
         <!-- Hint action_navigation_item_text_color and label action_navigation_item_text_color in FALSE state -->
         <item name="android:textColor">@color/dark57</item>
         <item name="android:textColorHint">@color/dark38</item>
@@ -99,6 +99,17 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlNormal">@color/dark38</item>
         <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
+    <style name="DarkStyleEditText2" parent="TextAppearance.AppCompat">
+        <!-- Hint action_navigation_item_text_color and label action_navigation_item_text_color in FALSE state -->
+        <item name="android:textColor">@color/dark57</item>
+        <item name="android:textColorHint">@color/dark38</item>
+        <item name="android:textSize">16sp</item>
+        <!-- Label action_navigation_item_text_color in TRUE state and bar action_navigation_item_text_color FALSE and TRUE State -->
+        <item name="colorAccent">@color/dark57</item>
+        <item name="colorControlNormal">@color/dark57</item>
+        <item name="colorControlActivated">@color/dark57</item>
     </style>
 
     <style name="SettingsTypeText">
