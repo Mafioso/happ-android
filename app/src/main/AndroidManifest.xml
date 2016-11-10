@@ -88,6 +88,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".controllers.EventMapActivity"/>
         <activity android:name=".controllers_drawer.OrganizerModeActivity" />
 
         <service

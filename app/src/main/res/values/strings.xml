@@ -3,7 +3,9 @@
 
     <!--<string name="HOST">http://192.168.0.104:8000/</string>-->
     <!--<string name="HOST">http://192.168.11.211:8000/</string>-->
+    <!--<string name="HOST">http://192.168.43.16:8000/</string>-->
     <string name="HOST">http://192.168.43.16:8000/</string>
+
     <string name="API_URL">api/v1/</string>
     <string name="facebook_app_id">1284244154932616</string>
     <string name="fb_login_protocol_scheme">fb1284244154932616</string>
@@ -393,6 +395,7 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="tap_to_add">Tap to add a photo</string>
     <string name="create_account">Create Account</string>
     <string name="title_activity_maps">Map</string>
+    <string name="go_to_event_page">Go to Event Page</string>
 
 
 </resources>

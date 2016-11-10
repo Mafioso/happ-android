@@ -86,8 +86,7 @@
                         android:paddingTop="24dp"
                         android:paddingBottom="16dp"
                         android:paddingRight="24dp"
-                        android:paddingLeft="24dp"
-                        android:visibility="gone">
+                        android:paddingLeft="24dp">
 
                         <LinearLayout
                             android:layout_alignParentLeft="true"

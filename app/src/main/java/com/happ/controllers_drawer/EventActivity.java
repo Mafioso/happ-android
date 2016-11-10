@@ -36,6 +36,7 @@ import com.happ.R;
 import com.happ.Typefaces;
 import com.happ.adapters.EventImagesSwipeAdapter;
 import com.happ.controllers.EditCreateActivity;
+import com.happ.controllers.EventMapActivity;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Event;
@@ -65,7 +66,6 @@ public class EventActivity extends AppCompatActivity {
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
 
-
     private TextView    mWebSite,
                         mEmail,
                         mPlace,
@@ -80,6 +80,8 @@ public class EventActivity extends AppCompatActivity {
     private ImageView mFavoritesImage, mCLoseLeftNavigation;
 
     private LinearLayout mEventWEbSite, mEventEmail;
+    private LinearLayout mCirclePlace;
+
     private RelativeLayout mEventAuthor;
     private Typeface tfcs;
 
@@ -112,6 +114,7 @@ public class EventActivity extends AppCompatActivity {
         mWebSite = (TextView) findViewById(R.id.event_website);
         mEventWEbSite = (LinearLayout) findViewById(R.id.event_website_form);
         mEventEmail = (LinearLayout) findViewById(R.id.event_email_form);
+        mCirclePlace = (LinearLayout) findViewById(R.id.ll_place);
         mPrice = (TextView) findViewById(R.id.event_price);
         mStartDate = (TextView)findViewById(R.id.event_start_date);
         mEndDate = (TextView)findViewById(R.id.event_end_date);
@@ -141,6 +144,14 @@ public class EventActivity extends AppCompatActivity {
             });
         }
 
+        mCirclePlace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(EventActivity.this, EventMapActivity.class);
+                i.putExtra("event_id_for_map", eventId);
+                startActivity(i);
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setEnterTransition(new Explode());

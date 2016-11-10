@@ -3,17 +3,25 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="38dp"
-    android:id="@+id/llMarker">
+    android:id="@+id/llMarker"
+    android:layout_margin="16dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingRight="2dp"
+        android:layout_height="match_parent"
+        android:paddingRight="16dp"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:paddingLeft="8dp"
+        android:paddingLeft="6dp"
         android:background="@drawable/marker_bg">
 
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_event_map"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/avatar" />
 
         <TextView
             android:id="@+id/tv_map_event_title"
@@ -24,16 +32,10 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:textColor="@color/white70"
+            android:layout_toRightOf="@+id/iv_event_map"
             android:text="Lets make cookies"
-            android:layout_alignParentLeft="true"/>
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginLeft="8dp"
-            android:src="@drawable/avatar"
-            android:layout_toRightOf="@+id/tv_map_event_title"
-            />
+            android:maxLength="20"
+            android:layout_marginLeft="8dp"/>
 
     </RelativeLayout>
 

@@ -23,8 +23,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
 import com.happ.App;
 import com.happ.R;
+
+import java.util.ArrayList;
 
 /**
  ** Created by dante on 11/1/16.
@@ -40,12 +44,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return new MapFragment();
     }
 
+    private ClusterManager<AbstractMarker> clusterManager;
+
     GoogleMap googleMap;
     MapView mapView;
 
+
+
     //координаты для маркера
-    private static final double TARGET_LATITUDE = 43.2182859;
-    private static final double TARGET_LONGITUDE = 76.9256043;
+//    private static final double TARGET_LATITUDE = 43.218282;
+//    private static final double TARGET_LONGITUDE = 76.927793;
 
 
     @Nullable
@@ -54,57 +62,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //        return super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+
         mapView = (MapView) view.findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
         mapView.getMapAsync(this);
 
+//        clusterManager = new ClusterManager<AbstractMarker>(this, getMap());
+
+
         return view;
     }
-
-
-//    private void addMarker(){
-//
-//        double lat = TARGET_LATITUDE;
-//        double lng = TARGET_LONGITUDE;
-//        //устанавливаем позицию и масштаб отображения карты
-//        CameraPosition cameraPosition = new CameraPosition.Builder()
-//                .target(new LatLng(lat, lng))
-//                .zoom(15)
-//                .build();
-//        CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-//        googleMap.animateCamera(cameraUpdate);
-//
-//        if(null != googleMap){
-//            googleMap.addMarker(new MarkerOptions()
-//                    .position(new LatLng(lat, lng))
-//                    .title("Mark")
-//                    .draggable(false)
-//            );
-//        }
-//    }
 
     @Override
     public void onMapReady(GoogleMap map) {
         View markerView = ((LayoutInflater) getActivity()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.map_marker, null);
-
-//        IconGenerator tc = new IconGenerator(App.getContext());
-//        Bitmap bmp = tc.makeIcon("HAPP"); // pass the text you want.
-
-        LatLng sydney = new LatLng(TARGET_LATITUDE, TARGET_LONGITUDE);
-
-        map.addMarker(new MarkerOptions()
-                .position(sydney)
-//                .title("Marker in Sydney")
-//                .icon(BitmapDescriptorFactory.fromBitmap(bmp)));
-                .icon(BitmapDescriptorFactory
-                        .fromBitmap(createDrawableFromView(
-                                getActivity(),
-                                markerView))));
-
-//        map.moveCamera(CameraUpdateFactory.newLatLng(sydney)); //without zoom
-
 
         if (ContextCompat.checkSelfPermission(App.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -113,7 +86,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Toast.makeText(App.getContext(), "LOL", Toast.LENGTH_SHORT).show();
         }
 
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12.0f));
+
+        ArrayList<LatLng> points = new ArrayList<LatLng>();
+        points.add(new LatLng(43.218282, 76.927793));       // Esentai
+        points.add(new LatLng(43.22859709, 76.95256323));   // My home
+        points.add(new LatLng(43.24432741, 76.94549292));   // Work Space
+        points.add(new LatLng(43.2331407, 76.9565731));     // Dostyk Plaza
+
+        for (int p = 0; p < points.size(); p++) {
+            map.addMarker(new MarkerOptions()
+                    .position(points.get(p))
+                    .icon(BitmapDescriptorFactory
+                            .fromBitmap(createDrawableFromView(
+                                    getActivity(),
+                                    markerView))))
+                    .setAnchor(0.0f, 1.0f);
+
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(points.get(p), 12.0f));
+
+        }
     }
 
     public static Bitmap createDrawableFromView(Context context, View view) {
@@ -139,19 +130,60 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onResume() {
         super.onResume();
-        mapView.onResume();
+//        mapView.onResume();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mapView.onDestroy();
+//        mapView.onDestroy();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mapView.onLowMemory();
+//        mapView.onLowMemory();
     }
 
+
+
+
 }
+
+abstract class AbstractMarker implements ClusterItem {
+    protected double latitude;
+    protected double longitude;
+
+    protected MarkerOptions marker;
+
+    @Override
+    public LatLng getPosition() {
+        return new LatLng(latitude, longitude);
+    }
+
+    protected AbstractMarker(double latitude, double longitude) {
+        setLatitude(latitude);
+        setLongitude(longitude);
+    }
+
+    @Override
+    public abstract String toString();
+
+    public MarkerOptions getMarker() {
+        return marker;
+    }
+
+    public void setMarker(MarkerOptions marker) {
+        this.marker = marker;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+    //others getters & setters
+}
+

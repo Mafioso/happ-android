@@ -9,7 +9,7 @@
                 android:bottomLeftRadius="0dp"
                 android:topRightRadius="90dp"
                 android:bottomRightRadius="90dp"
-                android:topLeftRadius="90dp"
+                android:topLeftRadius="120dp"
                 />
         </shape>
     </item>
