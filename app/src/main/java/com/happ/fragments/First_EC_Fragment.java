@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,7 +23,7 @@ import io.realm.Realm;
 /**
  * Created by dante on 10/26/16.
  */
-public class First_EC_Fragment extends BaseEditCreateFragment {
+public class First_EC_Fragment extends Fragment {
 
     public static First_EC_Fragment newInstance() {
 
@@ -86,15 +87,18 @@ public class First_EC_Fragment extends BaseEditCreateFragment {
         mECImagesAdapter = new EcImagesAdapter(activity, imagesList);
         mRVImagesView.setAdapter(mECImagesAdapter);
 
+        if (eventId != null) {
+            mEventName.setText(event.getTitle());
+            mInterests.setText(event.getInterest().getTitle());
+            mPlace.setText(event.getPlace());
 
+            mPriceMin.setText(String.valueOf(event.getLowestPrice()));
+            mPriceMax.setText(String.valueOf(event.getHighestPrice()));
+            mCurrency.setText("KZT");
+        } else {
 
-        mEventName.setText(event.getTitle());
-        mInterests.setText(event.getInterest().getTitle());
-        mPlace.setText(event.getPlace());
+        }
 
-        mPriceMin.setText(String.valueOf(event.getLowestPrice()));
-        mPriceMax.setText(String.valueOf(event.getHighestPrice()));
-        mCurrency.setText("KZT");
 
         return view;
     }

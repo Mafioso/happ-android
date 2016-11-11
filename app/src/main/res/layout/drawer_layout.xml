@@ -37,15 +37,18 @@
             app:itemIconTint="@color/colorAccent"
             app:itemTextAppearance="@style/NavDrawerTextStyle"/>
 
-
-
     </RelativeLayout>
+
 
     <ImageView
         android:id="@+id/close_left_navigation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        app:srcCompat="@drawable/ic_close_x_white"/>
+        app:srcCompat="@drawable/ic_close_x_white"
+        android:paddingTop="@dimen/drawer_top_padding"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"/>
+
 
 </android.support.design.widget.NavigationView>

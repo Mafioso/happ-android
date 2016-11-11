@@ -59,133 +59,62 @@
                         android:maxLines="1"
                         android:hint="@string/event_name"
                         android:textSize="16sp"
-                        android:text="Art Fest"
                         android:inputType="textNoSuggestions"/>
                 </android.support.design.widget.TextInputLayout>
-                
-                <RelativeLayout
-                    android:id="@+id/rl_select_interest_ec"
-                    android:layout_below="@+id/input_layout_ec_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp">
-
-                        <EditText
-                            android:id="@+id/input_ec_select_interest"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:maxLines="1"
-                            android:textSize="16sp"
-                            android:hint="@string/event_interest"
-                            android:inputType="textNoSuggestions"/>
-                    </android.support.design.widget.TextInputLayout>
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="16dp"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        app:srcCompat="@drawable/ic_edit_compat"/>
-
-                </RelativeLayout>
 
                 <android.support.design.widget.TextInputLayout
-                    android:id="@+id/input_layout_ec_place"
-                    android:layout_below="@+id/rl_select_interest_ec"
+                    android:id="@+id/input_layout_ec_interest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_toLeftOf="@+id/iv_ec_edit_interest"
+                    android:layout_below="@+id/input_layout_ec_name">
+
+                    <EditText
+                        android:id="@+id/input_ec_select_interest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textSize="16sp"
+                        android:hint="@string/event_interest"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/iv_ec_edit_interest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_below="@+id/input_layout_ec_name"
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_edit_compat"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_ec_description"
+                    android:layout_below="@+id/input_layout_ec_interest"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp">
 
                     <EditText
-                        android:id="@+id/input_ec_place"
+                        android:id="@+id/input_ec_description"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="1"
+                        android:hint="@string/event_description"
                         android:textSize="16sp"
-                        android:hint="@string/event_place"
-                        android:text="Central City Museum"
                         android:inputType="textNoSuggestions"/>
-                </android.support.design.widget.TextInputLayout>
-
-
-                <RelativeLayout
-                    android:id="@+id/rl_price_ec"
-                    android:layout_below="@+id/input_layout_ec_place"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_ec_min_price"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/dash_price">
-
-                        <EditText
-                            android:id="@+id/input_ec_min_price"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:maxLines="1"
-                            android:textSize="16sp"
-                            android:hint="@string/event_min_price"
-                            android:text="Free"
-                            android:inputType="textNoSuggestions"/>
-                    </android.support.design.widget.TextInputLayout>
 
                     <TextView
-                        android:id="@+id/dash_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:text="—"
-                        android:textSize="18sp"
-                        android:layout_marginLeft="4dp"
-                        android:layout_marginRight="4dp"/>
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_ec_max_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@+id/dash_price">
-
-                        <EditText
-                            android:id="@+id/input_ec_max_price"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:maxLines="1"
-                            android:textSize="16sp"
-                            android:hint="@string/event_max_price"
-                            android:text="2500 KZT"
-                            android:inputType="textNoSuggestions"/>
-                    </android.support.design.widget.TextInputLayout>
-                </RelativeLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/input_layout_ec_currency"
-                    android:layout_below="@+id/rl_price_ec"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp">
-
-                    <EditText
-                        android:id="@+id/input_ec_currency"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:maxLines="1"
+                        android:layout_marginLeft="16dp"
                         android:textSize="16sp"
-                        android:hint="@string/event_currency"
-                        android:text="KZT"
-                        android:inputType="textNoSuggestions"/>
+                        android:text="@string/tap_here_description"/>
                 </android.support.design.widget.TextInputLayout>
+
+
             </RelativeLayout>
         </RelativeLayout>
-
     </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

@@ -23,6 +23,7 @@ import com.happ.adapters.EventImagesSwipeAdapter;
 import com.happ.controllers_drawer.EventActivity;
 import com.happ.fragments.First_EC_Fragment;
 import com.happ.fragments.Second_EC_Fragment;
+import com.happ.fragments.Third_EC_Fragment;
 import com.happ.models.Event;
 
 import me.relex.circleindicator.CircleIndicator;
@@ -237,7 +238,7 @@ public class EditCreateActivity extends AppCompatActivity {
 
 
     public static class MyPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEMS = 2;
+        private static int NUM_ITEMS = 3;
 
         public MyPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -249,16 +250,15 @@ public class EditCreateActivity extends AppCompatActivity {
             return NUM_ITEMS;
         }
 
-        // Returns the fragment to display for that page
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case 0: // Fragment # 0 - This will show FirstFragment
+                case 0:
                     return First_EC_Fragment.newInstance();
-                case 1: // Fragment # 0 - This will show FirstFragment different title
+                case 1:
                     return Second_EC_Fragment.newInstance();
-//                case 2: // Fragment # 1 - This will show SecondFragment
-//                    return SecondFragment.newInstance(2, "Page # 3");
+                case 2:
+                    return Third_EC_Fragment.newInstance();
                 default:
                     return null;
             }

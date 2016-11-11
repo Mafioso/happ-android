@@ -12,16 +12,102 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
             android:paddingTop="24dp"
-            android:paddingBottom="24dp">
+            android:paddingBottom="24dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_ec_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/input_ec_place"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    android:hint="@string/event_place"
+                    android:inputType="textNoSuggestions"/>
+            </android.support.design.widget.TextInputLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_price_ec"
+                android:layout_below="@+id/input_layout_ec_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_ec_min_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/dash_price">
+
+                    <EditText
+                        android:id="@+id/input_ec_min_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textSize="16sp"
+                        android:hint="@string/event_min_price"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/dash_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="—"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"/>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_ec_max_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/dash_price">
+
+                    <EditText
+                        android:id="@+id/input_ec_max_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textSize="16sp"
+                        android:hint="@string/event_max_price"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+            </RelativeLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_ec_currency"
+                android:layout_below="@+id/rl_price_ec"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp">
+
+                <EditText
+                    android:id="@+id/input_ec_currency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textSize="16sp"
+                    android:hint="@string/event_currency"
+                    android:inputType="textNoSuggestions"/>
+            </android.support.design.widget.TextInputLayout>
 
             <TextView
+                android:layout_below="@id/input_layout_ec_currency"
                 android:id="@+id/tv_ec_event_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
+                android:layout_marginTop="24dp"
                 android:text="@string/event_date"/>
 
             <ImageView
@@ -41,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/iv_ec_edit_start_date"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="4dp">
 
                 <EditText
                     android:id="@+id/input_ec_startdate"
@@ -70,7 +156,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="4dp">
 
                 <EditText
                     android:id="@+id/input_ec_enddate"
@@ -82,101 +168,74 @@
                     android:inputType="textNoSuggestions"/>
             </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_ec_website"
-                android:layout_below="@+id/input_layout_ec_enddate"
+            <TextView
+                android:id="@+id/tv_ec_event_duration"
+                android:layout_below="@id/input_layout_ec_enddate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="24dp"
+                android:text="@string/event_duration"/>
+
+            <RelativeLayout
+                android:id="@+id/rl_datetime_ec"
+                android:layout_below="@+id/tv_ec_event_duration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginLeft="16dp">
 
-                <EditText
-                    android:id="@+id/input_ec_website"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_ec_min_datetime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:hint="@string/event_website"
-                    android:textSize="16sp"
-                    android:inputType="textNoSuggestions"/>
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_toLeftOf="@+id/dash_datetime">
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_ec_tickets_link"
-                android:layout_below="@+id/input_layout_ec_website"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="16dp">
-
-                <EditText
-                    android:id="@+id/input_ec_tickets_link"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:hint="@string/event_tickets_link"
-                    android:textSize="16sp"
-                    android:inputType="textNoSuggestions"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_ec_email"
-                android:layout_below="@+id/input_layout_ec_tickets_link"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="16dp">
-
-                <EditText
-                    android:id="@+id/input_ec_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:hint="@string/event_email"
-                    android:textSize="16sp"
-                    android:inputType="textNoSuggestions"/>
+                    <EditText
+                        android:id="@+id/input_ec_min_datetime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textSize="16sp"
+                        android:hint="@string/from"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
 
                 <TextView
-                    android:layout_width="match_parent"
+                    android:id="@+id/dash_datetime"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:gravity="right"
-                    android:textColor="@color/colorAccent183"
-                    android:paddingRight="4dp"
-                    android:text="@string/warning_for_empty_box_email"/>
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="—"
+                    android:textSize="18sp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"/>
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_ec_phone"
-                android:layout_below="@+id/input_layout_ec_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp">
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_ec_max_datetime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/dash_datetime">
 
-                <EditText
-                    android:id="@+id/input_ec_phone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:hint="@string/event_phone"
-                    android:textSize="16sp"
-                    android:inputType="textNoSuggestions"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:gravity="right"
-                    android:textColor="@color/colorAccent183"
-                    android:paddingRight="4dp"
-                    android:text="@string/warning_for_empty_box_phone"/>
-            </android.support.design.widget.TextInputLayout>
+                    <EditText
+                        android:id="@+id/input_ec_max_datetime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:textSize="16sp"
+                        android:hint="@string/up_to"
+                        android:inputType="textNoSuggestions"/>
+                </android.support.design.widget.TextInputLayout>
+            </RelativeLayout>
 
 
             <RelativeLayout
                 android:id="@+id/rl_ec_continuing_event"
-                android:layout_below="@+id/input_layout_ec_phone"
+                android:layout_below="@+id/rl_datetime_ec"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="24dp">
 
                 <TextView
                     android:id="@+id/tv_ec_continuing_event"
@@ -192,39 +251,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:maxLines="2"
-                    android:text="New visitors can enter event even if it already started"/>
+                    android:text="@string/sub_text_continuing_event"/>
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/switch_ec_continuing"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"/>
             </RelativeLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/input_layout_ec_description"
-                android:layout_below="@+id/rl_ec_continuing_event"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp">
-
-                <EditText
-                    android:id="@+id/input_ec_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/event_description"
-                    android:textSize="16sp"
-                    android:inputType="textNoSuggestions"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:textSize="16sp"
-                    android:text="@string/tap_here_description"/>
-            </android.support.design.widget.TextInputLayout>
-
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
 </RelativeLayout>

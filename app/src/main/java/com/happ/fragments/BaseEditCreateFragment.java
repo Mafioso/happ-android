@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 /**
  * Created by dante on 10/26/16.
@@ -22,13 +21,6 @@ public class BaseEditCreateFragment extends Fragment {
 
     }
 
-    private EditText mStartDate,
-                    mEndDate,
-                    mWebSite,
-                    mTicketsLink,
-                    mEmail,
-                    mPhone,
-                    mDescription;
 
     @Nullable
     @Override

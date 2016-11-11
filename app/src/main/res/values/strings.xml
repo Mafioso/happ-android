@@ -380,7 +380,7 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="interest_placeholder">Default child interest</string>
     <string name="show_events_by_status">Show events by status</string>
-    <string name="filter_active">Activ</string>
+    <string name="filter_active">Active</string>
     <string name="filter_inactive">Inactive</string>
     <string name="filter_finished">Finished</string>
     <string name="filter_on_review">On Review</string>
@@ -396,6 +396,10 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="create_account">Create Account</string>
     <string name="title_activity_maps">Map</string>
     <string name="go_to_event_page">Go to Event Page</string>
+    <string name="explicit_content">Explicit Content</string>
+    <string name="sub_text_explicit_content">Content appropriate only for age rate over 18</string>
+    <string name="sub_text_continuing_event">New visitors can enter event even if it already started</string>
+    <string name="event_duration">Event Duration</string>
 
 
 </resources>
