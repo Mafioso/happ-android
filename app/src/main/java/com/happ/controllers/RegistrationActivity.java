@@ -19,6 +19,7 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -47,6 +48,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private BroadcastReceiver currentCityDoneReceiver;
     private RelativeLayout mRLbg;
     private Toolbar toolbar;
+    private ImageView mImgLogo;
+    private RelativeLayout mRLFooter;
 
     private int[] login_bg = {
             R.drawable.login_bg_1,
@@ -145,6 +148,10 @@ public class RegistrationActivity extends AppCompatActivity {
         mCreateAccountButton = (Button) findViewById(R.id.btn_create_account);
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_signup);
         mFormLayout = (RelativeLayout) findViewById(R.id.form_layout);
+        mImgLogo = (ImageView) findViewById(R.id.img_logo);
+        mRLFooter = (RelativeLayout) findViewById(R.id.rl_footer);
+
+        mCreateAccountButton.setVisibility(View.INVISIBLE);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -197,7 +204,6 @@ public class RegistrationActivity extends AppCompatActivity {
 //            }
 //        });
 
-//        checkValidation();
         setListenerToRootView();
 
         if (signUpRequestDoneReceiver == null) {
@@ -231,14 +237,15 @@ public class RegistrationActivity extends AppCompatActivity {
                     int keypadHeight = screenHeight - r.bottom;
                     if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                         if (!isKeyboarShown) {
-//                            mImageLogo.setVisibility(View.GONE);
-//                            mRegisterView.setVisibility(View.GONE);
+                            mImgLogo.setVisibility(View.GONE);
+                            mRLFooter.setVisibility(View.GONE);
+
                         }
                         isKeyboarShown = true;
                     }
                     else {
-//                        mImageLogo.setVisibility(View.VISIBLE);
-//                        mRegisterView.setVisibility(View.VISIBLE);
+                        mImgLogo.setVisibility(View.VISIBLE);
+                        mRLFooter.setVisibility(View.VISIBLE);
                         isKeyboarShown = false;
                     }
                 }
@@ -260,30 +267,23 @@ public class RegistrationActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
-    private void checkValidation() {
-
-        if ((TextUtils.isEmpty(mUsername.getText()))
-                || (TextUtils.isEmpty(mPassword.getText()))
-                || (TextUtils.isEmpty(mRepeatPassword.getText()))
-                )
-            mCreateAccountButton.setVisibility(View.INVISIBLE);
-        else
-            mCreateAccountButton.setVisibility(View.VISIBLE);
-
-    }
 
     TextWatcher mWatcher = new TextWatcher() {
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before,
-                                  int count) {
-            // TODO Auto-generated method stub
-//            checkValidation();
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            if ((TextUtils.isEmpty(mUsername.getText()))
+                    || (TextUtils.isEmpty(mPassword.getText()))
+                    || (TextUtils.isEmpty(mRepeatPassword.getText()))
+                    )
+                mCreateAccountButton.setVisibility(View.INVISIBLE);
+            else
+                mCreateAccountButton.setVisibility(View.VISIBLE);
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count,
-                                      int after) {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             // TODO Auto-generated method stub
 
         }

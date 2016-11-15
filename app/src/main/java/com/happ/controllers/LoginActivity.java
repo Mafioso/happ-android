@@ -98,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
         mBtnLogin = (Button) findViewById(R.id.btn_login);
         mTvBtnCreateAccount = (TextView) findViewById(R.id.btn_create_new_account);
         mTvBtnForgotPw = (TextView) findViewById(R.id.btn_forgot_password);
-        mImageLogo = (ImageView) findViewById(R.id.img_login_logo);
+        mImageLogo = (ImageView) findViewById(R.id.img_logo);
         mFooterView = (RelativeLayout) findViewById(R.id.rl_footer);
         mFormLayout = (RelativeLayout) findViewById(R.id.form_layout2);
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_login);
@@ -127,9 +127,6 @@ public class LoginActivity extends AppCompatActivity {
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
         }
 
-
-        checkValidation();
-
         mEmail.addTextChangedListener(mWatcher);
         mPassword.addTextChangedListener(mWatcher);
 
@@ -156,12 +153,10 @@ public class LoginActivity extends AppCompatActivity {
         mTvBtnForgotPw.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                startActivity(intent);
-//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
-
-                Toast.makeText(LoginActivity.this, "Forgot Password was clicked!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, PasswordRecoveActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
             }
         });
 
@@ -213,24 +208,17 @@ public class LoginActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
-
-    private void checkValidation() {
-
-        if ((TextUtils.isEmpty(mEmail.getText()))
-                || (TextUtils.isEmpty(mPassword.getText())))
-            mBtnLogin.setVisibility(View.GONE);
-        else
-            mBtnLogin.setVisibility(View.VISIBLE);
-
-    }
-
     TextWatcher mWatcher = new TextWatcher() {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before,
                                   int count) {
-            // TODO Auto-generated method stub
-//            checkValidation();
+
+            if ((TextUtils.isEmpty(mEmail.getText()))
+                    && (TextUtils.isEmpty(mPassword.getText())))
+                mBtnLogin.setVisibility(View.GONE);
+            else
+                mBtnLogin.setVisibility(View.VISIBLE);
         }
 
         @Override

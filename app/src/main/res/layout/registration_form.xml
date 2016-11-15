@@ -19,12 +19,15 @@
         android:layout_height="wrap_content"
         android:id="@+id/form_layout"
         android:layout_centerVertical="true"
-        android:paddingBottom="24dp"
+        android:layout_above="@+id/rl_footer"
+        android:layout_below="@+id/toolbar"
+        android:paddingBottom="48dp"
+        android:paddingTop="48dp"
         android:paddingLeft="42dp"
         android:paddingRight="42dp">
 
             <ImageView
-                android:id="@+id/img_login_logo"
+                android:id="@+id/img_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/happ_icon"
@@ -33,7 +36,7 @@
 
         <RelativeLayout
             android:id="@+id/rl_username_form"
-            android:layout_below="@+id/img_login_logo"
+            android:layout_below="@+id/img_logo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/circle_light_top"

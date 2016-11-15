@@ -55,32 +55,44 @@
             android:name=".controllers.UserActivity"
             android:label="@string/user_settings"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity android:name=".controllers.PasswordRecoveActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".controllers.PrivacyPolicyActivity"
             android:label="@string/privacy_policy" />
+
         <activity
             android:name=".controllers.OrganizerRulesActivity"
             android:label="@string/organizer_rules" />
+
         <activity android:name=".controllers.CityActivity" />
+
         <activity
             android:name=".controllers_drawer.SettingsActivity"
             android:label="Settings" />
+
         <activity
             android:name=".controllers_drawer.SelectInterestsActivity"
             android:label="Select Interests" >
         </activity>
+
         <activity
             android:name=".controllers.SplashScreen"
             android:theme="@style/SplashTheme" >
         </activity>
+
         <activity
             android:name=".controllers.RegistrationActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
+
         <activity
             android:name=".controllers.LoginActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
+
         <activity android:name=".controllers.WelcomeActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -88,7 +100,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".controllers.EventMapActivity"/>
+
         <activity android:name=".controllers_drawer.OrganizerModeActivity" />
 
         <service

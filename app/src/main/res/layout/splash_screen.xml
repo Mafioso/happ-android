@@ -10,7 +10,7 @@
     android:fitsSystemWindows="true">
 
     <ImageView
-        android:id="@+id/img_login_logo"
+        android:id="@+id/img_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/happ_icon"

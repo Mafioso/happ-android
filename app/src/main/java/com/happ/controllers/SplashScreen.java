@@ -33,7 +33,7 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
 
-        mLogo = (ImageView)findViewById(R.id.img_login_logo);
+        mLogo = (ImageView)findViewById(R.id.img_logo);
 
         if (mCityLoadedBroadcastReceiver == null) {
             mCityLoadedBroadcastReceiver = createCityLoadedBroadcastReceiver();
