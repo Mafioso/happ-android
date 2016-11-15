@@ -22,7 +22,6 @@
             android:background="@color/dark80"
             android:fitsSystemWindows="true">
 
-
             <include layout="@layout/toolbar"/>
 
             <LinearLayout

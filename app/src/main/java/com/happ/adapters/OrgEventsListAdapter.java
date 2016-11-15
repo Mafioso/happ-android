@@ -119,7 +119,9 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
 
 
         RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) itemHolder.mBgItem.getLayoutParams();
+        RelativeLayout.LayoutParams bgParamsImageItem = (RelativeLayout.LayoutParams) itemHolder.mBgImageViewColor.getLayoutParams();
         itemHolder.mBgItem.setLayoutParams(bgParams);
+        itemHolder.mBgImageViewColor.setLayoutParams(bgParamsImageItem);
 
         itemHolder.mFavoritesImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,6 +186,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
                                             Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
                                             Palette p = Palette.from(bm).generate();
                                             itemHolder.mBgItem.setBackgroundColor(p.getMutedSwatch().getRgb());
+                                            itemHolder.mBgImageViewColor.setBackgroundColor(p.getMutedSwatch().getRgb());
                                             itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
                                             return false;
                                         }
@@ -334,6 +337,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
         public RelativeLayout mBgItem;
         private TextView mPlace;
         private String url;
+        private RelativeLayout mBgImageViewColor;
 
 
         public OrgEventsListItemViewHolder(final View itemView) {
@@ -352,6 +356,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
             mToolbar = (Toolbar) itemView.findViewById(R.id.event_toolbar);
             mBgItem = (RelativeLayout) itemView.findViewById(R.id.bg_org_item);
             mPlace = (TextView) itemView.findViewById(R.id.events_list_place);
+            mBgImageViewColor = (RelativeLayout) itemView.findViewById(R.id.color_bg_iv);
         }
 
     }
