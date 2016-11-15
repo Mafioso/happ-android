@@ -22,7 +22,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
-                android:background="@color/colorAccent"
+                android:background="@color/dark28"
                 android:scaleType="fitXY"
                 android:transitionName="event_image"
                 android:id="@+id/events_list_image_view"/>
@@ -46,13 +46,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_below="@+id/rl_image"
-            android:background="@color/dark38">
+            android:background="@color/dark57">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/dark38">
+                android:layout_height="wrap_content">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -71,7 +70,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="14dp"
+                        android:paddingTop="8dp"
                         android:id="@+id/events_list_item_title"
                         android:transitionName="event_title"
                         android:textSize="32sp"

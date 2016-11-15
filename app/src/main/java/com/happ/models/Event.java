@@ -25,6 +25,7 @@ public class Event extends RealmObject implements Serializable {
     private RealmList<Interest> interests;
     private String description;
     private RealmList<EventImage> images;
+    private String color;
 //    private RealmList<String> images;
     @SerializedName("votes_num")
     private int votesCount;
@@ -281,5 +282,13 @@ public class Event extends RealmObject implements Serializable {
 
     public void setInterestIds(ArrayList<String> interestIds) {
         this.interestIds = interestIds;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

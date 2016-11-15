@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -72,7 +73,6 @@ public class EventActivity extends AppCompatActivity {
                         mAuthor,
                         mDescription,
                         mStartDate,
-                        mEndDate,
                         mPrice,
                         mTitle,
                         mVotesCount;
@@ -91,6 +91,10 @@ public class EventActivity extends AppCompatActivity {
     private boolean isOrg;
     private CollapsingToolbarLayout ctl;
     private NavigationView navigationMenu, navigationHeader, navigationView;
+    private LinearLayout mDateBg;
+    private LinearLayout mPriceBg;
+    private LinearLayout mPlaceBg;
+    private LinearLayout mUpvoteBg;
 
 
     @Override
@@ -117,7 +121,11 @@ public class EventActivity extends AppCompatActivity {
         mCirclePlace = (LinearLayout) findViewById(R.id.ll_place);
         mPrice = (TextView) findViewById(R.id.event_price);
         mStartDate = (TextView)findViewById(R.id.event_start_date);
-        mEndDate = (TextView)findViewById(R.id.event_end_date);
+        mDateBg = (LinearLayout) findViewById(R.id.ll_calendar_image);
+        mPriceBg = (LinearLayout) findViewById(R.id.ll_buy_image);
+        mPlaceBg = (LinearLayout) findViewById(R.id.ll_place_image);
+        mUpvoteBg = (LinearLayout) findViewById(R.id.ll_upvote_image);
+//        mEndDate = (TextView)findViewById(R.id.event_end_date);
         viewPager=(ViewPager)findViewById(R.id.slider_viewpager);
         mEmail = (TextView) findViewById(R.id.event_email);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
@@ -131,6 +139,11 @@ public class EventActivity extends AppCompatActivity {
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
 
+
+        mDateBg.setBackgroundColor(Color.parseColor(event.getColor()));
+        mPriceBg.setBackgroundColor(Color.parseColor(event.getColor()));
+        mPlaceBg.setBackgroundColor(Color.parseColor(event.getColor()));
+        mUpvoteBg.setBackgroundColor(Color.parseColor(event.getColor()));
 
         mFab.setVisibility(View.GONE);
         if (isOrg) {
@@ -237,6 +250,7 @@ public class EventActivity extends AppCompatActivity {
         });
 
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
+        appBarLayout.setBackgroundColor(Color.parseColor(event.getColor()));
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -354,8 +368,16 @@ public class EventActivity extends AppCompatActivity {
         } else {
             mEmail.setText(event.getEmail());
         }
-        mStartDate.setText(event.getStartDateFormatted("dd MMM"));
-        mEndDate.setText(event.getEndDateFormatted("dd MMM"));
+        String startDate = event.getStartDateFormatted("MMM dd").toUpperCase();
+        String endDate = event.getEndDateFormatted("MMM dd").toUpperCase();
+        String date = "";
+        if (startDate.equals(endDate)) {
+            mStartDate.setText(startDate);
+        } else {
+            mStartDate.setText(startDate + " — " + endDate);
+        }
+//        mStartDate.setText(event.getStartDateFormatted("dd MMM"));
+//        mEndDate.setText(event.getEndDateFormatted("dd MMM"));
         mVotesCount.setText(String.valueOf(event.getVotesCount()));
 
         mFavoritesImage.setOnClickListener(new View.OnClickListener() {
@@ -370,8 +392,6 @@ public class EventActivity extends AppCompatActivity {
                 }
             }
         });
-
-
 
     }
 
