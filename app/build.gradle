@@ -76,4 +76,5 @@ dependencies {
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
 
     compile 'com.android.support:multidex:1.0.1'
+
 }
