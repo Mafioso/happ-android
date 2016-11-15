@@ -23,23 +23,44 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/dark80"
+                android:background="@drawable/avatar"
                 android:scaleType="fitXY"
                 android:transitionName="event_image"
                 android:id="@+id/events_list_image_view"/>
 
-
-            <ProgressBar
-                style="@style/Widget.AppCompat.ProgressBar"
-                android:theme="@style/CircularProgress"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/events_list_image_preloader"/>
-
+            <RelativeLayout
+                android:id="@+id/color_bg_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorAccent"
+                android:alpha="0.7"/>
 
             <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/rl_bottom_iv">
+
+                <ProgressBar
+                    style="@style/Widget.AppCompat.ProgressBar"
+                    android:theme="@style/CircularProgress"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/events_list_image_preloader"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_done"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"/>
+                
+            </RelativeLayout>
+            
+
+            <RelativeLayout
+                android:id="@+id/rl_bottom_iv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
@@ -100,7 +121,7 @@
             android:layout_toRightOf="@+id/rl_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/dark38">
+            android:background="@color/colorAccent">
 
             <RelativeLayout
                 android:layout_width="match_parent"

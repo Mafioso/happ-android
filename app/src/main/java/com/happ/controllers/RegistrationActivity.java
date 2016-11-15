@@ -152,7 +152,6 @@ public class RegistrationActivity extends AppCompatActivity {
         mImgLogo = (ImageView) findViewById(R.id.img_logo);
         mRLFooter = (RelativeLayout) findViewById(R.id.rl_footer);
 
-
         mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
 
         mCreateAccountButton.setVisibility(View.INVISIBLE);
