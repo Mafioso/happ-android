@@ -8,13 +8,12 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
@@ -23,26 +22,13 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginBehavior;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Arrays;
 import java.util.Random;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -54,12 +40,11 @@ public class RegistrationActivity extends AppCompatActivity {
     private CallbackManager mCallbackManager;
 
     private EditText mUsername, mPassword, mRepeatPassword;
-//    private FloatingActionButton mSignUpFab;
+    private Button mCreateAccountButton;
     private BroadcastReceiver signUpRequestDoneReceiver;
     private BroadcastReceiver getSignUpRequestFail;
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
-    private Button facebookButton;
     private RelativeLayout mRLbg;
     private Toolbar toolbar;
 
@@ -76,6 +61,9 @@ public class RegistrationActivity extends AppCompatActivity {
             R.drawable.login_bg_10,
     };
 
+    int idx = new Random().nextInt(login_bg.length);
+    int randomBg = login_bg[idx];
+
     boolean isKeyboarShown = false;
     ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     RelativeLayout mFormLayout;
@@ -86,72 +74,77 @@ public class RegistrationActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FacebookSdk.sdkInitialize(this.getApplicationContext());
-        mCallbackManager = CallbackManager.Factory.create();
-
-        LoginManager.getInstance().registerCallback(mCallbackManager,
-                new FacebookCallback<LoginResult>() {
-                    @Override
-                    public void onSuccess(LoginResult loginResult) {
-                        Log.d("Success", "Login");
-                        Log.e(TAG, "Facebook getApplicationId: " + loginResult.getAccessToken().getApplicationId());
-                        Log.d(TAG, "Facebook getToken: " + loginResult.getAccessToken().getToken());
-                        Log.d(TAG, "Facebook getUserId: " + loginResult.getAccessToken().getUserId());
-                        Log.d(TAG, "Facebook getExpires: " + loginResult.getAccessToken().getExpires());
-                        Log.d(TAG, "Facebook getLastRefresh: " + loginResult.getAccessToken().getLastRefresh());
-
-                        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-                        GraphRequest request = GraphRequest.newMeRequest(
-                                accessToken,
-                                new GraphRequest.GraphJSONObjectCallback() {
-                                    @Override
-                                    public void onCompleted(JSONObject object, GraphResponse response) {
-                                        try {
-
-                                            //check is response is not empty
-                                            if (response.getError() == null){
-
-                                                //parse json
-                                                object = new JSONObject(response.getRawResponse().toString());
-
-                                                String id = object.getString("id");
-                                                String email = object.getString("email");
-
-                                                APIService.doSignUp(email, id);
-                                            }
-
-
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id,email");
-                        request.setParameters(parameters);
-                        request.executeAsync();
-
-
-                    }
-
-                    @Override
-                    public void onCancel() {
-                        Toast.makeText(RegistrationActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onError(FacebookException exception) {
-                        Toast.makeText(RegistrationActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
-                        Log.d(TAG, exception.getMessage());
-                    }
-                });
+//        FacebookSdk.sdkInitialize(this.getApplicationContext());
+//        mCallbackManager = CallbackManager.Factory.create();
+//
+//        LoginManager.getInstance().registerCallback(mCallbackManager,
+//                new FacebookCallback<LoginResult>() {
+//                    @Override
+//                    public void onSuccess(LoginResult loginResult) {
+//                        Log.d("Success", "Login");
+//                        Log.e(TAG, "Facebook getApplicationId: " + loginResult.getAccessToken().getApplicationId());
+//                        Log.d(TAG, "Facebook getToken: " + loginResult.getAccessToken().getToken());
+//                        Log.d(TAG, "Facebook getUserId: " + loginResult.getAccessToken().getUserId());
+//                        Log.d(TAG, "Facebook getExpires: " + loginResult.getAccessToken().getExpires());
+//                        Log.d(TAG, "Facebook getLastRefresh: " + loginResult.getAccessToken().getLastRefresh());
+//
+//                        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+//                        GraphRequest request = GraphRequest.newMeRequest(
+//                                accessToken,
+//                                new GraphRequest.GraphJSONObjectCallback() {
+//                                    @Override
+//                                    public void onCompleted(JSONObject object, GraphResponse response) {
+//                                        try {
+//
+//                                            //check is response is not empty
+//                                            if (response.getError() == null){
+//
+//                                                //parse json
+//                                                object = new JSONObject(response.getRawResponse().toString());
+//
+//                                                String id = object.getString("id");
+//                                                String email = object.getString("email");
+//
+//                                                APIService.doSignUp(email, id);
+//                                            }
+//
+//
+//
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
+//                                });
+//
+//                        Bundle parameters = new Bundle();
+//                        parameters.putString("fields", "id,email");
+//                        request.setParameters(parameters);
+//                        request.executeAsync();
+//
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancel() {
+//                        Toast.makeText(RegistrationActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
+//                    }
+//
+//                    @Override
+//                    public void onError(FacebookException exception) {
+//                        Toast.makeText(RegistrationActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+//                        Log.d(TAG, exception.getMessage());
+//                    }
+//                });
 
         setContentView(R.layout.registration_form);
 
-        int idx = new Random().nextInt(login_bg.length);
-        int randomBg = login_bg[idx];
+        mRLbg = (RelativeLayout) findViewById(R.id.rl_registration_bg);
+        mUsername = (EditText) findViewById(R.id.input_signup_username);
+        mPassword = (EditText) findViewById(R.id.input_signup_password);
+        mRepeatPassword = (EditText) findViewById(R.id.input_signup_repeat_pw);
+        mCreateAccountButton = (Button) findViewById(R.id.btn_create_account);
+        mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_signup);
+        mFormLayout = (RelativeLayout) findViewById(R.id.form_layout);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -169,18 +162,7 @@ public class RegistrationActivity extends AppCompatActivity {
             });
         }
 
-
-        mRLbg = (RelativeLayout) findViewById(R.id.rl_registration_bg);
-        facebookButton = (Button) findViewById(R.id.button_fb_login);
-        mUsername = (EditText) findViewById(R.id.input_signup_username);
-        mPassword = (EditText) findViewById(R.id.input_signup_password);
-        mRepeatPassword = (EditText) findViewById(R.id.input_signup_repeat_password);
-//        mSignUpFab = (FloatingActionButton) findViewById(R.id.signup_fab);
-        mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_signup);
-        mFormLayout = (RelativeLayout) findViewById(R.id.form_layout);
-
-
-        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+//        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(0);
@@ -190,31 +172,30 @@ public class RegistrationActivity extends AppCompatActivity {
         mPassword.addTextChangedListener(mWatcher);
         mRepeatPassword.addTextChangedListener(mWatcher);
 
-//        mSignUpFab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                if (mPassword.getText().toString().equals(mRepeatPassword.getText().toString())) {
-//                    hideSoftKeyboard(RegistrationActivity.this, v);
-//                    mSignUpFab.setVisibility(View.INVISIBLE);
-//                    mProgressBar.setVisibility(View.VISIBLE);
-//                    APIService.doSignUp(mUsername.getText().toString(), mPassword.getText().toString());
-//                } else {
-//                    Toast.makeText(RegistrationActivity.this, "Пароли не совпадают", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
-
-        facebookButton.setOnClickListener(new View.OnClickListener() {
+        mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LoginManager loginManager = LoginManager.getInstance();
-                loginManager.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
-                loginManager.logInWithReadPermissions(
-                        RegistrationActivity.this,
-                        Arrays.asList("public_profile", "user_friends", "email"));
+                if (mPassword.getText().toString().equals(mRepeatPassword.getText().toString())) {
+                    hideSoftKeyboard(RegistrationActivity.this, view);
+                    mCreateAccountButton.setVisibility(View.INVISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    APIService.doSignUp(mUsername.getText().toString(), mPassword.getText().toString());
+                } else {
+                    Toast.makeText(RegistrationActivity.this, "Пароли не совпадают", Toast.LENGTH_LONG).show();
+                }
             }
         });
+
+//        facebookButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                LoginManager loginManager = LoginManager.getInstance();
+//                loginManager.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
+//                loginManager.logInWithReadPermissions(
+//                        RegistrationActivity.this,
+//                        Arrays.asList("public_profile", "user_friends", "email"));
+//            }
+//        });
 
 //        checkValidation();
         setListenerToRootView();
@@ -279,17 +260,17 @@ public class RegistrationActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
-//    private void checkValidation() {
-//
-//        if ((TextUtils.isEmpty(mUsername.getText()))
-//                || (TextUtils.isEmpty(mPassword.getText()))
-//                || (TextUtils.isEmpty(mRepeatPassword.getText()))
-//                )
-//            mSignUpFab.setVisibility(View.INVISIBLE);
-//        else
-//            mSignUpFab.setVisibility(View.VISIBLE);
-//
-//    }
+    private void checkValidation() {
+
+        if ((TextUtils.isEmpty(mUsername.getText()))
+                || (TextUtils.isEmpty(mPassword.getText()))
+                || (TextUtils.isEmpty(mRepeatPassword.getText()))
+                )
+            mCreateAccountButton.setVisibility(View.INVISIBLE);
+        else
+            mCreateAccountButton.setVisibility(View.VISIBLE);
+
+    }
 
     TextWatcher mWatcher = new TextWatcher() {
 
@@ -335,7 +316,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
-//                mSignUpFab.setVisibility(View.VISIBLE);
+                mCreateAccountButton.setVisibility(View.VISIBLE);
                 Toast.makeText(RegistrationActivity.this, "Wrong Username or Password", Toast.LENGTH_LONG).show();
             }
         };
@@ -399,4 +380,22 @@ public class RegistrationActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
+
+//    @Override
+//    protected void onStart() {
+//        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+//        super.onStart();
+//    }
+//
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+//    }
 }

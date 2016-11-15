@@ -1,9 +1,9 @@
 package com.happ;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.happ.controllers.LoginActivity;
@@ -28,7 +28,7 @@ import io.realm.RealmResults;
 /**
  * Created by dante on 7/27/16.
  */
-public class App extends Application {
+public class App extends MultiDexApplication {
     private static Context context;
 
 
@@ -37,6 +37,7 @@ public class App extends Application {
         super.onCreate();
         context = this.getApplicationContext();
         JodaTimeAndroid.init(context);
+
 
 //        String language = getApplicationContext().getResources().getConfiguration().locale.getLanguage();
 //        System.out.print(language);

@@ -12,15 +12,16 @@ android {
         versionCode 1
         versionName "1.0"
 
+        multiDexEnabled true
         vectorDrawables.useSupportLibrary = "true"
-        multiDexEnabled = "true"
+
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            resValue "string", "HOST", "http://happ.westeurope.cloudapp.azure.com/"
-            resValue "string", "HOST", "http://192.168.43.16:8000/"
+            resValue "string", "HOST", "http://192.168.2.10:8000/"
         }
     }
 }
@@ -43,11 +44,12 @@ dependencies {
     compile 'com.android.support:palette-v7:24.2.1'
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.0'
+    compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.android.support:cardview-v7:24.2.1'
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.tonicartos:superslim:0.4.+'
-    compile 'net.danlew:android.joda:2.9.4.1'
+    compile 'net.danlew:android.joda:2.9.5'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.borax12.materialdaterangepicker:library:1.9'
     compile 'com.afollestad.material-dialogs:core:0.9.0.2'
@@ -65,9 +67,13 @@ dependencies {
     compile 'com.github.ozodrukh:RippleDrawable:2.0.0'
     compile 'com.andkulikov:transitionseverywhere:1.6.9'
     compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'me.relex:circleindicator:1.2.2@aar'
-    compile 'com.google.android.gms:play-services-maps:9.8.0'
+
     compile 'com.google.maps.android:android-maps-utils:0.4+'
-    compile 'com.google.android.gms:play-services:9.8.0'
+    compile 'com.google.android.gms:play-services-maps:9.8.0'
+    compile 'com.google.android.gms:play-services-location:9.8.0'
+
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+
+    compile 'com.android.support:multidex:1.0.1'
 }

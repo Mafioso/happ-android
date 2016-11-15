@@ -1,10 +1,11 @@
 <resources>
     <!--<string name="HOST">http://happ.westeurope.cloudapp.azure.com/</string>-->
-
     <!--<string name="HOST">http://192.168.0.104:8000/</string>-->
     <!--<string name="HOST">http://192.168.11.211:8000/</string>-->
     <!--<string name="HOST">http://192.168.43.16:8000/</string>-->
-    <string name="HOST">http://192.168.43.16:8000/</string>
+    <!--<string name="HOST">http://192.168.43.16:8000/</string>-->
+    <string name="HOST">http://1192.168.2.10:8000/</string>
+
 
     <string name="API_URL">api/v1/</string>
     <string name="facebook_app_id">1284244154932616</string>
@@ -129,7 +130,7 @@
 
 В Политике конфиденциальности поясняется, как Ask.fm Europe Limited («мы», «наш», «нас») собирает, использует, раскрывает и хранит вашу информацию, когда вы посещаете веб-сайт ASKfm и/или используете мобильные приложения, имеющие ссылку на эту Политику конфиденциальности («Сервисы»). Вам также следует ознакомиться с разделом Правила пользования. Пользуясь Сервисами, вы соглашаетесь с нашими правилами и политиками, в том числе с этой Политикой конфиденциальности и Правилами пользования, и даете согласие на сбор, обработку и хранение вашей информации, как описано далее. Вы не должны посещать или использовать Сервисы, если вы не согласны с нашей Политикой конфиденциальности.
 
-Политика конфиденциальности содержит следующую информацию:
+Политика конфиденциальности <содерifc></содерifc>жит следующую информацию:
 
 1. Что такое ASKfm?
 2. Как мы собираем вашу информацию
@@ -400,6 +401,15 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="sub_text_explicit_content">Content appropriate only for age rate over 18</string>
     <string name="sub_text_continuing_event">New visitors can enter event even if it already started</string>
     <string name="event_duration">Event Duration</string>
+    <string name="recover_enter_email">Enter your username or email to recover your password</string>
+    <string name="recover_password">Recover Password</string>
+    <string name="detailed_instruction">Detailed instructions will be sent to your email</string>
+    <string name="username_or_email">username or email</string>
+    <string name="credit_info">© happapp.info 2016, All Rights Reserved</string>
+    <string name="terms_and_policy"><![CDATA[Terms & Policy]]></string>
+    <string name="login_or">— OR —</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="create_new_account">Create new account</string>
 
 
 </resources>

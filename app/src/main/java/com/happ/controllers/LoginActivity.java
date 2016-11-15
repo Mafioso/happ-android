@@ -8,8 +8,6 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -23,8 +21,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happ.App;
@@ -49,10 +47,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private EditText mEmail, mPassword;
-    private Button mButtonRegistration;
-    private FloatingActionButton mButtonFablogin;
+    private TextView mTvBtnCreateAccount, mTvBtnForgotPw;
+    private Button mBtnLogin;
     private ImageView mImageLogo;
-    private LinearLayout mRegisterView;
+    private RelativeLayout mFooterView;
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     private RelativeLayout mFormLayout;
@@ -79,35 +77,33 @@ public class LoginActivity extends AppCompatActivity {
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
     private PrefManager prefManager;
-
+    int idx = new Random().nextInt(login_bg.length);
+    int randomBg = login_bg[idx];
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int idx = new Random().nextInt(login_bg.length);
-        int randomBg = login_bg[idx];
-
         setContentView(R.layout.login_form);
 
         mRLbg = (RelativeLayout) findViewById(R.id.rl_login_bg);
-        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setEnterTransition(new Explode());
             getWindow().setExitTransition(new Explode());
         }
 
-        mEmail = (EditText) findViewById(R.id.input_login_email);
+        mEmail = (EditText) findViewById(R.id.input_login_username);
         mPassword = (EditText) findViewById(R.id.input_login_password);
-
-        mButtonFablogin = (FloatingActionButton) findViewById(R.id.login_fab);
-        mButtonFablogin.setVisibility(View.GONE);
-        mButtonRegistration = (Button) findViewById(R.id.btn_registration_page);
+        mBtnLogin = (Button) findViewById(R.id.btn_login);
+        mTvBtnCreateAccount = (TextView) findViewById(R.id.btn_create_new_account);
+        mTvBtnForgotPw = (TextView) findViewById(R.id.btn_forgot_password);
         mImageLogo = (ImageView) findViewById(R.id.img_login_logo);
-        mRegisterView = (LinearLayout) findViewById(R.id.ll_footer);
+        mFooterView = (RelativeLayout) findViewById(R.id.rl_footer);
         mFormLayout = (RelativeLayout) findViewById(R.id.form_layout2);
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_login);
+
+        mBtnLogin.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.GONE);
 
 
@@ -137,23 +133,35 @@ public class LoginActivity extends AppCompatActivity {
         mEmail.addTextChangedListener(mWatcher);
         mPassword.addTextChangedListener(mWatcher);
 
-        mButtonFablogin.setOnClickListener(new View.OnClickListener() {
+        mBtnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 hideSoftKeyboard(LoginActivity.this, v);
-                mButtonFablogin.setVisibility(View.GONE);
+                mBtnLogin.setVisibility(View.GONE);
                 mProgressBar.setVisibility(View.VISIBLE);
                 APIService.doLogin(mEmail.getText().toString(), mPassword.getText().toString());
 //                HappRestClient.getInstance().doLogin(mEmail.getText().toString(), mPassword.getText().toString());
             }
         });
 
-        mButtonRegistration.setOnClickListener(new View.OnClickListener() {
+        mTvBtnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+            }
+        });
+
+        mTvBtnForgotPw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                startActivity(intent);
+//                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+
+                Toast.makeText(LoginActivity.this, "Forgot Password was clicked!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -182,13 +190,13 @@ public class LoginActivity extends AppCompatActivity {
                     if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                         if (!isKeyboarShown) {
                             mImageLogo.setVisibility(View.GONE);
-                            mRegisterView.setVisibility(View.GONE);
+                            mFooterView.setVisibility(View.GONE);
                         }
                         isKeyboarShown = true;
                     }
                     else {
                         mImageLogo.setVisibility(View.VISIBLE);
-                        mRegisterView.setVisibility(View.VISIBLE);
+                        mFooterView.setVisibility(View.VISIBLE);
                         isKeyboarShown = false;
                     }
                 }
@@ -210,9 +218,9 @@ public class LoginActivity extends AppCompatActivity {
 
         if ((TextUtils.isEmpty(mEmail.getText()))
                 || (TextUtils.isEmpty(mPassword.getText())))
-            mButtonFablogin.setVisibility(View.GONE);
+            mBtnLogin.setVisibility(View.GONE);
         else
-            mButtonFablogin.setVisibility(View.VISIBLE);
+            mBtnLogin.setVisibility(View.VISIBLE);
 
     }
 
@@ -222,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onTextChanged(CharSequence s, int start, int before,
                                   int count) {
             // TODO Auto-generated method stub
-            checkValidation();
+//            checkValidation();
         }
 
         @Override
@@ -297,7 +305,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.GONE);
-                mButtonFablogin.setVisibility(View.VISIBLE);
+                mBtnLogin.setVisibility(View.VISIBLE);
                 Toast.makeText(LoginActivity.this, "Wrong Username or Password", Toast.LENGTH_LONG).show();
             }
         };
@@ -327,4 +335,21 @@ public class LoginActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+//    }
+//
+//    @Override
+//    protected void onRestart() {
+//        super.onRestart();
+//        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+//    }
 }

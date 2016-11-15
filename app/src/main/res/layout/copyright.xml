@@ -1,6 +1,70 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:id="@+id/rl_footer"
+    android:layout_marginBottom="4dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/tv_privacy_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/privacy_policy"
+        android:layout_toLeftOf="@+id/tv_dot"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/tv_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="●"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
+
+    <TextView
+        android:id="@+id/tv_terms_and_policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"
+        android:layout_toRightOf="@+id/tv_dot"
+        android:text="@string/terms_and_policy"/>
+
+    <TextView
+        android:layout_below="@+id/tv_dot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/white57"
+        android:text="@string/credit_info"
+        android:gravity="center"
+        android:layout_marginTop="4dp"/>
+
+    <!--<TextView-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/dont_account"-->
+    <!--android:textColor="@color/white57"-->
+    <!--android:layout_gravity="center"/>-->
+
+    <!--<Button-->
+    <!--android:id="@+id/btn_registration_page"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/sign_up_now"-->
+    <!--android:gravity="center_vertical"-->
+    <!--android:textColor="@color/colorAccent"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:textAllCaps="true"-->
+    <!--android:paddingRight="8dp"-->
+    <!--android:paddingLeft="8dp"-->
+    <!--android:textSize="14dp"-->
+    <!--android:textStyle="normal"-->
+    <!--style="?android:attr/borderlessButtonStyle"/>-->
+
+</RelativeLayout>
