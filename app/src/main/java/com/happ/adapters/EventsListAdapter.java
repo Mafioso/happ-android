@@ -413,7 +413,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                     menuItem.setChecked(false);
                     if (menuItem.getItemId() == R.id.menu_unsubscribe) {
 
-                        mInterestsListAdapter = new InterestsListAdapter(App.getContext(), interests);
+                        mInterestsListAdapter = new InterestsListAdapter(context, interests);
                         mInterestsListAdapter.setUserAcivityIds(App.getCurrentUser().getInterestIds());
                         ArrayList<String> selectedInterests = mInterestsListAdapter.getSelectedInterests();
                         String idInterest = item.event.getInterest().getId();

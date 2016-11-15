@@ -166,7 +166,7 @@ public class SelectInterestsActivity extends AppCompatActivity
             realm.close();
         }
 
-        mInterestsListAdapter = new InterestsListAdapter(this, interests);
+        mInterestsListAdapter = new InterestsListAdapter(SelectInterestsActivity.this, interests);
         if (fullActivity) {
             mInterestsListAdapter.setUserAcivityIds(App.getCurrentUser().getInterestIds());
         }

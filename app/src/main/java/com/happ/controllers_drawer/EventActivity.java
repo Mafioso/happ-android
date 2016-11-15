@@ -6,15 +6,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+//import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -96,6 +99,8 @@ public class EventActivity extends AppCompatActivity {
     private LinearLayout mPlaceBg;
     private LinearLayout mUpvoteBg;
 
+    AppBarLayout appBarLayout;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -138,12 +143,6 @@ public class EventActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
-
-
-        mDateBg.setBackgroundColor(Color.parseColor(event.getColor()));
-        mPriceBg.setBackgroundColor(Color.parseColor(event.getColor()));
-        mPlaceBg.setBackgroundColor(Color.parseColor(event.getColor()));
-        mUpvoteBg.setBackgroundColor(Color.parseColor(event.getColor()));
 
         mFab.setVisibility(View.GONE);
         if (isOrg) {
@@ -249,8 +248,7 @@ public class EventActivity extends AppCompatActivity {
             }
         });
 
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
-        appBarLayout.setBackgroundColor(Color.parseColor(event.getColor()));
+        appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -322,6 +320,18 @@ public class EventActivity extends AppCompatActivity {
         realm.close();
 
         mEventImagesSwipeAdapter.setImageList(event.getImages());
+
+//        Drawable dr = DrawableCompat.wrap(getResources().getDrawable(R.drawable.circle_event));
+//        DrawableCompat.setTint(dr,Color.parseColor(event.getColor()));
+
+//        mDateBg.setBackground(dr);
+//        mPriceBg.setBackground(dr);
+//        mPlaceBg.setBackground(dr);
+//        mUpvoteBg.setBackground(dr);
+//
+//        ctl.setBackgroundColor(Color.parseColor(event.getColor()));
+//        ctl.setContentScrimColor(Color.parseColor(event.getColor()));
+//        appBarLayout.setBackgroundColor(Color.parseColor(event.getColor()));
 
 //        Interest interest = event.getInterest();
 //        if (interest != null) {
@@ -440,7 +450,7 @@ public class EventActivity extends AppCompatActivity {
         mAuthor = null;
         mDescription = null;
         mStartDate = null;
-        mEndDate = null;
+//        mEndDate = null;
         mEventAuthor = null;
         mEventWEbSite = null;
         mEventEmail = null;
