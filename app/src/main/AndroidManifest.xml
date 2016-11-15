@@ -59,6 +59,9 @@
         <activity android:name=".controllers.PasswordRecoveActivity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
+        <activity android:name=".controllers_drawer.ConfirmEmailActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+
         <activity
             android:name=".controllers.PrivacyPolicyActivity"
             android:label="@string/privacy_policy" />

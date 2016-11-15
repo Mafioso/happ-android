@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -151,6 +152,9 @@ public class RegistrationActivity extends AppCompatActivity {
         mImgLogo = (ImageView) findViewById(R.id.img_logo);
         mRLFooter = (RelativeLayout) findViewById(R.id.rl_footer);
 
+
+        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+
         mCreateAccountButton.setVisibility(View.INVISIBLE);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -169,7 +173,6 @@ public class RegistrationActivity extends AppCompatActivity {
             });
         }
 
-//        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(0);

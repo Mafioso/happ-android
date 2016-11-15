@@ -101,12 +101,12 @@ public class OrganizerModeActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                 }
 
-                if (menuItem.getItemId() == R.id.nav_item_organizer) {
-                    Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, OrganizerModeActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(goToFeedIntent);
-                    overridePendingTransition(0, 0);
-                }
+//                if (menuItem.getItemId() == R.id.nav_item_organizer) {
+//                    Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, OrganizerModeActivity.class);
+//                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                    startActivity(goToFeedIntent);
+//                    overridePendingTransition(0, 0);
+//                }
 
                 if (menuItem.getItemId() == R.id.nav_item_interests) {
                     Intent intent = new Intent(OrganizerModeActivity.this, SelectInterestsActivity.class);

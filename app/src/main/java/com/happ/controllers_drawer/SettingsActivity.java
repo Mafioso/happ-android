@@ -96,7 +96,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                 }
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {
-                    Intent goToFeedIntent = new Intent(SettingsActivity.this, OrganizerModeActivity.class);
+                    Intent goToFeedIntent = new Intent(SettingsActivity.this, ConfirmEmailActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);

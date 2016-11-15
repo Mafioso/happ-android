@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +20,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.happ.App;
 import com.happ.R;
+
+import java.util.Random;
 
 /**
  * Created by dante on 11/15/16.
@@ -36,6 +40,23 @@ public class PasswordRecoveActivity extends AppCompatActivity {
     private Button mBtnRecovePassword;
     private ImageView mImgLogo;
     private RelativeLayout mRLFooter;
+    private RelativeLayout mRLbg;
+
+    private int[] login_bg = {
+            R.drawable.login_bg_1,
+            R.drawable.login_bg_2,
+            R.drawable.login_bg_3,
+            R.drawable.login_bg_4,
+            R.drawable.login_bg_5,
+            R.drawable.login_bg_6,
+            R.drawable.login_bg_7,
+            R.drawable.login_bg_8,
+            R.drawable.login_bg_9,
+            R.drawable.login_bg_10,
+    };
+
+    int idx = new Random().nextInt(login_bg.length);
+    int randomBg = login_bg[idx];
 
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
@@ -50,9 +71,12 @@ public class PasswordRecoveActivity extends AppCompatActivity {
         mBtnRecovePassword = (Button) findViewById(R.id.btn_recover_password);
         mImgLogo = (ImageView) findViewById(R.id.img_logo);
         mRLFooter = (RelativeLayout) findViewById(R.id.rl_footer);
-
+        mRLbg = (RelativeLayout) findViewById(R.id.rl_registration_bg);
 
         mBtnRecovePassword.setVisibility(View.INVISIBLE);
+
+        //set background
+        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
 
         setSupportActionBar(toolbar);
         setTitle("");
