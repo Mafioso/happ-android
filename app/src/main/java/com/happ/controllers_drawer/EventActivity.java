@@ -100,6 +100,7 @@ public class EventActivity extends AppCompatActivity {
     private LinearLayout mUpvoteBg;
 
     AppBarLayout appBarLayout;
+    private TextView mCurrency;
 
 
     @Override
@@ -136,6 +137,8 @@ public class EventActivity extends AppCompatActivity {
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         ctl = (CollapsingToolbarLayout)findViewById(R.id.event_collapsing_layout);
+
+        mCurrency = (TextView)findViewById(R.id.event_currency);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
@@ -358,6 +361,7 @@ public class EventActivity extends AppCompatActivity {
         mTitle.setText(event.getTitle());
         mPlace.setText(event.getPlace());
         mPrice.setText(event.getPriceRange());
+        mCurrency.setText(event.getCurrency().getName());
 
         User author = event.getAuthor();
         if (author != null) {

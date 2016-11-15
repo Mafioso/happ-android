@@ -192,9 +192,9 @@ public class Event extends RealmObject implements Serializable {
     public String getPriceRange() {
         String price = "";
         String currencyString = "";
-        if (currency != null) {
-            currencyString = currency.getSymbol();
-        }
+//        if (currency != null) {
+//            currencyString = currency.getSymbol();
+//        }
         if (lowestPrice > 0) {
             price = price + currencyString + " " + String.valueOf(lowestPrice);
         } else {
