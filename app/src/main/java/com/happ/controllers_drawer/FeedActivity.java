@@ -11,7 +11,6 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -90,7 +89,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private SwitchCompat mFilterFree;
     private Date startDate, endDate;
     private String isFree = "";
-    private FloatingActionButton mFabFilterDone;
     private ImageView mCloseRightNavigation, mCLoseLeftNavigation;
     private String searchText = "";
     private EditText mFeedSearchText;
@@ -164,7 +162,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
                 }
                 if (menuItem.getItemId() == R.id.nav_item_organizer) {
-                    Intent goToFeedIntent = new Intent(FeedActivity.this, OrganizerModeActivity.class);
+                    Intent goToFeedIntent = new Intent(FeedActivity.this, ConfirmEmailActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);

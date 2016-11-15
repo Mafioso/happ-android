@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
@@ -107,6 +108,8 @@ public class LoginActivity extends AppCompatActivity {
         mProgressBar.setVisibility(View.GONE);
 
 
+        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+
         if (loginRequestDoneReceiver == null) {
             loginRequestDoneReceiver = createLoginSuccessReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(loginRequestDoneReceiver, new IntentFilter(BroadcastIntents.LOGIN_REQUEST_OK));
@@ -133,7 +136,7 @@ public class LoginActivity extends AppCompatActivity {
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 hideSoftKeyboard(LoginActivity.this, v);
-                mBtnLogin.setVisibility(View.GONE);
+                mBtnLogin.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
                 APIService.doLogin(mEmail.getText().toString(), mPassword.getText().toString());
 //                HappRestClient.getInstance().doLogin(mEmail.getText().toString(), mPassword.getText().toString());
@@ -216,7 +219,7 @@ public class LoginActivity extends AppCompatActivity {
 
             if ((TextUtils.isEmpty(mEmail.getText()))
                     && (TextUtils.isEmpty(mPassword.getText())))
-                mBtnLogin.setVisibility(View.GONE);
+                mBtnLogin.setVisibility(View.INVISIBLE);
             else
                 mBtnLogin.setVisibility(View.VISIBLE);
         }
@@ -274,16 +277,12 @@ public class LoginActivity extends AppCompatActivity {
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0, 0);
-
                 } else {
-
                     Intent goToFeedIntent = new Intent(LoginActivity.this, SelectInterestsActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0, 0);
-
                 }
-
             }
         };
     }

@@ -244,7 +244,7 @@ public class SelectInterestsActivity extends AppCompatActivity
 
                     }
                     if (menuItem.getItemId() == R.id.nav_item_organizer) {
-                        Intent goToFeedIntent = new Intent(SelectInterestsActivity.this, OrganizerModeActivity.class);
+                        Intent goToFeedIntent = new Intent(SelectInterestsActivity.this, ConfirmEmailActivity.class);
                         goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(goToFeedIntent);
                         overridePendingTransition(0,0);
