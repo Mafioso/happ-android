@@ -42,7 +42,10 @@ public class App extends MultiDexApplication {
 //        String language = getApplicationContext().getResources().getConfiguration().locale.getLanguage();
 //        System.out.print(language);
 
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this).build();
+        RealmConfiguration realmConfiguration = new RealmConfiguration
+                .Builder(this)
+                .build();
+
         Realm.setDefaultConfiguration(realmConfiguration);
 
         if (hasInternet()) {
@@ -115,6 +118,7 @@ public class App extends MultiDexApplication {
         }
         return false;
     }
+
 
     public static void doLogout(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);

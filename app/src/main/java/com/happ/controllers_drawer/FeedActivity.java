@@ -1,7 +1,5 @@
 package com.happ.controllers_drawer;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -79,6 +77,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private EventsListAdapter mEventAdapter;
     protected ArrayList<Event> events;
     private boolean dataLoading = false;
+    private SelectCityFragment scf;
 
     private boolean isUnvoting = false;
     private boolean isUnfaving = false;
@@ -116,10 +115,14 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
+
+        scf = SelectCityFragment.newInstance();
 
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
@@ -197,46 +200,15 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
 
         cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
-        mDrawerCityFragment.setAdapter(cityPageAdapter);
 
         ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
-                    mDrawerCityFragment.animate()
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    super.onAnimationStart(animation);
-                                    mDrawerCityFragment.setVisibility(View.VISIBLE);
-                                }
-                            })
-                            .alpha(1.0f)
-                            .translationY(0.0f)
-                            .setDuration(2000);
+                    mDrawerCityFragment.setVisibility(View.VISIBLE);
+                    mDrawerCityFragment.setAdapter(cityPageAdapter);
                 } else {
-                    mDrawerCityFragment.animate()
-                            .alpha(0.0f)
-                            .translationY(700.0f)
-                            .setDuration(2000)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    mDrawerCityFragment.setVisibility(View.GONE);
-                                    navigationMenu.animate()
-                                            .alpha(1.0f)
-                                            .setDuration(2000)
-                                            .translationX(0.0f)
-                                            .setListener(new AnimatorListenerAdapter() {
-                                                @Override
-                                                public void onAnimationEnd(Animator animation) {
-                                                    super.onAnimationEnd(animation);
-                                                    navigationMenu.setVisibility(View.VISIBLE);
-                                                }
-                                            });
-                                }
-                            });
+                    mDrawerCityFragment.setVisibility(View.GONE);
                 }
             }
         });
@@ -367,6 +339,15 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
+        scf.setOnCitySelectInNavigationListener(new SelectCityFragment.OnCitySelectInNavigationListener() {
+            @Override
+            public void onCloseNavigationDrawer() {
+                ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setChecked(false);
+                mDrawerCityFragment.setVisibility(View.GONE);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
+
 //        mStartDateText = (EditText) findViewById(R.id.filter_input_start_date);
 //        mDateText = (EditText) findViewById(R.id.filter_input_end_date);
 //        mDateText.setOnClickListener(new View.OnClickListener() {
@@ -439,7 +420,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
         @Override
         public Fragment getItem(int position) {
-            return SelectCityFragment.newInstance();
+            return scf;
         }
 
         @Override
@@ -529,14 +510,13 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
             case R.id.menu_filter:
-//                Intent i = new Intent(FeedActivity.this, CityActivity.class);
-//                startActivity(i);
                 mDrawerLayout.openDrawer(navigationViewRight);
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 
     public Date getStartD() {
         return startDate;
@@ -555,12 +535,11 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     @Override
     public void onResume() {
         super.onResume();
-
         updateUser();
         updateCity();
-
         ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
         ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+        setTitle(App.getCurrentCity().getName());
 
 //        java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
 //        mStartDateText.setText(format.format(startDate));
@@ -611,6 +590,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateCity();
+                setTitle(App.getCurrentCity().getName());
                 ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
             }
         };

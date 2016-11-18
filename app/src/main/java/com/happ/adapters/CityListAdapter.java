@@ -33,6 +33,10 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
         currentUser = App.getCurrentUser();
     }
 
+    public interface SelectCityItemListener {
+        void onCityItemSelected(City city, float x, float y);
+    }
+
     public void setOnCityItemSelectListener(SelectCityItemListener listener) {
         this.listener = listener;
     }
@@ -118,10 +122,6 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
                 }
             });
         }
-    }
-
-    public interface SelectCityItemListener {
-        void onCityItemSelected(City city, float x, float y);
     }
 
 }

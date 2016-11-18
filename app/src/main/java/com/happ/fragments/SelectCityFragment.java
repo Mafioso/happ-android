@@ -52,7 +52,9 @@ public class SelectCityFragment extends Fragment {
 
     private LinearLayoutManager citiesListLayoutManager;
     private OnCitySelectListener listener;
+    protected OnCitySelectInNavigationListener mNDlistener;
     private MaterialProgressBar mLoadingProgress;
+    private Toolbar toolbar;
 
     private int interestsPageSize;
     private boolean loading = true;
@@ -62,10 +64,9 @@ public class SelectCityFragment extends Fragment {
     private int visibleThreshold;
     private String searchText;
     private City selectedCity;
-
     private boolean fromCityActivity = false;
-
     private EditText search;
+
 
     public SelectCityFragment() {
 
@@ -83,10 +84,12 @@ public class SelectCityFragment extends Fragment {
         return fragment;
     }
 
-
-
     public void setOnCitySelectListener(OnCitySelectListener listener) {
         this.listener = listener;
+    }
+
+    public void setOnCitySelectInNavigationListener(OnCitySelectInNavigationListener listenerNavigationDrawer) {
+        mNDlistener = listenerNavigationDrawer;
     }
 
     public interface OnCitySelectListener {
@@ -94,27 +97,32 @@ public class SelectCityFragment extends Fragment {
         void onCancel(float x, float y);
     }
 
-//    @NonNull
-//    @Override
-//    public Dialog onCreateDialog(Bundle savedInstanceState) {
-////        super.onCreate(savedInstanceState);
-//
-//        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.select_city_fragment, null);
-//        final Activity activity = getActivity();
+    public interface OnCitySelectInNavigationListener {
+        void onCloseNavigationDrawer();
+    }
+
+
+    
+    
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fromCityActivity = getArguments().getBoolean("from_city_activity");
     final View contentView = inflater.inflate(R.layout.select_city_fragment, container, false);
 
-        Toolbar mToolbar = (Toolbar) contentView.findViewById(R.id.select_city_toolbar);
+        toolbar = (Toolbar) contentView.findViewById(R.id.select_city_toolbar);
+        search = (EditText)contentView.findViewById( R.id.search);
+        mCityRecyclerView = (RecyclerView)contentView.findViewById(R.id.activity_cities_rv);
+        mLoadingProgress = (MaterialProgressBar) contentView.findViewById(R.id.cities_progress);
+
+
         final AppCompatActivity activity = (AppCompatActivity) getActivity();
 
 
         if (fromCityActivity) {
-            activity.setSupportActionBar(mToolbar);
-            mToolbar.setNavigationIcon(R.drawable.ic_close_orange);
-            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            activity.setSupportActionBar(toolbar);
+            toolbar.setNavigationIcon(R.drawable.ic_close_orange);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 //                    clearFragment();
@@ -124,7 +132,7 @@ public class SelectCityFragment extends Fragment {
                 }
             });
         } else {
-            mToolbar.setVisibility(View.GONE);
+            toolbar.setVisibility(View.GONE);
         }
 
 
@@ -132,14 +140,11 @@ public class SelectCityFragment extends Fragment {
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
 
 
-        search = (EditText)contentView.findViewById( R.id.search);
-        mCityRecyclerView = (RecyclerView)contentView.findViewById(R.id.activity_cities_rv);
         citiesListLayoutManager = new LinearLayoutManager(activity);
         mCityRecyclerView.setLayoutManager(citiesListLayoutManager);
-
         cities = new ArrayList<>();
 
-        mCitiesListAdapter = new CityListAdapter(getContext(), cities);
+        mCitiesListAdapter = new CityListAdapter(activity, cities);
         mCitiesListAdapter.setOnCityItemSelectListener(new CityListAdapter.SelectCityItemListener() {
             @Override
             public void onCityItemSelected(City city, float x, float y) {
@@ -149,13 +154,13 @@ public class SelectCityFragment extends Fragment {
                 } else {
                     selectedCity = city;
                     APIService.setCity(selectedCity.getId());
+                    mNDlistener.onCloseNavigationDrawer();
                 }
 
             }
         });
         mCityRecyclerView.setAdapter(mCitiesListAdapter);
 
-        mLoadingProgress = (MaterialProgressBar) contentView.findViewById(R.id.cities_progress);
 
         APIService.getCities();
 
@@ -166,7 +171,6 @@ public class SelectCityFragment extends Fragment {
             mLoadingProgress.setVisibility(View.GONE);
         }
         createScrollListener();
-
         addTextListener();
 
         if (citiesRequestDoneReceiver == null) {
@@ -182,8 +186,6 @@ public class SelectCityFragment extends Fragment {
         return contentView;
     }
 
-
-
     private void clearFragment() {
         FragmentManager manager = getActivity().getSupportFragmentManager();
         FragmentTransaction trans = manager.beginTransaction();
@@ -198,8 +200,10 @@ public class SelectCityFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 dataLoading = false;
                 mLoadingProgress.setVisibility(View.GONE);
-                updateCity();
-                updateCitiesList();
+                if (App.getCurrentUser().getSettings().getCity() != null) {
+                    updateCity();
+                    updateCitiesList();
+                }
             }
         };
     }
@@ -217,8 +221,10 @@ public class SelectCityFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateCity();
-        updateCitiesList();
+        if (App.getCurrentUser().getSettings().getCity() != null) {
+            updateCity();
+            updateCitiesList();
+        }
     }
 
 

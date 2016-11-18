@@ -28,7 +28,6 @@
             app:ci_drawable_unselected="@drawable/ic_indicator_un_selected"
             android:layout_above="@+id/btn_editcreate_save"/>
 
-
         <Button
             android:id="@+id/btn_editcreate_save"
             android:layout_width="match_parent"
@@ -41,8 +40,8 @@
             android:background="@color/bg_light"
             android:text="@string/save"
             android:gravity="center"
-            android:layout_gravity="bottom"
-            />
+            android:layout_gravity="bottom"/>
+
     </RelativeLayout>
 
 </RelativeLayout>

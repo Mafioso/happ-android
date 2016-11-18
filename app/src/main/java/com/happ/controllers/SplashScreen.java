@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -26,14 +25,13 @@ import io.jsonwebtoken.Claims;
  * Created by dante on 8/26/16.
  */
 public class SplashScreen extends AppCompatActivity {
-    ImageView mLogo;
+
     BroadcastReceiver mCityLoadedBroadcastReceiver;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_screen);
 
-        mLogo = (ImageView)findViewById(R.id.img_logo);
 
         if (mCityLoadedBroadcastReceiver == null) {
             mCityLoadedBroadcastReceiver = createCityLoadedBroadcastReceiver();
@@ -64,7 +62,10 @@ public class SplashScreen extends AppCompatActivity {
                         APIService.getCurrentCity();
                     }
                 } else {
-                    // Select Current City Page
+                    Intent intent = new Intent(this, CityActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
                 }
             } else {
                 goToLogin();
@@ -96,10 +97,6 @@ public class SplashScreen extends AppCompatActivity {
         startActivity(intent);
         overridePendingTransition(0,0);
     }
-//
-//    private void goToWelcomeScreen() {
-//        startActivity(new Intent(SplashScreen.this, WelcomeActivity.class));
-//    }
 
     private boolean checkCityObjectExistence() {
         return App.getCurrentCity() != null;

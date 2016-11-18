@@ -22,13 +22,16 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.clustering.ClusterItem;
-import com.google.maps.android.clustering.ClusterManager;
 import com.happ.App;
 import com.happ.R;
+import com.happ.models.Event;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  ** Created by dante on 11/1/16.
@@ -39,21 +42,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     }
 
+    private ArrayList<Event> events;
     public static MapFragment newInstance() {
 
         return new MapFragment();
     }
 
-    private ClusterManager<AbstractMarker> clusterManager;
+//    private ClusterManager<AbstractMarker> clusterManager;
 
     GoogleMap googleMap;
     MapView mapView;
-
-
-
-    //координаты для маркера
-//    private static final double TARGET_LATITUDE = 43.218282;
-//    private static final double TARGET_LONGITUDE = 76.927793;
 
 
     @Nullable
@@ -83,28 +81,55 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
         } else {
-            Toast.makeText(App.getContext(), "LOL", Toast.LENGTH_SHORT).show();
+            Toast.makeText(App.getContext(), "Gps is not enabled.", Toast.LENGTH_SHORT).show();
         }
 
+        events = new ArrayList<>();
 
-        ArrayList<LatLng> points = new ArrayList<LatLng>();
-        points.add(new LatLng(43.218282, 76.927793));       // Esentai
-        points.add(new LatLng(43.22859709, 76.95256323));   // My home
-        points.add(new LatLng(43.24432741, 76.94549292));   // Work Space
-        points.add(new LatLng(43.2331407, 76.9565731));     // Dostyk Plaza
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Event> results = realm.where(Event.class).findAll();
+        events = (ArrayList<Event>) realm.copyFromRealm(results);
+        realm.close();
 
-        for (int p = 0; p < points.size(); p++) {
-            map.addMarker(new MarkerOptions()
-                    .position(points.get(p))
-                    .icon(BitmapDescriptorFactory
-                            .fromBitmap(createDrawableFromView(
-                                    getActivity(),
-                                    markerView))))
-                    .setAnchor(0.0f, 1.0f);
+//        final ArrayList<LatLng> points = new ArrayList<LatLng>();
+//        points.add(new LatLng(43.218282, 76.927793));       // Esentai
+//        points.add(new LatLng(43.22859709, 76.95256323));   // My home
+//        points.add(new LatLng(43.24432741, 76.94549292));   // Work Space
+//        points.add(new LatLng(43.2331407, 76.9565731));     // Dostyk Plaza
 
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(points.get(p), 12.0f));
+        for (int p = 0; p < events.size(); p++) {
+
+            if (events.get(p).getLongitude() != null && events.get(p).getLatitude() != null) {
+                double latitude = Double.parseDouble(events.get(p).getLatitude());
+                double longitude = Double.parseDouble(events.get(p).getLongitude());
+                LatLng location = new LatLng(latitude, longitude);
+
+                map.addMarker(new MarkerOptions()
+                        .position(location)
+                        .icon(BitmapDescriptorFactory
+                                .fromBitmap(createDrawableFromView(
+                                        getActivity(),
+                                        markerView))))
+                        .setAnchor(0.0f, 1.0f);
+
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
+            } else {
+                p++;
+            }
 
         }
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+//
+//                if (marker.getPosition().equals(events.)){
+//                    Toast.makeText(App.getContext(), "Number 1", Toast.LENGTH_SHORT).show();
+//                }
+
+                return true;
+            }
+        });
     }
 
     public static Bitmap createDrawableFromView(Context context, View view) {
@@ -145,45 +170,41 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //        mapView.onLowMemory();
     }
 
-
-
-
 }
 
-abstract class AbstractMarker implements ClusterItem {
-    protected double latitude;
-    protected double longitude;
-
-    protected MarkerOptions marker;
-
-    @Override
-    public LatLng getPosition() {
-        return new LatLng(latitude, longitude);
-    }
-
-    protected AbstractMarker(double latitude, double longitude) {
-        setLatitude(latitude);
-        setLongitude(longitude);
-    }
-
-    @Override
-    public abstract String toString();
-
-    public MarkerOptions getMarker() {
-        return marker;
-    }
-
-    public void setMarker(MarkerOptions marker) {
-        this.marker = marker;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-    //others getters & setters
-}
-
+//abstract class AbstractMarker implements ClusterItem {
+//    protected double latitude;
+//    protected double longitude;
+//
+//    protected MarkerOptions marker;
+//
+//    @Override
+//    public LatLng getPosition() {
+//        return new LatLng(latitude, longitude);
+//    }
+//
+//    protected AbstractMarker(double latitude, double longitude) {
+//        setLatitude(latitude);
+//        setLongitude(longitude);
+//    }
+//
+//    @Override
+//    public abstract String toString();
+//
+//    public MarkerOptions getMarker() {
+//        return marker;
+//    }
+//
+//    public void setMarker(MarkerOptions marker) {
+//        this.marker = marker;
+//    }
+//
+//    public void setLatitude(double latitude) {
+//        this.latitude = latitude;
+//    }
+//
+//    public void setLongitude(double longitude) {
+//        this.longitude = longitude;
+//    }
+//    //others getters & setters
+//}

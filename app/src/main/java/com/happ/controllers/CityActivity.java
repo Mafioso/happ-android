@@ -6,18 +6,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.animation.PathInterpolatorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.animation.PathInterpolator;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
@@ -31,8 +27,6 @@ import com.happ.fragments.SelectCityFragment;
 import com.happ.models.City;
 import com.happ.retrofit.APIService;
 import com.transitionseverywhere.ChangeBounds;
-import com.transitionseverywhere.Fade;
-import com.transitionseverywhere.Scene;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
@@ -127,6 +121,7 @@ public class CityActivity extends AppCompatActivity {
                     public void onCancel(float x, float y) {
                         hideCitiesList(x, y);
                     }
+
                 });
                 getSupportFragmentManager()
                         .beginTransaction()

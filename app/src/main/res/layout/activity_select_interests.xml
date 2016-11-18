@@ -49,6 +49,7 @@
                         app:layout_scrollFlags="scroll"/>
 
                     <Button
+                        android:id="@+id/btn_select_interests"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         style="?attr/borderlessButtonStyle"
@@ -111,7 +112,8 @@
             android:id="@+id/city_children_fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent">
+            android:background="@android:color/transparent"
+            android:visibility="visible">
         </FrameLayout>
 
         </android.support.design.widget.CoordinatorLayout>

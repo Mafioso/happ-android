@@ -687,6 +687,7 @@ public class HappRestClient {
                     if (response.code() == 500) {
                         Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
                     }
+                    intent.putExtra("BODY", "AHAHAHHAAHHHAHAHHAHAHAHAA");
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -701,7 +702,6 @@ public class HappRestClient {
             }
         });
     }
-
 
     public void doFav(final String eventId) {
 
@@ -729,6 +729,7 @@ public class HappRestClient {
                     if (response.code() == 500) {
                         Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
                     }
+
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }

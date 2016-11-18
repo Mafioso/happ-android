@@ -36,6 +36,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import jp.wasabeef.blurry.Blurry;
 
 /**
  * Created by iztiev on 8/4/16.
@@ -60,45 +61,33 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     private int margin;
     private int middleItemWidth;
 
-    private String[] urls = {
-            "http://www.freedigitalphotos.net/images/img/homepage/87357.jpg",
-            "http://assets.barcroftmedia.com.s3-website-eu-west-1.amazonaws.com/assets/images/recent-images-11.jpg",
-            "http://7606-presscdn-0-74.pagely.netdna-cdn.com/wp-content/uploads/2016/03/Dubai-Photos-Images-Oicture-Dubai-Landmarks-800x600.jpg",
-            "http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg",
-            "http://www.w3schools.com/css/trolltunga.jpg",
-            "http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg",
-            "http://www.planwallpaper.com/static/images/desktop-year-of-the-tiger-images-wallpaper.jpg",
-            "http://www.gettyimages.pt/gi-resources/images/Homepage/Hero/PT/PT_hero_42_153645159.jpg",
-            "http://www.planwallpaper.com/static/images/beautiful-sunset-images-196063.jpg",
-            "http://www.w3schools.com/css/img_fjords.jpg"
-    };
+    private OnToastBeforeLongClicked toastClickedListener;
 
-    private String[] avg_colors = {
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            "",
-            ""
-    };
 
-    public InterestsListAdapter(Context context, List<Interest> interests) {
-        this.context = context;
-        this.mInterests = interests;
-        this.selectedInterests = new ArrayList<>();
-        this.expandedInterests = new ArrayList<>();
-        this.expandedInterestAdapters = new HashMap<>();
-        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, ((Activity) context).getResources().getDisplayMetrics());
-        itemWidth = (width - (2*margin))/3;
-        middleItemWidth = itemWidth + (width - (itemWidth*3+ 2*margin));
+    public interface OnToastBeforeLongClicked {
+        void longClickedListener();
+    }
+
+    public void setOnToastBeforeLongClicked(OnToastBeforeLongClicked listener) {
+        this.toastClickedListener = listener;
+    }
+
+
+    public interface OnInterestsSelectListener {
+        void onInterestsSelected(ArrayList<String> selectedChildren, String parentId);
+        void onInterestExpandRequested(String interestId, int position, int top, int height);
+    }
+
+    public interface OnInterestClickedListener {
+        void onInterestSelected(Interest interest);
+    }
+
+    public void setOnInterestsSelectListener(OnInterestsSelectListener listener) {
+        this.listener = listener;
+    }
+
+    public void setOnItemSelectedListener(OnInterestClickedListener listener) {
+        this.interestSelectedListener = listener;
     }
 
     public void setSelectSingle(boolean selectSingle) {
@@ -123,6 +112,35 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         notifyDataSetChanged();
     }
 
+
+    private String[] urls = {
+            "http://www.freedigitalphotos.net/images/img/homepage/87357.jpg",
+            "http://assets.barcroftmedia.com.s3-website-eu-west-1.amazonaws.com/assets/images/recent-images-11.jpg",
+            "http://7606-presscdn-0-74.pagely.netdna-cdn.com/wp-content/uploads/2016/03/Dubai-Photos-Images-Oicture-Dubai-Landmarks-800x600.jpg",
+            "http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg",
+            "http://www.w3schools.com/css/trolltunga.jpg",
+            "http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg",
+            "http://www.planwallpaper.com/static/images/desktop-year-of-the-tiger-images-wallpaper.jpg",
+            "http://www.gettyimages.pt/gi-resources/images/Homepage/Hero/PT/PT_hero_42_153645159.jpg",
+            "http://www.planwallpaper.com/static/images/beautiful-sunset-images-196063.jpg",
+            "http://www.w3schools.com/css/img_fjords.jpg"
+    };
+
+    public InterestsListAdapter(Context context, List<Interest> interests) {
+        this.context = context;
+        this.mInterests = interests;
+        this.selectedInterests = new ArrayList<>();
+        this.expandedInterests = new ArrayList<>();
+        this.expandedInterestAdapters = new HashMap<>();
+        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        margin = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, ((Activity) context).getResources().getDisplayMetrics());
+        itemWidth = (width - (2*margin))/3;
+        middleItemWidth = itemWidth + (width - (itemWidth*3+ 2*margin));
+    }
+
     private void updateSelectedInterests() {
         if (userInterestIds != null) {
             for (int i=0; i<userInterestIds.size(); i++) {
@@ -144,14 +162,6 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     public void clearSelectedInterests() {
         this.selectedInterests.clear();
         notifyDataSetChanged();
-    }
-
-    public void setOnInterestsSelectListener(OnInterestsSelectListener listener) {
-        this.listener = listener;
-    }
-
-    public void setOnItemSelectedListener(OnInterestClickedListener listener) {
-        this.interestSelectedListener = listener;
     }
 
     public ArrayList<String> getSelectedInterests() {
@@ -211,8 +221,11 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
         holder.mInterestTitle.setText(interest.getTitle());
 
+        final InterestsListViewHolder itemHolder = (InterestsListViewHolder)holder;
+
 //        if(interest.getUrl().length() > 0 || interest.getUrl() != null ){
 //            final String url = interest.getUrl();
+
         final String url = urls[position%10];
         if (holder.url == null || !holder.url.equals(url)) {
             holder.url = url;
@@ -274,6 +287,7 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
         String id = interest.getId();
 
+
         if (this.selectSingle) {
 //            holder.mCheckBox.setVisibility(View.GONE);
         }
@@ -334,7 +348,7 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
                         @Override
                         public void onInterestExpandRequested(String interestId, int position, int top, int height) {
-
+                            toastClickedListener.longClickedListener();
                         }
                     });
                 }
@@ -363,8 +377,9 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
         if (activeInterestId != null) {
             if (!mInterests.get(position).getId().equals(activeInterestId)) {
-//                Blurry.delete(holder.mImageContainer);
-//                        .with(context).radius(0)
+                Blurry.delete(holder.mImageContainer);
+//                        .with(context)
+//                        .radius(0)
 //                        .sampling(0).async()
 //                        .capture(holder.mInterestImageView)
 //                        .into(holder.mInterestImageView);
@@ -372,12 +387,12 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
                 holder.mImageContainer.setAlpha(0.2f);
                 holder.mInterestBackground.setAlpha(0.2f);
             } else {
-//                Blurry.with(context)
-//                        .radius(4)
-//                        .sampling(1)
-//                        .async()
-//                        .capture(holder.mInterestImageView)
-//                        .into(holder.mInterestImageView);
+                Blurry.with(context)
+                        .radius(4)
+                        .sampling(1)
+                        .async()
+                        .capture(holder.mInterestImageView)
+                        .into(holder.mInterestImageView);
                 holder.mInactiveOverlay.setVisibility(View.VISIBLE);
                 holder.mImageContainer.setAlpha(1f);
                 holder.mInterestBackground.setAlpha(1f);
@@ -385,7 +400,6 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         } else {
             setBlurs(holder, position);
         }
-
 
         holder.bind(interest.getId(), listener, position);
     }
@@ -466,17 +480,20 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+
+                    Log.e("AAAAAAAA", "Long Set On CLick Listener");
                     int[] location = new int[2];
                     itemView.getLocationInWindow(location);
                     listener.onInterestExpandRequested(interestId, position, location[1], itemView.getHeight());
-                    return false;
+                    return true;
                 }
             });
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    changeState(interestId, listener);
+                    Log.e("AAAAAAAA", "Simple Set On CLick Listener");
+                    changeState(interestId, listener);
                 }
             });
         }
@@ -501,14 +518,5 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         }
 
 
-    }
-
-    public interface OnInterestsSelectListener {
-        void onInterestsSelected(ArrayList<String> selectedChildren, String parentId);
-        void onInterestExpandRequested(String interestId, int position, int top, int height);
-    }
-
-    public interface OnInterestClickedListener {
-        void onInterestSelected(Interest interest);
     }
 }

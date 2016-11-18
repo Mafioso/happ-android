@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.widget.RelativeLayout;
 
 import com.happ.R;
@@ -77,7 +76,6 @@ public class InterestChildrenFragment extends Fragment {
                                                        int height) {
         InterestChildrenFragment fragment = new InterestChildrenFragment();
         Bundle args = new Bundle();
-
         args.putString(ARG_INTEREST, interestId);
         args.putStringArrayList(ARG_CHILDREN, children);
         args.putStringArrayList(ARG_PARENTS, parents);
@@ -142,7 +140,7 @@ public class InterestChildrenFragment extends Fragment {
         mChildrenView.setLayoutManager(llm);
 
         ArrayList<Interest> children = new ArrayList<>();
-        RealmResults<Interest> children_results = realm.where(Interest.class).isNull("parentId").findAll();
+        RealmResults<Interest> children_results = realm.where(Interest.class).equalTo("id", mInterest).findAll();
         if (children_results != null) children = (ArrayList<Interest>) realm.copyFromRealm(children_results);
         realm.close();
 

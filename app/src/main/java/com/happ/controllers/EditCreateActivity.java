@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -25,7 +26,11 @@ import com.happ.fragments.First_EC_Fragment;
 import com.happ.fragments.Second_EC_Fragment;
 import com.happ.fragments.Third_EC_Fragment;
 import com.happ.models.Event;
+import com.happ.retrofit.APIService;
 
+import java.util.Date;
+
+import io.realm.Realm;
 import me.relex.circleindicator.CircleIndicator;
 
 
@@ -37,6 +42,7 @@ public class EditCreateActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ViewPager mViewPager;
     private FragmentPagerAdapter adapterViewPager;
+    private Button mBtnCreateSave;
 
     private Event event;
     private String eventId;
@@ -53,12 +59,17 @@ public class EditCreateActivity extends AppCompatActivity {
 
         if (eventId == null) {
             setTitle(getString(R.string.create_event));
+            event = new Event();
         } else {
             setTitle(getString(R.string.edit_event));
+            Realm realm = Realm.getDefaultInstance();
+            event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+            realm.close();
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPager = (ViewPager) findViewById(R.id.ec_viewpager);
+        mBtnCreateSave = (Button) findViewById(R.id.btn_editcreate_save);
 
         CircleIndicator indicator = (CircleIndicator) findViewById(R.id.ec_indicator);
         adapterViewPager = new MyPagerAdapter(getSupportFragmentManager());
@@ -71,6 +82,13 @@ public class EditCreateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        mBtnCreateSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveEvent();
             }
         });
 
@@ -272,44 +290,44 @@ public class EditCreateActivity extends AppCompatActivity {
 
     }
 
-//    private void saveEvent() {
-//        event.setTitle(mEditTitle.getText().toString());
-//        event.setDescription(mEditDescription.getText().toString());
-//        event.setLocalOnly(true);
-//
-//        if (eventId != null) {
-//            event.setLocalId(eventId);
-//        }
-//        event.setId("local_event_" + (new Date()).getTime());
-//
-//        event.setCityId(App.getCurrentCity().getId());
-//        event.setCurrencyId(App.getCurrentUser().getSettings().getCurrency());
-//        event.setPlace(mPlace.getText().toString());
-//        if (mMinPrice.getText().toString().length() == 0) mMinPrice.setText("0");
-//        if (mMaxPrice.getText().toString().length() == 0) mMaxPrice.setText("0");
-//        event.setLowestPrice(Integer.parseInt(mMinPrice.getText().toString()));
-//        event.setHighestPrice(Integer.parseInt(mMaxPrice.getText().toString()));
-//        event.setWebSite(mWebsite.getText().toString());
-//
-//        if (event.getCurrency() != null) {
-//            event.setCurrencyId(event.getCurrency().getId());
-//        }
-//
-//        Realm realm = Realm.getDefaultInstance();
-//        realm.beginTransaction();
-//        realm.copyToRealmOrUpdate(event);
-//        realm.commitTransaction();
-//        realm.close();
-//
-//        if (eventId == null) {
-//
-//
-//            APIService.createEvent(event.getId());
-//        } else {
-//            APIService.doEventEdit(event.getId());
-//        }
-//
-//    }
+    private void saveEvent() {
+        event.setLocalOnly(true);
+
+        if (eventId != null) {
+            event.setLocalId(eventId);
+        }
+        event.setId("local_event_" + (new Date()).getTime());
+
+        event.setTitle("CS:GO Beta test");
+        event.setDescription("Тест!  Тест!  Тест!  Тест!  Тест!  Тест!  Тест!");
+        event.setCityId(App.getCurrentCity().getId());
+//        event.setCurrencyId("KZT");
+        event.setCurrencyId(App.getCurrentUser().getSettings().getCurrencyObject().getId());
+        event.setPlace("l[l[ppl");
+        event.setStartDate(new Date());
+        event.setEndDate(new Date());
+
+        event.setLowestPrice(Integer.parseInt("1234"));
+        event.setHighestPrice(Integer.parseInt("12345"));
+        event.setWebSite("http://vk.com/");
+
+        if (event.getCurrency() != null) {
+            event.setCurrencyId(event.getCurrency().getId());
+        }
+
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(event);
+        realm.commitTransaction();
+        realm.close();
+
+        if (eventId == null) {
+            APIService.createEvent(event.getId());
+        } else {
+            APIService.doEventEdit(event.getId());
+        }
+
+    }
 
 
     public static void hideSoftKeyboard (Activity activity, View view)

@@ -78,6 +78,8 @@ public class LoginActivity extends AppCompatActivity {
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
     private PrefManager prefManager;
+
+
     int idx = new Random().nextInt(login_bg.length);
     int randomBg = login_bg[idx];
 

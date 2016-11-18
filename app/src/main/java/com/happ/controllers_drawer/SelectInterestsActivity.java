@@ -26,11 +26,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -66,28 +68,25 @@ public class SelectInterestsActivity extends AppCompatActivity
     private BroadcastReceiver getCurrentUserReceiver;
     private LinearLayoutManager interestsListLayoutManager;
     private FloatingActionButton mFab;
+    private Button mBtnSelectAllInterests;
     private int interestsPageSize;
     private DrawerLayout mDrawerLayout;
     private Toolbar toolbar;
-
     private RelativeLayout selectedRow;
     private RelativeLayout selectedRowContainer;
-
     private boolean loading = true;
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
-
     private boolean fullActivity = false;
     private NavigationView navigationMenu, navigationHeader, navigationView;
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
-
     private ImageView mCLoserLeftNavigation;
-
     private FrameLayout childrenContainer;
 
     private int titleBarHeight;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,9 +112,11 @@ public class SelectInterestsActivity extends AppCompatActivity
         mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
         childrenContainer = (FrameLayout) findViewById(R.id.city_children_fragment_container);
         mCLoserLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
+        mBtnSelectAllInterests = (Button) findViewById(R.id.btn_select_interests);
 
         selectedRow = (RelativeLayout) findViewById(R.id.selected_row);
         selectedRowContainer = (RelativeLayout) findViewById(R.id.selected_row_container);
+
 
 //        selectedRow.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -145,6 +146,13 @@ public class SelectInterestsActivity extends AppCompatActivity
             }
         });
 
+        mBtnSelectAllInterests.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
 
         mInterestsGridLayout = new GridLayoutManager(this, 3);
 //        interestsListLayoutManager = new LinearLayoutManager(this);
@@ -158,7 +166,7 @@ public class SelectInterestsActivity extends AppCompatActivity
         interests = new ArrayList<>();
 
         try {
-            RealmResults<Interest> interestsResults = realm.where(Interest.class).isNull("parentId").findAll();
+            RealmResults<Interest> interestsResults = realm.where(Interest.class).equalTo("title", "nihil").findAll();
             interests = (ArrayList<Interest>) realm.copyFromRealm(interestsResults);
         } catch (Exception ex) {
             Log.e("HAPP", "SelectInterestActivity > onCreate "+ex.getLocalizedMessage());
@@ -175,7 +183,7 @@ public class SelectInterestsActivity extends AppCompatActivity
         mInterestsListAdapter.setOnInterestsSelectListener(new InterestsListAdapter.OnInterestsSelectListener() {
             @Override
             public void onInterestsSelected(ArrayList<String> selectedChildren, String parentId) {
-
+                //Простой клик. Полносью выбирается интерес
             }
 
             @Override
@@ -328,6 +336,14 @@ public class SelectInterestsActivity extends AppCompatActivity
         APIService.getInterests();
         APIService.getInterests(2);
         createScrollListener();
+
+        mInterestsListAdapter.setOnToastBeforeLongClicked(new InterestsListAdapter.OnToastBeforeLongClicked() {
+            @Override
+            public void longClickedListener() {
+                Toast.makeText(SelectInterestsActivity.this, "LOL", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
@@ -404,14 +420,9 @@ public class SelectInterestsActivity extends AppCompatActivity
         };
     }
 
-
-    public interface OnInterestSelectListener {
-        public void onInterestSelected(Interest interest);
-    }
-
     protected void updateInterestsList() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).isNull("parentId").findAll();
+        RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).equalTo("title", "nihil").findAll();
         interests = (ArrayList<Interest>)realm.copyFromRealm(interestsRealmResults);
         mInterestsListAdapter.updateData(interests);
         realm.close();

@@ -61,7 +61,6 @@ public class BaseFeedFragment extends Fragment {
         eventsListLayoutManager = new LinearLayoutManager(activity);
         eventsListView.setLayoutManager(eventsListLayoutManager);
         events = new ArrayList<>();
-
         mEventAdapter = new EventsListAdapter(activity, events);
 
         mEventAdapter.setOnSelectItemListener(new EventsListAdapter.SelectEventItemListener() {
