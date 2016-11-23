@@ -195,11 +195,9 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         final Interest interest = mInterests.get(position);
         int row = position/3;
 
-
         RecyclerView.LayoutParams containerParams = (RecyclerView.LayoutParams) holder.mInterestContainer.getLayoutParams();
         RelativeLayout.LayoutParams ivParams = (RelativeLayout.LayoutParams) holder.mImageContainer.getLayoutParams();
         RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) holder.mInterestBackground.getLayoutParams();
-
 
         ivParams.height = itemWidth;
         ivParams.width = itemWidth;
@@ -256,7 +254,7 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
                                             Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
                                             Palette p = Palette.from(bm).generate();
                                             holder.mInterestBackground.setBackgroundColor(p.getMutedSwatch().getRgb());
-//                                            setBlurs(holder,position);
+//                                            setBlurs(holder,position, interest.getId());
                                             return false;
                                         }
                                     })
@@ -271,7 +269,7 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
                                     public void onGlobalLayout() {
                                         if (image != null && !image.equals(holder.mInterestImageView.getDrawable())) {
                                             holder.mInterestImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                                            setBlurs(holder, position);
+//                                            setBlurs(holder, position,interest.getId());
                                         }
                                     }
                                 });
@@ -287,24 +285,34 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
         String id = interest.getId();
 
-
-        if (this.selectSingle) {
-//            holder.mCheckBox.setVisibility(View.GONE);
-        }
-
-        if (selectedInterests.indexOf(id) >= 0) {
-            removeChildrenFromSelectedInterests(interest);
-            if (expandedInterestAdapters.get(interest.getId()) != null) {
-                expandedInterestAdapters.get(interest.getId()).clearSelectedInterests();
+        for (int i = 0; i < selectedInterests.size(); i++){
+            if (selectedInterests.get(i).equals(id)) {
+                holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_white));
+                holder.mCountText.setVisibility(View.GONE);
+                holder.mCheckImage.setVisibility(View.VISIBLE);
+            } else {
+                holder.mCountText.setVisibility(View.GONE);
+                holder.mCheckImage.setVisibility(View.GONE);
             }
-//            if (!holder.mCheckBox.isChecked()) {
-//                holder.mCheckBox.toggle();
-//            }
-        } else {
-//            if (holder.mCheckBox.isChecked()) {
-//                holder.mCheckBox.toggle();
-//            }
         }
+
+//        if (this.selectSingle) {
+////            holder.mCheckBox.setVisibility(View.GONE);
+//        }
+
+//        if (selectedInterests.indexOf(id) >= 0) {
+//            removeChildrenFromSelectedInterests(interest);
+//            if (expandedInterestAdapters.get(interest.getId()) != null) {
+//                expandedInterestAdapters.get(interest.getId()).clearSelectedInterests();
+//            }
+////            if (!holder.mCheckBox.isChecked()) {
+////                holder.mCheckBox.toggle();
+////            }
+//        } else {
+////            if (holder.mCheckBox.isChecked()) {
+////                holder.mCheckBox.toggle();
+////            }
+//        }
 
 //        if(holder.mCheckBox.isChecked()) {
 //                Blurry.with(App.getContext())
@@ -316,7 +324,6 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 //        }
 
         if (expandedInterests.indexOf(id) >= 0) {
-//            holder.mExpandChildrenButton.setImageDrawable(this.context.getResources().getDrawable(R.drawable.ic_chevron_up));
             if (!expandedInterestAdapters.containsKey(id)) {
                 Realm realm = Realm.getDefaultInstance();
                 RealmResults<Interest> children = realm.where(Interest.class).equalTo("parentId",id).findAll();
@@ -372,8 +379,6 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 //            holder.mExpandChildrenButton.setEnabled(false);
 //        }
 
-//        if ()
-
 
         if (activeInterestId != null) {
             if (!mInterests.get(position).getId().equals(activeInterestId)) {
@@ -398,42 +403,53 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
                 holder.mInterestBackground.setAlpha(1f);
             }
         } else {
-            setBlurs(holder, position);
+//            setBlurs(holder, position, interest.getId());
         }
-
         holder.bind(interest.getId(), listener, position);
     }
 
-    private void setBlurs(InterestsListViewHolder holder, int position) {
-        if (position % 7 == 0) {
-//            Blurry.with(context)
-//                    .radius(20)
-//                    .sampling(1)
-//                    .async()
-//                    .capture(holder.mInterestImageView)
-//                    .into(holder.mInterestImageView);
-            holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_white));
-            holder.mCountText.setVisibility(View.GONE);
-            holder.mCheckImage.setVisibility(View.VISIBLE);
-        } else if (position % 5 == 0) {
-//            Blurry.with(context)
-//                    .radius(20)
-//                    .sampling(1)
-//                    .async()
-//                    .capture(holder.mInterestImageView)
-//                    .into(holder.mInterestImageView);
-            int max = (int)Math.floor(20 * Math.random())+5;
-            int curr = (int)Math.floor((max-1) * Math.random())+1;
-            holder.mCountText.setText(""+curr + "/"+ max);
-            holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_all_white));
-            holder.mCountText.setVisibility(View.VISIBLE);
-            holder.mCheckImage.setVisibility(View.VISIBLE);
-        } else {
-//            Blurry.delete(holder.mImageContainer);
-            holder.mCountText.setVisibility(View.GONE);
-            holder.mCheckImage.setVisibility(View.GONE);
-        }
-    }
+//    private void setBlurs(InterestsListViewHolder holder, int position, String interestId) {
+//
+//        for (int i = 0; i < selectedInterests.size(); i++){
+//            if (interestId.equals(selectedInterests.get(i))) {
+//                holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_white));
+//                holder.mCountText.setVisibility(View.GONE);
+//                holder.mCheckImage.setVisibility(View.VISIBLE);
+//            } else {
+//                holder.mCountText.setVisibility(View.GONE);
+//                holder.mCheckImage.setVisibility(View.GONE);
+//            }
+//        }
+//
+////        if (idInAdapter.equals(idUserArrayInterest)) {
+//////            Blurry.with(context)
+//////                    .radius(20)
+//////                    .sampling(1)
+//////                    .async()
+//////                    .capture(holder.mInterestImageView)
+//////                    .into(holder.mInterestImageView);
+////            holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_white));
+////            holder.mCountText.setVisibility(View.GONE);
+////            holder.mCheckImage.setVisibility(View.VISIBLE);
+////        } else if (position % 13 == 0) {
+//////            Blurry.with(context)
+//////                    .radius(20)
+//////                    .sampling(1)
+//////                    .async()
+//////                    .capture(holder.mInterestImageView)
+//////                    .into(holder.mInterestImageView);
+////            int max = (int)Math.floor(20 * Math.random())+5;
+////            int curr = (int)Math.floor((max-1) * Math.random())+1;
+////            holder.mCountText.setText(""+curr + "/"+ max);
+////            holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_all_white));
+////            holder.mCountText.setVisibility(View.VISIBLE);
+////            holder.mCheckImage.setVisibility(View.VISIBLE);
+////        } else {
+//////            Blurry.delete(holder.mImageContainer);
+////            holder.mCountText.setVisibility(View.GONE);
+////            holder.mCheckImage.setVisibility(View.GONE);
+////        }
+//    }
 
     @Override
     public int getItemCount() {

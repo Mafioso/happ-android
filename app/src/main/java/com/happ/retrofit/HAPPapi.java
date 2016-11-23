@@ -77,16 +77,16 @@ public interface HAPPapi {
     Call<Event> doEventDelete(@Path("id") String eventID);
 
     @POST("events/{id}/upvote")
-    Call<Void> doUpVote(@Path("id") String eventID);
+    Call<Void> doUpVote(@Path("id") String eventID, @Body EmptyBody body);
 
     @POST("events/{id}/downvote")
-    Call<Void> doDownVote(@Path("id") String eventID);
+    Call<Void> doDownVote(@Path("id") String eventID, @Body EmptyBody body);
 
     @POST("events/{id}/fav/")
-    Call<Void> doFav(@Path("id") String eventID);
+    Call<Void> doFav(@Path("id") String eventID, @Body EmptyBody body);
 
     @POST("events/{id}/unfav")
-    Call<Void> doUnFav(@Path("id") String eventID);
+    Call<Void> doUnFav(@Path("id") String eventID, @Body EmptyBody body);
 
     @GET("cities/{id}/")
     Call<City> getCity(@Path("id") String id);

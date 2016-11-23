@@ -1,6 +1,5 @@
 package com.happ.controllers_drawer;
 
-import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,12 +23,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -38,7 +39,6 @@ import android.widget.Toast;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
-import com.happ.adapters.EventsListAdapter;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.ExploreEventsFragment;
@@ -49,17 +49,20 @@ import com.happ.models.City;
 import com.happ.models.Event;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.leavjenn.smoothdaterangepicker.date.SmoothDateRangePickerFragment;
 import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.Realm;
 
-public class FeedActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class FeedActivity extends AppCompatActivity {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -70,11 +73,9 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private Menu menu;
     protected User user;
     protected City city;
-    protected ArrayList<City> cities;
     private String username, mCity;
     private NavigationView navigationView, navigationViewRight, navigationMenu, navigationHeader;
     private CoordinatorLayout rootLayout;
-    private EventsListAdapter mEventAdapter;
     protected ArrayList<Event> events;
     private boolean dataLoading = false;
     private SelectCityFragment scf;
@@ -83,7 +84,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
     private boolean isUnfaving = false;
 
 
-    private EditText mDateText;
+    private EditText mFilterDate, mFilterTime;
 
     private SwitchCompat mFilterFree;
     private Date startDate, endDate;
@@ -109,6 +110,9 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
+
+    private View mViewFilterDate;
+    private View mViewFilterTime;
 
 
     static {
@@ -138,6 +142,13 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         mBottomBar = (BottomBar) findViewById(R.id.bottombar_feed);
         mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
 
+        mViewFilterDate = (View) findViewById(R.id.view_filter_date);
+        mViewFilterTime = (View) findViewById(R.id.view_filter_time);
+
+        mFilterDate = (EditText) findViewById(R.id.ff_edittext_filterdate);
+        mFilterTime = (EditText) findViewById(R.id.ff_edittext_filtertime);
+
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -245,41 +256,94 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
             }
         });
 
-//        mFabFilterDone.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                if (mFilterFree.isChecked()) {
-//                    isFree = "0";
-//                } else {
-//                    isFree = "";
-//                }
-//
-////                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-//
-//                String max_free = "";
-//                String sD = "";
-//                String eD = "";
-//                String feedSearch = "";
-//
-//                if (mFeedSearchText != null && mFeedSearchText.length() > 0) {
-//                    feedSearch = mFeedSearchText.getText().toString();
-//                    searchText = mFeedSearchText.getText().toString();
-//                }
-//
-////                if (startDate != null) {
-////                    sD = sdf.format(startDate);
-////                }
-////                if (endDate != null) {
-////                    eD = sdf.format(endDate);
-////                }
-//                if (isFree != null) {
-//                    max_free = isFree;
-//                }
-//
-//                APIService.getFilteredEvents(1,feedSearch, sD, eD, max_free, false);
-//            }
-//        });
+        mFilterFree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String sD = sdf.format(startDate);
+                String eD = sdf.format(endDate);
+
+                if (mFilterFree.isChecked()) {
+                    isFree = "0";
+                    APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(), false);
+                } else {
+                    isFree = "";
+                    APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(), false);
+                }
+            }
+        });
+
+        mViewFilterDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (startDate == null) startDate = new Date();
+                Calendar now = Calendar.getInstance();
+                now.setTime(startDate);
+
+                SmoothDateRangePickerFragment smoothDateRangePickerFragment =
+                        SmoothDateRangePickerFragment
+                                .newInstance(new SmoothDateRangePickerFragment.OnDateRangeSetListener() {
+                                    @Override
+                                    public void onDateRangeSet(SmoothDateRangePickerFragment view,
+                                                               int yearStart, int monthStart,
+                                                               int dayStart, int yearEnd,
+                                                               int monthEnd, int dayEnd) {
+
+//                                        String date = dayStart + "/" + (++monthStart)
+//                                                + " - " +
+//                                                dayEnd + "/" + (++monthEnd);
+
+                                        Calendar cal = Calendar.getInstance();
+                                        cal.set(Calendar.YEAR, yearStart);
+                                        cal.set(Calendar.MONTH, --monthStart);
+                                        cal.set(Calendar.DAY_OF_MONTH, dayStart);
+                                        startDate = cal.getTime();
+
+                                        cal.set(Calendar.YEAR, yearEnd);
+                                        cal.set(Calendar.MONTH, --monthEnd);
+                                        cal.set(Calendar.DAY_OF_MONTH, dayEnd);
+                                        endDate = cal.getTime();
+
+
+                                        java.text.DateFormat format = DateFormat.getMediumDateFormat(App.getContext());
+                                        String formattedDate =format.format(startDate);
+                                        mFilterDate.setText(formattedDate.substring(0, formattedDate.length()-6));
+
+
+                                    }
+                                }, now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH));
+                smoothDateRangePickerFragment.show(getFragmentManager(), "Datepickerdialog");
+            }
+        });
+
+        mViewFilterTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(FeedActivity.this, "Filter Time", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        mFeedSearchText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                searchText = mFeedSearchText.getText().toString();
+                //                String sD = sdf.format(startDate);
+                String sD = "";
+//                String eD = sdf.format(endDate);
+                String eD ="";
+                APIService.getFilteredEvents(1,searchText, sD, eD, getMaxFree(), false);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
 
 
         ArrayList<Fragment> fragments = new ArrayList<>(4);
@@ -302,7 +366,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
                         break;
                     case R.id.tab_map:
                         fragNavController.switchTab(TAB_MAP);
-//                        Toast.makeText(FeedActivity.this, "TAB_MAP", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.tab_feed:
                         fragNavController.switchTab(TAB_EVERYTHING);
@@ -317,6 +380,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
                 }
             }
         });
+
 
         mBottomBar.setOnTabReselectListener(new OnTabReselectListener() {
             @Override
@@ -376,11 +440,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 
     }
 
-    @Override
-    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-
-    }
-
     public void setListenerToRootView() {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
         if (mKeyboardListener == null) {
@@ -410,7 +469,6 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
         }
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
     }
-
 
     public class MyCityPageAdapter extends FragmentPagerAdapter {
 
@@ -460,7 +518,7 @@ public class FeedActivity extends AppCompatActivity implements DatePickerDialog.
 //        mDateText.setText(endDate);
 //    }
 
-
+//
 //    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth,int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
 //
 //        Calendar calendar = Calendar.getInstance();

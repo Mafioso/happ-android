@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_user"
                     android:layout_alignParentBottom="true"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:layout_gravity="bottom"
                     android:alpha="0.57"/>
 
@@ -126,7 +126,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_email_dark"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:layout_gravity="bottom"
                     android:alpha="0.57"/>
 
@@ -155,10 +155,11 @@
                 android:layout_marginRight="16dp">
 
                 <ImageView
+                    android:id="@+id/iv_ic_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_phone_dark"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:layout_gravity="bottom"
                     android:alpha="0.57"/>
 
@@ -192,7 +193,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_calendar_dark"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:layout_alignParentBottom="true"
                     android:alpha="0.57"/>
 
@@ -218,7 +219,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_edit"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:layout_alignParentBottom="true"
                     android:alpha="0.57"/>
             </RelativeLayout>
@@ -237,7 +238,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_gender_dark"
-                    android:paddingBottom="8dp"
+                    android:padding="8dp"
                     android:layout_gravity="center_vertical"
                     android:alpha="0.57"/>
 

@@ -166,7 +166,7 @@ public class SelectInterestsActivity extends AppCompatActivity
         interests = new ArrayList<>();
 
         try {
-            RealmResults<Interest> interestsResults = realm.where(Interest.class).equalTo("title", "nihil").findAll();
+            RealmResults<Interest> interestsResults = realm.where(Interest.class).isNull("parentId").findAll();
             interests = (ArrayList<Interest>) realm.copyFromRealm(interestsResults);
         } catch (Exception ex) {
             Log.e("HAPP", "SelectInterestActivity > onCreate "+ex.getLocalizedMessage());
@@ -422,7 +422,7 @@ public class SelectInterestsActivity extends AppCompatActivity
 
     protected void updateInterestsList() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).equalTo("title", "nihil").findAll();
+        RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).isNull("parentId").findAll();
         interests = (ArrayList<Interest>)realm.copyFromRealm(interestsRealmResults);
         mInterestsListAdapter.updateData(interests);
         realm.close();

@@ -10,6 +10,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,9 @@ import android.view.ViewGroup;
 import com.happ.R;
 import com.happ.adapters.EventsListAdapter;
 import com.happ.controllers_drawer.EventActivity;
+import com.happ.controllers_drawer.FeedActivity;
 import com.happ.models.Event;
+import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
 
@@ -110,8 +113,17 @@ public class BaseFeedFragment extends Fragment {
                         loading = true;
 
                         int nextPage = (totalItemCount / eventsFeedPageSize) + 1;
+                        String isFree = ((FeedActivity) getActivity()).getMaxFree();
+                        String searchText = ((FeedActivity) getActivity()).getFeedSearch();
 
-                        getEvents(nextPage, false);
+                        if (isFree.equals("") || searchText.equals("")) {
+                            getEvents(nextPage, false);
+                            Log.e("BASE_FEED_FRAGMENT", "Simple scroll");
+                        } else {
+                            APIService.getFilteredEvents(nextPage, searchText, "","",isFree,false);
+                            Log.e("BASE_FEED_FRAGMENT", "Filter scroll");
+                        }
+
                     }
 
                 }

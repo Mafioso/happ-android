@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -23,6 +24,7 @@ import android.transition.Explode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -80,8 +82,8 @@ public class EventActivity extends AppCompatActivity {
 
     private ImageView mFavoritesImage, mCLoseLeftNavigation;
 
-    private LinearLayout mEventWEbSite, mEventEmail;
-    private LinearLayout mCirclePlace;
+    private LinearLayout mEventWEbSite, mEventEmail, mEventPhone;
+    private LinearLayout mCirclePlace, mCirclePlaceRadar;
 
     private RelativeLayout mEventAuthor;
     private Typeface tfcs;
@@ -98,7 +100,7 @@ public class EventActivity extends AppCompatActivity {
     private LinearLayout mUpvoteBg;
 
     AppBarLayout appBarLayout;
-    private TextView mCurrency;
+    private TextView mCurrency, mPhone;
 
 
     @Override
@@ -122,7 +124,10 @@ public class EventActivity extends AppCompatActivity {
         mWebSite = (TextView) findViewById(R.id.event_website);
         mEventWEbSite = (LinearLayout) findViewById(R.id.event_website_form);
         mEventEmail = (LinearLayout) findViewById(R.id.event_email_form);
+        mEventPhone = (LinearLayout) findViewById(R.id.event_phone_form);
+        mPhone = (TextView) findViewById(R.id.event_phone);
         mCirclePlace = (LinearLayout) findViewById(R.id.ll_place);
+        mCirclePlaceRadar = (LinearLayout) findViewById(R.id.ll_circle_radar);
         mPrice = (TextView) findViewById(R.id.event_price);
         mStartDate = (TextView)findViewById(R.id.event_start_date);
         mDateBg = (LinearLayout) findViewById(R.id.ll_calendar_image);
@@ -283,6 +288,12 @@ public class EventActivity extends AppCompatActivity {
             didIsFavReceiver = createFavReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
         }
+
+        AlphaAnimation animation1 = new AlphaAnimation(0.2f, 1.0f);
+        animation1.setDuration(1000);
+//        animation1.setStartOffset(5000);
+        animation1.setFillAfter(true);
+        mCirclePlaceRadar.startAnimation(animation1);
     }
 
     @Override
@@ -361,13 +372,26 @@ public class EventActivity extends AppCompatActivity {
         mPrice.setText(event.getPriceRange());
         mCurrency.setText(event.getCurrency().getName());
 
-        User author = event.getAuthor();
+        final User author = event.getAuthor();
         if (author != null) {
             mAuthor.setText(event.getAuthor().getFullName());
         } else {
             mEventAuthor.setVisibility(View.GONE);
         }
 
+        if (author.getPhone() != null) {
+            mPhone.setText(author.getPhone());
+            mPhone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String phone = author.getPhone();
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                    startActivity(intent);
+                }
+            });
+        } else {
+            mEventPhone.setVisibility(View.GONE);
+        }
         mDescription.setText(event.getDescription());
         if (event.getWebSite() == null || event.getWebSite().equals("") ) {
             mEventWEbSite.setVisibility(View.GONE);

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.NavigationView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.NavigationView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:segmentedgroup="http://schemas.android.com/tools"
     android:id="@+id/navigation_view_right"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
@@ -10,18 +10,20 @@
     android:background="@color/bb_darkBackgroundColor">
 
     <RelativeLayout
+        android:id="@+id/ff_top"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:paddingTop="@dimen/drawer_top_padding"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:layout_marginTop="16dp">
 
             <TextView
                 android:id="@+id/customize_feed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18dp"
+                android:textSize="18sp"
                 android:text="@string/customize_feed"
                 android:textColor="@color/white70"/>
 
@@ -49,6 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Search..."
+                android:textColor="@android:color/white"
                 android:drawableRight="@drawable/ic_search_compat"
                 android:layout_marginTop="16dp"
                 android:textSize="16sp"/>
@@ -61,11 +64,12 @@
             android:layout_below="@+id/edit_input_layout_search"
             android:layout_marginTop="24dp"
             android:paddingLeft="16dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/only_free"
-                android:textSize="18dp"
+                android:textSize="16sp"
                 android:textColor="@color/white70"
                 android:layout_centerVertical="true"/>
 
@@ -77,103 +81,169 @@
 
         </RelativeLayout>
 
-
-            <TextView
-                android:id="@+id/show_only_events"
+            <RelativeLayout
+                android:id="@+id/filter_rl_start_date"
                 android:layout_below="@+id/filter_rl_free"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/show_only_events"
-                android:layout_marginTop="24dp"
-                android:textColor="@color/white70"
-                android:textSize="16sp"
-                android:paddingLeft="16dp"/>
-
-            <TextView
-                android:layout_below="@+id/filter_rl_free"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="@string/click_to_edit_range"
-                android:layout_marginTop="24dp"
-                android:textColor="@color/white57"
-                android:textSize="16sp"/>
-
-
-
-            <LinearLayout
-                android:id="@+id/filter_ll_start_date"
-                android:layout_below="@+id/show_only_events"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:paddingLeft="32dp">
+                android:layout_marginTop="48dp"
+                android:paddingLeft="16dp">
 
                 <TextView
+                    android:id="@+id/ff_top_text_filter_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white70"
-                    android:text="@string/from"
+                    android:text="@string/date_filter"
                     android:layout_marginRight="16dp"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true" />
+            
+                <EditText
+                    android:id="@+id/ff_edittext_filterdate"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorAccent"
-                    android:textStyle="bold"
                     android:textAllCaps="true"
-                    android:textSize="18sp"
-                    android:text="@string/today"/>
-            </LinearLayout>
+                    android:textSize="14sp"
+                    android:text="22 Oct"
+                    android:theme="@style/StyleForEditText"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:layout_toRightOf="@+id/ff_top_text_filter_date"
+                    android:layout_toLeftOf="@+id/iv_filter_date_cheron_right"/>
+                
+                <ImageView
+                    android:id="@+id/iv_filter_date_cheron_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_chevron_right"/>
 
 
-            <LinearLayout
-                android:id="@+id/filter_ll_end_date"
-                android:layout_below="@+id/filter_ll_start_date"
+                <View
+                    android:id="@+id/view_filter_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/ff_top_text_filter_date"/>
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/filter_rl_end_date"
+                android:layout_below="@+id/filter_rl_start_date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:paddingLeft="32dp">
+                android:paddingLeft="16dp">
 
                 <TextView
+                    android:id="@+id/ff_top_text_filter_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white70"
-                    android:text="@string/up_to"
+                    android:text="@string/time_filter"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"
                     android:layout_marginRight="16dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:id="@+id/ff_edittext_filtertime"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/colorAccent"
                     android:textAllCaps="true"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:text="OCTOBER 24, 2016"/>
-            </LinearLayout>
+                    android:textSize="14sp"
+                    android:enabled="false"
+                    android:clickable="false"
+                    android:theme="@style/StyleForEditText"
+                    android:layout_centerVertical="true"
+                    android:text="20:00"
+                    android:layout_toRightOf="@+id/ff_top_text_filter_time"
+                    android:layout_toLeftOf="@+id/iv_filter_time_cheron_right"/>
 
+                <ImageView
+                    android:id="@+id/iv_filter_time_cheron_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_chevron_right"/>
+
+                <View
+                    android:id="@+id/view_filter_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/ff_top_text_filter_time"/>
+
+            </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/filter_ll_end_date"
-            android:layout_marginTop="24dp"
+            android:layout_above="@+id/ff_bottom_currency"
             android:paddingLeft="16dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/popular_first"
                 android:textColor="@color/white70"
-                android:textSize="18dp"
+                android:textSize="16sp"
                 android:layout_centerVertical="true"/>
 
             <android.support.v7.widget.SwitchCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/ff_bottom_currency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:paddingLeft="16dp"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/ff_bottom_currency_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="@color/white70"
+                android:text="@string/event_currency"
+                android:layout_centerVertical="true"/>
+
+            <info.hoang8f.android.segmented.SegmentedGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/ff_bottom_currency_text"
+                android:layout_marginLeft="24dp"
+                android:orientation="horizontal"
+                segmentedgroup:sc_border_width="1dp"
+                segmentedgroup:sc_corner_radius="10dp"
+                app:sc_tint_color="@color/colorAccent">
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/user"
+                    style="@style/RadioButton" />
+
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/event"
+                    style="@style/RadioButton" />
+            </info.hoang8f.android.segmented.SegmentedGroup>
 
         </RelativeLayout>
 

@@ -70,6 +70,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
 
     public OrgEventsListAdapter(Context context, ArrayList<Event> events) {
         this.context = context;
+        this.mItems = events;
     }
 
 

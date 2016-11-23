@@ -77,24 +77,35 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 mUserSettingsChangedBroadcastReceiver = createUserChangedBroadcastReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mUserSettingsChangedBroadcastReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
             }
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-//        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
-//        Date startDate = ((FeedActivity)getActivity()).getStartD();
-//        Date endDate = ((FeedActivity)getActivity()).getEndD();
-//        if (startDate != null || endDate != null || maxFree != null) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
+        Date startDate = ((FeedActivity)getActivity()).getStartD();
+        Date endDate = ((FeedActivity)getActivity()).getEndD();
+        String searchText = "";
+        if (startDate != null || endDate != null || maxFree != null) {
 //            String sD = sdf.format(startDate);
+            String sD = "";
 //            String eD = sdf.format(endDate);
-//            HappRestClient.getInstance().getFilteredEvents(sD, eD, maxFree);
-//        } else {
+            String eD = "";
+
+            HappRestClient.getInstance().getFilteredEvents(1, searchText, sD, eD, maxFree, false);
+        } else {
             HappRestClient.getInstance().getEvents(false);
-//        }
+        }
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        updateEventsList();
+        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
+        Date startDate = ((FeedActivity)getActivity()).getStartD();
+        Date endDate = ((FeedActivity)getActivity()).getEndD();
+        if (maxFree != null || startDate != null || endDate != null) {
+            filteredEventsList();
+        } else {
+            updateEventsList();
+        }
     }
 
     protected void updateEventsList() {

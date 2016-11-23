@@ -11,6 +11,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
@@ -27,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.borax12.materialdaterangepicker.date.DatePickerDialog;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
@@ -39,9 +39,7 @@ import java.util.Date;
 /**
  * Created by dante on 9/22/16.
  */
-public class UserActivity extends AppCompatActivity implements
-        DatePickerDialog.OnDateSetListener
-{
+public class UserActivity extends AppCompatActivity {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -63,6 +61,7 @@ public class UserActivity extends AppCompatActivity implements
     private BroadcastReceiver setUserEditOKReceiver;
     private boolean fromSettings = false;
 
+    private TextInputLayout mTILphone;
 
     @Override
     public void onBackPressed() {
@@ -83,7 +82,7 @@ public class UserActivity extends AppCompatActivity implements
         int width = display.getWidth();  // deprecated
         int height = display.getHeight();  // deprecated
 
-        mRootLayout = (CoordinatorLayout)findViewById(R.id.root_layout);
+        mRootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -104,7 +103,6 @@ public class UserActivity extends AppCompatActivity implements
 
         mUserPhoto.setMaxHeight(width);
         mUserPhoto.setMinimumHeight(width);
-        
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,7 +129,7 @@ public class UserActivity extends AppCompatActivity implements
         mBtnEditBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btn_click_birthday(v);
+//                btn_click_birthday(v);
             }
         });
 
@@ -158,14 +156,7 @@ public class UserActivity extends AppCompatActivity implements
             setUserEditOKReceiver = createSetUserEditOKReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setUserEditOKReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
         }
-//        mButtonChangePW.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                FragmentManager fm = getSupportFragmentManager();
-//                AboutFragment changePasswordFragment = AboutFragment.newInstance();
-//                changePasswordFragment.show(fm, "fragment_change_password");
-//            }
-//        });
+
 
         initViews();
 
@@ -207,38 +198,38 @@ public class UserActivity extends AppCompatActivity implements
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
-    public void btn_click_birthday(View view) {
-        Calendar now = Calendar.getInstance();
-        now.setTime(birthday);
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
-                UserActivity.this,
-                now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH)
-        );
-        now.setTime(new Date());
-        dpd.setMaxDate(now);
+//    public void btn_click_birthday(View view) {
+//        Calendar now = Calendar.getInstance();
+//        now.setTime(birthday);
+//        DatePickerDialog dpd = DatePickerDialog.newInstance(
+//                UserActivity.this,
+//                now.get(Calendar.YEAR),
+//                now.get(Calendar.MONTH),
+//                now.get(Calendar.DAY_OF_MONTH)
+//        );
+//        now.setTime(new Date());
+//        dpd.setMaxDate(now);
+//
+//        dpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
+//        dpd.show(getFragmentManager(), "Datepickerdialog");
+//
+//    }
 
-        dpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
-        dpd.show(getFragmentManager(), "Datepickerdialog");
 
-    }
-
-
-    @Override
-    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
-        String date = dayOfMonth+" "+(monthOfYear)+" "+year;
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(birthday);
-        cal.set(Calendar.YEAR, year);
-        cal.set(Calendar.MONTH, monthOfYear);
-        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-        birthday = cal.getTime();
-
-        java.text.DateFormat format = DateFormat.getLongDateFormat(this);
-        mBirthday.setText(format.format(birthday));
-    }
+//    @Override
+//    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
+//        String date = dayOfMonth+" "+(monthOfYear)+" "+year;
+//        Calendar cal = Calendar.getInstance();
+//        cal.setTime(birthday);
+//        cal.set(Calendar.YEAR, year);
+//        cal.set(Calendar.MONTH, monthOfYear);
+//        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//
+//        birthday = cal.getTime();
+//
+//        java.text.DateFormat format = DateFormat.getLongDateFormat(this);
+//        mBirthday.setText(format.format(birthday));
+//    }
 
 
     @Override

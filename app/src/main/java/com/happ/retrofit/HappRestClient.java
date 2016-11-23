@@ -576,8 +576,9 @@ public class HappRestClient {
     }
 
     public void doUpVote(final String eventId) {
-
-        happApi.doUpVote(eventId).enqueue(new Callback<Void>() {
+        EmptyBody body = new EmptyBody();
+        body.setEmpty("empty");
+        happApi.doUpVote(eventId, body).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -620,7 +621,9 @@ public class HappRestClient {
 
     public void doDownVote(final String eventId) {
 
-        happApi.doDownVote(eventId).enqueue(new Callback<Void>() {
+        EmptyBody body = new EmptyBody();
+        body.setEmpty("empty");
+        happApi.doDownVote(eventId, body).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -663,7 +666,9 @@ public class HappRestClient {
 
     public void doUnFav(final String eventId) {
 
-        happApi.doUnFav(eventId).enqueue(new Callback<Void>() {
+        EmptyBody body = new EmptyBody();
+        body.setEmpty("empty");
+        happApi.doUnFav(eventId, body).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
@@ -705,7 +710,9 @@ public class HappRestClient {
 
     public void doFav(final String eventId) {
 
-        happApi.doFav(eventId).enqueue(new Callback<Void>() {
+        EmptyBody body = new EmptyBody();
+        body.setEmpty("empty");
+        happApi.doFav(eventId, body).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {

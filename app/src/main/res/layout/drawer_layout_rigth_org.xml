@@ -221,7 +221,7 @@
                 android:textSize="16sp"/>
 
             <LinearLayout
-                android:id="@+id/filter_ll_start_date"
+                android:id="@+id/filter_rl_start_date"
                 android:layout_below="@+id/show_only_events"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -249,8 +249,8 @@
 
 
             <LinearLayout
-                android:id="@+id/filter_ll_end_date"
-                android:layout_below="@+id/filter_ll_start_date"
+                android:id="@+id/filter_rl_end_date"
+                android:layout_below="@+id/filter_rl_start_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"

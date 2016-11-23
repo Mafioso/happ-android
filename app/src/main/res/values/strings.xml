@@ -348,7 +348,7 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="error_400">Checking the correctness of filling</string>
     <string name="about">About</string>
     <string name="version_name">Version Name</string>
-    <string name="date_filter">Filter by Date</string>
+    <string name="date_filter">Filter Date</string>
     <string name="popular_first">Show Popular First</string>
     <string name="customize_feed">Customize Feed</string>
     <string name="show_only_events">Show only events</string>
@@ -414,6 +414,9 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="confirm_email">Confirm Email</string>
     <string name="free">FREE</string>
     <string name="starts_from">starts from</string>
+    <string name="user">User</string>
+    <string name="event">Event</string>
+    <string name="time_filter">Filter Time</string>
 
 
 </resources>

@@ -91,31 +91,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         events = (ArrayList<Event>) realm.copyFromRealm(results);
         realm.close();
 
-//        final ArrayList<LatLng> points = new ArrayList<LatLng>();
-//        points.add(new LatLng(43.218282, 76.927793));       // Esentai
-//        points.add(new LatLng(43.22859709, 76.95256323));   // My home
-//        points.add(new LatLng(43.24432741, 76.94549292));   // Work Space
-//        points.add(new LatLng(43.2331407, 76.9565731));     // Dostyk Plaza
+        final ArrayList<LatLng> points = new ArrayList<LatLng>();
+        points.add(new LatLng(43.218282, 76.927793));       // Esentai
+        points.add(new LatLng(43.22859709, 76.95256323));   // My home
+        points.add(new LatLng(43.24432741, 76.94549292));   // Work Space
+        points.add(new LatLng(43.2331407, 76.9565731));     // Dostyk Plaza
 
-        for (int p = 0; p < events.size(); p++) {
+//        for (int p = 0; p < events.size(); p++) {
+        for (int p = 0; p < points.size(); p++) {
 
-            if (events.get(p).getLongitude() != null && events.get(p).getLatitude() != null) {
-                double latitude = Double.parseDouble(events.get(p).getLatitude());
-                double longitude = Double.parseDouble(events.get(p).getLongitude());
-                LatLng location = new LatLng(latitude, longitude);
+//            if (events.get(p).getLongitude() != null && events.get(p).getLatitude() != null) {
+//                double latitude = Double.parseDouble(events.get(p).getLatitude());
+//                double longitude = Double.parseDouble(events.get(p).getLongitude());
+//                LatLng location = new LatLng(latitude, longitude);
 
                 map.addMarker(new MarkerOptions()
-                        .position(location)
+                        .position(points.get(p))
                         .icon(BitmapDescriptorFactory
                                 .fromBitmap(createDrawableFromView(
                                         getActivity(),
                                         markerView))))
                         .setAnchor(0.0f, 1.0f);
 
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
-            } else {
-                p++;
-            }
+                map.moveCamera(CameraUpdateFactory.newLatLngZoom(points.get(p), 12.0f));
+//            } else {
+//                p++;
+//            }
 
         }
 
