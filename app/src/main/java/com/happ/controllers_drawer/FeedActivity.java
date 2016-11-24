@@ -25,7 +25,6 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +54,10 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,6 +82,7 @@ public class FeedActivity extends AppCompatActivity {
     protected ArrayList<Event> events;
     private boolean dataLoading = false;
     private SelectCityFragment scf;
+
 
     private boolean isUnvoting = false;
     private boolean isUnfaving = false;
@@ -114,6 +118,7 @@ public class FeedActivity extends AppCompatActivity {
     private View mViewFilterDate;
     private View mViewFilterTime;
 
+    private Event event;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -259,6 +264,10 @@ public class FeedActivity extends AppCompatActivity {
         mFilterFree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (startDate == null) startDate = new Date();
+                if (endDate == null) endDate = new Date();
+
                 String sD = sdf.format(startDate);
                 String eD = sdf.format(endDate);
 
@@ -295,20 +304,30 @@ public class FeedActivity extends AppCompatActivity {
 
                                         Calendar cal = Calendar.getInstance();
                                         cal.set(Calendar.YEAR, yearStart);
-                                        cal.set(Calendar.MONTH, --monthStart);
+                                        cal.set(Calendar.MONTH, monthStart);
                                         cal.set(Calendar.DAY_OF_MONTH, dayStart);
                                         startDate = cal.getTime();
 
                                         cal.set(Calendar.YEAR, yearEnd);
-                                        cal.set(Calendar.MONTH, --monthEnd);
+                                        cal.set(Calendar.MONTH, monthEnd);
                                         cal.set(Calendar.DAY_OF_MONTH, dayEnd);
                                         endDate = cal.getTime();
 
 
-                                        java.text.DateFormat format = DateFormat.getMediumDateFormat(App.getContext());
-                                        String formattedDate =format.format(startDate);
-                                        mFilterDate.setText(formattedDate.substring(0, formattedDate.length()-6));
+                                        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("MMM dd");
+                                        DateTime eventStartDate = new DateTime(getStartD());
+                                        DateTime eventEndDate = new DateTime(getEndD());
 
+                                        String filterDate =
+                                                eventStartDate.toString(dtFormatter)
+                                                + " - " +
+                                                eventEndDate.toString(dtFormatter);
+
+                                        mFilterDate.setText(filterDate);
+                                        String sD = sdf.format(startDate);
+                                        String eD = sdf.format(endDate);
+
+                                        APIService.getFilteredEvents(1, getFeedSearch(), sD, eD, getMaxFree(), false);
 
                                     }
                                 }, now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH));

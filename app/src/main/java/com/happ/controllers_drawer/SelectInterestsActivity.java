@@ -149,7 +149,7 @@ public class SelectInterestsActivity extends AppCompatActivity
         mBtnSelectAllInterests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                APIService.setAllInterests(1);
             }
         });
 

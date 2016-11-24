@@ -18,6 +18,9 @@ public class BroadcastIntents {
     public static final String USER_REQUEST_FAIL = "com.happ.user_request_fail";
     public static final String GET_CURRENT_USER_REQUEST_OK = "com.happ.current_user_request_ok";
     public static final String CITY_REQUEST_OK = "com.happ.city_request_ok";
+    public static final String CURRENCY_REQUEST_OK = "com.happ.currency_request_ok";
+    public static final String CURRENCY_REQUEST_FAIL = "com.happ.currency_request_fail";
+
     public static final String CITY_REQUEST_FAIL = "com.happ.city_request_fail";
     public static final String SET_INTERESTS_OK = "com.happ.set_interests_ok";
     public static final String SET_INTERESTS_FAIL = "com.happ.set_interests_fail";

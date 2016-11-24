@@ -112,6 +112,8 @@
 
         <activity android:name=".controllers_drawer.OrganizerModeActivity" />
 
+        <activity android:name=".controllers.ChangeCurrencyActivity"/>
+
         <service
             android:name=".retrofit.APIService"
             android:exported="false" >

@@ -107,7 +107,6 @@
                     android:textColor="@color/colorAccent"
                     android:textAllCaps="true"
                     android:textSize="14sp"
-                    android:text="22 Oct"
                     android:theme="@style/StyleForEditText"
                     android:enabled="false"
                     android:clickable="false"
@@ -163,7 +162,6 @@
                     android:clickable="false"
                     android:theme="@style/StyleForEditText"
                     android:layout_centerVertical="true"
-                    android:text="20:00"
                     android:layout_toRightOf="@+id/ff_top_text_filter_time"
                     android:layout_toLeftOf="@+id/iv_filter_time_cheron_right"/>
 

@@ -13,6 +13,8 @@ import com.happ.R;
 import com.happ.models.ChangePwData;
 import com.happ.models.CitiesResponse;
 import com.happ.models.City;
+import com.happ.models.Currency;
+import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
 import com.happ.models.EventImage;
 import com.happ.models.EventsResponse;
@@ -1031,6 +1033,34 @@ public class HappRestClient {
         });
     }
 
+    public void setAllInterests(int all) {
+        happApi.setAllInterests(all).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                } else {
+                    Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
     public void setCity(final String cityId) {
 
         happApi.setCity(cityId).enqueue(new Callback<Void>() {
@@ -1208,6 +1238,48 @@ public class HappRestClient {
             }
         });
     }
+
+    public void getCurrencies() {
+        happApi.getCurrency().enqueue(new Callback<CurrencyResponse>() {
+            @Override
+            public void onResponse(Call<CurrencyResponse> call, Response<CurrencyResponse> response) {
+                if (response.isSuccessful()){
+                    List<Currency> currencies = response.body().getCurrencies();
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(currencies);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.CURRENCY_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.CURRENCY_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    if (response.code() == 500) {
+                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
+                    }
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CurrencyResponse> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.CURRENCY_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
 
 
     public void doEventDelete(final String eventID) {

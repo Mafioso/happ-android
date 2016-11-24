@@ -3,6 +3,7 @@ package com.happ.retrofit;
 import com.happ.models.ChangePwData;
 import com.happ.models.CitiesResponse;
 import com.happ.models.City;
+import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
@@ -46,6 +47,7 @@ public interface HAPPapi {
                                            @Query("end_date") String endDate,
                                            @Query("max_price") String price);
 
+
     @GET("interests/")
     Call<InterestResponse> getInterests(@Query("page") int page);
 
@@ -76,17 +78,17 @@ public interface HAPPapi {
     @DELETE("events/{id}/")
     Call<Event> doEventDelete(@Path("id") String eventID);
 
-    @POST("events/{id}/upvote")
+    @POST("events/{id}/upvote/")
     Call<Void> doUpVote(@Path("id") String eventID, @Body EmptyBody body);
 
-    @POST("events/{id}/downvote")
+    @POST("events/{id}/downvote/")
     Call<Void> doDownVote(@Path("id") String eventID, @Body EmptyBody body);
 
     @POST("events/{id}/fav/")
     Call<Void> doFav(@Path("id") String eventID, @Body EmptyBody body);
 
-    @POST("events/{id}/unfav")
-    Call<Void> doUnFav(@Path("id") String eventID, @Body EmptyBody body);
+    @POST("events/{id}/unfav/")
+    Call<Void> doUnFav(@Path("id") String eventID, @Body EmptyBody   body);
 
     @GET("cities/{id}/")
     Call<City> getCity(@Path("id") String id);
@@ -96,6 +98,12 @@ public interface HAPPapi {
 
     @POST("interests/set/")
     Call<Void> setInterests(@Body List<String> data);
+
+    @GET("currencies/")
+    Call<CurrencyResponse> getCurrency ();
+
+    @POST ("interests/set/")
+    Call<Void> setAllInterests(@Query("all") int allId);
 
     @POST("cities/{id}/set/")
     Call<Void> setCity(@Path("id") String cityId);

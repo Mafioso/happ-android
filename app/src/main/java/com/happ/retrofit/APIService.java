@@ -26,7 +26,9 @@ public class APIService extends IntentService {
     private static final String ACTION_GET_USER = "com.happ.action.ACTION_GET_USER";
     private static final String ACTION_GET_CURRENT_USER = "com.happ.action.ACTION_GET_CURRENT_USER";
     private static final String ACTION_GET_CURRENT_CITY = "com.happ.action.ACTION_GET_CURRENT_CITY";
+    private static final String ACTION_GET_CURRENCIES = "com.happ.action.ACTION_GET_CURRENCIES";
     private static final String ACTION_SET_INTERESTS = "com.happ.action.ACTION_SET_INTERESTS";
+    private static final String ACTION_SET_ALL_INTERESTS = "com.happ.action.ACTION_SET_ALL_INTERESTS";
     private static final String ACTION_SET_CITIES = "com.happ.action.ACTION_SET_CITIES";
 
     private static final String ACTION_POST_USEREDIT = "com.happ.action.ACTION_POST_USEREDIT";
@@ -49,6 +51,7 @@ public class APIService extends IntentService {
     private static final String EXTRA_NEW_PASSWORD = "com.happ.extra.EXTRA_NEW_PASSWORD";
 
     private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
+    private static final String EXTRA_SET_ALL_INTERESTS = "com.happ.extra.EXTRA_SET_ALL_INTERESTS";
     private static final String EXTRA_SET_CITIES = "com.happ.extra.EXTRA_SET_CITIES";
     private static final String EXTRA_SEARCH_TEXT = "com.happ.extra.EXTRA_SEARCH_TEXT";
     private static final String EXTRA_EVENT_SEARCH_TEXT = "com.happ.extra.EXTRA_EVENT_SEARCH_TEXT";
@@ -172,6 +175,13 @@ public class APIService extends IntentService {
         App.getContext().startService(intent);
     }
 
+    public static void setAllInterests(int all) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_SET_ALL_INTERESTS);
+        intent.putExtra(EXTRA_SET_ALL_INTERESTS, all);
+        App.getContext().startService(intent);
+    }
+
     public static void setCity(String id) {
         Intent city = new Intent(App.getContext(), APIService.class);
         city.setAction(ACTION_SET_CITIES);
@@ -262,6 +272,14 @@ public class APIService extends IntentService {
         App.getContext().startService(intent);
     }
 
+    public static void getCurrencies() {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_CURRENCIES);
+        App.getContext().startService(intent);
+    }
+
+
+
     public static void doEventDelete(String eventID) {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_DELETE_EVENT);
@@ -334,9 +352,14 @@ public class APIService extends IntentService {
                 HappRestClient.getInstance().getCurrentUser();
             } else if (action.equals(ACTION_GET_CURRENT_CITY)) {
                 HappRestClient.getInstance().getCurrentCity();
+            } else if (action.equals(ACTION_GET_CURRENCIES)) {
+                    HappRestClient.getInstance().getCurrencies();
             } else if (action.equals(ACTION_SET_INTERESTS)) {
                 ArrayList<String> data = intent.getStringArrayListExtra(EXTRA_SET_INTERESTS);
                 HappRestClient.getInstance().setInterests(data);
+            } else if (action.equals(ACTION_SET_ALL_INTERESTS)) {
+                int all = intent.getIntExtra(EXTRA_SET_ALL_INTERESTS, 1);
+                HappRestClient.getInstance().setAllInterests(all);
             } else if (action.equals(ACTION_SET_CITIES)) {
                 String cityId = intent.getStringExtra(EXTRA_SET_CITIES);
                 HappRestClient.getInstance().setCity(cityId);

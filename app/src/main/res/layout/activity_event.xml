@@ -498,7 +498,7 @@
                             android:layout_gravity="center_vertical"
                             android:textSize="18sp"
                             android:textColor="@color/colorAccent"
-                            android:text="+7 (777) 123-45-67"
+                            android:text="+77771234567"
                             android:lineSpacingMultiplier="1.2" />
 
                     </LinearLayout>

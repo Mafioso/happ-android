@@ -44,78 +44,139 @@
                     android:paddingLeft="16dp"
                     android:drawablePadding="24dp"
                     android:gravity="left|center"
+                    android:minHeight="40dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:onClick="buttonOnClick"
                     />
 
                 <Button
                     android:id="@+id/btn_push_notif"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     style="?attr/borderlessButtonStyle"
                     android:text="@string/push_notifications"
                     android:drawableLeft="@drawable/ic_s_chat_orange_compat"
                     android:paddingLeft="16dp"
                     android:drawablePadding="24dp"
                     android:gravity="left|center"
+                    android:minHeight="40dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:onClick="buttonOnClick"
+
+                    android:enabled="false"
+                    android:textColor="@color/dark12"
+                    android:drawableTint="@color/dark12"
                     />
 
                 <Button
                     android:id="@+id/btn_cities_manager"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     style="?attr/borderlessButtonStyle"
                     android:text="@string/cities_manager"
                     android:drawableLeft="@drawable/ic_cities_manager_compat"
                     android:paddingLeft="16dp"
                     android:drawablePadding="24dp"
                     android:gravity="left|center"
+                    android:minHeight="40dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:onClick="buttonOnClick"
+
+                    android:enabled="false"
+                    android:textColor="@color/dark12"
+                    android:drawableTint="@color/dark12"
+                    />
+
+                <Button
+                    android:id="@+id/btn_change_currency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="?attr/borderlessButtonStyle"
+                    android:text="@string/cities_manager"
+                    android:drawableLeft="@drawable/ic_currency_compat"
+                    android:paddingLeft="16dp"
+                    android:drawablePadding="24dp"
+                    android:gravity="left|center"
+                    android:onClick="buttonOnClick"
+                    android:minHeight="40dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
                     />
 
                 <Button
                     android:id="@+id/btn_contact_happ"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     style="?attr/borderlessButtonStyle"
                     android:text="@string/contact_happ"
                     android:drawableLeft="@drawable/ic_mail_compat"
                     android:paddingLeft="16dp"
                     android:drawablePadding="24dp"
                     android:gravity="left|center"
+                    android:minHeight="40dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:onClick="buttonOnClick"
+
+                    android:enabled="false"
+                    android:textColor="@color/dark12"
+                    android:drawableTint="@color/dark12"
                     />
 
                 <Button
                     android:id="@+id/btn_faq"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     style="?attr/borderlessButtonStyle"
                     android:text="@string/faq_help"
                     android:drawableLeft="@drawable/ic_faq_compat"
                     android:paddingLeft="16dp"
                     android:drawablePadding="24dp"
                     android:gravity="left|center"
+                    android:minHeight="40dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:onClick="buttonOnClick"
+
+                    android:enabled="false"
+                    android:textColor="@color/dark12"
+                    android:drawableTint="@color/dark12"
                     />
 
                 <Button
                     android:id="@+id/btn_terms_service"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     style="?attr/borderlessButtonStyle"
                     android:text="@string/terms_of_service"
                     android:drawableLeft="@drawable/ic_terms_of_service_compat"
                     android:paddingLeft="16dp"
                     android:drawablePadding="24dp"
                     android:gravity="left|center"
+                    android:minHeight="40dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:onClick="buttonOnClick"
+
+                    android:enabled="false"
+                    android:textColor="@color/dark12"
                     />
-
-
 
                 <Button
                     android:id="@+id/btn_privacy_policy"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     style="?attr/borderlessButtonStyle"
                     android:text="@string/privacy_policy"
                     android:paddingLeft="66dp"
                     android:gravity="left|center"
+                    android:minHeight="40dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:onClick="buttonOnClick"
                     />
 
             </LinearLayout>

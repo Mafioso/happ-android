@@ -417,6 +417,7 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="user">User</string>
     <string name="event">Event</string>
     <string name="time_filter">Filter Time</string>
+    <string name="currency_manager">Currency Manager</string>
 
 
 </resources>

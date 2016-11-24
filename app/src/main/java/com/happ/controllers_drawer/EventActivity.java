@@ -379,24 +379,34 @@ public class EventActivity extends AppCompatActivity {
             mEventAuthor.setVisibility(View.GONE);
         }
 
-        if (author.getPhone() != null) {
-            mPhone.setText(author.getPhone());
-            mPhone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String phone = author.getPhone();
-                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-                    startActivity(intent);
-                }
-            });
-        } else {
-            mEventPhone.setVisibility(View.GONE);
-        }
+//        if (author.getPhone() != null) {
+//        mPhone.setText(author.getPhone());
+        mPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                String phone = author.getPhone();
+                String phone = mPhone.getText().toString();
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                startActivity(intent);
+            }
+        });
+//        } else {
+//            mEventPhone.setVisibility(View.GONE);
+//        }
         mDescription.setText(event.getDescription());
         if (event.getWebSite() == null || event.getWebSite().equals("") ) {
             mEventWEbSite.setVisibility(View.GONE);
         } else {
-            mWebSite.setText(event.getWebSite());
+            final String link = event.getWebSite();
+            mWebSite.setText(link);
+            mEventWEbSite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri address = Uri.parse(link);
+                    Intent openlinkIntent = new Intent(Intent.ACTION_VIEW, address);
+                    startActivity(openlinkIntent);
+                }
+            });
         }
 
         if (event.getEmail() == null || event.getEmail().equals("") ) {

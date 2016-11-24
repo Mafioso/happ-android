@@ -20,10 +20,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.R;
+import com.happ.controllers.ChangeCurrencyActivity;
 import com.happ.controllers.PrivacyPolicyActivity;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.SelectCityFragment;
@@ -49,7 +49,9 @@ public class SettingsActivity extends AppCompatActivity {
             mBtnContactHapp,
             mBtnFaqHelp,
             mBtnTermsOfService,
-            mBtnPrivacyPolice;
+            mBtnPrivacyPolice,
+            mBtnChangeCurrency;
+
     private ImageView mCloseLeftNavigation;
 
     @Override
@@ -65,16 +67,18 @@ public class SettingsActivity extends AppCompatActivity {
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mCloseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
 
-        //Buttons
+
+        //Enable Buttons
             mBtnProfile = (Button) findViewById(R.id.btn_profile_settings);
+            mBtnChangeCurrency = (Button) findViewById(R.id.btn_change_currency);
+            mBtnPrivacyPolice = (Button) findViewById(R.id.btn_privacy_policy);
+
+        //Disable Buttons
             mBtnPushNotif = (Button) findViewById(R.id.btn_push_notif);
             mBtnCitiesManager = (Button) findViewById(R.id.btn_cities_manager);
             mBtnContactHapp = (Button) findViewById(R.id.btn_contact_happ);
             mBtnFaqHelp = (Button) findViewById(R.id.btn_faq);
             mBtnTermsOfService = (Button) findViewById(R.id.btn_terms_service);
-            mBtnPrivacyPolice = (Button) findViewById(R.id.btn_privacy_policy);
-
-
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -153,61 +157,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        mBtnProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), UserActivity.class);
-                i.putExtra("from_settings", true);
-                startActivity(i);
-                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
-            }
-        });
-
-        mBtnPushNotif.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(SettingsActivity.this, "Push Notifications", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        mBtnCitiesManager.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(SettingsActivity.this, "Cities Manager", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        mBtnContactHapp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(SettingsActivity.this, "Contact Happ", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        mBtnFaqHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(SettingsActivity.this, "Faq / Help", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        mBtnTermsOfService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(SettingsActivity.this, "Terms of Service", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        mBtnPrivacyPolice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(), PrivacyPolicyActivity.class);
-                i.putExtra("from_settings", true);
-                startActivity(i);
-                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
-            }
-        });
-
         mCloseLeftNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,8 +164,46 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+    }
 
+    public void buttonOnClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_profile_settings:
+                Intent goToProfile = new Intent(getApplicationContext(), UserActivity.class);
+                goToProfile.putExtra("from_settings", true);
+                startActivity(goToProfile);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                break;
 
+            case R.id.btn_push_notif:
+                break;
+
+            case R.id.btn_cities_manager:
+                break;
+
+            case R.id.btn_change_currency:
+                Intent goToChangeCurrency = new Intent(getApplicationContext(), ChangeCurrencyActivity.class);
+                goToChangeCurrency.putExtra("from_settings", true);
+                startActivity(goToChangeCurrency);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                break;
+
+            case R.id.btn_contact_happ:
+                break;
+
+            case R.id.btn_faq:
+                break;
+
+            case R.id.btn_terms_service:
+                break;
+
+            case R.id.btn_privacy_policy:
+                Intent goToPrivacyPolicy = new Intent(getApplicationContext(), PrivacyPolicyActivity.class);
+                goToPrivacyPolicy.putExtra("from_settings", true);
+                startActivity(goToPrivacyPolicy);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                break;
+        }
     }
 
     public class MyCityPageAdapter extends FragmentPagerAdapter {
