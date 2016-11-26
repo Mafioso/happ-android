@@ -418,6 +418,12 @@ Ask.fm Europe Limited является частной компанией с ог
     <string name="event">Event</string>
     <string name="time_filter">Filter Time</string>
     <string name="currency_manager">Currency Manager</string>
+    <string name="change_currency">Change Currency</string>
+    <string name="add_more_interests">Add More Interests</string>
+    <string name="feed_everything_empty">There are no events for selected interests</string>
+    <string name="feed_favorites_empty">You don’t have any favourited event</string>
+    <string name="text_is_empty_here">It is Empty Here!</string>
+    <string name="find_awesome_events">Find Awesome Events</string>
 
 
 </resources>

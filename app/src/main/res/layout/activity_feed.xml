@@ -20,7 +20,12 @@
             android:id="@+id/root_layout"
             android:background="@color/bg_light">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
                 <android.support.design.widget.AppBarLayout
+                    android:id="@+id/app_feed_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/bg_light">
@@ -29,26 +34,30 @@
 
                 </android.support.design.widget.AppBarLayout>
 
-
                 <FrameLayout
+                    android:layout_below="@+id/app_feed_bar"
                     android:id="@+id/feed_container"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="48dp"/>
+                    android:layout_marginBottom="48dp"
+                    android:visibility="visible"/>
 
-            <com.roughike.bottombar.BottomBar
-                android:id="@+id/bottombar_feed"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_gravity="bottom"
-                android:background="@color/bg_light"
-                app:bb_inActiveTabAlpha="0.6"
-                app:bb_activeTabAlpha="1"
-                app:bb_inActiveTabColor="@color/bb_darkBackgroundColor"
-                app:bb_activeTabColor="@color/colorAccent"
-                app:bb_tabXmlResource="@xml/bottombar_feed_tabs"/>
+                <com.roughike.bottombar.BottomBar
+                    android:id="@+id/bottombar_feed"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="bottom"
+                    android:background="@color/bg_light"
+                    app:bb_inActiveTabAlpha="0.6"
+                    app:bb_activeTabAlpha="1"
+                    app:bb_inActiveTabColor="@color/bb_darkBackgroundColor"
+                    app:bb_activeTabColor="@color/colorAccent"
+                    app:bb_tabXmlResource="@xml/bottombar_feed_tabs"
+                    android:layout_alignParentBottom="true"/>
 
+
+            </RelativeLayout>
         </android.support.design.widget.CoordinatorLayout>
 
         <include layout="@layout/drawer_layout" />

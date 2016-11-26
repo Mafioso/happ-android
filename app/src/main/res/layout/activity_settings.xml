@@ -95,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     style="?attr/borderlessButtonStyle"
-                    android:text="@string/cities_manager"
+                    android:text="@string/change_currency"
                     android:drawableLeft="@drawable/ic_currency_compat"
                     android:paddingLeft="16dp"
                     android:drawablePadding="24dp"

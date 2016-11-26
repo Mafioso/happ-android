@@ -100,7 +100,7 @@ public interface HAPPapi {
     Call<Void> setInterests(@Body List<String> data);
 
     @GET("currencies/")
-    Call<CurrencyResponse> getCurrency ();
+    Call<CurrencyResponse> getCurrency (@Query("page") int page);
 
     @POST ("interests/set/")
     Call<Void> setAllInterests(@Query("all") int allId);

@@ -29,6 +29,12 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
     private LinearLayoutManager llm;
     private ArrayList<Currency> currencies;
 
+    private int previousTotal = 0;
+    private boolean loading = true;
+    private int visibleThreshold = 5;
+    int firstVisibleItem, visibleItemCount, totalItemCount;
+    int currenciesPageSize = 13;
+
     private boolean fromSettings = false;
 
     @Override
@@ -36,7 +42,6 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         fromSettings = getIntent().getBooleanExtra("from_settings", false);
         setContentView(R.layout.activity_change_currency);
-
 
         toolbar = (Toolbar) findViewById(R.id.select_currency_toolbar);
         mCurrencyRecyclerView = (RecyclerView) findViewById(R.id.activity_currency_rv);
@@ -55,18 +60,48 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
         mCurrencyRecyclerView.setLayoutManager(llm);
         Realm realm = Realm.getDefaultInstance();
         currencies = new ArrayList<>();
-        try {
-            RealmResults<Currency> currencyRealmResults = realm.where(Currency.class).findAll();
-            currencies = (ArrayList<Currency>) realm.copyFromRealm(currencyRealmResults);
-        } catch (Exception ex) {
-            Log.e("HAPP", "ChangeCurrencyActivity> onCreate "+ex.getLocalizedMessage());
-        } finally {
-            realm.close();
-        }
+
+        RealmResults<Currency> currencyRealmResults = realm.where(Currency.class).findAll();
+        currencies = (ArrayList<Currency>) realm.copyFromRealm(currencyRealmResults);
+        realm.close();
 
         CurrencyListAdapter cla = new CurrencyListAdapter(this, currencies);
         mCurrencyRecyclerView.setAdapter(cla);
 
-        APIService.getCurrencies();
+        APIService.getCurrencies(1);
+
+        createScrollListener();
+    }
+
+    protected void createScrollListener() {
+        mCurrencyRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                visibleItemCount = mCurrencyRecyclerView.getChildCount();
+                totalItemCount = llm.getItemCount();
+                firstVisibleItem = llm.findFirstVisibleItemPosition();
+
+                if (loading) {
+                    if (totalItemCount > previousTotal) {
+                        loading = false;
+                        previousTotal = totalItemCount;
+                    }
+                }
+                if (!loading && (totalItemCount - visibleItemCount)
+                        <= (firstVisibleItem + visibleThreshold)) {
+                    // End has been reached
+
+                    Log.i("Yaeye!", "end called");
+
+                    int nextPage = (totalItemCount / currenciesPageSize) + 1;
+                    APIService.getCurrencies(nextPage);
+
+                    loading = true;
+                }
+            }
+        });
     }
 }

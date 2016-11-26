@@ -1239,8 +1239,8 @@ public class HappRestClient {
         });
     }
 
-    public void getCurrencies() {
-        happApi.getCurrency().enqueue(new Callback<CurrencyResponse>() {
+    public void getCurrencies(int page) {
+        happApi.getCurrency(page).enqueue(new Callback<CurrencyResponse>() {
             @Override
             public void onResponse(Call<CurrencyResponse> call, Response<CurrencyResponse> response) {
                 if (response.isSuccessful()){

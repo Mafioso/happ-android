@@ -14,6 +14,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.happ.R;
 import com.happ.adapters.EventsListAdapter;
@@ -23,6 +26,8 @@ import com.happ.models.Event;
 import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
+
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by dante on 8/8/16.
@@ -38,6 +43,12 @@ public class BaseFeedFragment extends Fragment {
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
+
+    protected RelativeLayout mRLEmptyFrom;
+    protected Button mBtnEmptyForm;
+    protected View mDarkViewProgress;
+    protected MaterialProgressBar mFeedEventsProgress;
+    protected TextView mPersonalSubText;
 
     public static BaseFeedFragment newInstance() {
         return new BaseFeedFragment();
@@ -60,7 +71,15 @@ public class BaseFeedFragment extends Fragment {
         final View view = inflater.inflate(R.layout.feeds_fragment, container, false);
         final Activity activity = getActivity();
 
+        mRLEmptyFrom = (RelativeLayout) view.findViewById(R.id.rl_empty_form);
         eventsListView = (RecyclerView) view.findViewById(R.id.events_list_view);
+        mBtnEmptyForm = (Button) view.findViewById(R.id.btn_empty_form);
+        mDarkViewProgress = (View) view.findViewById(R.id.dark_view_feed_progress);
+        mFeedEventsProgress = (MaterialProgressBar) view.findViewById(R.id.feed_events_progress);
+        mPersonalSubText = (TextView) view.findViewById(R.id.tv_empty_personal_text);
+        mRLEmptyFrom.setVisibility(View.GONE);
+
+
         eventsListLayoutManager = new LinearLayoutManager(activity);
         eventsListView.setLayoutManager(eventsListLayoutManager);
         events = new ArrayList<>();

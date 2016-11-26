@@ -1,15 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cardview_light_background"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/events_list_view"
+        android:id="@+id/events_list_view"/>
+
+    <include layout="@layout/empty_form" />
+
+    <View
+        android:id="@+id/dark_view_feed_progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/dark80"
+        />
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        android:id="@+id/feed_events_progress"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="visible"
         />
 
 
-</LinearLayout>
+</RelativeLayout>

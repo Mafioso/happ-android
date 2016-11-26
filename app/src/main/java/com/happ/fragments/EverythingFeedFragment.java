@@ -13,11 +13,12 @@ import android.view.ViewGroup;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.R;
 import com.happ.adapters.EventsListAdapter;
 import com.happ.controllers_drawer.FeedActivity;
+import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
-import com.happ.retrofit.HappRestClient;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -48,6 +49,18 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     public EverythingFeedFragment() {
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
+        Date startDate = ((FeedActivity)getActivity()).getStartD();
+        Date endDate = ((FeedActivity)getActivity()).getEndD();
+        if (maxFree != null || startDate != null || endDate != null) {
+            filteredEventsList();
+        } else {
+            updateEventsList();
+        }
+    }
 
     @Nullable
     @Override
@@ -77,35 +90,22 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 mUserSettingsChangedBroadcastReceiver = createUserChangedBroadcastReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mUserSettingsChangedBroadcastReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
             }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
-        Date startDate = ((FeedActivity)getActivity()).getStartD();
-        Date endDate = ((FeedActivity)getActivity()).getEndD();
-        String searchText = "";
-        if (startDate != null || endDate != null || maxFree != null) {
+
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
+//        Date startDate = ((FeedActivity)getActivity()).getStartD();
+//        Date endDate = ((FeedActivity)getActivity()).getEndD();
+//        String searchText = "";
+
+//        if (startDate != null || endDate != null || maxFree != null) {
 //            String sD = sdf.format(startDate);
-            String sD = "";
 //            String eD = sdf.format(endDate);
-            String eD = "";
-
-            HappRestClient.getInstance().getFilteredEvents(1, searchText, sD, eD, maxFree, false);
-        } else {
-            HappRestClient.getInstance().getEvents(false);
-        }
+//            HappRestClient.getInstance().getFilteredEvents(1, searchText, sD, eD, maxFree, false);
+//        } else {
+//            HappRestClient.getInstance().getEvents(false);
+        APIService.getEvents(false);
+//        }
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
-        Date startDate = ((FeedActivity)getActivity()).getStartD();
-        Date endDate = ((FeedActivity)getActivity()).getEndD();
-        if (maxFree != null || startDate != null || endDate != null) {
-            filteredEventsList();
-        } else {
-            updateEventsList();
-        }
     }
 
     protected void updateEventsList() {
@@ -114,19 +114,26 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();
-    }
 
-
-
-    protected BroadcastReceiver createUserChangedBroadcastReceiver() {
-        return  new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (intent.getBooleanExtra("EVENTS_CHANGED", false)) {
-                    getEvents(0, false);
+        if (events.isEmpty()) {
+            mRLEmptyFrom.setVisibility(View.VISIBLE);
+            mPersonalSubText.setText(R.string.feed_everything_empty);
+            mBtnEmptyForm.setText(R.string.add_more_interests);
+            mBtnEmptyForm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(App.getContext(), SelectInterestsActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                 }
-            }
-        };
+            });
+        } else {
+            mRLEmptyFrom.setVisibility(View.GONE);
+        }
+
+        mFeedEventsProgress.setVisibility(View.GONE);
+        mDarkViewProgress.setVisibility(View.GONE);
     }
 
     protected void filteredEventsList() {
@@ -151,26 +158,6 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         realm.close();
 
     }
-
-
-    @Override
-    public void onDestroy() {
-
-        if (filteredEventsDoneReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(filteredEventsDoneReceiver);
-        }
-        if (eventsRequestDoneReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
-        }
-        if (didUpvoteReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
-        }
-        if (didIsFavReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
-        }
-        super.onDestroy();
-    }
-
 
     @Override
     protected void getEvents(int page, boolean favs) {
@@ -204,6 +191,17 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         };
     }
 
+    protected BroadcastReceiver createUserChangedBroadcastReceiver() {
+        return  new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getBooleanExtra("EVENTS_CHANGED", false)) {
+                    getEvents(0, false);
+                }
+            }
+        };
+    }
+
     private BroadcastReceiver createUpvoteReceiver() {
         return new BroadcastReceiver() {
             @Override
@@ -230,4 +228,24 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             }
         };
     }
+
+
+    @Override
+    public void onDestroy() {
+
+        if (filteredEventsDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(filteredEventsDoneReceiver);
+        }
+        if (eventsRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+        }
+        if (didUpvoteReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
+        }
+        if (didIsFavReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
+        }
+        super.onDestroy();
+    }
+
 }

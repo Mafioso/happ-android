@@ -265,11 +265,10 @@ public class FeedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (startDate == null) startDate = new Date();
-                if (endDate == null) endDate = new Date();
-
-                String sD = sdf.format(startDate);
-                String eD = sdf.format(endDate);
+                String sD = "";
+                String eD = "";
+                if (startDate != null) sD = sdf.format(startDate);
+                if (endDate != null) eD = sdf.format(endDate);
 
                 if (mFilterFree.isChecked()) {
                     isFree = "0";
@@ -297,37 +296,32 @@ public class FeedActivity extends AppCompatActivity {
                                                                int yearStart, int monthStart,
                                                                int dayStart, int yearEnd,
                                                                int monthEnd, int dayEnd) {
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.set(Calendar.YEAR, yearStart);
+                                    cal.set(Calendar.MONTH, monthStart);
+                                    cal.set(Calendar.DAY_OF_MONTH, dayStart);
+                                    startDate = cal.getTime();
 
-//                                        String date = dayStart + "/" + (++monthStart)
-//                                                + " - " +
-//                                                dayEnd + "/" + (++monthEnd);
-
-                                        Calendar cal = Calendar.getInstance();
-                                        cal.set(Calendar.YEAR, yearStart);
-                                        cal.set(Calendar.MONTH, monthStart);
-                                        cal.set(Calendar.DAY_OF_MONTH, dayStart);
-                                        startDate = cal.getTime();
-
-                                        cal.set(Calendar.YEAR, yearEnd);
-                                        cal.set(Calendar.MONTH, monthEnd);
-                                        cal.set(Calendar.DAY_OF_MONTH, dayEnd);
-                                        endDate = cal.getTime();
+                                    cal.set(Calendar.YEAR, yearEnd);
+                                    cal.set(Calendar.MONTH, monthEnd);
+                                    cal.set(Calendar.DAY_OF_MONTH, dayEnd);
+                                    endDate = cal.getTime();
 
 
-                                        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("MMM dd");
-                                        DateTime eventStartDate = new DateTime(getStartD());
-                                        DateTime eventEndDate = new DateTime(getEndD());
+                                    DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("MMM dd");
+                                    DateTime eventStartDate = new DateTime(getStartD());
+                                    DateTime eventEndDate = new DateTime(getEndD());
 
-                                        String filterDate =
-                                                eventStartDate.toString(dtFormatter)
-                                                + " - " +
-                                                eventEndDate.toString(dtFormatter);
+                                    String filterDate =
+                                            eventStartDate.toString(dtFormatter)
+                                            + " - " +
+                                            eventEndDate.toString(dtFormatter);
 
-                                        mFilterDate.setText(filterDate);
-                                        String sD = sdf.format(startDate);
-                                        String eD = sdf.format(endDate);
+                                    mFilterDate.setText(filterDate);
+                                    String sD = sdf.format(startDate);
+                                    String eD = sdf.format(endDate);
 
-                                        APIService.getFilteredEvents(1, getFeedSearch(), sD, eD, getMaxFree(), false);
+                                    APIService.getFilteredEvents(1, getFeedSearch(), sD, eD, getMaxFree(), false);
 
                                     }
                                 }, now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH));
@@ -348,10 +342,11 @@ public class FeedActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 searchText = mFeedSearchText.getText().toString();
-                //                String sD = sdf.format(startDate);
                 String sD = "";
-//                String eD = sdf.format(endDate);
-                String eD ="";
+                String eD = "";
+                if (startDate != null) sD = sdf.format(startDate);
+                if (endDate != null) eD = sdf.format(endDate);
+
                 APIService.getFilteredEvents(1,searchText, sD, eD, getMaxFree(), false);
             }
 
@@ -431,30 +426,6 @@ public class FeedActivity extends AppCompatActivity {
             }
         });
 
-//        mStartDateText = (EditText) findViewById(R.id.filter_input_start_date);
-//        mDateText = (EditText) findViewById(R.id.filter_input_end_date);
-//        mDateText.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (endDate == null) endDate = new Date();
-//                Calendar now = Calendar.getInstance();
-//                now.setTime(endDate);
-//
-//                DatePickerDialog dpd = DatePickerDialog.newInstance(
-//                        FeedActivity.this,
-//                        now.get(Calendar.YEAR),
-//                        now.get(Calendar.MONTH),
-//                        now.get(Calendar.DAY_OF_MONTH)
-//                );
-//                dpd.show(getFragmentManager(), "Datepickerdialog");
-//            }
-//        });
-//
-//
-////        RLFeedFilter = (RelativeLayout) findViewById(R.id.filter_feed_ll);
-//        RLFeedFilter.setVisibility(View.GONE);
-//        mFabFilterDone.setVisibility(View.GONE);
-
         setListenerToRootView();
 
     }
@@ -514,61 +485,6 @@ public class FeedActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
-
-//    @Override
-//    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-//
-//        java.text.DateFormat dateFormat = android.text.format.DateFormat.getMediumDateFormat(this);
-//
-//        Calendar cal = Calendar.getInstance();
-//        cal.set(Calendar.YEAR, year);
-//        cal.set(Calendar.MONTH, monthOfYear);
-//        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//        String endDate = dateFormat.format(cal.getTime());
-//
-//        cal.set(Calendar.YEAR, yearEnd);
-//        cal.set(Calendar.MONTH, monthOfYearEnd);
-//        cal.set(Calendar.DAY_OF_MONTH, dayOfMonthEnd);
-//        endDate = endDate = " – " + dateFormat.format(cal.getTime());
-//
-////        mStartDateText.setText(startDate);
-//        mDateText.setText(endDate);
-//    }
-
-//
-//    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth,int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
-//
-//        Calendar calendar = Calendar.getInstance();
-//        if (endDate == null) endDate = new Date();
-//        calendar.setTime(endDate);
-//        calendar.set(year, monthOfYear, dayOfMonth, yearEnd, monthOfYearEnd, dayOfMonthEnd);
-//
-//        endDate = calendar.getTime();
-//        java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
-//
-////                mStartDateText.setText(format.format(startDate));
-//        mDateText.setText(format.format(endDate));
-//
-//    }
-
-//    private DatePickerDialog.OnDateSetListener createStartDateListener() {
-//        return new DatePickerDialog.OnDateSetListener() {
-//            @Override
-//            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-//                Calendar calendar = Calendar.getInstance();
-//                if (startDate == null) startDate = new Date();
-//                calendar.setTime(startDate);
-//                calendar.set(year, monthOfYear, dayOfMonth);
-//
-//                startDate = calendar.getTime();
-//                java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
-//                mStartDateText.setText(format.format(startDate));
-//            }
-//        };
-//    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -640,26 +556,6 @@ public class FeedActivity extends AppCompatActivity {
         City realmCity = realm.where(City.class).equalTo("name", mCity).findFirst();
         if (realmCity != null) city = realm.copyFromRealm(realmCity);
         realm.close();
-    }
-
-    @Override
-    protected void onDestroy() {
-
-        if (userRequestDoneReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(userRequestDoneReceiver);
-        }
-        if (didUpvoteReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
-        }
-        if (didIsFavReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
-        }
-        if (changeCityDoneReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
-            changeCityDoneReceiver = null;
-        }
-
-        super.onDestroy();
     }
 
     private BroadcastReceiver changeCityReceiver() {
@@ -780,6 +676,26 @@ public class FeedActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        if (userRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(userRequestDoneReceiver);
+        }
+        if (didUpvoteReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
+        }
+        if (didIsFavReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
+        }
+        if (changeCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
+            changeCityDoneReceiver = null;
+        }
+
+        super.onDestroy();
     }
 
 }

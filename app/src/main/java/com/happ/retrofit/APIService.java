@@ -272,9 +272,10 @@ public class APIService extends IntentService {
         App.getContext().startService(intent);
     }
 
-    public static void getCurrencies() {
+    public static void getCurrencies(int page) {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_CURRENCIES);
+        intent.putExtra(EXTRA_PAGE, page);
         App.getContext().startService(intent);
     }
 
@@ -353,7 +354,8 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_GET_CURRENT_CITY)) {
                 HappRestClient.getInstance().getCurrentCity();
             } else if (action.equals(ACTION_GET_CURRENCIES)) {
-                    HappRestClient.getInstance().getCurrencies();
+                int page = intent.getIntExtra(EXTRA_PAGE, 1);
+                HappRestClient.getInstance().getCurrencies(page);
             } else if (action.equals(ACTION_SET_INTERESTS)) {
                 ArrayList<String> data = intent.getStringArrayListExtra(EXTRA_SET_INTERESTS);
                 HappRestClient.getInstance().setInterests(data);

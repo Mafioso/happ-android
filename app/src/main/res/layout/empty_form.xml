@@ -1,0 +1,73 @@
+<RelativeLayout
+    android:id="@+id/rl_empty_form"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srcCompat="@drawable/dotted"/>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="48dp"
+        android:paddingBottom="48dp">
+
+        <ImageView
+            android:id="@+id/iv_logo_empty"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/camera"
+            />
+
+        <TextView
+            android:id="@+id/tv_empty_here"
+            android:layout_below="@+id/iv_logo_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_is_empty_here"
+            android:textSize="18sp"
+            android:textColor="@color/dark80"
+            android:layout_margin="12dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            />
+
+        <TextView
+            android:id="@+id/tv_empty_personal_text"
+            android:layout_below="@+id/tv_empty_here"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/feed_everything_empty"
+            android:textSize="14sp"
+            android:textColor="@color/dark57"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+        <Button
+            android:id="@+id/btn_empty_form"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            style="?attr/borderlessButtonStyle"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textAllCaps="false"
+            android:drawableLeft="@drawable/ic_search_compat"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:background="@drawable/circle_orange_event"
+            android:text="@string/add_more_interests"
+            android:layout_marginRight="58dp"
+            android:layout_marginLeft="58dp"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+
+</RelativeLayout>
