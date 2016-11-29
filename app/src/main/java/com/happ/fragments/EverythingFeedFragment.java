@@ -19,6 +19,7 @@ import com.happ.controllers_drawer.FeedActivity;
 import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
+import com.happ.retrofit.HappRestClient;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,13 +50,23 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     public EverythingFeedFragment() {
     }
 
+        @Override
+        public void onStart() {
+        super.onStart();
+            if (App.hasConnection(getContext())) HappRestClient.getInstance().getEvents(false);
+//            } else {
+//                mFeedEventsProgress.setVisibility(View.GONE);
+//                mDarkViewProgress.setVisibility(View.GONE);
+//            }
+        }
+
     @Override
     public void onResume() {
         super.onResume();
         String maxFree = ((FeedActivity)getActivity()).getMaxFree();
         Date startDate = ((FeedActivity)getActivity()).getStartD();
         Date endDate = ((FeedActivity)getActivity()).getEndD();
-        if (maxFree != null || startDate != null || endDate != null) {
+        if (!maxFree.equals("") || startDate != null || endDate != null) {
             filteredEventsList();
         } else {
             updateEventsList();
@@ -67,20 +78,21 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = super.onCreateView(inflater, container, savedInstanceState);
 
-
-
             if(filteredEventsDoneReceiver == null) {
                 filteredEventsDoneReceiver = createFilteredEventsRequestDoneReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(filteredEventsDoneReceiver, new IntentFilter(BroadcastIntents.FILTERED_EVENTS_REQUEST_OK));
             }
+
             if (eventsRequestDoneReceiver == null) {
                 eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
             }
+
             if (didUpvoteReceiver == null) {
                 didUpvoteReceiver = createUpvoteReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
             }
+
             if (didIsFavReceiver == null) {
                 didIsFavReceiver = createFavReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
@@ -102,8 +114,6 @@ public class EverythingFeedFragment extends BaseFeedFragment {
 //            String eD = sdf.format(endDate);
 //            HappRestClient.getInstance().getFilteredEvents(1, searchText, sD, eD, maxFree, false);
 //        } else {
-//            HappRestClient.getInstance().getEvents(false);
-        APIService.getEvents(false);
 //        }
         return view;
     }

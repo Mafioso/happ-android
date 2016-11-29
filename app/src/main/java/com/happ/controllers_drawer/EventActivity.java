@@ -24,7 +24,6 @@ import android.transition.Explode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,10 +39,12 @@ import com.happ.adapters.EventImagesSwipeAdapter;
 import com.happ.controllers.EditCreateActivity;
 import com.happ.controllers.EventMapActivity;
 import com.happ.controllers.UserActivity;
+import com.happ.fragments.ImageViewFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Event;
 import com.happ.models.EventImage;
 import com.happ.models.User;
+import com.happ.retrofit.APIService;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
@@ -75,39 +76,41 @@ public class EventActivity extends AppCompatActivity {
                         mPlace,
                         mAuthor,
                         mDescription,
-                        mStartDate,
+                        mEventDate,
+                        mEventTime,
                         mPrice,
                         mTitle,
                         mVotesCount;
 
-    private ImageView mFavoritesImage, mCLoseLeftNavigation;
+    private ImageView mFavoritesImage, mUpvoteImage, mCLoseLeftNavigation;
 
     private LinearLayout mEventWEbSite, mEventEmail, mEventPhone;
-    private LinearLayout mCirclePlace, mCirclePlaceRadar;
+    public LinearLayout mCircleLLCalendar, mCircleLLPrice, mCircleLLPlace;
+    private LinearLayout mLLVote, mLLFav;
 
     private RelativeLayout mEventAuthor;
     private Typeface tfcs;
 
     private FloatingActionButton mFab;
     private BroadcastReceiver didIsFavReceiver;
+    private BroadcastReceiver didUpvoteReceiver;
 
     private boolean isOrg;
+    private boolean inEventActivity;
     private CollapsingToolbarLayout ctl;
     private NavigationView navigationMenu, navigationHeader, navigationView;
-    private LinearLayout mDateBg;
-    private LinearLayout mPriceBg;
-    private LinearLayout mPlaceBg;
-    private LinearLayout mUpvoteBg;
 
-    AppBarLayout appBarLayout;
+    private AppBarLayout appBarLayout;
     private TextView mCurrency, mPhone;
 
+    private ImageViewFragment imageViewFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         isOrg = intent.getBooleanExtra("is_organizer", false);
+        inEventActivity = intent.getBooleanExtra("in_event_activity", false);
         eventId = intent.getStringExtra("event_id");
         setContentView(R.layout.activity_event);
 
@@ -126,21 +129,22 @@ public class EventActivity extends AppCompatActivity {
         mEventEmail = (LinearLayout) findViewById(R.id.event_email_form);
         mEventPhone = (LinearLayout) findViewById(R.id.event_phone_form);
         mPhone = (TextView) findViewById(R.id.event_phone);
-        mCirclePlace = (LinearLayout) findViewById(R.id.ll_place);
-        mCirclePlaceRadar = (LinearLayout) findViewById(R.id.ll_circle_radar);
         mPrice = (TextView) findViewById(R.id.event_price);
-        mStartDate = (TextView)findViewById(R.id.event_start_date);
-        mDateBg = (LinearLayout) findViewById(R.id.ll_calendar_image);
-        mPriceBg = (LinearLayout) findViewById(R.id.ll_buy_image);
-        mPlaceBg = (LinearLayout) findViewById(R.id.ll_place_image);
-        mUpvoteBg = (LinearLayout) findViewById(R.id.ll_upvote_image);
-//        mEndDate = (TextView)findViewById(R.id.event_end_date);
-        viewPager=(ViewPager)findViewById(R.id.slider_viewpager);
+        mEventDate = (TextView)findViewById(R.id.event_date);
+        mEventTime = (TextView) findViewById(R.id.event_time);
+        viewPager = (ViewPager)findViewById(R.id.slider_viewpager);
         mEmail = (TextView) findViewById(R.id.event_email);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         ctl = (CollapsingToolbarLayout)findViewById(R.id.event_collapsing_layout);
+        mUpvoteImage = (ImageView) findViewById(R.id.event_iv_did_upvote);
 
+        mCircleLLPlace = (LinearLayout) findViewById(R.id.ll_place_image);
+        mCircleLLCalendar = (LinearLayout) findViewById(R.id.ll_calendar_image);
+        mCircleLLPrice = (LinearLayout) findViewById(R.id.ll_price_image);
+
+        mLLVote = (LinearLayout) findViewById(R.id.ll_upvote_image);
+        mLLFav = (LinearLayout) findViewById(R.id.ll_fav_image);
         mCurrency = (TextView)findViewById(R.id.event_currency);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -162,7 +166,7 @@ public class EventActivity extends AppCompatActivity {
             });
         }
 
-        mCirclePlace.setOnClickListener(new View.OnClickListener() {
+        mCircleLLPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(EventActivity.this, EventMapActivity.class);
@@ -284,16 +288,16 @@ public class EventActivity extends AppCompatActivity {
 
         repopulateEvent();
 
+
+        if (didUpvoteReceiver == null) {
+            didUpvoteReceiver = createUpvoteReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
+        }
+
         if (didIsFavReceiver == null) {
             didIsFavReceiver = createFavReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
         }
-
-        AlphaAnimation animation1 = new AlphaAnimation(0.2f, 1.0f);
-        animation1.setDuration(1000);
-//        animation1.setStartOffset(5000);
-        animation1.setFillAfter(true);
-        mCirclePlaceRadar.startAnimation(animation1);
     }
 
     @Override
@@ -324,22 +328,20 @@ public class EventActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     private void repopulateEvent() {
-        Realm realm = Realm.getDefaultInstance();
-        event = realm.where(Event.class).equalTo("id", eventId).findFirst();
-        event = realm.copyFromRealm(event);
-        realm.close();
 
-        mEventImagesSwipeAdapter.setImageList(event.getImages());
+        if (inEventActivity) {
+            Realm realm = Realm.getDefaultInstance();
+            event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+            event = realm.copyFromRealm(event);
+            realm.close();
+
+            mEventImagesSwipeAdapter.setImageList(event.getImages());
+
+
 
 //        Drawable dr = DrawableCompat.wrap(getResources().getDrawable(R.drawable.circle_event));
 //        DrawableCompat.setTint(dr,Color.parseColor(event.getColor()));
-
-//        mDateBg.setBackground(dr);
-//        mPriceBg.setBackground(dr);
-//        mPlaceBg.setBackground(dr);
-//        mUpvoteBg.setBackground(dr);
 //
 //        ctl.setBackgroundColor(Color.parseColor(event.getColor()));
 //        ctl.setContentScrimColor(Color.parseColor(event.getColor()));
@@ -367,78 +369,116 @@ public class EventActivity extends AppCompatActivity {
 //            mEventInterestTitle.setText("Null");
 //        }
 
-        mTitle.setText(event.getTitle());
-        mPlace.setText(event.getPlace());
-        mPrice.setText(event.getPriceRange());
-        mCurrency.setText(event.getCurrency().getName());
+            mTitle.setText(event.getTitle());
+            mPlace.setText(event.getPlace());
+            mPrice.setText(event.getPriceRange());
+            mCurrency.setText(event.getCurrency().getName());
 
-        final User author = event.getAuthor();
-        if (author != null) {
-            mAuthor.setText(event.getAuthor().getFullName());
-        } else {
-            mEventAuthor.setVisibility(View.GONE);
-        }
-
-//        if (author.getPhone() != null) {
-//        mPhone.setText(author.getPhone());
-        mPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                String phone = author.getPhone();
-                String phone = mPhone.getText().toString();
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-                startActivity(intent);
+            final User author = event.getAuthor();
+            if (author != null) {
+                mAuthor.setText(event.getAuthor().getFullName());
+            } else {
+                mEventAuthor.setVisibility(View.GONE);
             }
-        });
-//        } else {
-//            mEventPhone.setVisibility(View.GONE);
-//        }
-        mDescription.setText(event.getDescription());
-        if (event.getWebSite() == null || event.getWebSite().equals("") ) {
-            mEventWEbSite.setVisibility(View.GONE);
-        } else {
-            final String link = event.getWebSite();
-            mWebSite.setText(link);
-            mEventWEbSite.setOnClickListener(new View.OnClickListener() {
+
+        if (author.getPhone() != null) {
+            mPhone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Uri address = Uri.parse(link);
-                    Intent openlinkIntent = new Intent(Intent.ACTION_VIEW, address);
-                    startActivity(openlinkIntent);
+                String phone = author.getPhone();
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                startActivity(intent);
                 }
             });
-        }
-
-        if (event.getEmail() == null || event.getEmail().equals("") ) {
-            mEventEmail.setVisibility(View.GONE);
         } else {
-            mEmail.setText(event.getEmail());
-        }
-        String startDate = event.getStartDateFormatted("MMM dd").toUpperCase();
-        String endDate = event.getEndDateFormatted("MMM dd").toUpperCase();
-        String date = "";
-        if (startDate.equals(endDate)) {
-            mStartDate.setText(startDate);
-        } else {
-            mStartDate.setText(startDate + " — " + endDate);
-        }
-//        mStartDate.setText(event.getStartDateFormatted("dd MMM"));
-//        mEndDate.setText(event.getEndDateFormatted("dd MMM"));
-        mVotesCount.setText(String.valueOf(event.getVotesCount()));
-
-        mFavoritesImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (event.isInFavorites()) {
-                    mFavoritesImage.setImageResource(R.drawable.ic_in_favorites_white);
-//                    APIService.doUnFav(event.getId());
-                } else {
-                    mFavoritesImage.setImageResource(R.drawable.ic_not_in_favorites_white);
-//                    APIService.doFav(event.getId());
+            mPhone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String phone = mPhone.getText().toString();
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                    startActivity(intent);
                 }
-            }
-        });
+            });
+//            mEventPhone.setVisibility(View.GONE);
+        }
 
+            mDescription.setText(event.getDescription());
+            if (event.getWebSite() == null || event.getWebSite().equals("") ) {
+                mEventWEbSite.setVisibility(View.GONE);
+            } else {
+                final String link = event.getWebSite();
+                mWebSite.setText(link);
+                mEventWEbSite.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Uri address = Uri.parse(link);
+                        Intent openlinkIntent = new Intent(Intent.ACTION_VIEW, address);
+                        startActivity(openlinkIntent);
+                    }
+                });
+            }
+
+            if (event.getEmail() == null || event.getEmail().equals("") ) {
+                mEventEmail.setVisibility(View.GONE);
+            } else {
+                mEmail.setText(event.getEmail());
+            }
+
+            String startDate = event.getStartDateFormatted("MMM dd").toUpperCase();
+            String endDate = event.getEndDateFormatted("MMM dd").toUpperCase();
+            if (startDate.equals(endDate)) {
+                mEventDate.setText(startDate);
+            } else {
+                mEventDate.setText(startDate + " — " + endDate);
+            }
+
+            String startTime = event.getStartDateFormatted("h:mm a");
+            String endTime = event.getEndDateFormatted("h:mm a");
+            String rangeTime = startTime + " — " + endTime;
+            if (startTime.equals(endTime)) {
+                mEventTime.setText(startTime);
+            } else {
+                mEventTime.setText(rangeTime);
+            }
+
+            mVotesCount.setText(String.valueOf(event.getVotesCount()));
+
+            if (event.isInFavorites()) {
+                mFavoritesImage.setImageResource(R.drawable.ic_in_favorites_white);
+            } else {
+                mFavoritesImage.setImageResource(R.drawable.ic_not_in_favorites_white);
+            }
+
+            if (event.isDidVote()) {
+                mUpvoteImage.setImageResource(R.drawable.ic_did_upvote);
+            } else {
+                mUpvoteImage.setImageResource(R.drawable.ic_did_not_upvote);
+            }
+
+
+            mLLFav.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (event.isInFavorites()) {
+                        APIService.doUnFav(event.getId());
+                    } else {
+                        APIService.doFav(event.getId());
+                    }
+                }
+            });
+
+            mLLVote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (event.isDidVote()) {
+                        APIService.doDownVote(event.getId());
+                    } else {
+                        APIService.doUpVote(event.getId());
+                    }
+                }
+            });
+
+        }
     }
 
 
@@ -472,11 +512,12 @@ public class EventActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void finish() {
+        super.finish();
         mDrawerLayout = null;
         mToolbar = null;
         eventId = null;
+        inEventActivity = false;
         event = null;
         viewPager = null;
         mEventImagesSwipeAdapter = null;
@@ -485,8 +526,39 @@ public class EventActivity extends AppCompatActivity {
         mPlace = null;
         mAuthor = null;
         mDescription = null;
-        mStartDate = null;
-//        mEndDate = null;
+        mEventDate = null;
+        mEventTime = null;
+        mUpvoteImage = null;
+        mFavoritesImage = null;
+        mEventAuthor = null;
+        mEventWEbSite = null;
+        mEventEmail = null;
+        mFab = null;
+        ctl = null;
+        mPrice = null;
+        mTitle = null;
+        mVotesCount = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDrawerLayout = null;
+        mToolbar = null;
+        eventId = null;
+        inEventActivity = false;
+        event = null;
+        viewPager = null;
+        mEventImagesSwipeAdapter = null;
+        mWebSite = null;
+        mEmail = null;
+        mPlace = null;
+        mAuthor = null;
+        mDescription = null;
+        mEventDate = null;
+        mEventTime = null;
+        mUpvoteImage = null;
+        mFavoritesImage = null;
         mEventAuthor = null;
         mEventWEbSite = null;
         mEventEmail = null;
@@ -512,7 +584,17 @@ public class EventActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                repopulateEvent();
 
+            }
+        };
+    }
+
+    private BroadcastReceiver createUpvoteReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                repopulateEvent();
             }
         };
     }

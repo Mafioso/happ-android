@@ -1,6 +1,5 @@
 package com.happ.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,7 +21,7 @@ import com.happ.R;
  * Created by iztiev on 8/22/16.
  */
 public class ImageViewFragment extends Fragment {
-    private ImageView mImageView;
+    public ImageView mImageView;
     private ProgressBar mProgressBar;
     private String imageUrl;
 

@@ -25,7 +25,7 @@
                 android:background="@color/dark28"
                 android:scaleType="fitXY"
                 android:transitionName="event_image"
-                android:id="@+id/events_list_image_view"/>
+                android:id="@+id/event_item_image_view"/>
 
 
             <ProgressBar
@@ -36,11 +36,11 @@
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
                 android:visibility="gone"
-                android:id="@+id/events_list_image_preloader"/>
+                android:id="@+id/event_item_image_preloader"/>
 
         </RelativeLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/event_item_bg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="8dp"
-                        android:id="@+id/events_list_item_title"
+                        android:id="@+id/event_item_title"
                         android:transitionName="event_title"
                         android:textSize="32sp"
                         android:textAllCaps="true"
@@ -82,12 +82,12 @@
                         android:paddingRight="24dp"/>
 
                     <TextView
-                        android:layout_below="@+id/events_list_item_title"
+                        android:layout_below="@+id/event_item_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/white"
                         android:text="Music "
-                        android:id="@+id/events_list_item_interest"
+                        android:id="@+id/event_item_interest"
                         android:textSize="16sp"
                         android:transitionName="event_interest_name"
                         android:gravity="center"
@@ -103,36 +103,25 @@
                     android:layout_marginRight="16dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_marginRight="16dp"
+                        android:layout_toLeftOf="@+id/ll_event_item_price"
+                        android:id="@+id/ll_event_item_time"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:id="@+id/event_item_time"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
-                            android:textAllCaps="true"
-                            android:textColor="@android:color/white"
-                            android:text="19:00 " />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:textAllCaps="true"
-                            android:textColor="@android:color/white"
-                            android:text="— " />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="16sp"
+                            android:maxLines="1"
                             android:textAllCaps="true"
                             android:textColor="@android:color/white"
                             android:text="23:00" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_event_item_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -142,16 +131,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
+                            android:id="@+id/event_item_price"
                             android:textColor="@android:color/white"
-                            android:text="от " />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="16sp"
-                            android:id="@+id/events_list_price"
-                            android:textColor="@android:color/white"
-                            android:text="500 тг" />
+                            android:text="от 500тг - 10000тг" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -163,19 +145,26 @@
                     android:layout_marginBottom="16dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_toLeftOf="@+id/ll_event_item_like_fav"
+                        android:layout_marginRight="16dp"
+                        android:id="@+id/ll_event_item_place"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true">
 
                         <TextView
+                            android:id="@+id/event_item_place"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
+                            android:maxLines="1"
+                            android:ellipsize="end"
                             android:text="Esentai Mall"
                             android:textColor="@android:color/white" />
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/ll_event_item_like_fav"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true">
@@ -197,7 +186,7 @@
                                 android:textSize="16sp"
                                 android:layout_gravity="center_vertical"
                                 android:textColor="@android:color/white"
-                                android:id="@+id/events_list_votes_count" />
+                                android:id="@+id/event_item_votes_count" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -216,7 +205,7 @@
                     </LinearLayout>
                 </RelativeLayout>
             </LinearLayout>
-        </LinearLayout>
+        </RelativeLayout>
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

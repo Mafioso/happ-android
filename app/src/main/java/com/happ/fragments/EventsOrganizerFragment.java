@@ -26,7 +26,6 @@ import com.happ.controllers.EditCreateActivity;
 import com.happ.controllers_drawer.EventActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
-import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
 
@@ -113,7 +112,7 @@ public class EventsOrganizerFragment extends Fragment {
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(deleteEventRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTDELETE_REQUEST_OK));
         }
 
-        HappRestClient.getInstance().getEvents(false);
+        APIService.getEvents(false);
         createScrollListener();
 
         return view;

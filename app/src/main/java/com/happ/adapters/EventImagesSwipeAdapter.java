@@ -4,25 +4,14 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.happ.R;
 import com.happ.fragments.ImageViewFragment;
 import com.happ.models.EventImage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.realm.RealmList;
 
@@ -64,6 +53,7 @@ public class EventImagesSwipeAdapter extends FragmentStatePagerAdapter {
             ImageViewFragment fragment = ImageViewFragment.newInstance();
             fragment.setUrl(imageList.get(position).getUrl());
             imageFragments.set(position, fragment);
+
         }
         return imageFragments.get(position);
     }

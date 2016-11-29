@@ -26,7 +26,7 @@
                 android:background="@drawable/avatar"
                 android:scaleType="fitXY"
                 android:transitionName="event_image"
-                android:id="@+id/events_list_image_view"/>
+                android:id="@+id/event_item_image_view"/>
 
             <RelativeLayout
                 android:id="@+id/color_bg_iv"
@@ -47,7 +47,7 @@
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
-                    android:id="@+id/events_list_image_preloader"/>
+                    android:id="@+id/event_item_image_preloader"/>
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
                         android:textSize="14sp"
                         android:layout_gravity="center_vertical"
                         android:textColor="@android:color/white"
-                        android:id="@+id/events_list_votes_count" />
+                        android:id="@+id/event_item_votes_count" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -141,7 +141,7 @@
                         android:layout_alignParentBottom="true"/>
 
                     <TextView
-                        android:id="@+id/events_list_item_title"
+                        android:id="@+id/event_item_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -157,8 +157,8 @@
 
 
                     <TextView
-                        android:id="@+id/events_list_item_interest"
-                        android:layout_below="@+id/events_list_item_title"
+                        android:id="@+id/event_item_interest"
+                        android:layout_below="@+id/event_item_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white70"
@@ -226,7 +226,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="12sp"
-                            android:id="@+id/events_list_price"
+                            android:id="@+id/event_item_price"
                             android:textColor="@color/white70"
                             android:text="500 тг" />
                     </LinearLayout>

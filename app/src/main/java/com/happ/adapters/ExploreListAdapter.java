@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -97,49 +97,11 @@ public class ExploreListAdapter extends RecyclerView.Adapter<ExploreListAdapter.
         final Event events = mEvents.get(position);
 
 
-//            if(events.getImages().size() > 0){
-//                final String url = events.getImages().get(0).getUrl();
-//
-//                Glide.clear(holder.mImageView);
-//                try {
-//                    int viewWidth = holder.mImageView.getWidth();
-//                    int viewHeight = holder.mImageView.getHeight();
-//                    if (viewHeight > 0 && viewHeight > 0) {
-//                        Glide.with(App.getContext())
-//                                .load(url)
-//                                .override(viewWidth, viewHeight)
-//                                .centerCrop()
-//                                .into(holder.mImageView);
-//                    }
-//                } catch (Exception ex) {
-//                    ViewTreeObserver viewTreeObserver = holder.mImageView.getViewTreeObserver();
-//                    if (viewTreeObserver.isAlive()) {
-//                        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                            @Override
-//                            public void onGlobalLayout() {
-//                                holder.mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                                int viewWidth = holder.mImageView.getWidth();
-//                                int viewHeight = holder.mImageView.getHeight();
-//                                Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth)+" "+String.valueOf(viewHeight));
-//
-//                                Glide.with(App.getContext())
-//                                        .load(url)
-//                                        .override(viewWidth, viewHeight)
-//                                        .centerCrop()
-//                                        .into(holder.mImageView);
-//                            }
-//                        });
-//                    }
-//                }
-//            } else{
-//                Glide.clear(holder.mImageView);
-//                holder.mImageView.setImageDrawable(null);
-//            }
+        RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) holder.mBackground.getLayoutParams();
+        holder.mBackground.setLayoutParams(bgParams);
 
-        final String url = urls[position%10];
-
-        if (holder.url == null || !holder.url.equals(url)) {
-            holder.url = url;
+        if(events.getImages().size() > 0){
+            final String url = events.getImages().get(0).getUrl();
             Glide.clear(holder.mImageView);
             try {
                 ViewTreeObserver viewTreeObserver = holder.mImageView.getViewTreeObserver();
@@ -166,8 +128,12 @@ public class ExploreListAdapter extends RecyclerView.Adapter<ExploreListAdapter.
                                             Log.d("GLIDE_OK", url);
                                             Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
                                             Palette p = Palette.from(bm).generate();
-                                            holder.mBackground.setBackgroundColor(p.getMutedSwatch().getRgb());
-//                                            setBlurs(holder,position);
+                                            Palette.Swatch mutedSwatch = p.getMutedSwatch();
+                                            if (mutedSwatch != null) {
+                                                holder.mBackground.setBackgroundColor(mutedSwatch.getRgb());
+                                            } else {
+
+                                            }
                                             return false;
                                         }
                                     })
@@ -216,13 +182,13 @@ public class ExploreListAdapter extends RecyclerView.Adapter<ExploreListAdapter.
         private TextView mTextView;
         private ImageView mImageView;
         private String url;
-        private LinearLayout mBackground;
+        private RelativeLayout mBackground;
 
         public ExploreListViewHolder(View itemView) {
             super(itemView);
             mTextView = (TextView) itemView.findViewById(R.id.explore_textview);
             mImageView = (ImageView) itemView.findViewById(R.id.imageview_explore);
-            mBackground = (LinearLayout) itemView.findViewById(R.id.explore_item_bg);
+            mBackground = (RelativeLayout) itemView.findViewById(R.id.explore_item_bg);
 
         }
 

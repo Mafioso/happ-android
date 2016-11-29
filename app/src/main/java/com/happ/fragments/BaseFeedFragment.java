@@ -90,6 +90,8 @@ public class BaseFeedFragment extends Fragment {
             public void onEventItemSelected(String eventId, ActivityOptionsCompat options) {
                 Intent intent = new Intent(activity, EventActivity.class);
                 intent.putExtra("event_id", eventId);
+                intent.putExtra("in_event_activity", true);
+
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || options == null) {
                     activity.startActivity(intent);
                     (activity).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);

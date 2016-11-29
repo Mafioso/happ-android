@@ -16,7 +16,6 @@ import com.happ.models.City;
 import com.happ.models.Currency;
 import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
-import com.happ.models.EventImage;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
 import com.happ.models.Interest;
@@ -26,8 +25,11 @@ import com.happ.models.SignUpData;
 import com.happ.models.User;
 import com.happ.models.UserEditData;
 import com.happ.retrofit.serializers.DateDeserializer;
-import com.happ.retrofit.serializers.ImageDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
+
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,7 +85,6 @@ public class HappRestClient {
             gson = new GsonBuilder()
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
                     .registerTypeAdapter(Date.class, new DateDeserializer())
-                    .registerTypeAdapter(EventImage.class, new ImageDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }
@@ -222,10 +223,14 @@ public class HappRestClient {
 
     public void getEvents(int page, boolean favs) {
         Call<EventsResponse> getEventsResponse;
+        Date date = new Date();
+        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("yyyyMMdd");
+        DateTime eventDate = new DateTime(date);
+        String today = eventDate.toString(dtFormatter);
         if (favs) {
-            getEventsResponse = this.happApi.getFavourites(page);
+            getEventsResponse = this.happApi.getFavourites(page, today);
         } else {
-            getEventsResponse = this.happApi.getEvents(page);
+            getEventsResponse = this.happApi.getEvents(page, today);
         }
         getEventsResponse.enqueue(new Callback<EventsResponse>() {
             @Override
@@ -307,48 +312,6 @@ public class HappRestClient {
             }
         });
     }
-//
-//    public void getEventsBySearch(int page, String feedSearchText) {
-//        happApi.getEventsBySearch(page, feedSearchText).enqueue(new Callback<EventsResponse>() {
-//            @Override
-//            public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
-//
-//                if (response.isSuccessful()){
-//                    List<Event> events = response.body().getEvents();
-//
-//                    Realm realm = Realm.getDefaultInstance();
-//                    realm.beginTransaction();
-//
-//                    realm.copyToRealmOrUpdate(events);
-//
-//                    realm.commitTransaction();
-//                    realm.close();
-//
-//                    Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_OK);
-//                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
-//
-//                }
-//                else {
-//                    Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
-//                    intent.putExtra("CODE", response.code());
-//                    if (response.code() == 500) {
-//                        Toast.makeText(App.getContext(), R.string.error_500, Toast.LENGTH_SHORT).show();
-//                    }
-//                    intent.putExtra("MESSAGE", response.message());
-//                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<EventsResponse> call, Throwable t) {
-//                Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
-//                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-//                intent.putExtra("MESSAGE", t.getLocalizedMessage());
-//                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
-//            }
-//        });
-//    }
-
     public void doLogin(String username, String password) {
 
         LoginData loginData = new LoginData();

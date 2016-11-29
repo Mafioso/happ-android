@@ -52,10 +52,8 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         final View view = super.onCreateView(inflater, container, savedInstanceState);
 
 
-        if (eventsRequestDoneReceiver == null) {
-            eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
-        }
+        eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
+        LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
 
         if (didUpvoteReceiver == null) {
             didUpvoteReceiver = createUpvoteReceiver();

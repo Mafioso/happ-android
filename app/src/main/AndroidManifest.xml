@@ -126,6 +126,10 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDu36j6SwjsbVGTPu8kMwxr6QnG6hJKAYM" />
 
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="93c7091b509c1d1aea723c9d8caede48"/>
+
     </application>
 
 </manifest>

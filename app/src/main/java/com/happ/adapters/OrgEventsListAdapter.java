@@ -343,15 +343,15 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
 
         public OrgEventsListItemViewHolder(final View itemView) {
             super(itemView);
-            mTitleView = (TextView) itemView.findViewById(R.id.events_list_item_title);
+            mTitleView = (TextView) itemView.findViewById(R.id.event_item_title);
 //            mDateView = (TextView) itemView.findViewById(R.id.events_list_item_start_date);
 //            mInterestViewColor = (LinearLayout) itemView.findViewById(R.id.events_list_interest_color);
-            mInterestTitle = (TextView) itemView.findViewById(R.id.events_list_item_interest);
-            mImageView = (ImageView) itemView.findViewById(R.id.events_list_image_view);
-            mPrice = (TextView) itemView.findViewById(R.id.events_list_price);
-            mVotesCount = (TextView) itemView.findViewById(R.id.events_list_votes_count);
+            mInterestTitle = (TextView) itemView.findViewById(R.id.event_item_interest);
+            mImageView = (ImageView) itemView.findViewById(R.id.event_item_image_view);
+            mPrice = (TextView) itemView.findViewById(R.id.event_item_price);
+            mVotesCount = (TextView) itemView.findViewById(R.id.event_item_votes_count);
 //            mViewsCount = (TextView) itemView.findViewById(R.id.events_list_views_count);
-            mImagePreloader = (ProgressBar) itemView.findViewById(R.id.events_list_image_preloader);
+            mImagePreloader = (ProgressBar) itemView.findViewById(R.id.event_item_image_preloader);
             mFavoritesImage = (ImageView) itemView.findViewById(R.id.clickimage_favorites);
             mUpvoteImage = (ImageView) itemView.findViewById(R.id.clickimage_like);
             mToolbar = (Toolbar) itemView.findViewById(R.id.event_toolbar);

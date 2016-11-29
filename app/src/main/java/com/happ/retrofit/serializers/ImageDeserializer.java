@@ -20,12 +20,12 @@ public class ImageDeserializer implements JsonDeserializer<EventImage>, JsonSeri
     public EventImage deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         String url = json.getAsJsonPrimitive().getAsString();
         EventImage eventImage = new EventImage();
-        eventImage.setUrl(url);
+        eventImage.setPath(url);
         return eventImage;
     }
 
     @Override
     public JsonElement serialize(EventImage src, Type typeOfSrc, JsonSerializationContext context) {
-        return new JsonPrimitive(src.getUrl());
+        return new JsonPrimitive(src.getPath());
     }
 }

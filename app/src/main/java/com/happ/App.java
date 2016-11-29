@@ -3,8 +3,10 @@ package com.happ;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.happ.controllers.LoginActivity;
 import com.happ.models.City;
@@ -13,9 +15,6 @@ import com.happ.models.HappToken;
 import com.happ.models.User;
 
 import net.danlew.android.joda.JodaTimeAndroid;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
@@ -37,7 +36,7 @@ public class App extends MultiDexApplication {
         super.onCreate();
         context = this.getApplicationContext();
         JodaTimeAndroid.init(context);
-
+//        Bugsnag.init(this);
 
 //        String language = getApplicationContext().getResources().getConfiguration().locale.getLanguage();
 //        System.out.print(language);
@@ -48,15 +47,19 @@ public class App extends MultiDexApplication {
 
         Realm.setDefaultConfiguration(realmConfiguration);
 
-        if (hasInternet()) {
+//        if (hasInternet()) {
 //            deleleFromRealm();
+//        }
+
+        if (hasConnection(context)) {
+            deleleFromRealm();
         }
+
     }
 
     public void deleleFromRealm(){
         Realm realm = Realm.getDefaultInstance();
         final RealmResults<Event> results = realm.where(Event.class).notEqualTo("inFavorites", true).findAll();
-
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
@@ -101,21 +104,41 @@ public class App extends MultiDexApplication {
         }
     }
 
-    public static boolean hasInternet()  {
-        try{
-            String url = "http://google.com/";
+//    public static boolean hasInternet()  {
+//        try{
+//            String url = "http://google.com/";
+//
+//            HttpURLConnection.setFollowRedirects(false);
+//            HttpURLConnection conn = (HttpURLConnection)new URL(url).openConnection();
+//            // conn.setRequestMethod("HEAD");
+//            conn.setRequestMethod("GET");
+//            if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+//                Toast.makeText(App.getContext(), "has internet", Toast.LENGTH_LONG).show();
+//                return true; // интернет есть
+//            }
+//        }catch(Exception e) {
+//            Log.d("Log:", "error: " + e); // на ошибку можно не обращать внимание
+//        }
+//        return false;
+//    }
 
-            HttpURLConnection.setFollowRedirects(false);
-            HttpURLConnection conn = (HttpURLConnection)new URL(url).openConnection();
-            // conn.setRequestMethod("HEAD");
-            conn.setRequestMethod("GET");
-            if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-
-                return true; // интернет есть
-            }
-        }catch(Exception e) {
-            Log.d("Log:", "error: " + e); // на ошибку можно не обращать внимание
+    public static boolean hasConnection(final Context context) {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            Toast.makeText(context, "WIFI COnntected", Toast.LENGTH_SHORT).show();
+            return true;
         }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            Toast.makeText(context, "3g is Conntected", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected()) {
+            return true;
+        }
+        Toast.makeText(context, R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
         return false;
     }
 

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center">
@@ -10,13 +9,13 @@
         android:layout_height="200dp"
         android:scaleType="fitXY"
         android:transitionName="event_image"
-        android:id="@+id/images_pager_image"/>
+        android:id="@+id/images_pager_image" />
 
     <ProgressBar
         style="@style/Widget.AppCompat.ProgressBar"
         android:theme="@style/CircularProgress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/images_pager_preloader"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 </LinearLayout>

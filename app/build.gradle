@@ -73,4 +73,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.leavjenn.smoothdaterangepicker:library:0.2.0'
 
+    compile 'com.bugsnag:bugsnag-android:3.+'
+
+
 }

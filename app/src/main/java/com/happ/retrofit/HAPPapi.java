@@ -39,7 +39,7 @@ public interface HAPPapi {
 //            @Query("language") String language);
 
     @GET("events/feed/")
-    Call<EventsResponse> getEvents(@Query("page") int page);
+    Call<EventsResponse> getEvents(@Query("page") int page, @Query("start_date") String startDate);
     @GET("events/feed/")
     Call<EventsResponse> getFilteredEvents(@Query("page") int page,
                                            @Query("feed_search") String feedSearchText,
@@ -109,7 +109,7 @@ public interface HAPPapi {
     Call<Void> setCity(@Path("id") String cityId);
 
     @GET("events/favourites/")
-    Call<EventsResponse> getFavourites(@Query("page") int page);
+    Call<EventsResponse> getFavourites(@Query("page") int page, @Query("start_date") String startDate);
 
     @GET("events/favourites/")
     Call<EventsResponse> getFilteredFavourites(@Query("page") int page,

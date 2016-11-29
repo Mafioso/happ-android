@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import com.happ.R;
@@ -29,11 +28,11 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
     private LinearLayoutManager llm;
     private ArrayList<Currency> currencies;
 
-    private int previousTotal = 0;
     private boolean loading = true;
-    private int visibleThreshold = 5;
-    int firstVisibleItem, visibleItemCount, totalItemCount;
-    int currenciesPageSize = 13;
+    private int firstVisibleItem, visibleItemCount, totalItemCount;
+    private int previousTotal = 0;
+    private int visibleThreshold;
+    private int currencyPageSize;
 
     private boolean fromSettings = false;
 
@@ -43,6 +42,9 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
         fromSettings = getIntent().getBooleanExtra("from_settings", false);
         setContentView(R.layout.activity_change_currency);
 
+        currencyPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
+//        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
+        visibleThreshold = 10;
         toolbar = (Toolbar) findViewById(R.id.select_currency_toolbar);
         mCurrencyRecyclerView = (RecyclerView) findViewById(R.id.activity_currency_rv);
 
@@ -75,32 +77,32 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
 
     protected void createScrollListener() {
         mCurrencyRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    visibleItemCount = llm.getChildCount();
+                    totalItemCount = llm.getItemCount();
+                    firstVisibleItem = llm.findFirstVisibleItemPosition();
 
-                visibleItemCount = mCurrencyRecyclerView.getChildCount();
-                totalItemCount = llm.getItemCount();
-                firstVisibleItem = llm.findFirstVisibleItemPosition();
+                    if (loading) {
+                        if (totalItemCount > previousTotal) {
+                            loading = false;
+                            previousTotal = totalItemCount;
+                        }
+                    }
 
-                if (loading) {
-                    if (totalItemCount > previousTotal) {
-                        loading = false;
-                        previousTotal = totalItemCount;
+                    if (!loading && (totalItemCount - visibleItemCount)
+                            <= (firstVisibleItem + visibleThreshold)) {
+                        loading = true;
+                        int nextPage = (totalItemCount / currencyPageSize) + 1;
+                        APIService.getCurrencies(nextPage);
                     }
                 }
-                if (!loading && (totalItemCount - visibleItemCount)
-                        <= (firstVisibleItem + visibleThreshold)) {
-                    // End has been reached
+                if (dy < 0) {
 
-                    Log.i("Yaeye!", "end called");
-
-                    int nextPage = (totalItemCount / currenciesPageSize) + 1;
-                    APIService.getCurrencies(nextPage);
-
-                    loading = true;
                 }
+
+                super.onScrolled(recyclerView, dx, dy);
             }
         });
     }
