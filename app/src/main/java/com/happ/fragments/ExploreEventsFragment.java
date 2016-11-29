@@ -85,6 +85,7 @@ public class ExploreEventsFragment extends Fragment {
             public void onExploreEventItemSelected(Event event) {
                 Intent intent = new Intent(getActivity(), EventActivity.class);
                 intent.putExtra("event_id", event.getId());
+                intent.putExtra("in_event_activity", true);
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                     startActivity(intent);
                     getActivity().overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
