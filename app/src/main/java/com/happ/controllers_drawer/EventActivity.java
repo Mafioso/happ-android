@@ -4,7 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,11 +21,15 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,13 +42,14 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.Typefaces;
 import com.happ.adapters.EventImagesSwipeAdapter;
+import com.happ.adapters.EventPhoneListAdapter;
 import com.happ.controllers.EditCreateActivity;
 import com.happ.controllers.EventMapActivity;
 import com.happ.controllers.UserActivity;
-import com.happ.fragments.ImageViewFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Event;
 import com.happ.models.EventImage;
+import com.happ.models.EventPhones;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
@@ -75,6 +82,7 @@ public class EventActivity extends AppCompatActivity {
                         mEmail,
                         mPlace,
                         mAuthor,
+                        mAuthorEmail,
                         mDescription,
                         mEventDate,
                         mEventTime,
@@ -85,11 +93,16 @@ public class EventActivity extends AppCompatActivity {
     private ImageView mFavoritesImage, mUpvoteImage, mCLoseLeftNavigation;
 
     private LinearLayout mEventWEbSite, mEventEmail, mEventPhone;
-    public LinearLayout mCircleLLCalendar, mCircleLLPrice, mCircleLLPlace;
+    private LinearLayout mCircleLLCalendar, mCircleLLPrice, mCircleLLPlace;
+
     private LinearLayout mLLVote, mLLFav;
 
     private RelativeLayout mEventAuthor;
     private Typeface tfcs;
+
+    private RecyclerView rvPhones;
+    private EventPhoneListAdapter eventPhoneListAdapter;
+    private LinearLayoutManager llm;
 
     private FloatingActionButton mFab;
     private BroadcastReceiver didIsFavReceiver;
@@ -102,8 +115,6 @@ public class EventActivity extends AppCompatActivity {
 
     private AppBarLayout appBarLayout;
     private TextView mCurrency, mPhone;
-
-    private ImageViewFragment imageViewFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,6 +134,7 @@ public class EventActivity extends AppCompatActivity {
         mFavoritesImage = (ImageView) findViewById(R.id.event_iv_favorites);
         mVotesCount = (TextView) findViewById(R.id.event_votes_count);
         mAuthor = (TextView)findViewById(R.id.event_author);
+        mAuthorEmail = (TextView) findViewById(R.id.event_author_email);
         mDescription = (TextView)findViewById(R.id.event_description);
         mWebSite = (TextView) findViewById(R.id.event_website);
         mEventWEbSite = (LinearLayout) findViewById(R.id.event_website_form);
@@ -153,6 +165,7 @@ public class EventActivity extends AppCompatActivity {
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
+        rvPhones = (RecyclerView) findViewById(R.id.rv_event_phones);
 
         mFab.setVisibility(View.GONE);
         if (isOrg) {
@@ -300,6 +313,16 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
+    private class EventWebViewClient extends WebViewClient
+    {
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url)
+        {
+            view.loadUrl(url);
+            return true;
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
@@ -381,28 +404,42 @@ public class EventActivity extends AppCompatActivity {
                 mEventAuthor.setVisibility(View.GONE);
             }
 
-        if (author.getPhone() != null) {
-            mPhone.setOnClickListener(new View.OnClickListener() {
+            llm = new LinearLayoutManager(this);
+            rvPhones.setLayoutManager(llm);
+            eventPhoneListAdapter = new EventPhoneListAdapter(this, event.getPhones());
+            rvPhones.setAdapter(eventPhoneListAdapter);
+
+            eventPhoneListAdapter.setOnSelectEventExploreListener(new EventPhoneListAdapter.SelectEventPhoneItemListener() {
                 @Override
-                public void onClick(View view) {
-                String phone = author.getPhone();
-                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-                startActivity(intent);
-                }
-            });
-        } else {
-            mPhone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String phone = mPhone.getText().toString();
-                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+                public void onEventPhoneItemSelected(EventPhones eventPhones) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", eventPhones.getPhone(), null));
                     startActivity(intent);
                 }
             });
-//            mEventPhone.setVisibility(View.GONE);
-        }
+//        if (author.getPhone() != null) {
+//            mPhone.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                String phone = author.getPhone();
+//                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+//                startActivity(intent);
+//                }
+//            });
+//        } else {
+//            mPhone.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    String phone = mPhone.getText().toString();
+//                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
+//                    startActivity(intent);
+//                }
+//            });
+////            mEventPhone.setVisibility(View.GONE);
+//        }
 
             mDescription.setText(event.getDescription());
+
+
             if (event.getWebSite() == null || event.getWebSite().equals("") ) {
                 mEventWEbSite.setVisibility(View.GONE);
             } else {
@@ -411,9 +448,10 @@ public class EventActivity extends AppCompatActivity {
                 mEventWEbSite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Uri address = Uri.parse(link);
-                        Intent openlinkIntent = new Intent(Intent.ACTION_VIEW, address);
-                        startActivity(openlinkIntent);
+                        Intent intent = new Intent("com.happ.Browser");
+                        intent.setData(Uri.parse(link));
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
                     }
                 });
             }
@@ -421,7 +459,27 @@ public class EventActivity extends AppCompatActivity {
             if (event.getEmail() == null || event.getEmail().equals("") ) {
                 mEventEmail.setVisibility(View.GONE);
             } else {
-                mEmail.setText(event.getEmail());
+                final String email = event.getEmail();
+                mEmail.setText(email);
+                mEventEmail.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent i = new Intent(Intent.ACTION_SENDTO);
+                        i.setType("message/rfc822");
+//                        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"recipient@example.com"});
+//                        i.putExtra(Intent.EXTRA_EMAIL, email);
+                        i.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
+                        i.putExtra(Intent.EXTRA_TEXT   , "body of email");
+                        i.setData(Uri.parse("mailto:default@recipient.com")); // or just "mailto:" for blank
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        try {
+                            startActivity(Intent.createChooser(i, "Send mail..."));
+                        } catch (android.content.ActivityNotFoundException ex) {
+                            Toast.makeText(EventActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
             }
 
             String startDate = event.getStartDateFormatted("MMM dd").toUpperCase();
@@ -478,6 +536,23 @@ public class EventActivity extends AppCompatActivity {
                 }
             });
 
+            mCircleLLCalendar.setBackgroundResource(R.drawable.circle_event);
+            mCircleLLPrice.setBackgroundResource(R.drawable.circle_event);
+            mCircleLLPlace.setBackgroundResource(R.drawable.circle_event);
+            mLLVote.setBackgroundResource(R.drawable.circle_event);
+
+            GradientDrawable gdCalendar = (GradientDrawable) mCircleLLCalendar.getBackground().getCurrent();
+            GradientDrawable gdPlace = (GradientDrawable) mCircleLLPlace.getBackground().getCurrent();
+            GradientDrawable gdPrice = (GradientDrawable) mCircleLLPrice.getBackground().getCurrent();
+            GradientDrawable gdVote = (GradientDrawable) mLLVote.getBackground().getCurrent();
+
+            gdCalendar.setColor(Color.parseColor(event.getColor()));
+            gdPlace.setColor(Color.parseColor(event.getColor()));
+            gdPrice.setColor(Color.parseColor(event.getColor()));
+            gdVote.setColor(Color.parseColor(event.getColor()));
+
+            mToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
+
         }
     }
 
@@ -525,6 +600,7 @@ public class EventActivity extends AppCompatActivity {
         mEmail = null;
         mPlace = null;
         mAuthor = null;
+        mAuthorEmail = null;
         mDescription = null;
         mEventDate = null;
         mEventTime = null;
@@ -538,6 +614,9 @@ public class EventActivity extends AppCompatActivity {
         mPrice = null;
         mTitle = null;
         mVotesCount = null;
+        mCircleLLCalendar = null;
+        mCircleLLPlace = null;
+        mCircleLLPrice = null;
     }
 
     @Override
@@ -554,6 +633,7 @@ public class EventActivity extends AppCompatActivity {
         mEmail = null;
         mPlace = null;
         mAuthor = null;
+        mAuthorEmail = null;
         mDescription = null;
         mEventDate = null;
         mEventTime = null;
@@ -567,6 +647,9 @@ public class EventActivity extends AppCompatActivity {
         mPrice = null;
         mTitle = null;
         mVotesCount = null;
+        mCircleLLCalendar = null;
+        mCircleLLPlace = null;
+        mCircleLLPrice = null;
     }
 
     @Override

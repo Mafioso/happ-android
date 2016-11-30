@@ -2,12 +2,11 @@ package com.happ.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -325,15 +323,15 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                                             @Override
                                             public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                                                 Log.d("GLIDE_OK", url);
-                                                Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
-                                                Palette p = Palette.from(bm).generate();
-
-                                                Palette.Swatch vibrantSwatch = p.getVibrantSwatch();
-                                                if (vibrantSwatch != null) {
-                                                    itemHolder.mBackground.setBackgroundColor(vibrantSwatch.getRgb());
-                                                } else {
-
-                                                }
+//                                                Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
+//                                                Palette p = Palette.from(bm).generate();
+//
+//                                                Palette.Swatch vibrantSwatch = p.getVibrantSwatch();
+//                                                if (vibrantSwatch != null) {
+//                                                    itemHolder.mBackground.setBackgroundColor(vibrantSwatch.getRgb());
+//                                                } else {
+//
+//                                                }
                                               itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
                                                 return false;
                                             }
@@ -407,6 +405,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mInterestTitle.setText("Null");
             }
 
+            itemHolder.mBackground.setBackgroundColor(Color.parseColor(item.event.getColor()));
             if (item.event.isDidVote()) {
                 itemHolder.mUpvoteImage.setImageResource(R.drawable.ic_did_upvote);
             } else {
@@ -499,7 +498,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             super(itemView);
             mTitleView = (TextView) itemView.findViewById(R.id.event_item_title);
             mTime = (TextView) itemView.findViewById(R.id.event_item_time);
-//            mInterestViewColor = (LinearLayout) itemView.findViewById(R.id.events_list_interest_color);
             mInterestTitle = (TextView) itemView.findViewById(R.id.event_item_interest);
             mImageView = (ImageView) itemView.findViewById(R.id.event_item_image_view);
             mPrice = (TextView) itemView.findViewById(R.id.event_item_price);

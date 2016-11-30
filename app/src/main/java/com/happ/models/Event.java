@@ -26,7 +26,7 @@ public class Event extends RealmObject implements Serializable {
     private String description;
     private RealmList<EventImage> images;
     private String color;
-//    private RealmList<String> images;
+    private RealmList<EventPhones> phones;
     @SerializedName("votes_num")
     private int votesCount;
     @SerializedName("is_upvoted")
@@ -310,5 +310,13 @@ public class Event extends RealmObject implements Serializable {
 
     public void setLatitude(String latitude) {
         this.latitude = latitude;
+    }
+
+    public RealmList<EventPhones> getPhones() {
+        return phones;
+    }
+
+    public void setPhones(RealmList<EventPhones> phones) {
+        this.phones = phones;
     }
 }

@@ -16,6 +16,7 @@ import com.happ.models.City;
 import com.happ.models.Currency;
 import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
+import com.happ.models.EventPhones;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
 import com.happ.models.Interest;
@@ -26,6 +27,7 @@ import com.happ.models.User;
 import com.happ.models.UserEditData;
 import com.happ.retrofit.serializers.DateDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
+import com.happ.retrofit.serializers.PhoneDeserializer;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -85,6 +87,7 @@ public class HappRestClient {
             gson = new GsonBuilder()
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
                     .registerTypeAdapter(Date.class, new DateDeserializer())
+                    .registerTypeAdapter(EventPhones.class, new PhoneDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }

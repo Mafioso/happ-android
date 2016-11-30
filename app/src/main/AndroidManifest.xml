@@ -52,7 +52,6 @@
         <activity android:name=".controllers_drawer.EventActivity" />
         <activity
             android:name=".controllers.EditCreateActivity"
-            android:label="Edit Activity"
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".controllers.UserActivity"
@@ -77,11 +76,11 @@
 
         <activity
             android:name=".controllers_drawer.SettingsActivity"
-            android:label="Settings" />
+            android:label="@string/settings" />
 
         <activity
             android:name=".controllers_drawer.SelectInterestsActivity"
-            android:label="Select Interests" >
+            android:label="@string/select_interest" >
         </activity>
 
         <activity
@@ -113,6 +112,16 @@
         <activity android:name=".controllers_drawer.OrganizerModeActivity" />
 
         <activity android:name=".controllers.ChangeCurrencyActivity"/>
+
+        <activity android:name=".controllers.BrowserActivity"
+            android:label="@string/browser">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.happ.Browser" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="http" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".retrofit.APIService"

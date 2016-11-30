@@ -37,7 +37,8 @@
                     android:scaleY="2"
                     android:scaleX="2"
                     android:fitsSystemWindows="true"
-                    app:layout_collapseMode="parallax"/>
+                    app:layout_collapseMode="parallax"
+                    android:visibility="gone"/>
 
                 <!--<android.support.v7.widget.Toolbar-->
                    <!--android:id="@+id/toolbar"-->
@@ -51,7 +52,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background_title_event"
+                android:background="@color/colorBlack8"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:paddingLeft="42dp"
@@ -335,78 +336,94 @@
                             android:layout_height="60dp"
                             android:layout_marginRight="16dp"/>
 
-                        <TextView
-                            android:id="@+id/event_author"
-                            android:layout_toRightOf="@id/event_author_image"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Event Organizer"
-                            android:textColor="@color/dark38"
-                            android:textSize="14sp"/>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/event_author_image">
 
-                        <TextView
-                            android:id="@+id/event_compaty_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Compaty Name"
-                            android:textSize="16sp"
-                            android:textColor="@android:color/black"
-                            android:layout_toRightOf="@id/event_author_image"
-                            android:layout_below="@+id/event_author"
-                            android:layout_marginBottom="4dp"/>
 
-                        <ImageView
-                            android:id="@+id/event_chat"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_event_chat"
-                            android:layout_toRightOf="@+id/event_author_image"
-                            android:layout_below="@+id/event_compaty_name"
-                            android:layout_marginRight="8dp"
-                            />
+                            <TextView
+                                android:id="@+id/event_author_email"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/event_organizer"
+                                android:textColor="@color/dark38"
+                                android:textSize="14sp"/>
 
-                        <TextView
-                            android:id="@+id/event_ask_about"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/ask_about_event"
-                            android:textSize="16sp"
-                            android:textColor="@color/colorAccent"
-                            android:layout_toRightOf="@id/event_chat"
-                            android:layout_below="@+id/event_compaty_name"/>
+                            <TextView
+                                android:id="@+id/event_author"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Compaty Name"
+                                android:textSize="16sp"
+                                android:textColor="@android:color/black"
+                                android:layout_toRightOf="@id/event_author_image"
+                                android:layout_below="@+id/event_author"
+                                android:layout_marginBottom="4dp"/>
+                            <LinearLayout
+                                android:id="@+id/ll_ask_about_event"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:id="@+id/event_chat"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    app:srcCompat="@drawable/ic_event_chat"
+                                    android:layout_toRightOf="@+id/event_author_image"
+                                    android:layout_below="@+id/event_compaty_name"
+                                    android:layout_marginRight="8dp"
+                                    />
+
+                                <TextView
+                                    android:id="@+id/event_ask_about"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/ask_about_event"
+                                    android:textSize="16sp"
+                                    android:textColor="@color/colorAccent"
+                                    android:layout_toRightOf="@id/event_chat"
+                                    android:layout_below="@+id/event_compaty_name"/>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                     </RelativeLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
                         android:paddingLeft="24dp"
                         android:paddingRight="16dp"
-                        android:id="@+id/event_website_form">
+                        android:id="@+id/event_phone_form">
 
-                        <ImageView
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_website2"
+                            android:layout_height="40dp"
+                            android:layout_gravity="top"
                             android:paddingLeft="8dp"
-                            />
-
-
-                        <TextView
-                            android:layout_marginLeft="32dp"
+                            android:gravity="center_vertical">
+                        <ImageView
+                            android:id="@+id/iv_phone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/event_website"
-                            android:textSize="18sp"
-                            android:textColor="@color/colorAccent"
-                            android:text="Web Site"
-                            android:lineSpacingMultiplier="1.2"
-                            />
+                            app:srcCompat="@drawable/ic_phone" />
+                        </LinearLayout>
 
+                        <android.support.v7.widget.RecyclerView
+                            android:layout_marginLeft="32dp"
+                            android:id="@+id/rv_event_phones"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -450,27 +467,30 @@
                         android:paddingBottom="8dp"
                         android:paddingLeft="24dp"
                         android:paddingRight="16dp"
-                        android:id="@+id/event_phone_form">
+                        android:id="@+id/event_website_form">
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/ic_phone"
-                            android:paddingLeft="8dp" />
+                            app:srcCompat="@drawable/ic_website2"
+                            android:paddingLeft="8dp"
+                            />
 
 
                         <TextView
                             android:layout_marginLeft="32dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/event_phone"
-                            android:layout_gravity="center_vertical"
+                            android:id="@+id/event_website"
                             android:textSize="18sp"
                             android:textColor="@color/colorAccent"
-                            android:text="+77771234567"
-                            android:lineSpacingMultiplier="1.2" />
+                            android:text="Web Site"
+                            android:lineSpacingMultiplier="1.2"
+                            />
 
                     </LinearLayout>
+
+
                 </LinearLayout>
                 <!--</LinearLayout>-->
 
@@ -486,7 +506,7 @@
             app:srcCompat="@drawable/ic_edt_white"
             />
 
-
     </android.support.design.widget.CoordinatorLayout>
+
     <include layout="@layout/drawer_layout"/>
 </android.support.v4.widget.DrawerLayout>
