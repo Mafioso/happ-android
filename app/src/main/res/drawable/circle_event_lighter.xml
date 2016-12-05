@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/event_circle_shape_color">
+    <item android:id="@+id/event_circle_lighter_shape_color">
         <shape xmlns:android="http://schemas.android.com/apk/res/android">
-            <solid android:color="@color/colorDate"/>
+            <solid android:color="@color/white57"/>
             <corners android:radius="360dp"/>
         </shape>
     </item>

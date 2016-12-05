@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/drawer_top_padding">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/select_currency_toolbar"

@@ -63,6 +63,8 @@ public class ConfirmEmailActivity extends AppCompatActivity {
 
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
+    private CheckBox mDrawerHeaderArrow;
+    private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,9 @@ public class ConfirmEmailActivity extends AppCompatActivity {
 
         mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
 
+        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
+        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
+        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
 
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null){
@@ -144,10 +149,10 @@ public class ConfirmEmailActivity extends AppCompatActivity {
 //        navigationMenu.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
 //        navigationMenu.getMenu().findItem(R.id.nav_item_feed).setIcon(R.drawable.happ_drawer_icon);
 
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+        mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ConfirmEmailActivity.this, UserActivity.class);
@@ -159,10 +164,10 @@ public class ConfirmEmailActivity extends AppCompatActivity {
         cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
         mDrawerCityFragment.setAdapter(cityPageAdapter);
 
-        ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
+        mDrawerHeaderArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
+                if (mDrawerHeaderArrow.isChecked()) {
                     mDrawerCityFragment.animate()
                             .setListener(new AnimatorListenerAdapter() {
                                 @Override

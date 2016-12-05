@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 import android.support.multidex.MultiDexApplication;
 import android.widget.Toast;
 
+import com.bugsnag.android.Bugsnag;
 import com.happ.controllers.LoginActivity;
 import com.happ.models.City;
 import com.happ.models.Event;
@@ -36,10 +37,10 @@ public class App extends MultiDexApplication {
         super.onCreate();
         context = this.getApplicationContext();
         JodaTimeAndroid.init(context);
-//        Bugsnag.init(this);
+        Bugsnag.init(this);
 
-//        String language = getApplicationContext().getResources().getConfiguration().locale.getLanguage();
-//        System.out.print(language);
+        String language = getApplicationContext().getResources().getConfiguration().locale.getLanguage();
+        System.out.print(language);
 
         RealmConfiguration realmConfiguration = new RealmConfiguration
                 .Builder(this)

@@ -405,7 +405,9 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mInterestTitle.setText("Null");
             }
 
-            itemHolder.mBackground.setBackgroundColor(Color.parseColor(item.event.getColor()));
+            if (item.event.getColor() != null) {
+                itemHolder.mBackground.setBackgroundColor(Color.parseColor(item.event.getColor()));
+            }
             if (item.event.isDidVote()) {
                 itemHolder.mUpvoteImage.setImageResource(R.drawable.ic_did_upvote);
             } else {

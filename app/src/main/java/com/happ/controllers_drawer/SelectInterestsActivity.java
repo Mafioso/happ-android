@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -52,20 +51,19 @@ import io.realm.RealmResults;
 /**
  * Created by dante on 9/6/16.
  */
-public class SelectInterestsActivity extends AppCompatActivity
-    implements InterestChildrenFragment.OnInterestChildrenInteractionListener {
-
-    static {
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    }
+//public class SelectInterestsActivity extends AppCompatActivity
+//    implements InterestChildrenFragment.OnInterestChildrenInteractionListener {
+    public class SelectInterestsActivity extends AppCompatActivity {
 
     protected RecyclerView mInterestsRecyclerView;
     private GridLayoutManager mInterestsGridLayout;
     private ArrayList<Interest> interests;
     private InterestsListAdapter mInterestsListAdapter;
-    private BroadcastReceiver interestsRequestDoneReceiver;
-    private BroadcastReceiver setInterestsOKReceiver;
-    private BroadcastReceiver getCurrentUserReceiver;
+    protected BroadcastReceiver interestsRequestDoneReceiver;
+    protected BroadcastReceiver setInterestsOKReceiver;
+    protected BroadcastReceiver getCurrentUserReceiver;
+    protected BroadcastReceiver changeCityDoneReceiver;
+
     private LinearLayoutManager interestsListLayoutManager;
     private FloatingActionButton mFab;
     private Button mBtnSelectAllInterests;
@@ -84,16 +82,23 @@ public class SelectInterestsActivity extends AppCompatActivity
     private PagerAdapter cityPageAdapter;
     private ImageView mCLoserLeftNavigation;
     private FrameLayout childrenContainer;
-
     private int titleBarHeight;
 
+    private CheckBox mDrawerHeaderArrow;
+    private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    public SelectInterestsActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        fullActivity = intent.getBooleanExtra("is_full", false);
-
+            Intent intent = getIntent();
+            fullActivity = intent.getBooleanExtra("is_full", false);
         setContentView(R.layout.activity_select_interests);
 
         titleBarHeight = 0;
@@ -113,6 +118,9 @@ public class SelectInterestsActivity extends AppCompatActivity
         childrenContainer = (FrameLayout) findViewById(R.id.city_children_fragment_container);
         mCLoserLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
         mBtnSelectAllInterests = (Button) findViewById(R.id.btn_select_interests);
+        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
+        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
+        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
 
         selectedRow = (RelativeLayout) findViewById(R.id.selected_row);
         selectedRowContainer = (RelativeLayout) findViewById(R.id.selected_row_container);
@@ -153,9 +161,7 @@ public class SelectInterestsActivity extends AppCompatActivity
             }
         });
 
-
         mInterestsGridLayout = new GridLayoutManager(this, 3);
-//        interestsListLayoutManager = new LinearLayoutManager(this);
         mInterestsRecyclerView.setHasFixedSize(true);
         mInterestsRecyclerView.setLayoutManager(mInterestsGridLayout);
 
@@ -283,10 +289,10 @@ public class SelectInterestsActivity extends AppCompatActivity
             navigationMenu.getMenu().findItem(R.id.nav_item_interests).setChecked(true);
             navigationMenu.getMenu().findItem(R.id.nav_item_interests).setIcon(R.drawable.happ_drawer_icon);
 
-            ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-            ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+            mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+            mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
-            ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+            mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(SelectInterestsActivity.this, UserActivity.class);
@@ -298,10 +304,10 @@ public class SelectInterestsActivity extends AppCompatActivity
             mDrawerCityFragment.setAdapter(cityPageAdapter);
 
 
-            ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
+            mDrawerHeaderArrow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
+                    if (mDrawerHeaderArrow.isChecked()) {
                         mDrawerCityFragment.setVisibility(View.VISIBLE);
                     } else {
                         mDrawerCityFragment.setVisibility(View.GONE);
@@ -309,28 +315,37 @@ public class SelectInterestsActivity extends AppCompatActivity
                 }
             });
 
+
         } else {
 //            mDrawerLayout.setVisibility(View.GONE);
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             navigationView.setVisibility(View.GONE);
         }
 
-        if (interestsRequestDoneReceiver == null) {
-            interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
+        if (this.interestsRequestDoneReceiver == null) {
+            this.interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
         }
-        if (setInterestsOKReceiver == null) {
-            setInterestsOKReceiver = createSetInterestsOKReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
+        if (this.setInterestsOKReceiver == null) {
+            this.setInterestsOKReceiver = createSetInterestsOKReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
         }
-        if (getCurrentUserReceiver == null) {
-            getCurrentUserReceiver = createGetUserDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(getCurrentUserReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+        if (this.getCurrentUserReceiver == null) {
+            this.getCurrentUserReceiver = createGetUserDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.getCurrentUserReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+        }
+        if (this.changeCityDoneReceiver == null) {
+            this.changeCityDoneReceiver = changeCityReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
         }
         mCLoserLeftNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDrawerLayout.closeDrawer(navigationView);
+                if (mDrawerHeaderArrow.isChecked()) {
+                    mDrawerHeaderArrow.setChecked(false);
+                    mDrawerCityFragment.setVisibility(View.GONE);
+                }
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         });
 
@@ -345,12 +360,13 @@ public class SelectInterestsActivity extends AppCompatActivity
             }
         });
 
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
     }
+
+//    @Override
+//    public void onFragmentInteraction(Uri uri) {
+//
+//    }
 
 
     public class MyCityPageAdapter extends FragmentPagerAdapter {
@@ -374,8 +390,8 @@ public class SelectInterestsActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
 
     @Override
@@ -417,6 +433,18 @@ public class SelectInterestsActivity extends AppCompatActivity
                 feedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 SelectInterestsActivity.this.startActivity(feedIntent);
                 SelectInterestsActivity.this.overridePendingTransition(0,0);
+            }
+        };
+    }
+
+    private BroadcastReceiver changeCityReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
+                mDrawerHeaderArrow.setChecked(false);
+                mDrawerCityFragment.setVisibility(View.GONE);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         };
     }
@@ -466,17 +494,21 @@ public class SelectInterestsActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (interestsRequestDoneReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(interestsRequestDoneReceiver);
-            interestsRequestDoneReceiver = null;
+        if (this.interestsRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(this.interestsRequestDoneReceiver);
+            this.interestsRequestDoneReceiver = null;
         }
-        if (setInterestsOKReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(setInterestsOKReceiver);
-            setInterestsOKReceiver = null;
+        if (this.setInterestsOKReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(this.setInterestsOKReceiver);
+            this.setInterestsOKReceiver = null;
         }
-        if (getCurrentUserReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(getCurrentUserReceiver);
-            getCurrentUserReceiver = null;
+        if (this.getCurrentUserReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(this.getCurrentUserReceiver);
+            this.getCurrentUserReceiver = null;
+        }
+        if (this.changeCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(this.changeCityDoneReceiver);
+            this.changeCityDoneReceiver = null;
         }
     }
 }

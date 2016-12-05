@@ -78,7 +78,6 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     private MapView mapView;
 
     private GoogleMap mMap;
-    ArrayList<LatLng> MarkerPoints;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     Marker mCurrLocationMarker;
@@ -136,8 +135,6 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
         }
-        // Initializing
-        MarkerPoints = new ArrayList<>();
 
         mEventTitle.setText(event.getTitle());
         mEventPlace.setText(event.getPlace());
@@ -163,7 +160,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
                 if (enabled) {
 //                    LatLng origin = MarkerPoints.get(0);
                     LatLng origin = myLocationLatLng;
-                    LatLng dest = MarkerPoints.get(1);
+                    LatLng dest = new LatLng(43.218282, 76.927793);
 
                     // Getting URL to the Google Directions API
                     String url = getUrl(origin, dest);
@@ -213,15 +210,10 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-        MarkerPoints.add(new LatLng(43.2331407, 76.9565731));
-        MarkerPoints.add(new LatLng(43.218282, 76.927793));
-
-        for (int i = 0; i < MarkerPoints.size(); i++) {
-            MarkerOptions options = new MarkerOptions();
-            options.position(MarkerPoints.get(i));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-            mMap.addMarker(options);
-        }
+        MarkerOptions options = new MarkerOptions();
+        options.position(new LatLng(43.218282, 76.927793));
+        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+        mMap.addMarker(options);
 
 //        // Setting onclick event listener for the map
 //        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {

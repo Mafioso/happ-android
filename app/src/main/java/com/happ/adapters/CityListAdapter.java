@@ -108,6 +108,7 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     listener.onCityItemSelected(city,x, y);
                 }
             });

@@ -52,8 +52,7 @@ public class SelectCityFragment extends Fragment {
 
     private LinearLayoutManager citiesListLayoutManager;
     private OnCitySelectListener listener;
-    protected OnCitySelectInNavigationListener mNDlistener;
-    private MaterialProgressBar mLoadingProgress;
+    public MaterialProgressBar mLoadingProgress;
     private Toolbar toolbar;
 
     private int interestsPageSize;
@@ -69,7 +68,6 @@ public class SelectCityFragment extends Fragment {
 
 
     public SelectCityFragment() {
-
     }
 
     static {
@@ -79,6 +77,7 @@ public class SelectCityFragment extends Fragment {
     public static SelectCityFragment newInstance() {
         SelectCityFragment fragment = new SelectCityFragment();
         Bundle args = new Bundle();
+//        args.getBoolean("from_city_activity", false);
 //        args.putString("title", App.getContext().getString(R.string.select_interest_title));
         fragment.setArguments(args);
         return fragment;
@@ -88,36 +87,29 @@ public class SelectCityFragment extends Fragment {
         this.listener = listener;
     }
 
-    public void setOnCitySelectInNavigationListener(OnCitySelectInNavigationListener listenerNavigationDrawer) {
-        mNDlistener = listenerNavigationDrawer;
-    }
-
     public interface OnCitySelectListener {
         void onCitySelected(City city, float x, float y);
         void onCancel(float x, float y);
     }
 
-    public interface OnCitySelectInNavigationListener {
-        void onCloseNavigationDrawer();
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        APIService.getCities(1);
     }
 
-
-    
-    
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         fromCityActivity = getArguments().getBoolean("from_city_activity");
-    final View contentView = inflater.inflate(R.layout.select_city_fragment, container, false);
+        final View contentView = inflater.inflate(R.layout.select_city_fragment, container, false);
+        final AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         toolbar = (Toolbar) contentView.findViewById(R.id.select_city_toolbar);
         search = (EditText)contentView.findViewById( R.id.search);
         mCityRecyclerView = (RecyclerView)contentView.findViewById(R.id.activity_cities_rv);
         mLoadingProgress = (MaterialProgressBar) contentView.findViewById(R.id.cities_progress);
-
-
-        final AppCompatActivity activity = (AppCompatActivity) getActivity();
-
 
         if (fromCityActivity) {
             activity.setSupportActionBar(toolbar);
@@ -139,10 +131,15 @@ public class SelectCityFragment extends Fragment {
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
 
-
         citiesListLayoutManager = new LinearLayoutManager(activity);
         mCityRecyclerView.setLayoutManager(citiesListLayoutManager);
         cities = new ArrayList<>();
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<City> citiesRealmResults;
+        citiesRealmResults = realm.where(City.class).findAll();
+        cities = (ArrayList<City>)realm.copyFromRealm(citiesRealmResults);
+        realm.close();
 
         mCitiesListAdapter = new CityListAdapter(activity, cities);
         mCitiesListAdapter.setOnCityItemSelectListener(new CityListAdapter.SelectCityItemListener() {
@@ -154,19 +151,15 @@ public class SelectCityFragment extends Fragment {
                 } else {
                     selectedCity = city;
                     APIService.setCity(selectedCity.getId());
-                    mNDlistener.onCloseNavigationDrawer();
                 }
 
             }
         });
         mCityRecyclerView.setAdapter(mCitiesListAdapter);
 
-
-        APIService.getCities();
-
         dataLoading = true;
         if (dataLoading) {
-//            mLoadingProgress.setVisibility(View.VISIBLE);
+            mLoadingProgress.setVisibility(View.VISIBLE);
         } else {
             mLoadingProgress.setVisibility(View.GONE);
         }
@@ -213,7 +206,6 @@ public class SelectCityFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 updateCity();
-                updateCitiesList();
             }
         };
     }
@@ -249,14 +241,15 @@ public class SelectCityFragment extends Fragment {
 
         realm.close();
 
-        if (mCityRecyclerView != null && cities.size() > 0 && mCityRecyclerView.getChildAt(0) != null) {
-            int itemHeight = mCityRecyclerView.getChildAt(0).getHeight();
-            int rvHeight = mCityRecyclerView.getHeight();
-            if (itemHeight * cities.size() < rvHeight) {
-                int nextPage = (cities.size() / interestsPageSize) + 1;
-                APIService.getCities(nextPage, searchText);
-            }
-        }
+//        // @TODO STOP HERE
+//        if (mCityRecyclerView != null && cities.size() > 0 && mCityRecyclerView.getChildAt(0) != null) {
+//            int itemHeight = mCityRecyclerView.getChildAt(0).getHeight();
+//            int rvHeight = mCityRecyclerView.getHeight();
+//            if (itemHeight * cities.size() < rvHeight) {
+//                int nextPage = (cities.size() / interestsPageSize) + 1;
+//                APIService.getCities(nextPage, searchText);
+//            }
+//        }
     }
 
 
@@ -282,7 +275,7 @@ public class SelectCityFragment extends Fragment {
                         loading = true;
                         int nextPage = (totalItemCount / interestsPageSize) + 1;
                         dataLoading = true;
-//                        mLoadingProgress.setVisibility(View.VISIBLE);
+                        mLoadingProgress.setVisibility(View.VISIBLE);
                         APIService.getCities(nextPage, searchText);
                     }
                 }
@@ -321,7 +314,7 @@ public class SelectCityFragment extends Fragment {
 
                 mCitiesListAdapter.updateData(filteredList);
                 dataLoading = true;
-//                mLoadingProgress.setVisibility(View.VISIBLE);
+                mLoadingProgress.setVisibility(View.VISIBLE);
                 APIService.getCities(searchText);
             }
         });

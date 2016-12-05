@@ -83,10 +83,8 @@ public class FeedActivity extends AppCompatActivity {
     private boolean dataLoading = false;
     private SelectCityFragment scf;
 
-
     private boolean isUnvoting = false;
     private boolean isUnfaving = false;
-
 
     private EditText mFilterDate, mFilterTime;
 
@@ -118,7 +116,8 @@ public class FeedActivity extends AppCompatActivity {
     private View mViewFilterDate;
     private View mViewFilterTime;
 
-    private Event event;
+    private CheckBox mDrawerHeaderArrow;
+    private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -152,6 +151,10 @@ public class FeedActivity extends AppCompatActivity {
 
         mFilterDate = (EditText) findViewById(R.id.ff_edittext_filterdate);
         mFilterTime = (EditText) findViewById(R.id.ff_edittext_filtertime);
+
+        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
+        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
+        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
 
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
@@ -203,10 +206,10 @@ public class FeedActivity extends AppCompatActivity {
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setIcon(R.drawable.happ_drawer_icon);
 
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+        mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FeedActivity.this, UserActivity.class);
@@ -217,10 +220,10 @@ public class FeedActivity extends AppCompatActivity {
 
         cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
 
-        ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
+        mDrawerHeaderArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
+                if (mDrawerHeaderArrow.isChecked()) {
                     mDrawerCityFragment.setVisibility(View.VISIBLE);
                     mDrawerCityFragment.setAdapter(cityPageAdapter);
                 } else {
@@ -417,14 +420,14 @@ public class FeedActivity extends AppCompatActivity {
             }
         });
 
-        scf.setOnCitySelectInNavigationListener(new SelectCityFragment.OnCitySelectInNavigationListener() {
-            @Override
-            public void onCloseNavigationDrawer() {
-                ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setChecked(false);
-                mDrawerCityFragment.setVisibility(View.GONE);
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-            }
-        });
+//        scf.setOnCitySelectInNavigationListener(new SelectCityFragment.OnCitySelectInNavigationListener() {
+//            @Override
+//            public void onCloseNavigationDrawer() {
+//                mDrawerHeaderArrow.setChecked(false);
+//                mDrawerCityFragment.setVisibility(View.GONE);
+//                mDrawerLayout.closeDrawer(GravityCompat.START);
+//            }
+//        });
 
         setListenerToRootView();
 
@@ -528,10 +531,8 @@ public class FeedActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        updateUser();
-        updateCity();
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
         setTitle(App.getCurrentCity().getName());
 
 //        java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
@@ -544,27 +545,15 @@ public class FeedActivity extends AppCompatActivity {
 //        }
     }
 
-    protected void updateUser() {
-        Realm realm = Realm.getDefaultInstance();
-        User realmUser = realm.where(User.class).equalTo("username", username).findFirst();
-        if (realmUser != null) user = realm.copyFromRealm(realmUser);
-        realm.close();
-    }
-    protected void updateCity() {
-        Realm realm = Realm.getDefaultInstance();
-        mCity = App.getCurrentCity().getName();
-        City realmCity = realm.where(City.class).equalTo("name", mCity).findFirst();
-        if (realmCity != null) city = realm.copyFromRealm(realmCity);
-        realm.close();
-    }
-
     private BroadcastReceiver changeCityReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                updateCity();
+                mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
                 setTitle(App.getCurrentCity().getName());
-                ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+                mDrawerHeaderArrow.setChecked(false);
+                mDrawerCityFragment.setVisibility(View.GONE);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
             }
         };
     }
@@ -573,7 +562,8 @@ public class FeedActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                updateUser();
+                mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+
             }
         };
     }

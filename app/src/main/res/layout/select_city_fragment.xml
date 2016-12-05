@@ -34,7 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/select_city_toolbar"
-        android:paddingTop="2dp"
+        android:paddingTop="6dp"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
         android:paddingBottom="6dp"

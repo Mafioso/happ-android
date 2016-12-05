@@ -65,12 +65,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden"/>
 
         <activity
-            android:name=".controllers.PrivacyPolicyActivity"
-            android:label="@string/privacy_policy" />
-
-        <activity
-            android:name=".controllers.OrganizerRulesActivity"
-            android:label="@string/organizer_rules" />
+            android:name=".controllers.HtmlPageAcitivty"/>
 
         <activity android:name=".controllers.CityActivity" />
 

@@ -1,6 +1,7 @@
 package com.happ.controllers_drawer;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -20,11 +21,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.R;
 import com.happ.controllers.ChangeCurrencyActivity;
-import com.happ.controllers.PrivacyPolicyActivity;
+import com.happ.controllers.HtmlPageAcitivty;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.SelectCityFragment;
 
@@ -45,7 +47,6 @@ public class SettingsActivity extends AppCompatActivity {
 
     private Button mBtnProfile,
             mBtnPushNotif,
-            mBtnCitiesManager,
             mBtnContactHapp,
             mBtnFaqHelp,
             mBtnTermsOfService,
@@ -53,6 +54,9 @@ public class SettingsActivity extends AppCompatActivity {
             mBtnChangeCurrency;
 
     private ImageView mCloseLeftNavigation;
+
+    private CheckBox mDrawerHeaderArrow;
+    private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,18 +71,19 @@ public class SettingsActivity extends AppCompatActivity {
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mCloseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
 
+        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
+        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
+        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
 
-        //Enable Buttons
-            mBtnProfile = (Button) findViewById(R.id.btn_profile_settings);
-            mBtnChangeCurrency = (Button) findViewById(R.id.btn_change_currency);
-            mBtnPrivacyPolice = (Button) findViewById(R.id.btn_privacy_policy);
+        mBtnProfile = (Button) findViewById(R.id.btn_profile_settings);
+        mBtnChangeCurrency = (Button) findViewById(R.id.btn_change_currency);
+        mBtnPrivacyPolice = (Button) findViewById(R.id.btn_privacy_policy);
+        mBtnTermsOfService = (Button) findViewById(R.id.btn_terms_service);
+        mBtnPushNotif = (Button) findViewById(R.id.btn_push_notif);
+        mBtnContactHapp = (Button) findViewById(R.id.btn_contact_happ);
 
-        //Disable Buttons
-            mBtnPushNotif = (Button) findViewById(R.id.btn_push_notif);
-            mBtnCitiesManager = (Button) findViewById(R.id.btn_cities_manager);
-            mBtnContactHapp = (Button) findViewById(R.id.btn_contact_happ);
-            mBtnFaqHelp = (Button) findViewById(R.id.btn_faq);
-            mBtnTermsOfService = (Button) findViewById(R.id.btn_terms_service);
+        mBtnFaqHelp = (Button) findViewById(R.id.btn_faq);
+        mBtnFaqHelp.setText(R.string.organizer_rules);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -131,10 +136,10 @@ public class SettingsActivity extends AppCompatActivity {
         navigationMenu.getMenu().findItem(R.id.nav_item_settings).setChecked(true);
         navigationMenu.getMenu().findItem(R.id.nav_item_settings).setIcon(R.drawable.happ_drawer_icon);
 
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+        mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this, UserActivity.class);
@@ -146,10 +151,10 @@ public class SettingsActivity extends AppCompatActivity {
         cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
         mDrawerCityFragment.setAdapter(cityPageAdapter);
 
-        ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
+        mDrawerHeaderArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
+                if (mDrawerHeaderArrow.isChecked()) {
                     mDrawerCityFragment.setVisibility(View.VISIBLE);
                 } else {
                     mDrawerCityFragment.setVisibility(View.GONE);
@@ -178,9 +183,6 @@ public class SettingsActivity extends AppCompatActivity {
             case R.id.btn_push_notif:
                 break;
 
-            case R.id.btn_cities_manager:
-                break;
-
             case R.id.btn_change_currency:
                 Intent goToChangeCurrency = new Intent(getApplicationContext(), ChangeCurrencyActivity.class);
                 goToChangeCurrency.putExtra("from_settings", true);
@@ -189,17 +191,40 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
 
             case R.id.btn_contact_happ:
+                Intent i = new Intent(Intent.ACTION_SENDTO);
+                i.setType("message/rfc822");
+                i.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
+                i.putExtra(Intent.EXTRA_TEXT   , "body of email");
+                i.setData(Uri.parse("mailto:happerala@happapp.info"));
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    startActivity(Intent.createChooser(i, "Send mail..."));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(SettingsActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.btn_faq:
+                // Сейчас здесь страница Organizer Rules
+                Intent goToOrganizerRules = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
+                goToOrganizerRules.putExtra("from_organizermode", true);
+                goToOrganizerRules.putExtra("link_organizer_rules", true);
+                startActivity(goToOrganizerRules);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
                 break;
 
             case R.id.btn_terms_service:
+                Intent gotToTermsOfService = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
+                gotToTermsOfService.putExtra("from_settings", true);
+                gotToTermsOfService.putExtra("link_terms_of_service", true);
+                startActivity(gotToTermsOfService);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
                 break;
 
             case R.id.btn_privacy_policy:
-                Intent goToPrivacyPolicy = new Intent(getApplicationContext(), PrivacyPolicyActivity.class);
+                Intent goToPrivacyPolicy = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
                 goToPrivacyPolicy.putExtra("from_settings", true);
+                goToPrivacyPolicy.putExtra("link_privacy_policy", true);
                 startActivity(goToPrivacyPolicy);
                 overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
                 break;
@@ -227,8 +252,8 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
     }
 

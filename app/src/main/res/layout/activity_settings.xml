@@ -71,26 +71,6 @@
                     />
 
                 <Button
-                    android:id="@+id/btn_cities_manager"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="?attr/borderlessButtonStyle"
-                    android:text="@string/cities_manager"
-                    android:drawableLeft="@drawable/ic_cities_manager_compat"
-                    android:paddingLeft="16dp"
-                    android:drawablePadding="24dp"
-                    android:gravity="left|center"
-                    android:minHeight="40dp"
-                    android:paddingTop="0dp"
-                    android:paddingBottom="0dp"
-                    android:onClick="buttonOnClick"
-
-                    android:enabled="false"
-                    android:textColor="@color/dark12"
-                    android:drawableTint="@color/dark12"
-                    />
-
-                <Button
                     android:id="@+id/btn_change_currency"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -119,12 +99,7 @@
                     android:minHeight="40dp"
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
-                    android:onClick="buttonOnClick"
-
-                    android:enabled="false"
-                    android:textColor="@color/dark12"
-                    android:drawableTint="@color/dark12"
-                    />
+                    android:onClick="buttonOnClick" />
 
                 <Button
                     android:id="@+id/btn_faq"
@@ -139,12 +114,7 @@
                     android:minHeight="40dp"
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
-                    android:onClick="buttonOnClick"
-
-                    android:enabled="false"
-                    android:textColor="@color/dark12"
-                    android:drawableTint="@color/dark12"
-                    />
+                    android:onClick="buttonOnClick"/>
 
                 <Button
                     android:id="@+id/btn_terms_service"
@@ -160,9 +130,6 @@
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
                     android:onClick="buttonOnClick"
-
-                    android:enabled="false"
-                    android:textColor="@color/dark12"
                     />
 
                 <Button

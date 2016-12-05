@@ -754,11 +754,13 @@ public class HappRestClient {
                         realm.commitTransaction();
                         realm.close();
 
-                        Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_OK);
-                        intent.putExtra("event_id", event.getId());
+                        Intent intent = new Intent(BroadcastIntents.EVENTCREATE_REQUEST_OK);
+                        String eventId = event.getId();
+                        intent.putExtra("event_id", eventId);
+                        intent.putExtra("in_event_activity", true);
                         LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                     } else {
-                        Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_FAIL);
+                        Intent intent = new Intent(BroadcastIntents.EVENTCREATE_REQUEST_FAIL);
                         intent.putExtra("CODE", response.code());
 
                         if(response.code() == 500) {
@@ -790,7 +792,7 @@ public class HappRestClient {
                     realm.commitTransaction();
                     realm.close();
 
-                    Intent intent = new Intent(BroadcastIntents.EVENTEDIT_REQUEST_FAIL);
+                    Intent intent = new Intent(BroadcastIntents.EVENTCREATE_REQUEST_FAIL);
                     Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     intent.putExtra("MESSAGE", t.getLocalizedMessage());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);

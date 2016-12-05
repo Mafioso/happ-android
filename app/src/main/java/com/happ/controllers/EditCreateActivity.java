@@ -51,7 +51,7 @@ public class EditCreateActivity extends AppCompatActivity {
 //    private DateTime endDate;
 
     private EventImagesSwipeAdapter mEventImagesSwipeAdapter;
-    private BroadcastReceiver saveDoneReceiver;
+    private BroadcastReceiver createEventReceiver;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -247,9 +247,9 @@ public class EditCreateActivity extends AppCompatActivity {
 //        });
 
 
-        if (saveDoneReceiver == null) {
-            saveDoneReceiver = createSaveDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(saveDoneReceiver, new IntentFilter(BroadcastIntents.EVENTEDIT_REQUEST_OK));
+        if (createEventReceiver == null) {
+            createEventReceiver = createSaveDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(createEventReceiver, new IntentFilter(BroadcastIntents.EVENTCREATE_REQUEST_OK));
         }
 
     }
@@ -301,8 +301,7 @@ public class EditCreateActivity extends AppCompatActivity {
         event.setTitle("CS:GO Beta test");
         event.setDescription("Тест!  Тест!  Тест!  Тест!  Тест!  Тест!  Тест!");
         event.setCityId(App.getCurrentCity().getId());
-//        event.setCurrencyId("KZT");
-        event.setCurrencyId(App.getCurrentUser().getSettings().getCurrencyObject().getId());
+        event.setCurrencyId(App.getCurrentUser().getSettings().getCurrency());
         event.setPlace("l[l[ppl");
         event.setStartDate(new Date());
         event.setEndDate(new Date());
@@ -311,9 +310,9 @@ public class EditCreateActivity extends AppCompatActivity {
         event.setHighestPrice(Integer.parseInt("12345"));
         event.setWebSite("http://vk.com/");
 
-        if (event.getCurrency() != null) {
-            event.setCurrencyId(event.getCurrency().getId());
-        }
+//        if (event.getCurrency() != null) {
+//            event.setCurrencyId(event.getCurrency().getId());
+//        }
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
@@ -339,8 +338,9 @@ public class EditCreateActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (saveDoneReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(saveDoneReceiver);
+        if (createEventReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(createEventReceiver);
+            createEventReceiver = null;
         }
     }
 //
@@ -443,9 +443,16 @@ public class EditCreateActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String evendId = intent.getStringExtra("event_id");
-                intent = new Intent(App.getContext(), EventActivity.class);
-                intent.putExtra("event_id", evendId);
+                intent = new Intent(EditCreateActivity.this, EventActivity.class);
+                intent.putExtra("in_event_activity", true);
+                intent.putExtra("event_id", eventId);
                 startActivity(intent);
+
+
+//                intent = new Intent(context, EventActivity.class);
+//                intent.putExtra("event_id", evendId);
+//                intent.putExtra("in_event_activity", true);
+//                startActivity(intent);
 
 //                final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.event_done), Snackbar.LENGTH_INDEFINITE);
 //                snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {

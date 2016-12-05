@@ -1,5 +1,7 @@
 package com.happ.controllers;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.Display;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -62,6 +65,7 @@ public class UserActivity extends AppCompatActivity {
     private boolean fromSettings = false;
 
     private TextInputLayout mTILphone;
+    private Animation anim;
 
     @Override
     public void onBackPressed() {
@@ -80,7 +84,7 @@ public class UserActivity extends AppCompatActivity {
 
         Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();  // deprecated
-        int height = display.getHeight();  // deprecated
+//        int height = display.getHeight();  // deprecated
 
         mRootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
@@ -142,8 +146,27 @@ public class UserActivity extends AppCompatActivity {
                 Toast.makeText(UserActivity.this, "Change Photo", Toast.LENGTH_SHORT).show();
             }
         });
+
+
         mUserSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                int colorFrom = ContextCompat.getColor(App.getContext(), R.color.light_gray);
+                int colorTo = ContextCompat.getColor(App.getContext(), R.color.bg_light);
+                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                colorAnimation.setDuration(250); // milliseconds
+                colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animator) {
+                        mUserSave.setBackgroundColor((int) animator.getAnimatedValue());
+                    }
+
+                });
+                colorAnimation.start();
+
+//                anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha);
+//                mUserSave.startAnimation(anim);
+
                 hideSoftKeyboard(UserActivity.this, v);
                 int gender = 0;
 //                if (mGenderSwitch.isChecked()) gender = 1;

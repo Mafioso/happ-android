@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
@@ -38,7 +39,7 @@
                     android:scaleX="2"
                     android:fitsSystemWindows="true"
                     app:layout_collapseMode="parallax"
-                    android:visibility="gone"/>
+                    android:visibility="visible"/>
 
                 <!--<android.support.v7.widget.Toolbar-->
                    <!--android:id="@+id/toolbar"-->
@@ -52,7 +53,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorBlack8"
+                android:background="@color/colorDate"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp"
                 android:paddingLeft="42dp"
@@ -102,21 +103,36 @@
                                 android:layout_alignParentLeft="true"
                                 android:layout_toLeftOf="@+id/ll_money">
 
-                                <LinearLayout
-                                    android:id="@+id/ll_calendar_image"
+                                <RelativeLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:layout_width="60dp"
-                                    android:layout_height="60dp"
-                                    android:layout_centerHorizontal="true"
-                                    android:background="@drawable/circle_event">
+                                    android:gravity="center">
 
                                     <ImageView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
+                                        android:id="@+id/iv_flashing_calendar"
+                                        android:layout_width="70dp"
+                                        android:layout_height="70dp"
+                                        android:background="@drawable/circle_orange_event"
+                                        android:layout_centerVertical="true"
+                                        android:layout_centerHorizontal="true"
+                                        android:visibility="invisible"/>
+                                    <LinearLayout
+                                        android:id="@+id/ll_calendar_image"
                                         android:layout_gravity="center"
-                                        app:srcCompat="@drawable/i_calendar_white"/>
+                                        android:layout_width="60dp"
+                                        android:layout_height="60dp"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_centerVertical="true"
+                                        android:background="@drawable/circle_event">
 
-                                </LinearLayout>
+                                        <ImageView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            app:srcCompat="@drawable/i_calendar_white"/>
+                                    </LinearLayout>
+                                 </RelativeLayout>
 
                                 <TextView
                                     android:id="@+id/event_date"
@@ -146,27 +162,39 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:layout_marginLeft="16dp"
-                            android:layout_marginRight="16dp"
-                            >
+                            android:layout_marginRight="16dp">
 
-                            <LinearLayout
-                                android:id="@+id/ll_price_image"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:background="@drawable/circle_event"
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:layout_gravity="center">
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/iv_flashing_price"
+                                    android:layout_width="70dp"
+                                    android:layout_height="70dp"
+                                    android:background="@drawable/circle_orange_event"
                                     android:layout_centerVertical="true"
-                                    android:layout_gravity="center"
-                                    app:srcCompat="@drawable/ic_money"/>
+                                    android:layout_centerHorizontal="true"
+                                    android:visibility="invisible"/>
+                                <LinearLayout
+                                        android:id="@+id/ll_price_image"
+                                        android:layout_width="60dp"
+                                        android:layout_height="60dp"
+                                        android:background="@drawable/circle_event"
+                                        android:layout_centerVertical="true"
+                                        android:layout_centerHorizontal="true"
+                                        android:gravity="center">
 
-                            </LinearLayout>
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            app:srcCompat="@drawable/ic_money"/>
 
+                                </LinearLayout>
+                            </RelativeLayout>
                             <TextView
                                 android:layout_gravity="center"
                                 android:layout_marginTop="8dp"
@@ -199,23 +227,44 @@
                             android:layout_alignParentRight="true"
                             android:gravity="center">
 
-                            <LinearLayout
-                                android:id="@+id/ll_place_image"
-                                android:layout_width="60dp"
-                                android:layout_height="60dp"
-                                android:background="@drawable/circle_event"
-                                android:layout_gravity="center"
-                                android:gravity="center">
+                            <RelativeLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:layout_gravity="center">
 
                                 <ImageView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerHorizontal="true"
+                                    android:id="@+id/iv_flashing_place"
+                                    android:layout_width="70dp"
+                                    android:layout_height="70dp"
+                                    android:background="@drawable/circle_event"
                                     android:layout_centerVertical="true"
-                                    android:layout_gravity="center"
-                                    app:srcCompat="@drawable/ic_place_white"/>
+                                    android:layout_centerHorizontal="true"/>
 
-                            </LinearLayout>
+                                <View
+                                    android:layout_width="70dp"
+                                    android:layout_height="70dp"
+                                    android:background="@drawable/circle_event_lighter"/>
+
+                                <LinearLayout
+                                    android:id="@+id/ll_place_image"
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp"
+                                    android:background="@drawable/circle_event"
+                                    android:layout_centerVertical="true"
+                                    android:layout_centerHorizontal="true"
+                                    android:gravity="center">
+
+                                    <ImageView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_centerVertical="true"
+                                        android:layout_gravity="center"
+                                        app:srcCompat="@drawable/ic_place_white"/>
+
+                                </LinearLayout>
+                            </RelativeLayout>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -248,7 +297,7 @@
                             android:paddingRight="24dp"
                             android:paddingBottom="8dp"
                             android:paddingTop="8dp"
-                            android:gravity="left">
+                            android:gravity="start">
 
                             <ImageView
                                 android:id="@+id/event_iv_did_upvote"

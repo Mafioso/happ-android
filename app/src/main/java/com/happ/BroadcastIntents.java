@@ -32,6 +32,9 @@ public class BroadcastIntents {
     public static final String EVENTEDIT_REQUEST_OK = "com.happ.eventedit_request_ok";
     public static final String EVENTEDIT_REQUEST_FAIL = "com.happ.eventedit_request_fail";
 
+    public static final String EVENTCREATE_REQUEST_OK = "com.happ.eventcreate_request_ok";
+    public static final String EVENTCREATE_REQUEST_FAIL = "com.happ.eventcreate_request_fail";
+
     public static final String EVENTDELETE_REQUEST_OK = "com.happ.eventdelete_request_ok";
     public static final String EVENTDELETE_REQUEST_FAIL = "com.happ.eventdelete_request_fail";
 

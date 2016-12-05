@@ -31,7 +31,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.happ.App;
 import com.happ.R;
 import com.happ.controllers.EditCreateActivity;
-import com.happ.controllers.OrganizerRulesActivity;
+import com.happ.controllers.HtmlPageAcitivty;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.EventsOrganizerFragment;
 import com.happ.fragments.SelectCityFragment;
@@ -61,6 +61,9 @@ public class OrganizerModeActivity extends AppCompatActivity {
     private FragNavController fragNavController;
     private ImageView mCloseRightNavigation, mCLoserLeftNavigation;
 
+    private CheckBox mDrawerHeaderArrow;
+    private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
+
     private final int TAB_MY_EVENTS = FragNavController.TAB1;
 
     @Override
@@ -79,6 +82,11 @@ public class OrganizerModeActivity extends AppCompatActivity {
         mBottomBar = (BottomBar) findViewById(R.id.bottombar_org);
         mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_org_navigation);
         mCLoserLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
+        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
+        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
+        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
+
+
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(getSupportActionBar() != null){
@@ -145,10 +153,10 @@ public class OrganizerModeActivity extends AppCompatActivity {
         cityPageAdapter = new MyCityPageAdapter(getSupportFragmentManager());
         mDrawerCityFragment.setAdapter(cityPageAdapter);
 
-        ((CheckBox) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).setOnClickListener(new View.OnClickListener() {
+        mDrawerHeaderArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (((CheckBox) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow)).isChecked()) {
+                if (mDrawerHeaderArrow.isChecked()) {
                     mDrawerCityFragment.setVisibility(View.VISIBLE);
                 } else {
                     mDrawerCityFragment.setVisibility(View.GONE);
@@ -200,8 +208,8 @@ public class OrganizerModeActivity extends AppCompatActivity {
                             sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
                             sPref.edit().putString("first_create_event", FIRST_CREATE_EVENT).apply();
 
-                            Intent i = new Intent(OrganizerModeActivity.this, OrganizerRulesActivity.class);
-                            i.putExtra("from_org_fab_create", true);
+                            Intent i = new Intent(OrganizerModeActivity.this, HtmlPageAcitivty.class);
+                            i.putExtra("from_organizermode", true);
                             startActivity(i);
 
                         } else {
