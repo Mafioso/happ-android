@@ -363,7 +363,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
 
             itemHolder.mTitleView.setText(item.event.getTitle());
-            Typeface tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.ttf");
+            Typeface tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.otf");
             itemHolder.mTitleView.setTypeface(tfcs);
 
             itemHolder.mPlace.setText(item.event.getPlace());
