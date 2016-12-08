@@ -26,11 +26,14 @@ import com.happ.fragments.First_EC_Fragment;
 import com.happ.fragments.Second_EC_Fragment;
 import com.happ.fragments.Third_EC_Fragment;
 import com.happ.models.Event;
+import com.happ.models.EventPhones;
+import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
 import java.util.Date;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import me.relex.circleindicator.CircleIndicator;
 
 
@@ -299,20 +302,30 @@ public class EditCreateActivity extends AppCompatActivity {
         event.setId("local_event_" + (new Date()).getTime());
 
         event.setTitle("CS:GO Beta test");
-        event.setDescription("Тест!  Тест!  Тест!  Тест!  Тест!  Тест!  Тест!");
+        event.setDescription("Test Description ...");
         event.setCityId(App.getCurrentCity().getId());
         event.setCurrencyId(App.getCurrentUser().getSettings().getCurrency());
-        event.setPlace("l[l[ppl");
+        event.setPlace("Esentai Mall");
         event.setStartDate(new Date());
         event.setEndDate(new Date());
 
-        event.setLowestPrice(Integer.parseInt("1234"));
-        event.setHighestPrice(Integer.parseInt("12345"));
+        event.setLowestPrice(Integer.parseInt("0"));
+        event.setHighestPrice(Integer.parseInt("1000"));
         event.setWebSite("http://vk.com/");
+        RealmList<EventPhones> phones = new RealmList<EventPhones>();
+        for (int i = 0; i < 3; i++) {
+            EventPhones phone1 = new EventPhones();
+            phone1.setPhone("+7701774176"+i);
+            phones.add(phone1);
+        }
+        event.setPhones(phones);
 
-//        if (event.getCurrency() != null) {
-//            event.setCurrencyId(event.getCurrency().getId());
-//        }
+        event.setEmail("dante666lcf@gmail.com");
+
+        User author = new User();
+        author.setFullName(App.getCurrentUser().getFn());
+        event.setAuthor(author);
+
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
@@ -445,7 +458,7 @@ public class EditCreateActivity extends AppCompatActivity {
                 String evendId = intent.getStringExtra("event_id");
                 intent = new Intent(EditCreateActivity.this, EventActivity.class);
                 intent.putExtra("in_event_activity", true);
-                intent.putExtra("event_id", eventId);
+                intent.putExtra("event_id", evendId);
                 startActivity(intent);
 
 

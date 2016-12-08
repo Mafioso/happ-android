@@ -1,10 +1,6 @@
 <resources>
-    <string name="HOST">http://happ.westeurope.cloudapp.azure.com/</string>
-    <!--<string name="HOST">http://192.168.0.104:8000/</string>-->
-    <!--<string name="HOST">http://192.168.11.211:8000/</string>-->
-    <!--<string name="HOST">http://192.168.43.16:8000/</string>-->
-    <!--<string name="HOST">http://1192.168.2.10:8000/</string>-->
-    <!--<string name="HOST">http://192.168.0.101:8000/</string>-->
+    <!--<string name="HOST">http://happ.westeurope.cloudapp.azure.com/</string>-->
+    <string name="HOST">http://192.168.0.106:8000/</string>
 
 
     <string name="API_URL">api/v1/</string>
