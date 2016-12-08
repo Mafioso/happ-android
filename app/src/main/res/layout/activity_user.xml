@@ -142,7 +142,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:hint="@string/email"
-                        android:inputType="textNoSuggestions"/>
+                        android:inputType="textEmailAddress"/>
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
@@ -175,7 +175,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:hint="@string/phone_number"
-                        android:inputType="textNoSuggestions"/>
+                        android:inputType="phone"/>
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 

@@ -22,6 +22,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -59,13 +60,15 @@ import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 import io.realm.Realm;
 import io.realm.RealmList;
 
-//import android.support.design.widget.CollapsingToolbarLayout;
 
 /**
  * Created by dante on 8/8/16.
  */
 public class EventActivity extends AppCompatActivity {
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
@@ -134,6 +137,7 @@ public class EventActivity extends AppCompatActivity {
         eventId = intent.getStringExtra("event_id");
 
         setContentView(R.layout.activity_event);
+        setTitle("");
 
         mTitle = (TextView) findViewById(R.id.event_title);
         tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.ttf");
@@ -157,20 +161,16 @@ public class EventActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.slider_viewpager);
         mEmail = (TextView) findViewById(R.id.event_email);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.top_event_toolbar);
         ctl = (CollapsingToolbarLayout) findViewById(R.id.event_collapsing_layout);
         mUpvoteImage = (ImageView) findViewById(R.id.event_iv_did_upvote);
-
         mCircleLLPlace = (LinearLayout) findViewById(R.id.ll_place_image);
         mCircleLLCalendar = (LinearLayout) findViewById(R.id.ll_calendar_image);
         mCircleLLPrice = (LinearLayout) findViewById(R.id.ll_price_image);
-
         mFlashingImageViewPlace = (ImageView) findViewById(R.id.iv_flashing_place);
-
         mLLVote = (LinearLayout) findViewById(R.id.ll_upvote_image);
         mLLFav = (LinearLayout) findViewById(R.id.ll_fav_image);
         mCurrency = (TextView) findViewById(R.id.event_currency);
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
         navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
@@ -178,6 +178,7 @@ public class EventActivity extends AppCompatActivity {
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
         rvPhones = (RecyclerView) findViewById(R.id.rv_event_phones);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
 
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
@@ -264,8 +265,8 @@ public class EventActivity extends AppCompatActivity {
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setIcon(R.drawable.happ_drawer_icon);
 
 
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
-        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
+//        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+//        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
 
         mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
@@ -286,27 +287,6 @@ public class EventActivity extends AppCompatActivity {
                     mDrawerCityFragment.setVisibility(View.VISIBLE);
                 } else {
                     mDrawerCityFragment.setVisibility(View.GONE);
-                }
-            }
-        });
-
-        appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    ctl.setTitle(event.getTitle());
-                    ctl.setCollapsedTitleTypeface(tfcs);
-                    isShow = true;
-                } else if (isShow) {
-                    ctl.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
-                    isShow = false;
                 }
             }
         });
@@ -375,60 +355,51 @@ public class EventActivity extends AppCompatActivity {
 
             mEventImagesSwipeAdapter.setImageList(event.getImages());
 
+            appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                boolean isShow = false;
+                int scrollRange = -1;
 
-//        Drawable dr = DrawableCompat.wrap(getResources().getDrawable(R.drawable.circle_event));
-//        DrawableCompat.setTint(dr,Color.parseColor(event.getColor()));
-//
-//        ctl.setBackgroundColor(Color.parseColor(event.getColor()));
-//        ctl.setContentScrimColor(Color.parseColor(event.getColor()));
-//        appBarLayout.setBackgroundColor(Color.parseColor(event.getColor()));
-
-//        Interest interest = event.getInterest();
-//        if (interest != null) {
-//            if (interest.getColor() != null) {
-//                String action_navigation_item_text_color = interest.getColor();
-//                if (action_navigation_item_text_color.length() > 6) {
-//                    action_navigation_item_text_color = action_navigation_item_text_color.substring(action_navigation_item_text_color.length()-6);
-//                }
-//                mEventInterestBg.setBackgroundColor(Color.parseColor("#" + action_navigation_item_text_color));
-//            } else {
-//                mEventInterestBg.setBackgroundColor(Color.parseColor("#FF1493"));
-//            }
-//
-//            ArrayList<String> fullTitle = event.getInterest().getFullTitle();
-//            String fullTitleString = fullTitle.get(0);
-//            if (fullTitle.size() > 1) {
-//                fullTitleString = fullTitleString + " / " + fullTitle.get(1);
-//            }
-//            mEventInterestTitle.setText(fullTitleString.toUpperCase());
-//        } else {
-//            mEventInterestTitle.setText("Null");
-//        }
+                @Override
+                public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                    if (scrollRange == -1) {
+                        scrollRange = appBarLayout.getTotalScrollRange();
+                    }
+                    if (scrollRange + verticalOffset == 0) {
+                        ctl.setTitle(event.getTitle());
+                        ctl.setCollapsedTitleTypeface(tfcs);
+                        isShow = true;
+                    } else if (isShow) {
+                        ctl.setTitle(" ");//carefull there should a space between double quote otherwise it wont work
+                        isShow = false;
+                    }
+                }
+            });
 
 
-            mCircleLLCalendar.setBackgroundResource(R.drawable.circle_event);
-            mCircleLLPrice.setBackgroundResource(R.drawable.circle_event);
-            mCircleLLPlace.setBackgroundResource(R.drawable.circle_event);
-            mLLVote.setBackgroundResource(R.drawable.circle_event);
-            mFlashingImageViewPlace.setBackgroundResource(R.drawable.circle_event);
+            if (event.getColor() != null) {
+                mCircleLLCalendar.setBackgroundResource(R.drawable.circle_event);
+                mCircleLLPrice.setBackgroundResource(R.drawable.circle_event);
+                mCircleLLPlace.setBackgroundResource(R.drawable.circle_event);
+                mLLVote.setBackgroundResource(R.drawable.circle_event);
+                mFlashingImageViewPlace.setBackgroundResource(R.drawable.circle_event);
 
-            GradientDrawable gdCalendar = (GradientDrawable) mCircleLLCalendar.getBackground().getCurrent();
-            GradientDrawable gdPlace = (GradientDrawable) mCircleLLPlace.getBackground().getCurrent();
-            GradientDrawable gdPrice = (GradientDrawable) mCircleLLPrice.getBackground().getCurrent();
-            GradientDrawable gdVote = (GradientDrawable) mLLVote.getBackground().getCurrent();
-            GradientDrawable gdFlashingPlace = (GradientDrawable) mFlashingImageViewPlace.getBackground().getCurrent();
+                GradientDrawable gdCalendar = (GradientDrawable) mCircleLLCalendar.getBackground().getCurrent();
+                GradientDrawable gdPlace = (GradientDrawable) mCircleLLPlace.getBackground().getCurrent();
+                GradientDrawable gdPrice = (GradientDrawable) mCircleLLPrice.getBackground().getCurrent();
+                GradientDrawable gdVote = (GradientDrawable) mLLVote.getBackground().getCurrent();
+                GradientDrawable gdFlashingPlace = (GradientDrawable) mFlashingImageViewPlace.getBackground().getCurrent();
 
-            gdCalendar.setColor(Color.parseColor(event.getColor()));
-            gdPlace.setColor(Color.parseColor(event.getColor()));
-            gdPrice.setColor(Color.parseColor(event.getColor()));
-            gdVote.setColor(Color.parseColor(event.getColor()));
-            gdFlashingPlace.setColor(Color.parseColor(event.getColor()));
+                gdCalendar.setColor(Color.parseColor(event.getColor()));
+                gdPlace.setColor(Color.parseColor(event.getColor()));
+                gdPrice.setColor(Color.parseColor(event.getColor()));
+                gdVote.setColor(Color.parseColor(event.getColor()));
+                gdFlashingPlace.setColor(Color.parseColor(event.getColor()));
 
-            mToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
+                mToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
+            }
 
             anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha_infiniti);
             mFlashingImageViewPlace.startAnimation(anim);
-
 
             mTitle.setText(event.getTitle());
             mPlace.setText(event.getPlace());
@@ -442,38 +413,22 @@ public class EventActivity extends AppCompatActivity {
                 mEventAuthor.setVisibility(View.GONE);
             }
 
-            llm = new LinearLayoutManager(this);
-            rvPhones.setLayoutManager(llm);
-            eventPhoneListAdapter = new EventPhoneListAdapter(this, event.getPhones());
-            rvPhones.setAdapter(eventPhoneListAdapter);
+            if (event.getPhones() != null) {
+                llm = new LinearLayoutManager(this);
+                rvPhones.setLayoutManager(llm);
+                eventPhoneListAdapter = new EventPhoneListAdapter(this, event.getPhones());
+                rvPhones.setAdapter(eventPhoneListAdapter);
 
-            eventPhoneListAdapter.setOnSelectEventExploreListener(new EventPhoneListAdapter.SelectEventPhoneItemListener() {
-                @Override
-                public void onEventPhoneItemSelected(EventPhones eventPhones) {
-                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", eventPhones.getPhone(), null));
-                    startActivity(intent);
-                }
-            });
-//        if (author.getPhone() != null) {
-//            mPhone.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                String phone = author.getPhone();
-//                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-//                startActivity(intent);
-//                }
-//            });
-//        } else {
-//            mPhone.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    String phone = mPhone.getText().toString();
-//                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phone, null));
-//                    startActivity(intent);
-//                }
-//            });
-////            mEventPhone.setVisibility(View.GONE);
-//        }
+                eventPhoneListAdapter.setOnSelectEventExploreListener(new EventPhoneListAdapter.SelectEventPhoneItemListener() {
+                    @Override
+                    public void onEventPhoneItemSelected(EventPhones eventPhones) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", eventPhones.getPhone(), null));
+                        startActivity(intent);
+                    }
+                });
+            } else {
+                mEventPhone.setVisibility(View.GONE);
+            }
 
             mDescription.setText(event.getDescription());
 
@@ -522,6 +477,7 @@ public class EventActivity extends AppCompatActivity {
 
             String startDate = event.getStartDateFormatted("MMM dd").toUpperCase();
             String endDate = event.getEndDateFormatted("MMM dd").toUpperCase();
+
             if (startDate.equals(endDate)) {
                 mEventDate.setText(startDate);
             } else {
@@ -531,6 +487,7 @@ public class EventActivity extends AppCompatActivity {
             String startTime = event.getStartDateFormatted("h:mm a");
             String endTime = event.getEndDateFormatted("h:mm a");
             String rangeTime = startTime + " — " + endTime;
+
             if (startTime.equals(endTime)) {
                 mEventTime.setText(startTime);
             } else {
@@ -602,40 +559,8 @@ public class EventActivity extends AppCompatActivity {
         if (isOrg && mFab.getVisibility() != View.VISIBLE) {
             mFab.show();
         }
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
-        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        mDrawerLayout = null;
-        mToolbar = null;
-        eventId = null;
-        event = null;
-        viewPager = null;
-        mEventImagesSwipeAdapter = null;
-        mWebSite = null;
-        mEmail = null;
-        mPlace = null;
-        mAuthor = null;
-        mAuthorEmail = null;
-        mDescription = null;
-        mEventDate = null;
-        mEventTime = null;
-        mUpvoteImage = null;
-        mFavoritesImage = null;
-        mEventAuthor = null;
-        mEventWEbSite = null;
-        mEventEmail = null;
-        mFab = null;
-        ctl = null;
-        mPrice = null;
-        mTitle = null;
-        mVotesCount = null;
-        mCircleLLCalendar = null;
-        mCircleLLPlace = null;
-        mCircleLLPrice = null;
+//        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+//        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
 
     @Override

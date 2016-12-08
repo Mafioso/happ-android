@@ -118,62 +118,65 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        mUsername.setText(App.getCurrentUser().getFullName());
-        mEmail.setText(App.getCurrentUser().getEmail());
-        mPhoneNumber.setText(App.getCurrentUser().getPhone());
-        birthday = App.getCurrentUser().getBirthDate();
-        if (birthday == null) {
-            Calendar cal = Calendar.getInstance();
-            int currentYear = cal.get(Calendar.YEAR);
-            cal.set(Calendar.YEAR, currentYear-18);
-            birthday = cal.getTime();
-        }
-        java.text.DateFormat format = DateFormat.getLongDateFormat(this);
-        mBirthday.setText(format.format(birthday));
-        mBtnEditBirthday.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (App.getCurrentUser() != null) {
+
+            mUsername.setText(App.getCurrentUser().getFullName());
+            mEmail.setText(App.getCurrentUser().getEmail());
+            mPhoneNumber.setText(App.getCurrentUser().getPhone());
+            birthday = App.getCurrentUser().getBirthDate();
+            if (birthday == null) {
+                Calendar cal = Calendar.getInstance();
+                int currentYear = cal.get(Calendar.YEAR);
+                cal.set(Calendar.YEAR, currentYear-18);
+                birthday = cal.getTime();
+            }
+            java.text.DateFormat format = DateFormat.getLongDateFormat(this);
+            mBirthday.setText(format.format(birthday));
+            mBtnEditBirthday.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 //                btn_click_birthday(v);
-            }
-        });
+                }
+            });
 
-        mMale.setChecked(App.getCurrentUser().getGender() == 0);
-        mFemale.setChecked(App.getCurrentUser().getGender() > 0);
+            mMale.setChecked(App.getCurrentUser().getGender() == 0);
+            mFemale.setChecked(App.getCurrentUser().getGender() > 0);
 
-        mBtnEditPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(UserActivity.this, "Change Photo", Toast.LENGTH_SHORT).show();
-            }
-        });
+            mBtnEditPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(UserActivity.this, "Change Photo", Toast.LENGTH_SHORT).show();
+                }
+            });
 
 
-        mUserSave.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                int colorFrom = ContextCompat.getColor(App.getContext(), R.color.light_gray);
-                int colorTo = ContextCompat.getColor(App.getContext(), R.color.bg_light);
-                ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-                colorAnimation.setDuration(250); // milliseconds
-                colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            mUserSave.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    int colorFrom = ContextCompat.getColor(App.getContext(), R.color.light_gray);
+                    int colorTo = ContextCompat.getColor(App.getContext(), R.color.bg_light);
+                    ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+                    colorAnimation.setDuration(250); // milliseconds
+                    colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animator) {
-                        mUserSave.setBackgroundColor((int) animator.getAnimatedValue());
-                    }
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animator) {
+                            mUserSave.setBackgroundColor((int) animator.getAnimatedValue());
+                        }
 
-                });
-                colorAnimation.start();
+                    });
+                    colorAnimation.start();
 
 //                anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha);
 //                mUserSave.startAnimation(anim);
 
-                hideSoftKeyboard(UserActivity.this, v);
-                int gender = 0;
+                    hideSoftKeyboard(UserActivity.this, v);
+                    int gender = 0;
 //                if (mGenderSwitch.isChecked()) gender = 1;
-                if (mFemale.isChecked()) gender = 1;
-                APIService.doUserEdit(mUsername.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), birthday, gender);
-            }
-        });
+                    if (mFemale.isChecked()) gender = 1;
+                    APIService.doUserEdit(mUsername.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), birthday, gender);
+                }
+            });
+        }
 
         if (setUserEditOKReceiver == null) {
             setUserEditOKReceiver = createSetUserEditOKReceiver();
