@@ -197,7 +197,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(View.VISIBLE);
                     APIService.doSignUp(mUsername.getText().toString(), mPassword.getText().toString());
                 } else {
-                    Toast.makeText(RegistrationActivity.this, "Пароли не совпадают", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegistrationActivity.this, R.string.password_dont_match, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -260,7 +260,6 @@ public class RegistrationActivity extends AppCompatActivity {
         SpannableString spanTermsPolicyString = new SpannableString(mTVTermsPolicy.getText());
         spanTermsPolicyString.setSpan(new UnderlineSpan(), 0, spanTermsPolicyString.length(), 0);
         mTVTermsPolicy.setText(spanTermsPolicyString);
-
     }
 
     public void setListenerToRootView() {
@@ -356,7 +355,6 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mCreateAccountButton.setVisibility(View.VISIBLE);
-                Toast.makeText(RegistrationActivity.this, "Wrong Username or Password", Toast.LENGTH_LONG).show();
             }
         };
     }

@@ -26,7 +26,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -334,7 +333,6 @@ public class LoginActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.GONE);
                 mBtnLogin.setVisibility(View.VISIBLE);
-                Toast.makeText(LoginActivity.this, "Wrong Username or Password", Toast.LENGTH_LONG).show();
             }
         };
     }

@@ -217,6 +217,8 @@
     <string name="browser">HAPP Browser</string>
     <string name="event_organizer">Event Organizer</string>
     <string name="disagree">Disagree</string>
+    <string name="password_dont_match">Passwords do not match</string>
+    <string name="error">Error</string>
 
 
 </resources>
