@@ -13,8 +13,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
@@ -22,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -51,6 +54,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private ImageView mImgLogo;
     private RelativeLayout mRLFooter;
+    private TextView mTVPrivacyPolicy, mTVTermsPolicy;
 
     private int[] login_bg = {
             R.drawable.login_bg_1,
@@ -152,6 +156,9 @@ public class RegistrationActivity extends AppCompatActivity {
         mImgLogo = (ImageView) findViewById(R.id.img_logo);
         mRLFooter = (RelativeLayout) findViewById(R.id.rl_footer);
 
+        mTVPrivacyPolicy = (TextView) findViewById(R.id.tv_privacy_policy);
+        mTVTermsPolicy = (TextView) findViewById(R.id.tv_terms_and_policy);
+
         mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
 
         mCreateAccountButton.setVisibility(View.INVISIBLE);
@@ -195,6 +202,24 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
+        mTVTermsPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotToTermsOfService = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
+                gotToTermsOfService.putExtra("link_terms_of_service", true);
+                startActivity(gotToTermsOfService);
+            }
+        });
+
+        mTVPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToPrivacyPolicy = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
+                goToPrivacyPolicy.putExtra("link_privacy_policy", true);
+                startActivity(goToPrivacyPolicy);
+            }
+        });
+
 //        facebookButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -207,6 +232,7 @@ public class RegistrationActivity extends AppCompatActivity {
 //        });
 
         setListenerToRootView();
+        setSpannableString();
 
         if (signUpRequestDoneReceiver == null) {
             signUpRequestDoneReceiver = createSignUpSuccessReceiver();
@@ -224,6 +250,17 @@ public class RegistrationActivity extends AppCompatActivity {
             currentCityDoneReceiver = createGetCurrentCitySuccessReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
         }
+    }
+
+    private void setSpannableString() {
+        SpannableString spanPrivacyPolicyString = new SpannableString(mTVPrivacyPolicy.getText());
+        spanPrivacyPolicyString.setSpan(new UnderlineSpan(), 0, spanPrivacyPolicyString.length(), 0);
+        mTVPrivacyPolicy.setText(spanPrivacyPolicyString);
+
+        SpannableString spanTermsPolicyString = new SpannableString(mTVTermsPolicy.getText());
+        spanTermsPolicyString.setSpan(new UnderlineSpan(), 0, spanTermsPolicyString.length(), 0);
+        mTVTermsPolicy.setText(spanTermsPolicyString);
+
     }
 
     public void setListenerToRootView() {

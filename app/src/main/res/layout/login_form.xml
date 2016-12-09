@@ -47,9 +47,12 @@
             android:drawableLeft="@drawable/com_facebook_button_icon_blue"
             android:background="@drawable/circle_blue_fb"
             android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:gravity="center"
-            android:visibility="visible"/>
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:includeFontPadding="false"
+            android:visibility="visible">
+
+        </Button>
 
         <TextView
             android:id="@+id/tv_or"

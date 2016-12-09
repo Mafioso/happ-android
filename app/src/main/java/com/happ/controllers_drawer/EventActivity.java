@@ -432,7 +432,6 @@ public class EventActivity extends AppCompatActivity {
 
             mDescription.setText(event.getDescription());
 
-
             if (event.getWebSite() == null || event.getWebSite().equals("")) {
                 mEventWEbSite.setVisibility(View.GONE);
             } else {
