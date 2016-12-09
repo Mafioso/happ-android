@@ -219,6 +219,7 @@
     <string name="disagree">Disagree</string>
     <string name="password_dont_match">Passwords do not match</string>
     <string name="error">Error</string>
+    <string name="event_author_email">Author Email</string>
 
 
 </resources>

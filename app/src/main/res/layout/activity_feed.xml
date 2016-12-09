@@ -24,24 +24,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <android.support.design.widget.AppBarLayout
-                    android:id="@+id/app_feed_bar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/bg_light">
-
-                    <include layout="@layout/toolbar"/>
-
-                </android.support.design.widget.AppBarLayout>
-
                 <FrameLayout
-                    android:layout_below="@+id/app_feed_bar"
                     android:id="@+id/feed_container"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="48dp"
                     android:visibility="visible"/>
+
+                <include layout="@layout/toolbar"/>
 
                 <com.roughike.bottombar.BottomBar
                     android:id="@+id/bottombar_feed"

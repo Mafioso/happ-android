@@ -129,12 +129,12 @@ public class FeedActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-
+        setTitle("");
         scf = SelectCityFragment.newInstance();
 
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
@@ -160,12 +160,12 @@ public class FeedActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(getSupportActionBar() != null){
-
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
+        if(actionBar != null){
+//            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-        setTitle(App.getCurrentCity().getName());
+
 
 
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -373,7 +373,7 @@ public class FeedActivity extends AppCompatActivity {
 
         fragNavController = new FragNavController(getSupportFragmentManager(),R.id.feed_container,fragments);
 
-        mBottomBar.setDefaultTabPosition(2);
+        mBottomBar.setDefaultTabPosition(0);
         mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
@@ -390,10 +390,10 @@ public class FeedActivity extends AppCompatActivity {
                     case R.id.tab_favorites:
                         fragNavController.switchTab(TAB_FAVORITES);
                         break;
-                    case R.id.tab_chat:
-
-                        Toast.makeText(FeedActivity.this, "TAB_CHAT", Toast.LENGTH_SHORT).show();
-                        break;
+//                    case R.id.tab_chat:
+//
+//                        Toast.makeText(FeedActivity.this, "TAB_CHAT", Toast.LENGTH_SHORT).show();
+//                        break;
                 }
             }
         });
@@ -414,9 +414,9 @@ public class FeedActivity extends AppCompatActivity {
                 if (tabId == R.id.tab_favorites) {
                     fragNavController.clearStack();
                 }
-                if (tabId == R.id.tab_chat) {
-                    fragNavController.clearStack();
-                }
+//                if (tabId == R.id.tab_chat) {
+//                    fragNavController.clearStack();
+//                }
             }
         });
 
@@ -533,7 +533,6 @@ public class FeedActivity extends AppCompatActivity {
         super.onResume();
         mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
-        setTitle(App.getCurrentCity().getName());
 
 //        java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
 //        mStartDateText.setText(format.format(startDate));
@@ -550,7 +549,6 @@ public class FeedActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
-                setTitle(App.getCurrentCity().getName());
                 mDrawerHeaderArrow.setChecked(false);
                 mDrawerCityFragment.setVisibility(View.GONE);
                 mDrawerLayout.closeDrawer(GravityCompat.START);

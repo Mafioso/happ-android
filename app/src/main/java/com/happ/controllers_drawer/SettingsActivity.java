@@ -63,7 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
@@ -79,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
         mBtnChangeCurrency = (Button) findViewById(R.id.btn_change_currency);
         mBtnPrivacyPolice = (Button) findViewById(R.id.btn_privacy_policy);
         mBtnTermsOfService = (Button) findViewById(R.id.btn_terms_service);
-        mBtnPushNotif = (Button) findViewById(R.id.btn_push_notif);
+//        mBtnPushNotif = (Button) findViewById(R.id.btn_push_notif);
         mBtnContactHapp = (Button) findViewById(R.id.btn_contact_happ);
 
         mBtnFaqHelp = (Button) findViewById(R.id.btn_faq);
@@ -87,8 +87,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
+        }
 
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -180,8 +182,8 @@ public class SettingsActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
                 break;
 
-            case R.id.btn_push_notif:
-                break;
+//            case R.id.btn_push_notif:
+//                break;
 
             case R.id.btn_change_currency:
                 Intent goToChangeCurrency = new Intent(getApplicationContext(), ChangeCurrencyActivity.class);

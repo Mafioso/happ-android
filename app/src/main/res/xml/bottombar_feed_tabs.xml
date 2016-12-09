@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
     <tab
-        id="@+id/tab_explore"
-        icon="@drawable/ic_bb_explore"
-        title="Explore" />
-    <tab
-        id="@+id/tab_map"
-        icon="@drawable/ic_bb_map"
-        title="Map" />
-    <tab
         id="@+id/tab_feed"
         icon="@drawable/ic_bb_feed"
         title="Feed" />
@@ -17,8 +9,16 @@
         icon="@drawable/ic_bb_favorites"
         title="Favorites" />
     <tab
-        id="@+id/tab_chat"
-        icon="@drawable/ic_bb_chat"
-        title="Chat" />
+        id="@+id/tab_explore"
+        icon="@drawable/ic_bb_explore"
+        title="Explore" />
+    <tab
+        id="@+id/tab_map"
+        icon="@drawable/ic_bb_map"
+        title="Map" />
+    <!--<tab-->
+        <!--id="@+id/tab_chat"-->
+        <!--icon="@drawable/ic_bb_chat"-->
+        <!--title="Chat" />-->
 
 </tabs>

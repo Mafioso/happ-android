@@ -20,7 +20,7 @@
         android:id="@+id/form_layout"
         android:layout_centerVertical="true"
         android:layout_above="@+id/rl_footer"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/ll_toolbar"
         android:paddingBottom="48dp"
         android:paddingTop="48dp"
         android:paddingLeft="42dp"

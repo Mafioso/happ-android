@@ -78,7 +78,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
         navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
         navigationViewRightOrg = (NavigationView) findViewById(R.id.navigation_view_right_org);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
         mBottomBar = (BottomBar) findViewById(R.id.bottombar_org);
         mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_org_navigation);
         mCLoserLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
@@ -89,9 +89,9 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
         setTitle(R.string.organizer_title);
 

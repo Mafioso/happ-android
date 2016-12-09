@@ -36,7 +36,7 @@
                 android:id="@+id/form_layout"
                 android:paddingLeft="42dp"
                 android:paddingRight="42dp"
-                android:layout_below="@+id/toolbar"
+                android:layout_below="@+id/ll_toolbar"
                 android:paddingTop="32dp">
 
                 <ImageView

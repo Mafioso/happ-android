@@ -88,7 +88,7 @@ public class UserActivity extends AppCompatActivity {
 
         mRootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
         setSupportActionBar(toolbar);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
         ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);

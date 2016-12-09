@@ -21,6 +21,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
@@ -71,7 +72,8 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private DrawerLayout mDrawerLayout;
-    private Toolbar mToolbar;
+    private Toolbar mToolbarTop;
+    private LinearLayout mLLToolbar;
     private String eventId;
     private Event event;
     private Menu menu;
@@ -161,7 +163,8 @@ public class EventActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.slider_viewpager);
         mEmail = (TextView) findViewById(R.id.event_email);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mToolbar = (Toolbar) findViewById(R.id.top_event_toolbar);
+        mToolbarTop = (Toolbar) findViewById(R.id.top_event_toolbar);
+        mLLToolbar = (LinearLayout) findViewById(R.id.ll_toolbar);
         ctl = (CollapsingToolbarLayout) findViewById(R.id.event_collapsing_layout);
         mUpvoteImage = (ImageView) findViewById(R.id.event_iv_did_upvote);
         mCircleLLPlace = (LinearLayout) findViewById(R.id.ll_place_image);
@@ -215,8 +218,14 @@ public class EventActivity extends AppCompatActivity {
         mEventImagesSwipeAdapter.setImageList(new RealmList<EventImage>());
         viewPager.setAdapter(mEventImagesSwipeAdapter);
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar(mToolbarTop);
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_rigth_arrow);
+        }
 
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -265,8 +274,8 @@ public class EventActivity extends AppCompatActivity {
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setIcon(R.drawable.happ_drawer_icon);
 
 
-//        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
-//        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
 
         mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
@@ -395,7 +404,7 @@ public class EventActivity extends AppCompatActivity {
                 gdVote.setColor(Color.parseColor(event.getColor()));
                 gdFlashingPlace.setColor(Color.parseColor(event.getColor()));
 
-                mToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
+                mLLToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
             }
 
             anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha_infiniti);
@@ -408,6 +417,11 @@ public class EventActivity extends AppCompatActivity {
 
             final User author = event.getAuthor();
             if (author != null) {
+                if (author.getEmail() != null) {
+                    mAuthorEmail.setText(event.getAuthor().getEmail());
+                } else {
+                    mAuthorEmail.setVisibility(View.GONE);
+                }
                 mAuthor.setText(event.getAuthor().getFullName());
             } else {
                 mEventAuthor.setVisibility(View.GONE);
@@ -558,15 +572,16 @@ public class EventActivity extends AppCompatActivity {
         if (isOrg && mFab.getVisibility() != View.VISIBLE) {
             mFab.show();
         }
-//        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
-//        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mDrawerLayout = null;
-        mToolbar = null;
+        mToolbarTop = null;
+        mLLToolbar = null;
         eventId = null;
         event = null;
         viewPager = null;
