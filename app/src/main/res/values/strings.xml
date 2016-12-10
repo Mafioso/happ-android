@@ -219,6 +219,7 @@
     <string name="password_dont_match">Passwords do not match</string>
     <string name="error">Error</string>
     <string name="event_author_email">Author Email</string>
+    <string name="tap_camera_to_add_image">Tap here to add photo</string>
 
 
 </resources>

@@ -29,25 +29,101 @@
             app:contentScrim="@color/bg_light">
 
             <RelativeLayout
-                android:layout_width="match_parent"
+                android:background="@android:color/white"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_collapseMode="parallax">
 
-                <ImageView
-                    android:id="@+id/iv_user_avatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:background="@drawable/my_avatar"/>
+                <RelativeLayout
+                    android:id="@+id/avatar_placeholder"
+                    android:background="@color/dark3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="420dp"
+                        android:layout_height="420dp"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/dashed_bg_darker"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_centerInParent="true"
+                        android:alpha="0.7">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/avatar_placeholder"
+                            android:layout_gravity="center_horizontal"/>
+
+                        <TextView
+                            android:layout_marginTop="16dp"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorAccent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/tap_camera_to_add_image"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
 
                 <ImageView
-                    android:id="@+id/edit_user_photo"
+                    android:id="@+id/iv_user_avatar"
+                    android:layout_width="420dp"
+                    android:layout_height="420dp"
+                    android:src="@drawable/my_avatar"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    />
+
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    app:srcCompat="@drawable/ic_camera_white" />
+                    android:padding="8dp">
+
+
+                    <ImageButton
+                        android:id="@+id/add_image_button"
+                        android:padding="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_camera_white"
+                        android:background="?android:selectableItemBackground"
+                        />
+
+                </LinearLayout>
+
+
+
             </RelativeLayout>
+
+            <!--<RelativeLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--app:layout_collapseMode="parallax">-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/iv_user_avatar"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="fill_parent"-->
+                    <!--android:background="@drawable/my_avatar"/>-->
+
+                <!--<ImageView-->
+                    <!--android:id="@+id/edit_user_photo"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:layout_alignParentBottom="true"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--app:srcCompat="@drawable/ic_camera_white" />-->
+            <!--</RelativeLayout>-->
 
             <include layout="@layout/toolbar"/>
 

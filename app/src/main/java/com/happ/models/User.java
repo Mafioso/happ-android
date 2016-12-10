@@ -115,4 +115,8 @@ public class User extends RealmObject {
 
         return ids;
     }
+
+    public String getImageUrl() {
+        return "http://nick.mtvnimages.com/nick/video/images/avatar/avatar-118-16x9.jpg";
+    }
 }

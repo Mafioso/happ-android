@@ -7,8 +7,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -21,21 +27,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
+import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -57,7 +73,8 @@ public class UserActivity extends AppCompatActivity {
     private EditText mUsername, mEmail, mPhoneNumber, mBirthday;
     private Date birthday;
     private Button mUserSave;
-    private ImageView mBtnEditBirthday, mBtnEditPhoto;
+    private ImageView mBtnEditBirthday;
+    private ImageButton mBtnEditPhoto;
     private ImageView mUserPhoto;
     private RadioButton mMale, mFemale;
 
@@ -67,6 +84,17 @@ public class UserActivity extends AppCompatActivity {
     private TextInputLayout mTILphone;
     private Animation anim;
 
+    private User user;
+    private RelativeLayout mAvatarPlaceholder;
+
+    private int arrowDrawable;
+    private int closeDrawable;
+    private AppBarLayout.OnOffsetChangedListener offsetChangedListener;
+
+
+    private static final int SELECT_PICTURE = 1;
+    private String selectedImagePath;
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -74,12 +102,17 @@ public class UserActivity extends AppCompatActivity {
         if (fromSettings) {
             UserActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
         }
+        if (offsetChangedListener != null) {
+            mAppBarLayout.removeOnOffsetChangedListener(offsetChangedListener);
+            offsetChangedListener = null;
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fromSettings = getIntent().getBooleanExtra("from_settings", false);
+        user = App.getCurrentUser();
         setContentView(R.layout.activity_user);
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -100,13 +133,14 @@ public class UserActivity extends AppCompatActivity {
         mBirthday = (EditText) findViewById(R.id.input_user_birthday);
         mUserSave = (Button) findViewById(R.id.btn_user_save);
         mBtnEditBirthday = (ImageView) findViewById(R.id.iv_edit_birthday);
-        mBtnEditPhoto = (ImageView) findViewById(R.id.edit_user_photo);
+        mBtnEditPhoto = (ImageButton) findViewById(R.id.add_image_button);
         mMale = (RadioButton) findViewById(R.id.btn_user_male);
         mFemale = (RadioButton) findViewById(R.id.btn_user_female);
         mUserPhoto = (ImageView) findViewById(R.id.iv_user_avatar);
+        mAvatarPlaceholder = (RelativeLayout) findViewById(R.id.avatar_placeholder);
 
-        mUserPhoto.setMaxHeight(width);
-        mUserPhoto.setMinimumHeight(width);
+//        mUserPhoto.setMaxHeight(width);
+//        mUserPhoto.setMinimumHeight(width);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +152,9 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        if (App.getCurrentUser() != null) {
+
+
+        if (user != null) {
 
             mUsername.setText(App.getCurrentUser().getFullName());
             mEmail.setText(App.getCurrentUser().getEmail());
@@ -142,12 +178,45 @@ public class UserActivity extends AppCompatActivity {
             mMale.setChecked(App.getCurrentUser().getGender() == 0);
             mFemale.setChecked(App.getCurrentUser().getGender() > 0);
 
-            mBtnEditPhoto.setOnClickListener(new View.OnClickListener() {
+//            final String imageUrl = user.getImageUrl();
+            final String imageUrl = null;
+
+            arrowDrawable = R.drawable.ic_right_arrow_grey;
+            closeDrawable = R.drawable.ic_close_grey;
+
+            if (imageUrl == null) {
+                mUserPhoto.setVisibility(View.GONE);
+                mAvatarPlaceholder.setVisibility(View.VISIBLE);
+            } else {
+                Glide.with(App.getContext())
+                        .load(imageUrl)
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                Log.e("GLIDE_ERR", imageUrl + " " + e.getMessage());
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                Log.d("GLIDE_OK", imageUrl);
+                                photoDidSet();
+                                return false;
+                            }
+                        })
+                        .into(mUserPhoto);
+            }
+
+
+            View.OnClickListener openGalleryListener = new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    Toast.makeText(UserActivity.this, "Change Photo", Toast.LENGTH_SHORT).show();
+                public void onClick(View v) {
+                    openGallery();
                 }
-            });
+            };
+
+            mBtnEditPhoto.setOnClickListener(openGalleryListener);
+            mAvatarPlaceholder.setOnClickListener(openGalleryListener);
 
 
             mUserSave.setOnClickListener(new View.OnClickListener() {
@@ -188,6 +257,14 @@ public class UserActivity extends AppCompatActivity {
 
     }
 
+    private void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,
+                "Select Picture"), SELECT_PICTURE);
+    }
+
     public View getRootLayout() {
         return mRootLayout;
     }
@@ -222,6 +299,84 @@ public class UserActivity extends AppCompatActivity {
     {
         InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+//                selectedImagePath = getPath(selectedImageUri);
+                updateImage(selectedImageUri);
+            }
+        }
+    }
+
+    private String getPath(Uri uri) {
+        if( uri == null ) {
+            return null;
+        }
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if( cursor != null ){
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            String path = cursor.getString(column_index);
+            cursor.close();
+            return path;
+        }
+        // this is our fallback here
+        return uri.getPath();
+    }
+
+    private void photoDidSet() {
+        mUserPhoto.setVisibility(View.VISIBLE);
+        mAvatarPlaceholder.setVisibility(View.GONE);
+        arrowDrawable = R.drawable.ic_rigth_arrow;
+        closeDrawable = R.drawable.ic_close_white;
+        initViews();
+    }
+
+    private void updateImage(Uri uri) {
+        if (uri == null) return;
+
+        Bitmap bmp = null;
+        try {
+            bmp = getBitmapFromUri(uri);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        mUserPhoto.setImageBitmap(bmp);
+        photoDidSet();
+    }
+
+    private void updateImage() {
+        if (selectedImagePath == null) return;
+
+        Bitmap bmp = null;
+        try {
+            bmp = getBitmapFromUri(new Uri.Builder().path(selectedImagePath).build());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        mUserPhoto.setImageBitmap(bmp);
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        Bitmap bitmap = MediaStore.Images.Media
+                .getBitmap(this.getContentResolver(), uri);
+        return bitmap;
+//        ParcelFileDescriptor parcelFileDescriptor =
+//                getContentResolver().openFileDescriptor(uri, "r");
+//        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+//        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+//        parcelFileDescriptor.close();
+//        return image;
     }
 
 //    public void btn_click_birthday(View view) {
@@ -274,7 +429,10 @@ public class UserActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+        if (offsetChangedListener != null) {
+            mAppBarLayout.removeOnOffsetChangedListener(offsetChangedListener);
+        }
+        offsetChangedListener = new AppBarLayout.OnOffsetChangedListener() {
             private State state;
 
             @Override
@@ -283,10 +441,10 @@ public class UserActivity extends AppCompatActivity {
                     if (state != State.EXPANDED) {
                         if (fromSettings) {
                             ctl.setExpandedTitleColor(Color.TRANSPARENT);
-                            toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+                            toolbar.setNavigationIcon(arrowDrawable);
                         } else {
                             ctl.setExpandedTitleColor(Color.TRANSPARENT);
-                            toolbar.setNavigationIcon(R.drawable.ic_close_white);
+                            toolbar.setNavigationIcon(closeDrawable);
                         }
                     }
                     state = State.EXPANDED;
@@ -294,10 +452,10 @@ public class UserActivity extends AppCompatActivity {
                     if (state != State.COLLAPSED) {
                         if (fromSettings) {
                             ctl.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorElementsToolbar));
-                            toolbar.setNavigationIcon(R.drawable.ic_right_arrow_grey);
+                            toolbar.setNavigationIcon(arrowDrawable);
                         } else {
                             ctl.setCollapsedTitleTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorElementsToolbar));
-                            toolbar.setNavigationIcon(R.drawable.ic_close_grey);
+                            toolbar.setNavigationIcon(closeDrawable);
                         }
                     }
                     state = State.COLLAPSED;
@@ -305,16 +463,18 @@ public class UserActivity extends AppCompatActivity {
                     if (state != State.IDLE) {
                         if (fromSettings) {
                             ctl.setExpandedTitleColor(Color.TRANSPARENT);
-                            toolbar.setNavigationIcon(R.drawable.ic_rigth_arrow);
+                            toolbar.setNavigationIcon(arrowDrawable);
                         } else {
                             ctl.setExpandedTitleColor(Color.TRANSPARENT);
-                            toolbar.setNavigationIcon(R.drawable.ic_close_white);
+                            toolbar.setNavigationIcon(closeDrawable);
                         }
                     }
                     state = State.IDLE;
                 }
             }
-        });
+        };
+
+        mAppBarLayout.addOnOffsetChangedListener(offsetChangedListener);
     }
 
 }

@@ -73,4 +73,5 @@
 
     <color name="bottom_bar_white">#FAFFF7F3</color>
     <color name="fb_bg">#cc3b5998</color>
+    <color name="dark3">#08000000</color>
 </resources>
