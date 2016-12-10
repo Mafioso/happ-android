@@ -201,7 +201,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
-        app:backgroundTint="@android:color/white"
+        app:backgroundTint="@color/bg_light"
         app:srcCompat="@drawable/ic_location_compat"
         app:fabSize="normal"/>
 

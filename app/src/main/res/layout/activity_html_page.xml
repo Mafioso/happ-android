@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/drawer_top_padding"
-    android:background="@android:color/white">
+    android:background="@color/bg_light">
 
     <include layout="@layout/toolbar"/>
 
     <WebView
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/ll_toolbar"
         android:layout_above="@+id/ll_bottom"
         android:id="@+id/webview_html_page"
         android:layout_margin="8dp"
@@ -24,7 +24,7 @@
         android:orientation="horizontal"
         android:gravity="end"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
+        android:background="@color/bg_light"
         android:id="@+id/ll_bottom"
         android:visibility="visible">
 
@@ -51,7 +51,7 @@
     </LinearLayout>
 
     <View
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/ll_toolbar"
         android:id="@+id/dark_view_html_page_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

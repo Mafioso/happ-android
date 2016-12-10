@@ -12,7 +12,7 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            android:id="@+id/ll_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"/>
@@ -21,9 +21,9 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabTextColor="@android:color/white"
-            app:tabSelectedTextColor="@android:color/white"
-            app:tabIndicatorColor="@android:color/white"
+            app:tabTextColor="@color/bg_light"
+            app:tabSelectedTextColor="@color/bg_light"
+            app:tabIndicatorColor="@color/bg_light"
             app:tabIndicatorHeight="6dp"/>
 
     </android.support.design.widget.AppBarLayout>

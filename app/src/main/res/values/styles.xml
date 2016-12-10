@@ -46,7 +46,7 @@
     <style name="TextAppearance.ExpandedTitle"
         parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textSize">26sp</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/bg_light</item>
         <item name="android:shadowColor">@color/dark28</item>
         <item name="android:shadowDx">0</item>
         <item name="android:shadowDy">0</item>
@@ -55,7 +55,7 @@
 
     <style name="CollapsedAppBar" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">32sp</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/bg_light</item>
     </style>
 
     <style name="CollapsedAppBar2" parent="@android:style/TextAppearance.Medium">
@@ -70,7 +70,7 @@
 
     <style name="LoginScreenEditText" parent="TextAppearance.AppCompat">
         <!-- Hint action_navigation_item_text_color and label action_navigation_item_text_color in FALSE state -->
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/bg_light</item>
         <item name="android:textColorHint">@color/white57</item>
         <item name="android:textSize">16sp</item>
         <!-- Label action_navigation_item_text_color in TRUE state and bar action_navigation_item_text_color FALSE and TRUE State -->
@@ -81,7 +81,7 @@
 
     <style name="StyleForEditText" parent="TextAppearance.AppCompat">
         <!-- Hint action_navigation_item_text_color and label action_navigation_item_text_color in FALSE state -->
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@color/bg_light</item>
         <item name="android:textColorHint">@color/white57</item>
         <item name="android:textSize">18dp</item>
         <!-- Label action_navigation_item_text_color in TRUE state and bar action_navigation_item_text_color FALSE and TRUE State -->

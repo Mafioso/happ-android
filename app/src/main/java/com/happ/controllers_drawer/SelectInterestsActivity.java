@@ -113,7 +113,7 @@ import io.realm.RealmResults;
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
         navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
         mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
         childrenContainer = (FrameLayout) findViewById(R.id.city_children_fragment_container);
         mCLoserLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
@@ -236,13 +236,13 @@ import io.realm.RealmResults;
 
         toolbar.setBackgroundResource(android.R.color.transparent);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-
 
         if (fullActivity) {
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-
+            ActionBar actionBar = getSupportActionBar();
+            if(actionBar != null){
+                actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_gray);
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
             navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem menuItem) {

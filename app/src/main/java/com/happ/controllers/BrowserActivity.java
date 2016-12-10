@@ -34,14 +34,14 @@ public class BrowserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
         viewDarkBrowser = (View) findViewById(R.id.dark_view_event_browser_progress);
         materialProgressBar = (MaterialProgressBar) findViewById(R.id.event_browser_progress);
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if(getSupportActionBar() != null){
 
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_close_grey);
         }
 

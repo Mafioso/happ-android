@@ -90,12 +90,12 @@
 
         <activity
             android:name=".controllers.RegistrationActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
 
         <activity
             android:name=".controllers.LoginActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
 
         <activity android:name=".controllers.WelcomeActivity" >

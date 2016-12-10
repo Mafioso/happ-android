@@ -10,7 +10,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -43,6 +42,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     }
 
     public FavoriteFeedFragment() {
+
     }
 
     
@@ -96,14 +96,18 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
             mRLEmptyFrom.setVisibility(View.VISIBLE);
             mPersonalSubText.setText(R.string.feed_favorites_empty);
             mBtnEmptyForm.setText(R.string.find_awesome_events);
+
+            mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu_gray, R.drawable.ic_filter_gray);
+
             mBtnEmptyForm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(App.getContext(), "Favorites Button action", Toast.LENGTH_SHORT).show();
+                    mChangeColorIconToolbarListener.onClickButtonEmpty();
                 }
             });
         } else {
             mRLEmptyFrom.setVisibility(View.GONE);
+            mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu, R.drawable.ic_filter);
         }
 
         mFeedEventsProgress.setVisibility(View.GONE);

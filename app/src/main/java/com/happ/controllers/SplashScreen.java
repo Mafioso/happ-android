@@ -103,6 +103,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private boolean checkInterestsSelected() {
+
         return true;
     }
 

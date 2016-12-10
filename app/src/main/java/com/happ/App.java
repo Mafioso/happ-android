@@ -127,12 +127,10 @@ public class App extends MultiDexApplication {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo != null && wifiInfo.isConnected()) {
-            Toast.makeText(context, "WIFI COnntected", Toast.LENGTH_SHORT).show();
             return true;
         }
         wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         if (wifiInfo != null && wifiInfo.isConnected()) {
-            Toast.makeText(context, "3g is Conntected", Toast.LENGTH_SHORT).show();
             return true;
         }
         wifiInfo = cm.getActiveNetworkInfo();

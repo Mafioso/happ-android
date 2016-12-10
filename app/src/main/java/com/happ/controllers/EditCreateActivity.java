@@ -70,7 +70,7 @@ public class EditCreateActivity extends AppCompatActivity {
             realm.close();
         }
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
         mViewPager = (ViewPager) findViewById(R.id.ec_viewpager);
         mBtnCreateSave = (Button) findViewById(R.id.btn_editcreate_save);
 

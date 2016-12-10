@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -25,7 +26,9 @@ import com.happ.controllers_drawer.FeedActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -50,6 +53,8 @@ public class BaseFeedFragment extends Fragment {
     protected MaterialProgressBar mFeedEventsProgress;
     protected TextView mPersonalSubText;
 
+    protected ChangeColorIconToolbarListener mChangeColorIconToolbarListener;
+
     public static BaseFeedFragment newInstance() {
         return new BaseFeedFragment();
     }
@@ -57,6 +62,14 @@ public class BaseFeedFragment extends Fragment {
     public BaseFeedFragment() {
     }
 
+    public interface ChangeColorIconToolbarListener {
+        void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter);
+        void onClickButtonEmpty();
+    }
+
+    public void setChangeColorIconToolbarListener(ChangeColorIconToolbarListener listener) {
+        mChangeColorIconToolbarListener = listener;
+    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -134,14 +147,24 @@ public class BaseFeedFragment extends Fragment {
                         loading = true;
 
                         int nextPage = (totalItemCount / eventsFeedPageSize) + 1;
-                        String isFree = ((FeedActivity) getActivity()).getMaxFree();
-                        String searchText = ((FeedActivity) getActivity()).getFeedSearch();
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
-                        if (isFree.equals("") || searchText.equals("")) {
+                        String feedSearchText = ((FeedActivity)getActivity()).getFeedSearch();
+                        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
+                        Date startDate = ((FeedActivity)getActivity()).getStartD();
+                        Date endDate = ((FeedActivity)getActivity()).getEndD();
+
+                        String sD = "";
+                        String eD = "";
+
+                        if (startDate != null) sD = sdf.format(startDate);
+                        if (endDate != null) eD = sdf.format(endDate);
+
+                        if (startDate == null || endDate == null || maxFree.equals("") || feedSearchText.equals("")) {
                             getEvents(nextPage, false);
                             Log.e("BASE_FEED_FRAGMENT", "Simple scroll");
                         } else {
-                            APIService.getFilteredEvents(nextPage, searchText, "","",isFree,false);
+                            APIService.getFilteredEvents(nextPage, feedSearchText, sD, eD, maxFree, false);
                             Log.e("BASE_FEED_FRAGMENT", "Filter scroll");
                         }
 

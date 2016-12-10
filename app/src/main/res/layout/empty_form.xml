@@ -4,13 +4,13 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:layout_marginTop="?attr/actionBarSize">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:srcCompat="@drawable/dotted"/>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="42dp"
             style="?attr/borderlessButtonStyle"
-            android:textColor="@android:color/white"
+            android:textColor="@color/bg_light"
             android:textSize="16sp"
             android:textAllCaps="false"
             android:drawableLeft="@drawable/ic_search_compat"

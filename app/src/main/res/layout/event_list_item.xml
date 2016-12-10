@@ -76,7 +76,7 @@
                         android:textSize="32sp"
                         android:textAllCaps="true"
                         android:text="Event Title Very Very Long"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/bg_light"
                         android:gravity="center"
                         android:paddingLeft="24dp"
                         android:paddingRight="24dp"/>
@@ -85,7 +85,7 @@
                         android:layout_below="@+id/event_item_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/bg_light"
                         android:text="Music "
                         android:id="@+id/event_item_interest"
                         android:textSize="16sp"
@@ -116,7 +116,7 @@
                             android:textSize="16sp"
                             android:maxLines="1"
                             android:textAllCaps="true"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/bg_light"
                             android:text="23:00" />
                     </LinearLayout>
 
@@ -132,7 +132,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
                             android:id="@+id/event_item_price"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/bg_light"
                             android:text="от 500тг - 10000тг" />
                     </LinearLayout>
                 </RelativeLayout>
@@ -160,7 +160,7 @@
                             android:maxLines="1"
                             android:ellipsize="end"
                             android:text="Esentai Mall"
-                            android:textColor="@android:color/white" />
+                            android:textColor="@color/bg_light" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -185,7 +185,7 @@
                                 android:text="63,000"
                                 android:textSize="16sp"
                                 android:layout_gravity="center_vertical"
-                                android:textColor="@android:color/white"
+                                android:textColor="@color/bg_light"
                                 android:id="@+id/event_item_votes_count" />
                         </LinearLayout>
 

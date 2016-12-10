@@ -10,6 +10,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -41,6 +43,11 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver filteredEventsDoneReceiver;
     private BroadcastReceiver mUserSettingsChangedBroadcastReceiver;
 
+    private String feedSearchText;
+    private Date startDate;
+    private Date endDate;
+    private String maxFree;
+
     private boolean isUndoing = false;
 
     public static EverythingFeedFragment newInstance() {
@@ -50,27 +57,25 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     public EverythingFeedFragment() {
     }
 
-        @Override
-        public void onStart() {
-        super.onStart();
-            if (App.hasConnection(getContext())) HappRestClient.getInstance().getEvents(false);
-//            } else {
-//                mFeedEventsProgress.setVisibility(View.GONE);
-//                mDarkViewProgress.setVisibility(View.GONE);
-//            }
-        }
-
     @Override
     public void onResume() {
         super.onResume();
-        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
-        Date startDate = ((FeedActivity)getActivity()).getStartD();
-        Date endDate = ((FeedActivity)getActivity()).getEndD();
-        if (!maxFree.equals("") || startDate != null || endDate != null) {
+        feedSearchText = ((FeedActivity)getActivity()).getFeedSearch();
+        startDate = ((FeedActivity)getActivity()).getStartD();
+        endDate = ((FeedActivity)getActivity()).getEndD();
+        maxFree = ((FeedActivity)getActivity()).getMaxFree();
+
+        if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null) {
             filteredEventsList();
         } else {
             updateEventsList();
         }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (App.hasConnection(getContext())) HappRestClient.getInstance().getEvents(false);
     }
 
     @Nullable
@@ -103,59 +108,27 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mUserSettingsChangedBroadcastReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
             }
 
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-//        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
-//        Date startDate = ((FeedActivity)getActivity()).getStartD();
-//        Date endDate = ((FeedActivity)getActivity()).getEndD();
-//        String searchText = "";
-
-//        if (startDate != null || endDate != null || maxFree != null) {
-//            String sD = sdf.format(startDate);
-//            String eD = sdf.format(endDate);
-//            HappRestClient.getInstance().getFilteredEvents(1, searchText, sD, eD, maxFree, false);
-//        } else {
-//        }
         return view;
     }
 
     protected void updateEventsList() {
+
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).findAllSorted("startDate", Sort.ASCENDING);
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();
 
-        if (events.isEmpty()) {
-            mRLEmptyFrom.setVisibility(View.VISIBLE);
-            mPersonalSubText.setText(R.string.feed_everything_empty);
-            mBtnEmptyForm.setText(R.string.add_more_interests);
-            mBtnEmptyForm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(App.getContext(), SelectInterestsActivity.class);
-                    intent.putExtra("is_full", true);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                }
-            });
-        } else {
-            mRLEmptyFrom.setVisibility(View.GONE);
-        }
-
-        mFeedEventsProgress.setVisibility(View.GONE);
-        mDarkViewProgress.setVisibility(View.GONE);
+        iSEmptyForm();
     }
 
     protected void filteredEventsList() {
-
-        String maxFree = ((FeedActivity)getActivity()).getMaxFree();
-        Date startDate = ((FeedActivity)getActivity()).getStartD();
-        Date endDate = ((FeedActivity)getActivity()).getEndD();
-
-        String feedSearchText = ((FeedActivity) getActivity()).getFeedSearch();
+        feedSearchText = ((FeedActivity)getActivity()).getFeedSearch();
+        startDate = ((FeedActivity)getActivity()).getStartD();
+        endDate = ((FeedActivity)getActivity()).getEndD();
+        maxFree = ((FeedActivity)getActivity()).getMaxFree();
 
         Realm realm = Realm.getDefaultInstance();
-
         RealmQuery q = realm.where(Event.class).equalTo("localOnly", false).beginGroup();
         if (feedSearchText != null && feedSearchText.length() > 0) q.contains("title", feedSearchText);
         if (startDate != null) q.greaterThanOrEqualTo("startDate", startDate);
@@ -167,23 +140,25 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();
 
+        iSEmptyForm();
     }
+
 
     @Override
     protected void getEvents(int page, boolean favs) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         if ((FeedActivity)getActivity() != null) {
-            String maxFree = ((FeedActivity) getActivity()).getMaxFree();
-            Date startDate = ((FeedActivity) getActivity()).getStartD();
-            Date endDate = ((FeedActivity) getActivity()).getEndD();
-            String feedSearchText = ((FeedActivity) getActivity()).getFeedSearch();
+            feedSearchText = ((FeedActivity)getActivity()).getFeedSearch();
+            startDate = ((FeedActivity)getActivity()).getStartD();
+            endDate = ((FeedActivity)getActivity()).getEndD();
+            maxFree = ((FeedActivity)getActivity()).getMaxFree();
 
-            if (startDate != null || endDate != null || (maxFree != null && maxFree.length() > 0)) {
-//                String sD = sdf.format(startDate);
-                String sD = "";
-//                String eD = sdf.format(endDate);
-                String eD = "";
+            String sD = "";
+            String eD = "";
+            if (startDate != null) sD = sdf.format(startDate);
+            if (endDate != null) eD = sdf.format(endDate);
 
+            if (!feedSearchText.equals("") || startDate != null || endDate != null || !maxFree.equals("")) {
                 APIService.getFilteredEvents(page, feedSearchText, sD, eD, maxFree, false);
             } else {
                 APIService.getEvents(page, false);
@@ -191,6 +166,35 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         }
     }
 
+    private void iSEmptyForm() {
+        if (events.isEmpty()) {
+
+            mRLEmptyFrom.setVisibility(View.VISIBLE);
+            mPersonalSubText.setText(R.string.feed_everything_empty);
+            mBtnEmptyForm.setText(R.string.add_more_interests);
+
+            mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu_gray, R.drawable.ic_filter_gray);
+
+            mBtnEmptyForm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.animatealpha);
+                    mBtnEmptyForm.startAnimation(anim);
+
+                    Intent intent = new Intent(App.getContext(), SelectInterestsActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            mRLEmptyFrom.setVisibility(View.GONE);
+            mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu, R.drawable.ic_filter);
+        }
+
+        mFeedEventsProgress.setVisibility(View.GONE);
+        mDarkViewProgress.setVisibility(View.GONE);
+    }
 
     private BroadcastReceiver createEventsRequestDoneReceiver() {
         return new BroadcastReceiver() {
@@ -216,7 +220,17 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                updateEventsList();
+                feedSearchText = ((FeedActivity)getActivity()).getFeedSearch();
+                startDate = ((FeedActivity)getActivity()).getStartD();
+                endDate = ((FeedActivity)getActivity()).getEndD();
+                maxFree = ((FeedActivity)getActivity()).getMaxFree();
+
+                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null) {
+                    filteredEventsList();
+                } else {
+                    updateEventsList();
+                }
+
             }
         };
     }
@@ -225,7 +239,16 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                updateEventsList();
+                feedSearchText = ((FeedActivity)getActivity()).getFeedSearch();
+                startDate = ((FeedActivity)getActivity()).getStartD();
+                endDate = ((FeedActivity)getActivity()).getEndD();
+                maxFree = ((FeedActivity)getActivity()).getMaxFree();
+
+                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null) {
+                    filteredEventsList();
+                } else {
+                    updateEventsList();
+                }
             }
         };
     }

@@ -87,7 +87,7 @@
                         android:text="63K"
                         android:textSize="14sp"
                         android:layout_gravity="center_vertical"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/bg_light"
                         android:id="@+id/event_item_votes_count" />
                 </LinearLayout>
 
@@ -109,7 +109,7 @@
                         android:text="20k"
                         android:textSize="14sp"
                         android:layout_gravity="center_vertical"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@color/bg_light" />
 
                 </LinearLayout>
             </RelativeLayout>
@@ -151,7 +151,7 @@
                         android:lines="1"
                         android:singleLine="true"
                         android:text="Event Title Very Very Long"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/bg_light"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="32dp"/>
 
@@ -185,7 +185,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
                             android:textAllCaps="true"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/bg_light"
                             android:text="19:00 " />
 
                         <TextView
@@ -193,7 +193,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
                             android:textAllCaps="true"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/bg_light"
                             android:text="— " />
 
                         <TextView
@@ -201,7 +201,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="14sp"
                             android:textAllCaps="true"
-                            android:textColor="@android:color/white"
+                            android:textColor="@color/bg_light"
                             android:text="23:00" />
                     </LinearLayout>
 

@@ -8,13 +8,16 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
@@ -22,6 +25,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -47,10 +52,11 @@ public class RegistrationActivity extends AppCompatActivity {
     private BroadcastReceiver getSignUpRequestFail;
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
-    private RelativeLayout mRLbg;
+    private AppCompatImageView mIVbg;
     private Toolbar toolbar;
     private ImageView mImgLogo;
     private RelativeLayout mRLFooter;
+    private TextView mTVPrivacyPolicy, mTVTermsPolicy;
 
     private int[] login_bg = {
             R.drawable.login_bg_1,
@@ -72,7 +78,6 @@ public class RegistrationActivity extends AppCompatActivity {
     ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     RelativeLayout mFormLayout;
     MaterialProgressBar mProgressBar;
-    private static final String TAG = "myLogs";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,7 +147,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         setContentView(R.layout.registration_form);
 
-        mRLbg = (RelativeLayout) findViewById(R.id.rl_registration_bg);
+        mIVbg = (AppCompatImageView) findViewById(R.id.iv_registration_bg);
         mUsername = (EditText) findViewById(R.id.input_signup_username);
         mPassword = (EditText) findViewById(R.id.input_signup_password);
         mRepeatPassword = (EditText) findViewById(R.id.input_signup_repeat_pw);
@@ -152,18 +157,25 @@ public class RegistrationActivity extends AppCompatActivity {
         mImgLogo = (ImageView) findViewById(R.id.img_logo);
         mRLFooter = (RelativeLayout) findViewById(R.id.rl_footer);
 
-        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+        mTVPrivacyPolicy = (TextView) findViewById(R.id.tv_privacy_policy);
+        mTVTermsPolicy = (TextView) findViewById(R.id.tv_terms_and_policy);
+
+        mIVbg.setImageResource(randomBg);
+
+        ScrollView sv = (ScrollView)findViewById(R.id.scroll_registration);
+        sv.setEnabled(false);
 
         mCreateAccountButton.setVisibility(View.INVISIBLE);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
         setSupportActionBar(toolbar);
         setTitle("");
 
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_rigth_arrow);
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_rigth_arrow);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -190,8 +202,26 @@ public class RegistrationActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(View.VISIBLE);
                     APIService.doSignUp(mUsername.getText().toString(), mPassword.getText().toString());
                 } else {
-                    Toast.makeText(RegistrationActivity.this, "Пароли не совпадают", Toast.LENGTH_LONG).show();
+                    Toast.makeText(RegistrationActivity.this, R.string.password_dont_match, Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        mTVTermsPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotToTermsOfService = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
+                gotToTermsOfService.putExtra("link_terms_of_service", true);
+                startActivity(gotToTermsOfService);
+            }
+        });
+
+        mTVPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToPrivacyPolicy = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
+                goToPrivacyPolicy.putExtra("link_privacy_policy", true);
+                startActivity(goToPrivacyPolicy);
             }
         });
 
@@ -207,6 +237,7 @@ public class RegistrationActivity extends AppCompatActivity {
 //        });
 
         setListenerToRootView();
+        setSpannableString();
 
         if (signUpRequestDoneReceiver == null) {
             signUpRequestDoneReceiver = createSignUpSuccessReceiver();
@@ -224,6 +255,16 @@ public class RegistrationActivity extends AppCompatActivity {
             currentCityDoneReceiver = createGetCurrentCitySuccessReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
         }
+    }
+
+    private void setSpannableString() {
+        SpannableString spanPrivacyPolicyString = new SpannableString(mTVPrivacyPolicy.getText());
+        spanPrivacyPolicyString.setSpan(new UnderlineSpan(), 0, spanPrivacyPolicyString.length(), 0);
+        mTVPrivacyPolicy.setText(spanPrivacyPolicyString);
+
+        SpannableString spanTermsPolicyString = new SpannableString(mTVTermsPolicy.getText());
+        spanTermsPolicyString.setSpan(new UnderlineSpan(), 0, spanTermsPolicyString.length(), 0);
+        mTVTermsPolicy.setText(spanTermsPolicyString);
     }
 
     public void setListenerToRootView() {
@@ -319,7 +360,6 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mCreateAccountButton.setVisibility(View.VISIBLE);
-                Toast.makeText(RegistrationActivity.this, "Wrong Username or Password", Toast.LENGTH_LONG).show();
             }
         };
     }

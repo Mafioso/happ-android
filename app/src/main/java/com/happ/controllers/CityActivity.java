@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.animation.PathInterpolatorCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -41,7 +42,7 @@ public class CityActivity extends AppCompatActivity {
 
     private TextView mTVyourcity, mTVnotselected;
     private Button mBtnSave;
-    private City selectedCity;
+    private City    selectedCity;
 
     private FrameLayout citiesListFragment;
 
@@ -52,6 +53,9 @@ public class CityActivity extends AppCompatActivity {
         return LollipopDrawablesCompat.getDrawable(getResources(), id, getTheme());
     }
 
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     private void hideCitiesList(float x, float y) {
         final ViewGroup sceneRoot = (ViewGroup)findViewById(R.id.scene_root);
@@ -113,7 +117,8 @@ public class CityActivity extends AppCompatActivity {
                     @Override
                     public void onCitySelected(City city, float x, float y) {
                         selectedCity = city;
-                        mTVnotselected.setText(selectedCity.getName());
+                        mTVnotselected.setHint("");
+                        mTVnotselected.setText(selectedCity.getName().trim());
                         hideCitiesList(x, y);
                     }
 
