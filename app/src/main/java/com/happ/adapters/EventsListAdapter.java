@@ -355,6 +355,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 } catch (Exception ex) {
                     Log.e("EVENTS", ex.getLocalizedMessage());
                 }
+            } else {
+                itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
             }
 
 
@@ -484,6 +486,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         private RelativeLayout mBackground;
         private TextView mInterestTitle;
         private ImageView mImageView;
+        private ImageView mImagePlaceHolder;
         private TextView mPrice;
         private TextView mPlace;
         private TextView mVotesCount;
@@ -508,6 +511,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mToolbar = (Toolbar) itemView.findViewById(R.id.event_toolbar);
             mBackground = (RelativeLayout) itemView.findViewById(R.id.event_item_bg);
             mPlace = (TextView) itemView.findViewById(R.id.event_item_place);
+            mImagePlaceHolder = (ImageView) itemView.findViewById(R.id.event_item_image_placeholder);
         }
 
     }

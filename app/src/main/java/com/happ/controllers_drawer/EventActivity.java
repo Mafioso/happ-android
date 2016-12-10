@@ -362,7 +362,11 @@ public class EventActivity extends AppCompatActivity {
             event = realm.copyFromRealm(event);
             realm.close();
 
-            mEventImagesSwipeAdapter.setImageList(event.getImages());
+            if (event.getImages().size() > 0) {
+                mEventImagesSwipeAdapter.setImageList(event.getImages());
+            } else {
+                viewPager.setVisibility(View.GONE);
+            }
 
             appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
                 boolean isShow = false;
@@ -427,7 +431,7 @@ public class EventActivity extends AppCompatActivity {
                 mEventAuthor.setVisibility(View.GONE);
             }
 
-            if (event.getPhones() != null) {
+            if (event.getPhones().size() > 0) {
                 llm = new LinearLayoutManager(this);
                 rvPhones.setLayoutManager(llm);
                 eventPhoneListAdapter = new EventPhoneListAdapter(this, event.getPhones());

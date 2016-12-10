@@ -23,10 +23,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
                 android:background="@color/dark28"
-                android:scaleType="fitXY"
                 android:transitionName="event_image"
                 android:id="@+id/event_item_image_view"/>
 
+            <ImageView
+                android:id="@+id/event_item_image_placeholder"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:srcCompat="@drawable/image_placeholder"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"/>
 
             <ProgressBar
                 style="@style/Widget.AppCompat.ProgressBar"

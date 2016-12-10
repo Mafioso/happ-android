@@ -20,12 +20,12 @@
         android:paddingTop="48dp"
         android:paddingBottom="48dp">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_logo_empty"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_centerHorizontal="true"
-            app:srcCompat="@drawable/camera"
+            app:srcCompat="@drawable/empty_feed"
             />
 
         <TextView

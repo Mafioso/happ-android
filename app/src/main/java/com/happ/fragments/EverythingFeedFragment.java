@@ -42,6 +42,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver didIsFavReceiver;
     private BroadcastReceiver filteredEventsDoneReceiver;
     private BroadcastReceiver mUserSettingsChangedBroadcastReceiver;
+    private BroadcastReceiver changeCityDoneReceiver;
 
     private String feedSearchText;
     private Date startDate;
@@ -108,6 +109,11 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mUserSettingsChangedBroadcastReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
             }
 
+            if (changeCityDoneReceiver == null) {
+                changeCityDoneReceiver = changeCityReceiver();
+                LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+            }
+
         return view;
     }
 
@@ -172,6 +178,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             mRLEmptyFrom.setVisibility(View.VISIBLE);
             mPersonalSubText.setText(R.string.feed_everything_empty);
             mBtnEmptyForm.setText(R.string.add_more_interests);
+            mIVEmpty.setImageResource(R.drawable.empty_feed);
 
             mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu_gray, R.drawable.ic_filter_gray);
 
@@ -194,6 +201,16 @@ public class EverythingFeedFragment extends BaseFeedFragment {
 
         mFeedEventsProgress.setVisibility(View.GONE);
         mDarkViewProgress.setVisibility(View.GONE);
+    }
+
+    private BroadcastReceiver changeCityReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                clearRealmForOldCity();
+                getEvents(1, false);
+            }
+        };
     }
 
     private BroadcastReceiver createEventsRequestDoneReceiver() {
@@ -268,15 +285,23 @@ public class EverythingFeedFragment extends BaseFeedFragment {
 
         if (filteredEventsDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(filteredEventsDoneReceiver);
+            filteredEventsDoneReceiver = null;
         }
         if (eventsRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+            eventsRequestDoneReceiver = null;
         }
         if (didUpvoteReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
+            didUpvoteReceiver = null;
         }
         if (didIsFavReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
+            didIsFavReceiver = null;
+        }
+        if (changeCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
+            changeCityDoneReceiver = null;
         }
         super.onDestroy();
     }
