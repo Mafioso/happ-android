@@ -158,8 +158,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             if (startDate != null) sD = sdf.format(startDate);
             if (endDate != null) eD = sdf.format(endDate);
 
-            if (feedSearchText.equals("") || startDate != null || endDate != null || !maxFree.equals("")) {
-
+            if (!feedSearchText.equals("") || startDate != null || endDate != null || !maxFree.equals("")) {
                 APIService.getFilteredEvents(page, feedSearchText, sD, eD, maxFree, false);
             } else {
                 APIService.getEvents(page, false);
@@ -173,6 +172,8 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             mRLEmptyFrom.setVisibility(View.VISIBLE);
             mPersonalSubText.setText(R.string.feed_everything_empty);
             mBtnEmptyForm.setText(R.string.add_more_interests);
+
+            mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu_gray, R.drawable.ic_filter_gray);
 
             mBtnEmptyForm.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -188,6 +189,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             });
         } else {
             mRLEmptyFrom.setVisibility(View.GONE);
+            mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu, R.drawable.ic_filter);
         }
 
         mFeedEventsProgress.setVisibility(View.GONE);

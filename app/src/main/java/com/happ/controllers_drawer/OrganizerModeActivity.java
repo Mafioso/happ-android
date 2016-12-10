@@ -3,8 +3,6 @@ package com.happ.controllers_drawer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -24,24 +22,16 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.happ.App;
 import com.happ.R;
-import com.happ.controllers.EditCreateActivity;
-import com.happ.controllers.HtmlPageAcitivty;
 import com.happ.controllers.UserActivity;
-import com.happ.fragments.EventsOrganizerFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.retrofit.APIService;
 import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabReselectListener;
-import com.roughike.bottombar.OnTabSelectListener;
-
-import java.util.ArrayList;
 
 public class OrganizerModeActivity extends AppCompatActivity {
 
@@ -178,73 +168,73 @@ public class OrganizerModeActivity extends AppCompatActivity {
         });
 
 
-        ArrayList<Fragment> fragments = new ArrayList<>(1);
-        fragments.add(EventsOrganizerFragment.newInstance());
-        fragNavController = new FragNavController(getSupportFragmentManager(),R.id.org_container,fragments);
+//        ArrayList<Fragment> fragments = new ArrayList<>(1);
+//        fragments.add(EventsOrganizerFragment.newInstance());
+//        fragNavController = new FragNavController(getSupportFragmentManager(),R.id.org_container,this,1,);
 
-        mBottomBar.setDefaultTabPosition(2);
-        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-                switch (tabId) {
-                    case R.id.tab_analytics:
-                        Toast.makeText(OrganizerModeActivity.this, "Analytics", Toast.LENGTH_SHORT).show();
-                        break;
-
-                    case R.id.tab_pro_function:
-                        Toast.makeText(OrganizerModeActivity.this, "Pro-functions", Toast.LENGTH_SHORT).show();
-                        break;
-
-                    case R.id.tab_my_events:
-                        fragNavController.switchTab(TAB_MY_EVENTS);
-                        break;
-
-                    case R.id.tab_add_event:
-
-                        sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-                        String name = sPref.getString("first_create_event", "");
-
-                        if (name == null || name.length() == 0) {
-                            sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-                            sPref.edit().putString("first_create_event", FIRST_CREATE_EVENT).apply();
-
-                            Intent i = new Intent(OrganizerModeActivity.this, HtmlPageAcitivty.class);
-                            i.putExtra("from_organizermode", true);
-                            startActivity(i);
-
-                        } else {
-                            Intent i = new Intent(getApplicationContext(), EditCreateActivity.class);
-                            startActivity(i);
-                        }
-
-                        break;
-                    case R.id.tab_chat:
-                        Toast.makeText(OrganizerModeActivity.this, "TAB_CHAT", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        });
-
-        mBottomBar.setOnTabReselectListener(new OnTabReselectListener() {
-            @Override
-            public void onTabReSelected(@IdRes int tabId) {
-                if (tabId == R.id.tab_analytics) {
-                    fragNavController.clearStack();
-                }
-                if (tabId == R.id.tab_pro_function) {
-                    fragNavController.clearStack();
-                }
-                if (tabId == R.id.tab_my_events) {
-                    fragNavController.clearStack();
-                }
-                if (tabId == R.id.tab_add_event) {
-                    fragNavController.clearStack();
-                }
-                if (tabId == R.id.tab_chat) {
-                    fragNavController.clearStack();
-                }
-            }
-        });
+//        mBottomBar.setDefaultTabPosition(2);
+//        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+//            @Override
+//            public void onTabSelected(@IdRes int tabId) {
+//                switch (tabId) {
+//                    case R.id.tab_analytics:
+//                        Toast.makeText(OrganizerModeActivity.this, "Analytics", Toast.LENGTH_SHORT).show();
+//                        break;
+//
+//                    case R.id.tab_pro_function:
+//                        Toast.makeText(OrganizerModeActivity.this, "Pro-functions", Toast.LENGTH_SHORT).show();
+//                        break;
+//
+//                    case R.id.tab_my_events:
+//                        fragNavController.switchTab(TAB_MY_EVENTS);
+//                        break;
+//
+//                    case R.id.tab_add_event:
+//
+//                        sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+//                        String name = sPref.getString("first_create_event", "");
+//
+//                        if (name == null || name.length() == 0) {
+//                            sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+//                            sPref.edit().putString("first_create_event", FIRST_CREATE_EVENT).apply();
+//
+//                            Intent i = new Intent(OrganizerModeActivity.this, HtmlPageAcitivty.class);
+//                            i.putExtra("from_organizermode", true);
+//                            startActivity(i);
+//
+//                        } else {
+//                            Intent i = new Intent(getApplicationContext(), EditCreateActivity.class);
+//                            startActivity(i);
+//                        }
+//
+//                        break;
+//                    case R.id.tab_chat:
+//                        Toast.makeText(OrganizerModeActivity.this, "TAB_CHAT", Toast.LENGTH_SHORT).show();
+//                        break;
+//                }
+//            }
+//        });
+//
+//        mBottomBar.setOnTabReselectListener(new OnTabReselectListener() {
+//            @Override
+//            public void onTabReSelected(@IdRes int tabId) {
+//                if (tabId == R.id.tab_analytics) {
+//                    fragNavController.clearStack();
+//                }
+//                if (tabId == R.id.tab_pro_function) {
+//                    fragNavController.clearStack();
+//                }
+//                if (tabId == R.id.tab_my_events) {
+//                    fragNavController.clearStack();
+//                }
+//                if (tabId == R.id.tab_add_event) {
+//                    fragNavController.clearStack();
+//                }
+//                if (tabId == R.id.tab_chat) {
+//                    fragNavController.clearStack();
+//                }
+//            }
+//        });
 
     }
 

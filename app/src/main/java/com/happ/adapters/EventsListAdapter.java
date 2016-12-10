@@ -87,10 +87,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         this.updateItems(events);
     }
 
-    public void setIsOrganizer(boolean val) {
-        isOrganizer = val;
-    }
-
     public void updateItems(ArrayList<Event> events) {
         mItems.clear();
         DateTime now = new DateTime();
@@ -371,13 +367,15 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             if (item.event.getLowestPrice() == 0) {
                 itemHolder.mPrice.setText(context.getResources().getString(R.string.free));
             } else {
-//                itemHolder.mPrice.setText(context.getResources().getString(R.string.from)
-//                        + " " +
-//                        item.event.getLowestPrice() + " " + item.event.getHighestPrice());
-                itemHolder.mPrice.setText(item.event.getPriceRange());
+                String price = App.getContext().getResources().getString(R.string.from)
+                            + " " +
+                        item.event.getLowestPrice()
+                            + " " +
+                        App.getCurrentUser().getSettings().getCurrencyObject().getName();
+                itemHolder.mPrice.setText(price);
             }
-                itemHolder.mVotesCount.setText(String.valueOf(item.event.getVotesCount()));
-//            itemHolder.mViewsCount.setText(String.valueOf(item.event.getViewsCount()));
+
+            itemHolder.mVotesCount.setText(String.valueOf(item.event.getVotesCount()));
 
 
             if ( item.event.getInterest() != null) {
@@ -420,8 +418,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mFavoritesImage.setImageResource(R.drawable.ic_not_in_favorites);
             }
 
-            String startTime = item.event.getStartDateFormatted("h:mm a ");
-            String endTime = item.event.getEndDateFormatted("h:mm a ");
+            String startTime = item.event.getStartDateFormatted("HH:mm");
+            String endTime = item.event.getEndDateFormatted("HH:mm");
             String rangeTime = startTime + " — " + endTime;
 
             if (startTime.equals(endTime)) {

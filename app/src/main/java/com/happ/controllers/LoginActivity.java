@@ -8,10 +8,10 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.happ.App;
@@ -58,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     private RelativeLayout mFormLayout;
     private MaterialProgressBar mProgressBar;
-    private RelativeLayout mRLbg;
+    private AppCompatImageView mIVbg;
     private int[] mInsets = new int[3];
 
     private int[] login_bg = {
@@ -79,8 +80,6 @@ public class LoginActivity extends AppCompatActivity {
     private BroadcastReceiver loginFailedReceiver;
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
-    private PrefManager prefManager;
-
 
     int idx = new Random().nextInt(login_bg.length);
     int randomBg = login_bg[idx];
@@ -91,13 +90,12 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.login_form);
 
-        mRLbg = (RelativeLayout) findViewById(R.id.rl_login_bg);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setEnterTransition(new Explode());
             getWindow().setExitTransition(new Explode());
         }
 
+        mIVbg = (AppCompatImageView) findViewById(R.id.iv_login_bg);
         mEmail = (EditText) findViewById(R.id.input_login_username);
         mPassword = (EditText) findViewById(R.id.input_login_password);
         mBtnLogin = (Button) findViewById(R.id.btn_login);
@@ -111,11 +109,12 @@ public class LoginActivity extends AppCompatActivity {
         mTVTermsPolicy = (TextView) findViewById(R.id.tv_terms_and_policy);
 
 
-        mBtnLogin.setVisibility(View.GONE);
+        mBtnLogin.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.GONE);
-        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+        mIVbg.setImageResource(randomBg);
 
-
+        ScrollView sv = (ScrollView)findViewById(R.id.scroll_login);
+        sv.setEnabled(false);
 
         mEmail.addTextChangedListener(mWatcher);
         mPassword.addTextChangedListener(mWatcher);

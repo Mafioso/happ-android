@@ -5,8 +5,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark80"
     android:fitsSystemWindows="true">
+
+    <ScrollView
+        android:id="@+id/scroll_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_login_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/login_bg_5"/>
+
+    </ScrollView>
 
     <LinearLayout
         android:focusable="true"
@@ -17,12 +30,11 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/form_layout2"
-        android:paddingBottom="24dp"
-        android:paddingLeft="42dp"
-        android:paddingRight="42dp"
-        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
         android:layout_above="@+id/rl_footer">
 
         <ImageView
@@ -44,8 +56,9 @@
             android:textAllCaps="false"
             android:textColor="@color/white70"
             android:text="@string/login_facebook"
-            android:gravity="center"
-            android:drawableLeft="@drawable/facebook_logo"
+            android:paddingRight="24dp"
+            android:drawableLeft="@drawable/facebook_logo_compat"
+            android:drawableStart="@drawable/facebook_logo_compat"
             android:background="@drawable/circle_blue_fb"
             android:minHeight="0dp"
             android:minWidth="0dp"
@@ -116,18 +129,21 @@
             android:id="@+id/btn_login"
             android:layout_below="@+id/ll_password_form"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             style="?attr/borderlessButtonStyle"
             android:textColor="@color/white70"
             android:textSize="16sp"
             android:textAllCaps="false"
-            android:paddingRight="42dp"
-            android:paddingLeft="42dp"
+            android:paddingRight="40dp"
+            android:paddingLeft="40dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
             android:layout_marginBottom="16dp"
             android:gravity="center"
             android:layout_centerHorizontal="true"
             android:background="@drawable/circle_orange_event"
-            android:text="@string/login" />
+            android:text="@string/login"
+            android:alpha="0.8"/>
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
             android:id="@+id/circular_progress_login"
@@ -146,7 +162,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/forgot_password"
-            android:textColor="@android:color/white"
+            android:textColor="@color/bg_light"
             android:layout_gravity="center"
             android:textAllCaps="false"
             android:textSize="14dp"
@@ -160,7 +176,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/create_new_account"
-            android:textColor="@android:color/white"
+            android:textColor="@color/bg_light"
             android:layout_gravity="center"
             android:textAllCaps="false"
             android:textSize="16sp"

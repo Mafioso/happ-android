@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/drawer_top_padding"
-    android:background="@android:color/white">
+    android:background="@color/bg_light">
 
     <include layout="@layout/toolbar"/>
 
@@ -24,7 +24,7 @@
         android:orientation="horizontal"
         android:gravity="end"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
+        android:background="@color/bg_light"
         android:id="@+id/ll_bottom"
         android:visibility="visible">
 

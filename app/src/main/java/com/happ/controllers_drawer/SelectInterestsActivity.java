@@ -240,7 +240,7 @@ import io.realm.RealmResults;
         if (fullActivity) {
             ActionBar actionBar = getSupportActionBar();
             if(actionBar != null){
-                actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_grey);
+                actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_gray);
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
             navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {

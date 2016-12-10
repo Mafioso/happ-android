@@ -13,7 +13,7 @@
         android:text="@string/privacy_policy"
         android:layout_toLeftOf="@+id/tv_dot"
         android:textSize="14sp"
-        android:textColor="@android:color/white"/>
+        android:textColor="@color/bg_light"/>
 
     <TextView
         android:id="@+id/tv_dot"
@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:text="●"
         android:textSize="12sp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/bg_light"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"/>
 
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:textColor="@android:color/white"
+        android:textColor="@color/bg_light"
         android:layout_toRightOf="@+id/tv_dot"
         android:text="@string/terms_and_policy"/>
 

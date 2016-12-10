@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -39,6 +40,7 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.controllers.UserActivity;
+import com.happ.fragments.BaseFeedFragment;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.ExploreEventsFragment;
 import com.happ.fragments.FavoriteFeedFragment;
@@ -65,7 +67,7 @@ import java.util.Date;
 
 import io.realm.Realm;
 
-public class FeedActivity extends AppCompatActivity {
+public class FeedActivity extends AppCompatActivity implements FragNavController.TransactionListener, FragNavController.RootFragmentListener {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -97,6 +99,11 @@ public class FeedActivity extends AppCompatActivity {
     private BottomBar mBottomBar;
     private FragNavController fragNavController;
 
+//    private EverythingFeedFragment everythingFeedFragment;
+//    private FavoriteFeedFragment favoriteFeedFragment;
+    private ExploreEventsFragment exploreEventsFragment;
+    private MapFragment mapFragment;
+
     private final int TAB_EVERYTHING = FragNavController.TAB1;
     private final int TAB_FAVORITES = FragNavController.TAB2;
     private final int TAB_EXPLORE = FragNavController.TAB3;
@@ -119,18 +126,23 @@ public class FeedActivity extends AppCompatActivity {
     private CheckBox mDrawerHeaderArrow;
     private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
 
+    private Bundle bundle;
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bundle = savedInstanceState;
         setContentView(R.layout.activity_feed);
         setTitle("");
         scf = SelectCityFragment.newInstance();
+//        everythingFeedFragment = EverythingFeedFragment.newInstance();
+//        favoriteFeedFragment = FavoriteFeedFragment.newInstance();
+        exploreEventsFragment = ExploreEventsFragment.newInstance();
+        mapFragment = MapFragment.newInstance();
 
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
@@ -152,6 +164,8 @@ public class FeedActivity extends AppCompatActivity {
         mFilterDate = (EditText) findViewById(R.id.ff_edittext_filterdate);
         mFilterTime = (EditText) findViewById(R.id.ff_edittext_filtertime);
 
+        menu = (Menu) findViewById(R.menu.menu_feed);
+
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
@@ -159,14 +173,6 @@ public class FeedActivity extends AppCompatActivity {
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
         setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-//            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        }
-
-
 
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -362,64 +368,6 @@ public class FeedActivity extends AppCompatActivity {
             }
         });
 
-
-        ArrayList<Fragment> fragments = new ArrayList<>(4);
-
-        //add fragments to list
-        fragments.add(EverythingFeedFragment.newInstance());
-        fragments.add(FavoriteFeedFragment.newInstance());
-        fragments.add(ExploreEventsFragment.newInstance());
-        fragments.add(MapFragment.newInstance());
-
-        fragNavController = new FragNavController(getSupportFragmentManager(),R.id.feed_container,fragments);
-
-        mBottomBar.setDefaultTabPosition(0);
-        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelected(@IdRes int tabId) {
-                switch (tabId) {
-                    case R.id.tab_explore:
-                        fragNavController.switchTab(TAB_EXPLORE);
-                        break;
-                    case R.id.tab_map:
-                        fragNavController.switchTab(TAB_MAP);
-                        break;
-                    case R.id.tab_feed:
-                        fragNavController.switchTab(TAB_EVERYTHING);
-                        break;
-                    case R.id.tab_favorites:
-                        fragNavController.switchTab(TAB_FAVORITES);
-                        break;
-//                    case R.id.tab_chat:
-//
-//                        Toast.makeText(FeedActivity.this, "TAB_CHAT", Toast.LENGTH_SHORT).show();
-//                        break;
-                }
-            }
-        });
-
-
-        mBottomBar.setOnTabReselectListener(new OnTabReselectListener() {
-            @Override
-            public void onTabReSelected(@IdRes int tabId) {
-                if (tabId == R.id.tab_explore) {
-                    fragNavController.clearStack();
-                }
-                if (tabId == R.id.tab_map) {
-                    fragNavController.clearStack();
-                }
-                if (tabId == R.id.tab_feed) {
-                    fragNavController.clearStack();
-                }
-                if (tabId == R.id.tab_favorites) {
-                    fragNavController.clearStack();
-                }
-//                if (tabId == R.id.tab_chat) {
-//                    fragNavController.clearStack();
-//                }
-            }
-        });
-
 //        scf.setOnCitySelectInNavigationListener(new SelectCityFragment.OnCitySelectInNavigationListener() {
 //            @Override
 //            public void onCloseNavigationDrawer() {
@@ -430,7 +378,6 @@ public class FeedActivity extends AppCompatActivity {
 //        });
 
         setListenerToRootView();
-
     }
 
     public void setListenerToRootView() {
@@ -463,26 +410,86 @@ public class FeedActivity extends AppCompatActivity {
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
     }
 
-    public class MyCityPageAdapter extends FragmentPagerAdapter {
+    @Override
+    public Fragment getRootFragment(final int index) {
 
-        public MyCityPageAdapter(FragmentManager fm) {
-            super(fm);
+        final ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
 
-        @Override
-        public Fragment getItem(int position) {
-            return scf;
-        }
+        switch (index) {
+            case TAB_EVERYTHING:
+                final EverythingFeedFragment everythingFeedFragment = EverythingFeedFragment.newInstance();
+                everythingFeedFragment.setChangeColorIconToolbarListener(new BaseFeedFragment.ChangeColorIconToolbarListener() {
+                    @Override
+                    public void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter) {
+                        if (actionBar != null) {
+                            actionBar.setHomeAsUpIndicator(drawableHome);
+                            menu.getItem(0).setIcon(drawableFilter);
+                        }
+                    }
 
-        @Override
-        public int getCount() {
-            return 1;
+                    @Override
+                    public void onClickButtonEmpty() {
+
+                    }
+                });
+                return everythingFeedFragment;
+
+            case TAB_FAVORITES:
+                FavoriteFeedFragment favoriteFeedFragment = FavoriteFeedFragment.newInstance();
+                favoriteFeedFragment.setChangeColorIconToolbarListener(new BaseFeedFragment.ChangeColorIconToolbarListener() {
+                    @Override
+                    public void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter) {
+                        if (actionBar != null) {
+                            actionBar.setHomeAsUpIndicator(drawableHome);
+                            menu.getItem(0).setIcon(drawableFilter);
+                        }
+                    }
+
+                    @Override
+                    public void onClickButtonEmpty() {
+                        fragNavController.switchTab(TAB_EVERYTHING);
+                        mBottomBar.setDefaultTabPosition(0);
+                    }
+                });
+                return favoriteFeedFragment;
+            case TAB_EXPLORE:
+                return exploreEventsFragment;
+            case TAB_MAP:
+                return mapFragment;
+        }
+        throw new IllegalStateException("Need to send an index that we know");
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (fragNavController != null) {
+            fragNavController.onSaveInstanceState(outState);
         }
     }
 
     @Override
+    public void onTabTransaction(Fragment fragment, int i) {
+        if (fragNavController.canPop()){
+            fragNavController.pop();
+        }
+    }
+
+    @Override
+    public void onFragmentTransaction(Fragment fragment) {
+        if (fragNavController.canPop()){
+            fragNavController.pop();
+        }
+    }
+
+
+    @Override
     public void onBackPressed() {
-        if (fragNavController.getCurrentStack().size() > 1) {
+        if (fragNavController.canPop()) {
             fragNavController.pop();
         } else {
             super.onBackPressed();
@@ -490,9 +497,39 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_feed, menu);
+
+        this.menu = menu;
+
+        fragNavController = new FragNavController(bundle, getSupportFragmentManager(),R.id.feed_container,this,4, TAB_EVERYTHING);
+        fragNavController.setTransactionListener(this);
+        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                switch (tabId) {
+                    case R.id.tab_explore:
+                        fragNavController.switchTab(TAB_EXPLORE);
+                        break;
+                    case R.id.tab_map:
+                        fragNavController.switchTab(TAB_MAP);
+                        break;
+                    case R.id.tab_feed:
+                        fragNavController.switchTab(TAB_EVERYTHING);
+                        break;
+                    case R.id.tab_favorites:
+                        fragNavController.switchTab(TAB_FAVORITES);
+                        break;
+                }
+            }
+        });
+
+        mBottomBar.setOnTabReselectListener(new OnTabReselectListener() {
+            @Override
+            public void onTabReSelected(@IdRes int tabId) {
+                fragNavController.clearStack();
+            }
+        });
 
         return true;
     }
@@ -500,7 +537,6 @@ public class FeedActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         switch (id) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
@@ -525,6 +561,24 @@ public class FeedActivity extends AppCompatActivity {
     }
     public String getFeedSearch() {
         return searchText;
+    }
+
+
+    public class MyCityPageAdapter extends FragmentPagerAdapter {
+
+        public MyCityPageAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return scf;
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
     }
 
 

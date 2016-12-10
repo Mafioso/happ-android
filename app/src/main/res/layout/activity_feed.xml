@@ -29,7 +29,7 @@
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="48dp"
+                    android:layout_marginBottom="50dp"
                     android:visibility="visible"/>
 
                 <include layout="@layout/toolbar"/>
@@ -37,9 +37,9 @@
                 <com.roughike.bottombar.BottomBar
                     android:id="@+id/bottombar_feed"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="?attr/actionBarSize"
                     android:layout_gravity="bottom"
-                    android:background="@color/bg_light"
+                    android:background="@color/bottom_bar_white"
                     app:bb_inActiveTabAlpha="0.6"
                     app:bb_activeTabAlpha="1"
                     app:bb_inActiveTabColor="@color/bb_darkBackgroundColor"
@@ -54,7 +54,6 @@
         <include layout="@layout/drawer_layout" />
 
         <include layout="@layout/drawer_layout_rigth"/>
-
 
     </android.support.v4.widget.DrawerLayout>
 

@@ -8,10 +8,10 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableString;
@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +52,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private BroadcastReceiver getSignUpRequestFail;
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
-    private RelativeLayout mRLbg;
+    private AppCompatImageView mIVbg;
     private Toolbar toolbar;
     private ImageView mImgLogo;
     private RelativeLayout mRLFooter;
@@ -77,7 +78,6 @@ public class RegistrationActivity extends AppCompatActivity {
     ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     RelativeLayout mFormLayout;
     MaterialProgressBar mProgressBar;
-    private static final String TAG = "myLogs";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -147,7 +147,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         setContentView(R.layout.registration_form);
 
-        mRLbg = (RelativeLayout) findViewById(R.id.rl_registration_bg);
+        mIVbg = (AppCompatImageView) findViewById(R.id.iv_registration_bg);
         mUsername = (EditText) findViewById(R.id.input_signup_username);
         mPassword = (EditText) findViewById(R.id.input_signup_password);
         mRepeatPassword = (EditText) findViewById(R.id.input_signup_repeat_pw);
@@ -160,7 +160,10 @@ public class RegistrationActivity extends AppCompatActivity {
         mTVPrivacyPolicy = (TextView) findViewById(R.id.tv_privacy_policy);
         mTVTermsPolicy = (TextView) findViewById(R.id.tv_terms_and_policy);
 
-        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+        mIVbg.setImageResource(randomBg);
+
+        ScrollView sv = (ScrollView)findViewById(R.id.scroll_registration);
+        sv.setEnabled(false);
 
         mCreateAccountButton.setVisibility(View.INVISIBLE);
 

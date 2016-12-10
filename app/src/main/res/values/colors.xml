@@ -15,7 +15,7 @@
     <color name="colorAccent183">#b7ff681d</color>
     <color name="colorAccentDark">#E55D1A</color>
     <color name="indigo">#3F51B5</color>
-    <color name="headerBg">#ECEAEB</color>
+    <color name="headerBg">#F67738</color>
     <color name="white70">#b2ffffff</color>
     <color name="white57">#91ffffff</color>
     <color name="white24">#3dffffff</color>
@@ -27,7 +27,7 @@
     <color name="dark38">#61000000</color>
     <color name="dark28">#47000000</color>
     <color name="dark12">#1e000000</color>
-    <color name="header_title">#5C5C5C</color>
+    <color name="header_title">@color/bg_light</color>
     <color name="interestsBg">#90d738</color>
     <color name="green">#90d738</color>
     <color name="blueColor">#6ca5ea</color>
@@ -71,6 +71,6 @@
         <item>@color/dot_dark_screen4</item>
     </array>
 
-
-    <color name="fb_bg">#cc3b5898</color>
+    <color name="bottom_bar_white">#FAFFF7F3</color>
+    <color name="fb_bg">#cc3b5998</color>
 </resources>
