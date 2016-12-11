@@ -142,7 +142,7 @@ public class EventActivity extends AppCompatActivity {
         setTitle("");
 
         mTitle = (TextView) findViewById(R.id.event_title);
-        tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.ttf");
+        tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.otf");
         mTitle.setTypeface(tfcs);
 
         mEventAuthor = (RelativeLayout) findViewById(R.id.event_author_form);
