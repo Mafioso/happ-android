@@ -372,8 +372,13 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 String price = App.getContext().getResources().getString(R.string.from)
                             + " " +
                         item.event.getLowestPrice()
-                            + " " +
-                        App.getCurrentUser().getSettings().getCurrencyObject().getName();
+                            + " ";
+                        if (item.event.getCurrency().getCode() != null) {
+                            price += item.event.getCurrency().getCode();
+                        } else {
+                            price += "KZT";
+                        }
+//                        App.getCurrentUser().getSettings().getCurrencyObject().getName();
                 itemHolder.mPrice.setText(price);
             }
 

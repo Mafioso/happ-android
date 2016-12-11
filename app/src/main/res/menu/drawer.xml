@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
         <item
             android:id="@+id/nav_item_feed"
             android:title="@string/nav_item_feed"
+            android:icon="@drawable/ic_empty"
             />
         <item
             android:id="@+id/nav_item_interests"
             android:title="@string/nav_item_interests"
+            android:icon="@drawable/ic_empty"
             />
         <item
             android:id="@+id/nav_item_organizer"
             android:title="@string/nav_item_organizer"
+            android:icon="@drawable/ic_empty"
             />
 
+        <item android:title=""/>
+
+        <item
+            android:id="@+id/nav_item_share_app"
+            android:title="@string/nav_item_share_app"
+            android:icon="@drawable/ic_empty"
+            />
         <item
             android:id="@+id/nav_item_settings"
             android:title="@string/nav_item_settings"
+            android:icon="@drawable/ic_empty"
             />
         <item
             android:id="@+id/nav_item_logout"
             android:title="@string/nav_item_logout"
+            android:icon="@drawable/ic_empty"
             />
 </menu>

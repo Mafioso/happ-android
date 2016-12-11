@@ -61,7 +61,7 @@ public class SelectCityFragment extends Fragment {
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
-    private String searchText;
+    private String searchText = "";
     private City selectedCity;
     private boolean fromCityActivity = false;
     private EditText search;
@@ -134,13 +134,6 @@ public class SelectCityFragment extends Fragment {
         citiesListLayoutManager = new LinearLayoutManager(activity);
         mCityRecyclerView.setLayoutManager(citiesListLayoutManager);
         cities = new ArrayList<>();
-
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<City> citiesRealmResults;
-        citiesRealmResults = realm.where(City.class).findAll();
-        cities = (ArrayList<City>)realm.copyFromRealm(citiesRealmResults);
-        realm.close();
-
         mCitiesListAdapter = new CityListAdapter(activity, cities);
         mCitiesListAdapter.setOnCityItemSelectListener(new CityListAdapter.SelectCityItemListener() {
             @Override
@@ -193,10 +186,10 @@ public class SelectCityFragment extends Fragment {
             public void onReceive(Context context, Intent intent) {
                 dataLoading = false;
                 mLoadingProgress.setVisibility(View.GONE);
-                if (App.getCurrentUser().getSettings().getCity() != null) {
-                    updateCity();
+//                if (App.getCurrentUser().getSettings().getCity() != null) {
+//                    updateCity();
                     updateCitiesList();
-                }
+//                }
             }
         };
     }
@@ -205,7 +198,7 @@ public class SelectCityFragment extends Fragment {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                updateCity();
+                updateCitiesList();
             }
         };
     }
@@ -214,31 +207,31 @@ public class SelectCityFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (App.getCurrentUser().getSettings().getCity() != null) {
-            updateCity();
+//            updateCity();
             updateCitiesList();
         }
     }
 
 
-    protected void updateCity() {
-        Realm realm = Realm.getDefaultInstance();
-        mCity = App.getCurrentCity().getName();
-        City realmCity = realm.where(City.class).equalTo("name", mCity).findFirst();
-        if (realmCity != null) city = realm.copyFromRealm(realmCity);
-        realm.close();
-        mCitiesListAdapter.updateData();
-    }
+//    protected void updateCity() {
+//        Realm realm = Realm.getDefaultInstance();
+//        mCity = App.getCurrentCity().getName();
+//        City realmCity = realm.where(City.class).equalTo("name", mCity).findFirst();
+//        if (realmCity != null) city = realm.copyFromRealm(realmCity);
+//        realm.close();
+//        mCitiesListAdapter.updateData();
+//    }
 
     protected void updateCitiesList() {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<City> citiesRealmResults;
-        if (searchText != null && searchText.length() > 0) {
+        if (!searchText.equals("") || searchText.length() > 0) {
             citiesRealmResults = realm.where(City.class).contains("name", searchText, Case.INSENSITIVE).findAll();
         } else {
             citiesRealmResults = realm.where(City.class).findAll();
         }
         cities = (ArrayList<City>)realm.copyFromRealm(citiesRealmResults);
-
+        ((CityListAdapter)mCityRecyclerView.getAdapter()).updateData(cities);
         realm.close();
 
 //        // @TODO STOP HERE

@@ -498,7 +498,7 @@ public class EventActivity extends AppCompatActivity {
             if (startDate.equals(endDate)) {
                 mEventDate.setText(startDate);
             } else {
-                mEventDate.setText(startDate + " — " + endDate);
+                mEventDate.setText(startDate + " - " + endDate);
             }
 
             String startTime = event.getStartDateFormatted("h:mm a");

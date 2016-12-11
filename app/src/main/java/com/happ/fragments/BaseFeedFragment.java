@@ -78,7 +78,9 @@ public class BaseFeedFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
-        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
+//        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
+        visibleThreshold = 2;
+
     }
 
     @Nullable

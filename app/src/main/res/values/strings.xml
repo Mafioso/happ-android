@@ -219,6 +219,8 @@
     <string name="password_dont_match">Passwords do not match</string>
     <string name="error">Error</string>
     <string name="event_author_email">Author Email</string>
+    <string name="all_rights_reserved">© All Rights Reserved, 2015</string>
+    <string name="nav_item_share_app">Share App</string>
 
 
 </resources>

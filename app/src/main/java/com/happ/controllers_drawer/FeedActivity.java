@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.BuildConfig;
 import com.happ.R;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.BaseFeedFragment;
@@ -99,8 +100,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     private BottomBar mBottomBar;
     private FragNavController fragNavController;
 
-//    private EverythingFeedFragment everythingFeedFragment;
-//    private FavoriteFeedFragment favoriteFeedFragment;
     private ExploreEventsFragment exploreEventsFragment;
     private MapFragment mapFragment;
 
@@ -116,17 +115,14 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
-
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
-
     private View mViewFilterDate;
     private View mViewFilterTime;
-
     private CheckBox mDrawerHeaderArrow;
     private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
-
     private Bundle bundle;
+    private TextView mDrawerVersionApp;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -165,15 +161,18 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         mFilterTime = (EditText) findViewById(R.id.ff_edittext_filtertime);
 
         menu = (Menu) findViewById(R.menu.menu_feed);
+        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
+
 
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
 
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
         setSupportActionBar(toolbar);
 
+        String versionName = BuildConfig.VERSION_NAME;
+        mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -368,14 +367,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             }
         });
 
-//        scf.setOnCitySelectInNavigationListener(new SelectCityFragment.OnCitySelectInNavigationListener() {
-//            @Override
-//            public void onCloseNavigationDrawer() {
-//                mDrawerHeaderArrow.setChecked(false);
-//                mDrawerCityFragment.setVisibility(View.GONE);
-//                mDrawerLayout.closeDrawer(GravityCompat.START);
-//            }
-//        });
 
         setListenerToRootView();
     }

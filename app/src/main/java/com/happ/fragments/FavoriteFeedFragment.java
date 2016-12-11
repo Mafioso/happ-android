@@ -149,6 +149,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         };
     }
 
+
     protected BroadcastReceiver createUserChangedBroadcastReceiver() {
         return  new BroadcastReceiver() {
             @Override
@@ -183,6 +184,12 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
                 updateFavoritesEventsList();
             }
         };
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
     @Override

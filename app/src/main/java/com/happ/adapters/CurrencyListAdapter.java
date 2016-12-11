@@ -50,10 +50,15 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     public void onBindViewHolder(CurrenciesListViewHolder holder, int position) {
         final Currency currency = mCurrency.get(position);
 
-//            holder.mImageHappIcon.setVisibility(View.VISIBLE);
-//            holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.dark57));
-            holder.mTitleCities.setText(currency.getName());
+        if (currency.getId().equals(currentUser.getSettings().getCurrency())) {
+            holder.mImageHappIcon.setVisibility(View.VISIBLE);
+            holder.mTitleCurrencies.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        } else {
+            holder.mImageHappIcon.setVisibility(View.INVISIBLE);
+            holder.mTitleCurrencies.setTextColor(context.getResources().getColor(R.color.dark57));
+        }
+
+            holder.mTitleCurrencies.setText(currency.getName());
 
         holder.bind(currency);
     }
@@ -72,12 +77,12 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
 
     public class CurrenciesListViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView mTitleCities;
+        public TextView mTitleCurrencies;
         private ImageView mImageHappIcon;
 
         public CurrenciesListViewHolder(View itemView) {
             super(itemView);
-            mTitleCities = (TextView)itemView.findViewById(R.id.city_title);
+            mTitleCurrencies = (TextView)itemView.findViewById(R.id.city_title);
             mImageHappIcon = (ImageView)itemView.findViewById(R.id.city_fr_happ_icon);
 
         }

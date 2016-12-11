@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * Created by dante on 9/7/16.
  */
 public class CitiesResponse {
+
     @SerializedName("results")
     private ArrayList<City> cities;
 
