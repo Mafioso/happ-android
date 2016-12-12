@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -21,7 +22,6 @@ import com.happ.controllers_drawer.FeedActivity;
 import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
-import com.happ.retrofit.HappRestClient;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,12 +73,6 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         }
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (App.hasConnection(getContext())) HappRestClient.getInstance().getEvents(false);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,6 +106,12 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             if (changeCityDoneReceiver == null) {
                 changeCityDoneReceiver = changeCityReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+            }
+
+            if (App.hasConnection(getContext())) {
+                getEvents(1, false);
+            } else {
+                Toast.makeText(getContext(), "Events not updated", Toast.LENGTH_SHORT).show();
             }
 
         return view;
@@ -203,6 +203,12 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         mDarkViewProgress.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+//        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+    }
+
     private BroadcastReceiver changeCityReceiver() {
         return new BroadcastReceiver() {
             @Override
@@ -227,7 +233,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getBooleanExtra("EVENTS_CHANGED", false)) {
-                    getEvents(0, false);
+                    getEvents(1,false);
                 }
             }
         };

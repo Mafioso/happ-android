@@ -131,7 +131,6 @@
     <string name="password_changed">Password changed</string>
     <string name="error_500">Something went wrong</string>
     <string name="error_400">Checking the correctness of filling</string>
-    <string name="about">About</string>
     <string name="version_name">Version Name</string>
     <string name="date_filter">Filter Date</string>
     <string name="popular_first">Show Popular First</string>
@@ -221,6 +220,8 @@
     <string name="event_author_email">Author Email</string>
     <string name="all_rights_reserved">© All Rights Reserved, 2015</string>
     <string name="nav_item_share_app">Share App</string>
+    <string name="settings_subject_contact">Question from</string>
+    <string name="happ_email">happerala@happapp.info</string>
 
 
 </resources>

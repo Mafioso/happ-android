@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -163,7 +161,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         String id = item.event.getId();
         ActivityOptionsCompat optionsCompat = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Pair<View, String> p1 = Pair.create((View) itemViewHolder.mTitleView, "event_title");
+            Pair<View, String> p1 = Pair.create((View) itemViewHolder.mTextViewTitle, "event_title");
 //            Pair<View, String> p2 = Pair.create((View) itemViewHolder.mInterestViewColor, "event_interest_bg");
             Pair<View, String> p3 = Pair.create((View) itemViewHolder.mImageView, "ivent_image");
             Pair<View, String> p4 = Pair.create((View) itemViewHolder.mInterestTitle, "event_interest_name");
@@ -182,7 +180,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         holder.itemView.setOnClickListener(null);
         if (item.isHeader) {
 
-            ((EventsListHeaderViewHolder)holder).mTitleView.setText(item.headerTitle);
+            ((EventsListHeaderViewHolder)holder).mTVDateTitle.setText(item.headerTitle);
 
         } else {
 
@@ -213,7 +211,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             });
 
 
-            itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            itemHolder.mRLFullCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     eventSelected(itemHolder, item);
@@ -359,10 +357,9 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
             }
 
-
-            itemHolder.mTitleView.setText(item.event.getTitle());
             Typeface tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.otf");
-            itemHolder.mTitleView.setTypeface(tfcs);
+            itemHolder.mTextViewTitle.setTypeface(tfcs);
+            itemHolder.mTextViewTitle.setText(item.event.getTitle());
 
             itemHolder.mPlace.setText(item.event.getPlace());
 
@@ -468,26 +465,23 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
     public class EventsListViewHolder extends RecyclerView.ViewHolder {
 
-        public CardView mCard;
-        public TextView mTitleView;
-
         public EventsListViewHolder(View itemView) {
             super(itemView);
-            mCard = (CardView) itemView.findViewById(R.id.cardView);
         }
     }
 
     public class EventsListHeaderViewHolder extends EventsListViewHolder {
 
+        public TextView mTVDateTitle;
+
         public EventsListHeaderViewHolder(View itemView) {
             super(itemView);
-            mTitleView = (TextView)itemView.findViewById(R.id.events_list_header_title);
+            mTVDateTitle = (TextView)itemView.findViewById(R.id.events_list_header_title);
         }
     }
 
     public class EventsListItemViewHolder extends EventsListViewHolder {
         private TextView mTime;
-        private LinearLayout mInterestViewColor;
         private RelativeLayout mBackground;
         private TextView mInterestTitle;
         private ImageView mImageView;
@@ -496,15 +490,16 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         private TextView mPlace;
         private TextView mVotesCount;
         private ImageView mFavoritesImage;
-        private ImageView mUpvoteImage, mDownVoteImage;
+        private ImageView mUpvoteImage;
         private ProgressBar mImagePreloader;
         private Toolbar mToolbar;
-        private String url;
+        private TextView mTextViewTitle;
+        private RelativeLayout mRLFullCard;
 
 
         public EventsListItemViewHolder(final View itemView) {
             super(itemView);
-            mTitleView = (TextView) itemView.findViewById(R.id.event_item_title);
+            mTextViewTitle = (TextView) itemView.findViewById(R.id.event_item_title);
             mTime = (TextView) itemView.findViewById(R.id.event_item_time);
             mInterestTitle = (TextView) itemView.findViewById(R.id.event_item_interest);
             mImageView = (ImageView) itemView.findViewById(R.id.event_item_image_view);
@@ -517,6 +512,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             mBackground = (RelativeLayout) itemView.findViewById(R.id.event_item_bg);
             mPlace = (TextView) itemView.findViewById(R.id.event_item_place);
             mImagePlaceHolder = (ImageView) itemView.findViewById(R.id.event_item_image_placeholder);
+            mRLFullCard = (RelativeLayout) itemView.findViewById(R.id.rl_event_card);
         }
 
     }

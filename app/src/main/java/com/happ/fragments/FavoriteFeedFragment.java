@@ -78,6 +78,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         return view;
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
@@ -190,6 +191,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     public void onPause() {
         super.onPause();
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+
     }
 
     @Override

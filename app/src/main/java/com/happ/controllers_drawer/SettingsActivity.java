@@ -81,9 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
         mBtnTermsOfService = (Button) findViewById(R.id.btn_terms_service);
 //        mBtnPushNotif = (Button) findViewById(R.id.btn_push_notif);
         mBtnContactHapp = (Button) findViewById(R.id.btn_contact_happ);
-
         mBtnFaqHelp = (Button) findViewById(R.id.btn_faq);
-        mBtnFaqHelp.setText(R.string.organizer_rules);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -195,9 +193,10 @@ public class SettingsActivity extends AppCompatActivity {
             case R.id.btn_contact_happ:
                 Intent i = new Intent(Intent.ACTION_SENDTO);
                 i.setType("message/rfc822");
-                i.putExtra(Intent.EXTRA_SUBJECT, "subject of email");
-                i.putExtra(Intent.EXTRA_TEXT   , "body of email");
-                i.setData(Uri.parse("mailto:happerala@happapp.info"));
+                i.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.settings_subject_contact)
+                        + " " +
+                        App.getCurrentUser().getFullName() + App.getCurrentUser().getFn());
+                i.setData(Uri.parse("mailto:" + getResources().getString(R.string.happ_email)));
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
                     startActivity(Intent.createChooser(i, "Send mail..."));
@@ -207,12 +206,7 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
 
             case R.id.btn_faq:
-                // Сейчас здесь страница Organizer Rules
-                Intent goToOrganizerRules = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
-                goToOrganizerRules.putExtra("from_organizermode", true);
-                goToOrganizerRules.putExtra("link_organizer_rules", true);
-                startActivity(goToOrganizerRules);
-                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                Toast.makeText(SettingsActivity.this, "FAQ Page", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.btn_terms_service:

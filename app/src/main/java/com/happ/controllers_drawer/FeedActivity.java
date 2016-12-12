@@ -100,8 +100,10 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     private BottomBar mBottomBar;
     private FragNavController fragNavController;
 
-    private ExploreEventsFragment exploreEventsFragment;
     private MapFragment mapFragment;
+    private EverythingFeedFragment everythingFeedFragment;
+    private FavoriteFeedFragment favoriteFeedFragment;
+    private ExploreEventsFragment exploreEventsFragment;
 
     private final int TAB_EVERYTHING = FragNavController.TAB1;
     private final int TAB_FAVORITES = FragNavController.TAB2;
@@ -135,8 +137,8 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         setContentView(R.layout.activity_feed);
         setTitle("");
         scf = SelectCityFragment.newInstance();
-//        everythingFeedFragment = EverythingFeedFragment.newInstance();
-//        favoriteFeedFragment = FavoriteFeedFragment.newInstance();
+        everythingFeedFragment = EverythingFeedFragment.newInstance();
+        favoriteFeedFragment = FavoriteFeedFragment.newInstance();
         exploreEventsFragment = ExploreEventsFragment.newInstance();
         mapFragment = MapFragment.newInstance();
 
@@ -163,13 +165,12 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         menu = (Menu) findViewById(R.menu.menu_feed);
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
 
-
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         setSupportActionBar(toolbar);
+
 
         String versionName = BuildConfig.VERSION_NAME;
         mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
@@ -412,7 +413,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
         switch (index) {
             case TAB_EVERYTHING:
-                final EverythingFeedFragment everythingFeedFragment = EverythingFeedFragment.newInstance();
                 everythingFeedFragment.setChangeColorIconToolbarListener(new BaseFeedFragment.ChangeColorIconToolbarListener() {
                     @Override
                     public void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter) {
@@ -430,7 +430,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                 return everythingFeedFragment;
 
             case TAB_FAVORITES:
-                FavoriteFeedFragment favoriteFeedFragment = FavoriteFeedFragment.newInstance();
                 favoriteFeedFragment.setChangeColorIconToolbarListener(new BaseFeedFragment.ChangeColorIconToolbarListener() {
                     @Override
                     public void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter) {
@@ -448,6 +447,19 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                 });
                 return favoriteFeedFragment;
             case TAB_EXPLORE:
+                exploreEventsFragment.setOnHideShowFilterListener(new ExploreEventsFragment.HideShowFilterListener() {
+                    @Override
+                    public void onHideFilter() {
+                        menu.getItem(0).setVisible(false);
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, navigationViewRight);
+                    }
+
+                    @Override
+                    public void onShowFilter() {
+                        menu.getItem(0).setVisible(true);
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, navigationViewRight);
+                    }
+                });
                 return exploreEventsFragment;
             case TAB_MAP:
                 return mapFragment;
