@@ -25,13 +25,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.LockableScrollView;
 import com.happ.R;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
@@ -76,8 +76,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
     boolean isKeyboarShown = false;
     ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
-    RelativeLayout mFormLayout;
-    MaterialProgressBar mProgressBar;
+    private RelativeLayout mFormLayout;
+    private MaterialProgressBar mProgressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -162,8 +162,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
         mIVbg.setImageResource(randomBg);
 
-        ScrollView sv = (ScrollView)findViewById(R.id.scroll_registration);
-        sv.setEnabled(false);
+        LockableScrollView sv = (LockableScrollView)findViewById(R.id.fake_scrollview);
+        sv.setScrollingEnabled(false);
 
         mCreateAccountButton.setVisibility(View.INVISIBLE);
 

@@ -25,11 +25,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.LockableScrollView;
 import com.happ.R;
 import com.happ.controllers_drawer.FeedActivity;
 import com.happ.controllers_drawer.SelectInterestsActivity;
@@ -113,8 +113,9 @@ public class LoginActivity extends AppCompatActivity {
         mProgressBar.setVisibility(View.GONE);
         mIVbg.setImageResource(randomBg);
 
-        ScrollView sv = (ScrollView)findViewById(R.id.scroll_login);
-        sv.setEnabled(false);
+        LockableScrollView sv = (LockableScrollView)findViewById(R.id.fake_scrollview);
+        sv.setScrollingEnabled(false);
+
 
         mEmail.addTextChangedListener(mWatcher);
         mPassword.addTextChangedListener(mWatcher);
@@ -207,10 +208,6 @@ public class LoginActivity extends AppCompatActivity {
         mTvBtnCreateAccount.setText(spanCreateAccountString);
 
     }
-//    private void isLoggedIn() {
-//        Claims claims = App.getTokenData();
-//        HappRestClient.getInstance().refreshToken();
-//    }
 
     private void setListenerToRootView() {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);

@@ -2,16 +2,19 @@ package com.happ.controllers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.UnderlineSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
@@ -19,12 +22,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.happ.App;
+import com.happ.LockableScrollView;
 import com.happ.R;
 
 import java.util.Random;
+
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by dante on 11/15/16.
@@ -41,7 +47,10 @@ public class PasswordRecoveActivity extends AppCompatActivity {
     private Button mBtnRecovePassword;
     private ImageView mImgLogo;
     private RelativeLayout mRLFooter;
-    private RelativeLayout mRLbg;
+    private TextView mTVPrivacyPolicy, mTVTermsPolicy;
+    private AppCompatImageView mIVbg;
+    private TextView mTVEnterEmail;
+    private MaterialProgressBar mProgressBar;
 
     private int[] login_bg = {
             R.drawable.login_bg_1,
@@ -72,12 +81,19 @@ public class PasswordRecoveActivity extends AppCompatActivity {
         mBtnRecovePassword = (Button) findViewById(R.id.btn_recover_password);
         mImgLogo = (ImageView) findViewById(R.id.img_logo);
         mRLFooter = (RelativeLayout) findViewById(R.id.rl_footer);
-        mRLbg = (RelativeLayout) findViewById(R.id.rl_registration_bg);
+        mTVPrivacyPolicy = (TextView) findViewById(R.id.tv_privacy_policy);
+        mTVTermsPolicy = (TextView) findViewById(R.id.tv_terms_and_policy);
+        mIVbg = (AppCompatImageView) findViewById(R.id.iv_recove_pw_bg);
+        mTVEnterEmail = (TextView) findViewById(R.id.tv_enter_email);
+        mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_recove_password);
+
+
+        LockableScrollView sv = (LockableScrollView)findViewById(R.id.fake_scrollview);
+        sv.setScrollingEnabled(false);
 
         mBtnRecovePassword.setVisibility(View.INVISIBLE);
 
-        //set background
-        mRLbg.setBackground(ContextCompat.getDrawable(App.getContext(), randomBg));
+        mIVbg.setImageResource(randomBg);
 
         setSupportActionBar(toolbar);
         setTitle("");
@@ -99,11 +115,33 @@ public class PasswordRecoveActivity extends AppCompatActivity {
         mBtnRecovePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideSoftKeyboard(PasswordRecoveActivity.this, view);
+                mBtnRecovePassword.setVisibility(View.INVISIBLE);
+                mProgressBar.setVisibility(View.VISIBLE);
                 Toast.makeText(PasswordRecoveActivity.this, "clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
+        mTVTermsPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent gotToTermsOfService = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
+                gotToTermsOfService.putExtra("link_terms_of_service", true);
+                startActivity(gotToTermsOfService);
+            }
+        });
+
+        mTVPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToPrivacyPolicy = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
+                goToPrivacyPolicy.putExtra("link_privacy_policy", true);
+                startActivity(goToPrivacyPolicy);
+            }
+        });
+
         setListenerToRootView();
+        setSpannableString();
      }
 
     TextWatcher mWatcher = new TextWatcher() {
@@ -131,8 +169,19 @@ public class PasswordRecoveActivity extends AppCompatActivity {
             // TODO Auto-generated method stub
 
         }
+
     };
 
+
+    private void setSpannableString() {
+        SpannableString spanPrivacyPolicyString = new SpannableString(mTVPrivacyPolicy.getText());
+        spanPrivacyPolicyString.setSpan(new UnderlineSpan(), 0, spanPrivacyPolicyString.length(), 0);
+        mTVPrivacyPolicy.setText(spanPrivacyPolicyString);
+
+        SpannableString spanTermsPolicyString = new SpannableString(mTVTermsPolicy.getText());
+        spanTermsPolicyString.setSpan(new UnderlineSpan(), 0, spanTermsPolicyString.length(), 0);
+        mTVTermsPolicy.setText(spanTermsPolicyString);
+    }
 
     public void setListenerToRootView() {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
@@ -149,12 +198,14 @@ public class PasswordRecoveActivity extends AppCompatActivity {
                     if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                         if (!isKeyboarShown) {
                             mImgLogo.setVisibility(View.GONE);
+                            mTVEnterEmail.setVisibility(View.GONE);
                             mRLFooter.setVisibility(View.GONE);
                         }
                         isKeyboarShown = true;
                     }
                     else {
                         mImgLogo.setVisibility(View.VISIBLE);
+                        mTVEnterEmail.setVisibility(View.VISIBLE);
                         mRLFooter.setVisibility(View.VISIBLE);
                         isKeyboarShown = false;
                     }

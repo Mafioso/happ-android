@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -16,25 +17,29 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.BuildConfig;
 import com.happ.R;
 import com.happ.adapters.InterestsListAdapter;
 import com.happ.controllers.UserActivity;
@@ -64,7 +69,6 @@ import io.realm.RealmResults;
     protected BroadcastReceiver getCurrentUserReceiver;
     protected BroadcastReceiver changeCityDoneReceiver;
 
-    private LinearLayoutManager interestsListLayoutManager;
     private FloatingActionButton mFab;
     private Button mBtnSelectAllInterests;
     private int interestsPageSize;
@@ -84,8 +88,14 @@ import io.realm.RealmResults;
     private FrameLayout childrenContainer;
     private int titleBarHeight;
 
+
     private CheckBox mDrawerHeaderArrow;
     private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
+
+    private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
+    private boolean isKeyboarShown = false;
+    private LinearLayout mDrawerLLFooter;
+    private TextView mDrawerVersionApp;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -121,10 +131,12 @@ import io.realm.RealmResults;
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-
+        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
         selectedRow = (RelativeLayout) findViewById(R.id.selected_row);
         selectedRowContainer = (RelativeLayout) findViewById(R.id.selected_row_container);
-
+        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
+        String versionName = BuildConfig.VERSION_NAME;
+        mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
 
 //        selectedRow.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -238,11 +250,13 @@ import io.realm.RealmResults;
         setSupportActionBar(toolbar);
 
         if (fullActivity) {
+
             ActionBar actionBar = getSupportActionBar();
             if(actionBar != null){
                 actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_gray);
                 actionBar.setDisplayHomeAsUpEnabled(true);
             }
+
             navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -265,21 +279,19 @@ import io.realm.RealmResults;
                         overridePendingTransition(0,0);
                     }
 
-                    if (menuItem.getItemId() == R.id.nav_item_interests) {
-                        Intent intent = new Intent(SelectInterestsActivity.this, SelectInterestsActivity.class);
-                        intent.putExtra("is_full", true);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        startActivity(intent);
-                        overridePendingTransition(0,0);
-
-                    }
-
                     if (menuItem.getItemId() == R.id.nav_item_feed) {
                         Intent intent = new Intent(SelectInterestsActivity.this, FeedActivity.class);
                         intent.putExtra("is_full", true);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                         startActivity(intent);
                         overridePendingTransition(0,0);
+                    }
+                    if (menuItem.getItemId() == R.id.nav_item_share_app) {
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+                        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_happ_to)));
                     }
                     mDrawerLayout.closeDrawers();
                     return true;
@@ -309,6 +321,7 @@ import io.realm.RealmResults;
                 public void onClick(View view) {
                     if (mDrawerHeaderArrow.isChecked()) {
                         mDrawerCityFragment.setVisibility(View.VISIBLE);
+                        mDrawerCityFragment.setAdapter(cityPageAdapter);
                     } else {
                         mDrawerCityFragment.setVisibility(View.GONE);
                     }
@@ -317,27 +330,11 @@ import io.realm.RealmResults;
 
 
         } else {
-//            mDrawerLayout.setVisibility(View.GONE);
+
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             navigationView.setVisibility(View.GONE);
         }
 
-        if (this.interestsRequestDoneReceiver == null) {
-            this.interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
-        }
-        if (this.setInterestsOKReceiver == null) {
-            this.setInterestsOKReceiver = createSetInterestsOKReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
-        }
-        if (this.getCurrentUserReceiver == null) {
-            this.getCurrentUserReceiver = createGetUserDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.getCurrentUserReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
-        }
-        if (this.changeCityDoneReceiver == null) {
-            this.changeCityDoneReceiver = changeCityReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
-        }
         mCLoserLeftNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -360,13 +357,87 @@ import io.realm.RealmResults;
             }
         });
 
+        setListenerToRootView();
+        setDrawerLayoutListener();
 
+        if (this.interestsRequestDoneReceiver == null) {
+            this.interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.interestsRequestDoneReceiver, new IntentFilter(BroadcastIntents.INTERESTS_REQUEST_OK));
+        }
+        if (this.setInterestsOKReceiver == null) {
+            this.setInterestsOKReceiver = createSetInterestsOKReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.setInterestsOKReceiver, new IntentFilter(BroadcastIntents.SET_INTERESTS_OK));
+        }
+        if (this.getCurrentUserReceiver == null) {
+            this.getCurrentUserReceiver = createGetUserDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.getCurrentUserReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+        }
+        if (this.changeCityDoneReceiver == null) {
+            this.changeCityDoneReceiver = changeCityReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+        }
     }
 
-//    @Override
-//    public void onFragmentInteraction(Uri uri) {
-//
-//    }
+
+    private void setListenerToRootView() {
+        final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        if (mKeyboardListener == null) {
+            mKeyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+
+                    Rect r = new Rect();
+                    activityRootView.getWindowVisibleDisplayFrame(r);
+                    int screenHeight = activityRootView.getRootView().getHeight();
+
+                    int keypadHeight = screenHeight - r.bottom;
+                    if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                        if (!isKeyboarShown) {
+                            navigationHeader.setVisibility(View.GONE);
+                            mDrawerLLFooter.setVisibility(View.GONE);
+
+                        }
+                        isKeyboarShown = true;
+                    }
+                    else {
+                        navigationHeader.setVisibility(View.VISIBLE);
+                        mDrawerLLFooter.setVisibility(View.VISIBLE);
+                        isKeyboarShown = false;
+                    }
+                }
+            };
+        } else {
+            activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
+        }
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
+    }
+
+    private void setDrawerLayoutListener() {
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, 0, 0) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+        };
+        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
+    }
+
 
 
     public class MyCityPageAdapter extends FragmentPagerAdapter {
@@ -394,18 +465,6 @@ import io.realm.RealmResults;
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private BroadcastReceiver createInterestsRequestDoneReceiver() {
         return new BroadcastReceiver() {
@@ -449,10 +508,11 @@ import io.realm.RealmResults;
         };
     }
 
+
+
     protected void updateInterestsList() {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).isNull("parentId").findAll();
-//        RealmResults<Interest> interestsRealmResults = realm.where(Interest.class).equalTo("title", "tenetur").findAll();
         interests = (ArrayList<Interest>)realm.copyFromRealm(interestsRealmResults);
         mInterestsListAdapter.updateData(interests);
         realm.close();

@@ -181,69 +181,74 @@
 
             </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/ff_bottom_currency"
-            android:paddingLeft="16dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/popular_first"
-                android:textColor="@color/white70"
-                android:textSize="16sp"
-                android:layout_centerVertical="true"/>
-
-            <android.support.v7.widget.SwitchCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/ff_bottom_currency"
+        <LinearLayout
+            android:id="@+id/right_drawer_ll_footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingLeft="16dp"
-            android:layout_marginTop="16dp">
-
-            <TextView
-                android:id="@+id/ff_bottom_currency_text"
-                android:layout_width="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="@color/white70"
-                android:text="@string/event_currency"
-                android:layout_centerVertical="true"/>
+                android:paddingLeft="16dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/popular_first"
+                    android:textColor="@color/white70"
+                    android:textSize="16sp"
+                    android:layout_centerVertical="true"/>
 
-            <info.hoang8f.android.segmented.SegmentedGroup
-                android:layout_width="wrap_content"
+                <android.support.v7.widget.SwitchCompat
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/ff_bottom_currency"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/ff_bottom_currency_text"
-                android:layout_marginLeft="24dp"
-                android:orientation="horizontal"
-                segmentedgroup:sc_border_width="1dp"
-                segmentedgroup:sc_corner_radius="10dp"
-                app:sc_tint_color="@color/colorAccent">
+                android:paddingLeft="16dp"
+                android:layout_marginTop="16dp">
 
-                <RadioButton
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/ff_bottom_currency_text"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/user"
-                    style="@style/RadioButton" />
+                    android:textSize="16sp"
+                    android:textColor="@color/white70"
+                    android:text="@string/event_currency"
+                    android:layout_centerVertical="true"/>
 
-                <RadioButton
-                    android:layout_width="0dp"
+                <info.hoang8f.android.segmented.SegmentedGroup
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/event"
-                    style="@style/RadioButton" />
-            </info.hoang8f.android.segmented.SegmentedGroup>
+                    android:layout_toRightOf="@+id/ff_bottom_currency_text"
+                    android:layout_marginLeft="24dp"
+                    android:orientation="horizontal"
+                    segmentedgroup:sc_border_width="1dp"
+                    segmentedgroup:sc_corner_radius="10dp"
+                    app:sc_tint_color="@color/colorAccent">
 
-        </RelativeLayout>
+                    <RadioButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/user"
+                        style="@style/RadioButton" />
+
+                    <RadioButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/event"
+                        style="@style/RadioButton" />
+                </info.hoang8f.android.segmented.SegmentedGroup>
+
+            </RelativeLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 

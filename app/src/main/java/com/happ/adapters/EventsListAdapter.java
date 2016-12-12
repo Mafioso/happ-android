@@ -218,6 +218,13 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 }
             });
 
+            itemHolder.mTextViewTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    eventSelected(itemHolder, item);
+                }
+            });
+
 //            if(item.event.getImages().size() > 0){
 //                final String url = item.event.getImages().get(0).getUrl();
 ////                final String url = "http://lorempixel.com/g/1080/610/nature/" + position + "/";

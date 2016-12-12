@@ -1,6 +1,9 @@
 package com.happ.controllers_drawer;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -26,6 +30,8 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.happ.App;
+import com.happ.BroadcastIntents;
+import com.happ.BuildConfig;
 import com.happ.R;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.SelectCityFragment;
@@ -53,6 +59,8 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
     private CheckBox mDrawerHeaderArrow;
     private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
+    private BroadcastReceiver changeCityDoneReceiver;
+    private TextView mDrawerVersionApp;
 
     private final int TAB_MY_EVENTS = FragNavController.TAB1;
 
@@ -75,7 +83,9 @@ public class OrganizerModeActivity extends AppCompatActivity {
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-
+        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
+        String versionName = BuildConfig.VERSION_NAME;
+        mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -99,13 +109,6 @@ public class OrganizerModeActivity extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                 }
 
-//                if (menuItem.getItemId() == R.id.nav_item_organizer) {
-//                    Intent goToFeedIntent = new Intent(OrganizerModeActivity.this, OrganizerModeActivity.class);
-//                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-//                    startActivity(goToFeedIntent);
-//                    overridePendingTransition(0, 0);
-//                }
-
                 if (menuItem.getItemId() == R.id.nav_item_interests) {
                     Intent intent = new Intent(OrganizerModeActivity.this, SelectInterestsActivity.class);
                     intent.putExtra("is_full", true);
@@ -119,6 +122,13 @@ public class OrganizerModeActivity extends AppCompatActivity {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     overridePendingTransition(0, 0);
+                }
+                if (menuItem.getItemId() == R.id.nav_item_share_app) {
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_happ_to)));
                 }
 
 
@@ -148,6 +158,7 @@ public class OrganizerModeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (mDrawerHeaderArrow.isChecked()) {
                     mDrawerCityFragment.setVisibility(View.VISIBLE);
+                    mDrawerCityFragment.setAdapter(cityPageAdapter);
                 } else {
                     mDrawerCityFragment.setVisibility(View.GONE);
                 }
@@ -167,6 +178,10 @@ public class OrganizerModeActivity extends AppCompatActivity {
             }
         });
 
+        if (changeCityDoneReceiver == null) {
+            changeCityDoneReceiver = changeCityReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+        }
 
 //        ArrayList<Fragment> fragments = new ArrayList<>(1);
 //        fragments.add(EventsOrganizerFragment.newInstance());
@@ -302,12 +317,28 @@ public class OrganizerModeActivity extends AppCompatActivity {
         super.onResume();
         ((TextView) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
         ((TextView) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+    }
 
+    private BroadcastReceiver changeCityReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
+                mDrawerHeaderArrow.setChecked(false);
+                mDrawerCityFragment.setVisibility(View.GONE);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+            }
+        };
     }
 
     @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
+        if (changeCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
+            changeCityDoneReceiver = null;
+        }
+
     }
 
 }

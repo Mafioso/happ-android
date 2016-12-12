@@ -7,19 +7,19 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <ScrollView
-        android:id="@+id/scroll_registration"
+    <com.happ.LockableScrollView
+        android:id="@+id/fake_scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_registration_bg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:adjustViewBounds="true"
             app:srcCompat="@drawable/login_bg_4"/>
 
-    </ScrollView>
+    </com.happ.LockableScrollView>
 
     <LinearLayout
         android:focusable="true"
@@ -149,9 +149,7 @@
 
     </RelativeLayout>
 
-
     <include layout="@layout/toolbar"/>
-
     <include layout="@layout/copyright" />
 
 </RelativeLayout>

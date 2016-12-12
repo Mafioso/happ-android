@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,8 +33,10 @@ import android.transition.Explode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +46,7 @@ import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.BuildConfig;
 import com.happ.R;
 import com.happ.Typefaces;
 import com.happ.adapters.EventImagesSwipeAdapter;
@@ -129,6 +134,11 @@ public class EventActivity extends AppCompatActivity {
     private CheckBox mDrawerHeaderArrow;
     private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
 
+    private boolean isKeyboarShown = false;
+    private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
+
+    private LinearLayout mDrawerLLFooter;
+    private TextView mDrawerVersionApp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -182,11 +192,14 @@ public class EventActivity extends AppCompatActivity {
         mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
         rvPhones = (RecyclerView) findViewById(R.id.rv_event_phones);
         appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
+        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
 
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-
+        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
+        String versionName = BuildConfig.VERSION_NAME;
+        mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
 
         mFab.setVisibility(View.GONE);
         if (isOrg) {
@@ -265,6 +278,13 @@ public class EventActivity extends AppCompatActivity {
                     startActivity(intent);
                     overridePendingTransition(0, 0);
                 }
+                if (menuItem.getItemId() == R.id.nav_item_share_app) {
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_happ_to)));
+                }
                 mDrawerLayout.closeDrawers();
                 return true;
             }
@@ -294,6 +314,7 @@ public class EventActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (mDrawerHeaderArrow.isChecked()) {
                     mDrawerCityFragment.setVisibility(View.VISIBLE);
+                    mDrawerCityFragment.setAdapter(cityPageAdapter);
                 } else {
                     mDrawerCityFragment.setVisibility(View.GONE);
                 }
@@ -308,6 +329,8 @@ public class EventActivity extends AppCompatActivity {
         });
 
         repopulateEvent();
+        setDrawerLayoutListener();
+        setListenerToRootView();
 
 
         if (didUpvoteReceiver == null) {
@@ -324,6 +347,70 @@ public class EventActivity extends AppCompatActivity {
             changeCityDoneReceiver = changeCityReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
         }
+    }
+
+
+    private void setListenerToRootView() {
+        final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        if (mKeyboardListener == null) {
+            mKeyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+
+                    Rect r = new Rect();
+                    activityRootView.getWindowVisibleDisplayFrame(r);
+                    int screenHeight = activityRootView.getRootView().getHeight();
+
+                    int keypadHeight = screenHeight - r.bottom;
+                    if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                        if (!isKeyboarShown) {
+                            navigationHeader.setVisibility(View.GONE);
+                            mDrawerLLFooter.setVisibility(View.GONE);
+
+                        }
+                        isKeyboarShown = true;
+                    }
+                    else {
+                        navigationHeader.setVisibility(View.VISIBLE);
+                        mDrawerLLFooter.setVisibility(View.VISIBLE);
+                        isKeyboarShown = false;
+                    }
+                }
+            };
+        } else {
+            activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
+        }
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
+    }
+
+
+    private void setDrawerLayoutListener() {
+
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, null, 0, 0) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
 
     @Override
@@ -346,8 +433,22 @@ public class EventActivity extends AppCompatActivity {
                     EventActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
                 }
                 return true;
-            case R.id.menu_ea_favorites:
-                Toast.makeText(EventActivity.this, "FAVORITES", Toast.LENGTH_SHORT).show();
+            case R.id.menu_ea_share_event:
+                if (inEventActivity) {
+                    String title = "";
+                    String description = "";
+                    String place = "";
+                    String phone = "";
+                    if (!event.getTitle().equals("")) title = event.getTitle() + "\n";
+                    if (!event.getDescription().equals("")) description = event.getDescription() + "\n";
+                    if (!event.getPlace().equals("")) place = event.getPlace() + "\n";
+                    if (event.getPhones().size() > 0) phone = event.getPhones().get(0).getPhone();
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.event_share_subject));
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, title + description + place + phone);
+                    startActivity(Intent.createChooser(sharingIntent,  getResources().getString(R.string.share_event_to)));
+                }
                 return true;
         }
 
