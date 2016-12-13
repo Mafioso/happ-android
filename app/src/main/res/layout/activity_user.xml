@@ -32,7 +32,8 @@
                 android:background="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_collapseMode="parallax">
+                app:layout_collapseMode="parallax"
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:id="@+id/avatar_placeholder"
@@ -286,6 +287,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:hint="@string/birthday"
+                        android:clickable="false"
                         android:inputType="textNoSuggestions"/>
                 </android.support.design.widget.TextInputLayout>
 

@@ -3,6 +3,7 @@ package com.happ.controllers;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +20,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
@@ -30,9 +30,9 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
-import android.view.animation.Animation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -71,7 +71,7 @@ public class UserActivity extends AppCompatActivity {
     private AppBarLayout mAppBarLayout;
 
     private EditText mUsername, mEmail, mPhoneNumber, mBirthday;
-    private Date birthday;
+    private Date mDateBirthday;
     private Button mUserSave;
     private ImageView mBtnEditBirthday;
     private ImageButton mBtnEditPhoto;
@@ -81,8 +81,6 @@ public class UserActivity extends AppCompatActivity {
     private BroadcastReceiver setUserEditOKReceiver;
     private boolean fromSettings = false;
 
-    private TextInputLayout mTILphone;
-    private Animation anim;
 
     private User user;
     private RelativeLayout mAvatarPlaceholder;
@@ -159,19 +157,47 @@ public class UserActivity extends AppCompatActivity {
             mUsername.setText(App.getCurrentUser().getFullName());
             mEmail.setText(App.getCurrentUser().getEmail());
             mPhoneNumber.setText(App.getCurrentUser().getPhone());
-            birthday = App.getCurrentUser().getBirthDate();
-            if (birthday == null) {
-                Calendar cal = Calendar.getInstance();
-                int currentYear = cal.get(Calendar.YEAR);
-                cal.set(Calendar.YEAR, currentYear-18);
-                birthday = cal.getTime();
-            }
-            java.text.DateFormat format = DateFormat.getLongDateFormat(this);
-            mBirthday.setText(format.format(birthday));
+            mDateBirthday = App.getCurrentUser().getBirthDate();
+//            if (mDateBirthday == null) {
+//                Calendar cal = Calendar.getInstance();
+//                int currentYear = cal.get(Calendar.YEAR);
+//                cal.set(Calendar.YEAR, currentYear-18);
+//                mDateBirthday = cal.getTime();
+//            }
+//            java.text.DateFormat format = DateFormat.getLongDateFormat(this);
+//            mBirthday.setText(format.format(mDateBirthday));
+
             mBtnEditBirthday.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                btn_click_birthday(v);
+
+//                    if (mDateBirthday == null) mDateBirthday = new Date();
+//                    Calendar now = Calendar.getInstance();
+//                    now.setTime(mDateBirthday);
+
+                    final Calendar c = Calendar.getInstance();
+                    int year = c.get(Calendar.YEAR);
+                    int month = c.get(Calendar.MONTH);
+                    int day = c.get(Calendar.DAY_OF_MONTH);
+
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(UserActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(Calendar.YEAR, year);
+                            cal.set(Calendar.MONTH, monthOfYear);
+                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            mDateBirthday = cal.getTime();
+
+                            //Set DateBirthday in EditText
+                            java.text.DateFormat format = DateFormat.getLongDateFormat(UserActivity.this);
+                            mBirthday.setText(format.format(mDateBirthday));
+                        }
+                    }, year, month, day);
+//                    Calendar cc = Calendar.getInstance();
+//                    cc.set(2014, 4, 22);
+//                    datePickerDialog.getDatePicker().setMinDate(cc.getTimeInMillis());
+                    datePickerDialog.show();
                 }
             });
 
@@ -235,14 +261,10 @@ public class UserActivity extends AppCompatActivity {
                     });
                     colorAnimation.start();
 
-//                anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha);
-//                mUserSave.startAnimation(anim);
-
                     hideSoftKeyboard(UserActivity.this, v);
                     int gender = 0;
-//                if (mGenderSwitch.isChecked()) gender = 1;
                     if (mFemale.isChecked()) gender = 1;
-                    APIService.doUserEdit(mUsername.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), birthday, gender);
+                    APIService.doUserEdit(mUsername.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), mDateBirthday, gender);
                 }
             });
         }

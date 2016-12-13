@@ -3,7 +3,6 @@ package com.happ.models;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -86,9 +85,6 @@ public class User extends RealmObject {
         this.phone = phone;
     }
 
-    public Date getBirthDate() {
-        return null;
-    }
 
     public int getGender() {
         return gender;
@@ -119,4 +115,5 @@ public class User extends RealmObject {
     public String getImageUrl() {
         return "http://nick.mtvnimages.com/nick/video/images/avatar/avatar-118-16x9.jpg";
     }
+
 }
