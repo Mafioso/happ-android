@@ -15,14 +15,22 @@
         android:background="@color/bg_light">
 
         <RelativeLayout
-            android:id="@+id/rl_confirm_email_bg"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/dark80"
-            android:fitsSystemWindows="true">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/toolbar"/>
+            <com.happ.LockableScrollView
+                android:id="@+id/fake_scrollview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/iv_confirm_email_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/login_bg_5"/>
+
+            </com.happ.LockableScrollView>
 
             <LinearLayout
                 android:focusable="true"
@@ -32,12 +40,12 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:id="@+id/form_layout"
-                android:paddingLeft="42dp"
-                android:paddingRight="42dp"
-                android:layout_below="@+id/ll_toolbar"
-                android:paddingTop="32dp">
+                android:paddingLeft="48dp"
+                android:paddingRight="48dp"
+                android:gravity="center"
+                android:layout_above="@+id/rl_footer">
 
                 <ImageView
                     android:id="@+id/img_logo"
@@ -58,24 +66,17 @@
                     android:gravity="center"
                     />
 
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/rl_footer"
-                android:paddingLeft="42dp"
-                android:paddingRight="42dp"
-                android:paddingBottom="32dp">
 
                 <RelativeLayout
                     android:id="@+id/rl_confirm_form"
+                    android:layout_below="@+id/tv_confirm_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/circle_light"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="64dp">
                     <EditText
                         android:id="@+id/input_confirm_mail"
                         android:layout_width="match_parent"
@@ -105,12 +106,15 @@
                     android:id="@+id/btn_confirm_email"
                     android:layout_below="@+id/tv_detailed_instruction"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="40dp"
                     style="?attr/borderlessButtonStyle"
                     android:textColor="@color/white70"
                     android:textSize="16sp"
-                    android:paddingRight="32dp"
-                    android:paddingLeft="32dp"
+                    android:paddingRight="40dp"
+                    android:paddingLeft="40dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:alpha="0.8"
                     android:gravity="center"
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/circle_orange_event"
@@ -129,6 +133,7 @@
 
             </RelativeLayout>
 
+            <include layout="@layout/toolbar"/>
             <include layout="@layout/copyright"/>
 
         </RelativeLayout>

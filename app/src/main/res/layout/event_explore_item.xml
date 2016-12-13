@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -15,7 +15,7 @@
         android:paddingLeft="0.8dp"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/ll_explore_imageview"
             android:layout_width="match_parent"
             android:layout_height="120dp">
@@ -27,7 +27,16 @@
                 android:background="@color/dark12"
                 android:scaleType="fitXY"/>
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/explore_item_iv_placeholder"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:srcCompat="@drawable/image_placeholder"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
 
 
         <RelativeLayout

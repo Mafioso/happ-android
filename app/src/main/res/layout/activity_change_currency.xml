@@ -11,17 +11,7 @@
         android:id="@+id/select_currency_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/currency_manager"
-            android:textSize="18dp"
-            android:padding="0dp"
-            android:layout_margin="0dp"/>
-
-    </android.support.v7.widget.Toolbar>
+        android:background="@android:color/transparent"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="8dp"

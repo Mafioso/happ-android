@@ -1,13 +1,20 @@
 package com.happ.controllers;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.happ.App;
+import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.CurrencyListAdapter;
 import com.happ.models.Currency;
@@ -33,6 +40,7 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
     private int previousTotal = 0;
     private int visibleThreshold;
     private int currencyPageSize;
+    private BroadcastReceiver currenciesRequestDoneReceiver;
 
     private boolean fromSettings = false;
 
@@ -41,6 +49,7 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         fromSettings = getIntent().getBooleanExtra("from_settings", false);
         setContentView(R.layout.activity_change_currency);
+        setTitle(R.string.change_currency);
 
         currencyPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
 //        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
@@ -60,21 +69,30 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
 
         llm = new LinearLayoutManager(ChangeCurrencyActivity.this);
         mCurrencyRecyclerView.setLayoutManager(llm);
-        Realm realm = Realm.getDefaultInstance();
         currencies = new ArrayList<>();
-
-        RealmResults<Currency> currencyRealmResults = realm.where(Currency.class).findAll();
-        currencies = (ArrayList<Currency>) realm.copyFromRealm(currencyRealmResults);
-        realm.close();
 
         CurrencyListAdapter cla = new CurrencyListAdapter(this, currencies);
         mCurrencyRecyclerView.setAdapter(cla);
 
         APIService.getCurrencies(1);
+        APIService.getCurrencies(2);
 
         createScrollListener();
+
+        if (currenciesRequestDoneReceiver == null) {
+            currenciesRequestDoneReceiver = createCurrenciesRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currenciesRequestDoneReceiver, new IntentFilter(BroadcastIntents.CURRENCY_REQUEST_OK));
+        }
     }
 
+
+    protected void updateCurrenciesList() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Currency> currencyRealmResults = realm.where(Currency.class).findAll();
+        currencies = (ArrayList<Currency>) realm.copyFromRealm(currencyRealmResults);
+        ((CurrencyListAdapter)mCurrencyRecyclerView.getAdapter()).updateData(currencies);
+        realm.close();
+    }
     protected void createScrollListener() {
         mCurrencyRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -105,5 +123,25 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
+    }
+
+    private BroadcastReceiver createCurrenciesRequestDoneReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateCurrenciesList();
+            }
+        };
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (currenciesRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(currenciesRequestDoneReceiver);
+            currenciesRequestDoneReceiver = null;
+        }
+
     }
 }

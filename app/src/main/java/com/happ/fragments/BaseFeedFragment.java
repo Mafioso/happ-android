@@ -9,6 +9,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,6 +31,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
@@ -50,6 +53,7 @@ public class BaseFeedFragment extends Fragment {
     protected RelativeLayout mRLEmptyFrom;
     protected Button mBtnEmptyForm;
     protected View mDarkViewProgress;
+    protected AppCompatImageView mIVEmpty;
     protected MaterialProgressBar mFeedEventsProgress;
     protected TextView mPersonalSubText;
 
@@ -74,7 +78,9 @@ public class BaseFeedFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
-        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
+//        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
+        visibleThreshold = 2;
+
     }
 
     @Nullable
@@ -90,6 +96,7 @@ public class BaseFeedFragment extends Fragment {
         mDarkViewProgress = (View) view.findViewById(R.id.dark_view_feed_progress);
         mFeedEventsProgress = (MaterialProgressBar) view.findViewById(R.id.feed_events_progress);
         mPersonalSubText = (TextView) view.findViewById(R.id.tv_empty_personal_text);
+        mIVEmpty = (AppCompatImageView) view.findViewById(R.id.iv_logo_empty);
         mRLEmptyFrom.setVisibility(View.GONE);
 
 
@@ -126,6 +133,17 @@ public class BaseFeedFragment extends Fragment {
         return view;
     }
 
+    protected void clearRealmForOldCity(){
+        Realm realm = Realm.getDefaultInstance();
+        final RealmResults<Event> results = realm.where(Event.class).notEqualTo("inFavorites", true).findAll();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                results.deleteAllFromRealm();
+            }
+        });
+        realm.close();
+    }
     protected void createScrollListener() {
         eventsListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

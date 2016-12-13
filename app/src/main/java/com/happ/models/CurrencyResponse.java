@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 public class CurrencyResponse {
 
-    @SerializedName("resultsаолу")
+    @SerializedName("results")
     private ArrayList<Currency> currencies;
 
     public ArrayList<Currency> getCurrencies() {

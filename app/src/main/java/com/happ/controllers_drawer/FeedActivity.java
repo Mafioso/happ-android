@@ -20,6 +20,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SwitchCompat;
@@ -30,14 +31,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.BuildConfig;
 import com.happ.R;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.BaseFeedFragment;
@@ -99,10 +103,10 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     private BottomBar mBottomBar;
     private FragNavController fragNavController;
 
-//    private EverythingFeedFragment everythingFeedFragment;
-//    private FavoriteFeedFragment favoriteFeedFragment;
-    private ExploreEventsFragment exploreEventsFragment;
     private MapFragment mapFragment;
+    private EverythingFeedFragment everythingFeedFragment;
+    private FavoriteFeedFragment favoriteFeedFragment;
+    private ExploreEventsFragment exploreEventsFragment;
 
     private final int TAB_EVERYTHING = FragNavController.TAB1;
     private final int TAB_FAVORITES = FragNavController.TAB2;
@@ -116,17 +120,15 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
     private ViewPager mDrawerCityFragment;
     private PagerAdapter cityPageAdapter;
-
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
-
     private View mViewFilterDate;
     private View mViewFilterTime;
-
     private CheckBox mDrawerHeaderArrow;
     private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
-
     private Bundle bundle;
+    private TextView mDrawerVersionApp;
+    private LinearLayout mDrawerLLFooter, mRightDrawerLLFooter;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -139,8 +141,8 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         setContentView(R.layout.activity_feed);
         setTitle("");
         scf = SelectCityFragment.newInstance();
-//        everythingFeedFragment = EverythingFeedFragment.newInstance();
-//        favoriteFeedFragment = FavoriteFeedFragment.newInstance();
+        everythingFeedFragment = EverythingFeedFragment.newInstance();
+        favoriteFeedFragment = FavoriteFeedFragment.newInstance();
         exploreEventsFragment = ExploreEventsFragment.newInstance();
         mapFragment = MapFragment.newInstance();
 
@@ -165,15 +167,18 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         mFilterTime = (EditText) findViewById(R.id.ff_edittext_filtertime);
 
         menu = (Menu) findViewById(R.menu.menu_feed);
-
+        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
+        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
+        mRightDrawerLLFooter = (LinearLayout) findViewById(R.id.right_drawer_ll_footer);
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-
         setSupportActionBar(toolbar);
 
+
+        String versionName = BuildConfig.VERSION_NAME;
+        mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -203,6 +208,13 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                     startActivity(intent);
                     overridePendingTransition(0,0);
 
+                }
+                if (menuItem.getItemId() == R.id.nav_item_share_app) {
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+                    startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_happ_to)));
                 }
                 mDrawerLayout.closeDrawers();
                 return true;
@@ -238,25 +250,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             }
         });
 
-        if (userRequestDoneReceiver == null) {
-            userRequestDoneReceiver = createLoginSuccessReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
-        }
-
-        if (changeCityDoneReceiver == null) {
-            changeCityDoneReceiver = changeCityReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
-        }
-
-        if (didUpvoteReceiver == null) {
-            didUpvoteReceiver = createUpvoteReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
-        }
-        if (didIsFavReceiver == null) {
-            didIsFavReceiver = createFavReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
-        }
-
         mCloseRightNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -266,7 +259,10 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         mCLoseLeftNavigation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mDrawerLayout.closeDrawer(navigationView);
+                mDrawerHeaderArrow.setChecked(false);
+                mDrawerCityFragment.setVisibility(View.GONE);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+
             }
         });
 
@@ -368,19 +364,33 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             }
         });
 
-//        scf.setOnCitySelectInNavigationListener(new SelectCityFragment.OnCitySelectInNavigationListener() {
-//            @Override
-//            public void onCloseNavigationDrawer() {
-//                mDrawerHeaderArrow.setChecked(false);
-//                mDrawerCityFragment.setVisibility(View.GONE);
-//                mDrawerLayout.closeDrawer(GravityCompat.START);
-//            }
-//        });
-
         setListenerToRootView();
+        setDrawerLayoutListener();
+
+
+        if (userRequestDoneReceiver == null) {
+            userRequestDoneReceiver = createLoginSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
+        }
+
+        if (changeCityDoneReceiver == null) {
+            changeCityDoneReceiver = changeCityReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+        }
+
+        if (didUpvoteReceiver == null) {
+            didUpvoteReceiver = createUpvoteReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
+        }
+        if (didIsFavReceiver == null) {
+            didIsFavReceiver = createFavReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
+        }
+
     }
 
-    public void setListenerToRootView() {
+
+    private void setListenerToRootView() {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
         if (mKeyboardListener == null) {
             mKeyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -395,11 +405,18 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                     if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
                         if (!isKeyboarShown) {
                             navigationHeader.setVisibility(View.GONE);
+                            mBottomBar.setVisibility(View.GONE);
+                            mDrawerLLFooter.setVisibility(View.GONE);
+                            mRightDrawerLLFooter.setVisibility(View.GONE);
+
                         }
                         isKeyboarShown = true;
                     }
                     else {
                         navigationHeader.setVisibility(View.VISIBLE);
+                        mBottomBar.setVisibility(View.VISIBLE);
+                        mDrawerLLFooter.setVisibility(View.VISIBLE);
+                        mRightDrawerLLFooter.setVisibility(View.VISIBLE);
                         isKeyboarShown = false;
                     }
                 }
@@ -408,6 +425,32 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
         }
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
+    }
+
+    private void setDrawerLayoutListener() {
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, 0, 0) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+        };
+        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
 
     @Override
@@ -421,7 +464,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
         switch (index) {
             case TAB_EVERYTHING:
-                final EverythingFeedFragment everythingFeedFragment = EverythingFeedFragment.newInstance();
                 everythingFeedFragment.setChangeColorIconToolbarListener(new BaseFeedFragment.ChangeColorIconToolbarListener() {
                     @Override
                     public void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter) {
@@ -439,7 +481,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                 return everythingFeedFragment;
 
             case TAB_FAVORITES:
-                FavoriteFeedFragment favoriteFeedFragment = FavoriteFeedFragment.newInstance();
                 favoriteFeedFragment.setChangeColorIconToolbarListener(new BaseFeedFragment.ChangeColorIconToolbarListener() {
                     @Override
                     public void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter) {
@@ -457,6 +498,19 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                 });
                 return favoriteFeedFragment;
             case TAB_EXPLORE:
+                exploreEventsFragment.setOnHideShowFilterListener(new ExploreEventsFragment.HideShowFilterListener() {
+                    @Override
+                    public void onHideFilter() {
+                        menu.getItem(0).setVisible(false);
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, navigationViewRight);
+                    }
+
+                    @Override
+                    public void onShowFilter() {
+                        menu.getItem(0).setVisible(true);
+                        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, navigationViewRight);
+                    }
+                });
                 return exploreEventsFragment;
             case TAB_MAP:
                 return mapFragment;
@@ -630,6 +684,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                 }
                 final int didUpvote = intent.getIntExtra(BroadcastIntents.EXTRA_DID_UPVOTE, -1);
                 final String eventId = intent.getStringExtra(BroadcastIntents.EXTRA_EVENT_ID);
+
                 if (didUpvote >= 0 && eventId != null) {
                     isUnvoting = true;
                     Realm realm = Realm.getDefaultInstance();
@@ -644,7 +699,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                     String undo = getResources().getString(R.string.undo);
 
                     final Snackbar snackbar = Snackbar.make(rootLayout, text, Snackbar.LENGTH_LONG);
-                    snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+                    snackbar.setAction(undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if (didUpvote == 1) {
@@ -652,7 +707,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                             } else {
                                 APIService.doUpVote(eventId);
                             }
-//                            snackbar.dismiss();
                         }
                     });
                     snackbar.setCallback(new Snackbar.Callback() {
@@ -694,7 +748,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                     String undo = getResources().getString(R.string.undo);
 
                     final Snackbar snackbar = Snackbar.make(rootLayout, text, Snackbar.LENGTH_LONG);
-                    snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+                    snackbar.setAction(undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             if (didFav == 1) {

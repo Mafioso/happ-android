@@ -28,6 +28,7 @@
 
         <android.support.design.widget.NavigationView
             android:layout_below="@+id/drawer_viewpager"
+            android:layout_above="@+id/ll_drawer_footer"
             android:id="@+id/navigation_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,7 +36,33 @@
             app:menu="@menu/drawer"
             app:theme="@style/NavigationViewStyle"
             app:itemIconTint="@color/colorAccent"
-            app:itemTextAppearance="@style/NavDrawerTextStyle"/>
+            app:itemTextAppearance="@style/NavDrawerTextStyle" />
+
+        <LinearLayout
+            android:id="@+id/ll_drawer_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/tv_drawer_version_app"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/dark38"
+                android:text="HAPP v1.03"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/dark38"
+                android:text="@string/all_rights_reserved"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -60,10 +60,10 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity android:name=".controllers.PasswordRecoveActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity android:name=".controllers_drawer.ConfirmEmailActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
 
         <activity
             android:name=".controllers.HtmlPageAcitivty"/>

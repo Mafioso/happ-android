@@ -131,7 +131,6 @@
     <string name="password_changed">Password changed</string>
     <string name="error_500">Something went wrong</string>
     <string name="error_400">Checking the correctness of filling</string>
-    <string name="about">About</string>
     <string name="version_name">Version Name</string>
     <string name="date_filter">Filter Date</string>
     <string name="popular_first">Show Popular First</string>
@@ -206,7 +205,7 @@
     <string name="change_currency">Change Currency</string>
     <string name="add_more_interests">Add More Interests</string>
     <string name="feed_everything_empty">There are no events for selected interests</string>
-    <string name="feed_favorites_empty">You don’t have any favourited event</string>
+    <string name="feed_favorites_empty">You don’t have any favourite event</string>
     <string name="text_is_empty_here">It is Empty Here!</string>
     <string name="find_awesome_events">Find Awesome Events</string>
     <string name="event_time">Event Time</string>
@@ -220,6 +219,16 @@
     <string name="error">Error</string>
     <string name="event_author_email">Author Email</string>
     <string name="tap_camera_to_add_image">Tap here to add photo</string>
-
+    <string name="all_rights_reserved">© All Rights Reserved, 2015</string>
+    <string name="nav_item_share_app">Share App</string>
+    <string name="settings_subject_contact">Question from</string>
+    <string name="happ_email">happerala@happapp.info</string>
+    <string name="share_happ_to">Share Happ to</string>
+    <string name="drawer_share_subject">Share HAPP Subject...</string>
+    <string name="drawer_share_text">Drawer Share Text</string>
+    <string name="event_share_subject">HAPP App</string>
+    <string name="share_event_to">Share Event to</string>
+    <string name="navigation_drawer_open">Drawer open</string>
+    <string name="navigation_drawer_close">Drawer close</string>
 
 </resources>

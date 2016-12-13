@@ -24,7 +24,6 @@ import com.happ.adapters.ExploreListAdapter;
 import com.happ.controllers_drawer.EventActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
-import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
 
@@ -48,9 +47,7 @@ public class ExploreEventsFragment extends Fragment {
     private int firstVisibleItem, visibleItemCount, totalItemCount;
     private int previousTotal = 0;
     private int visibleThreshold;
-    private String mExploreEvent = "";
-
-
+    private HideShowFilterListener hideshowFilterListener;
     private BroadcastReceiver eventsRequestDoneReceiver;
 
     public ExploreEventsFragment() {
@@ -61,8 +58,24 @@ public class ExploreEventsFragment extends Fragment {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    public interface HideShowFilterListener {
+        void onHideFilter();
+        void onShowFilter();
+    }
+
+    public void setOnHideShowFilterListener(HideShowFilterListener listener) {
+        this.hideshowFilterListener = listener;
+    }
     public static ExploreEventsFragment newInstance() {
         return new ExploreEventsFragment();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
+        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
     }
 
     @Nullable
@@ -71,13 +84,13 @@ public class ExploreEventsFragment extends Fragment {
         final View contentView = inflater.inflate(R.layout.explore_events_fragment, container, false);
         final Activity activity = getActivity();
 
+        hideshowFilterListener.onHideFilter();
+
         mExploreRecyclerView = (RecyclerView) contentView.findViewById(R.id.fragment_explore_rv);
         mExploreEventGridLayoutManager = new GridLayoutManager(activity, 3);
         mExploreRecyclerView.setHasFixedSize(true);
         mExploreRecyclerView.setLayoutManager(mExploreEventGridLayoutManager);
-
         events = new ArrayList<>();
-
         mExploreListAdapter = new ExploreListAdapter(activity, events);
 
         mExploreListAdapter.setOnSelectEventExploreListener(new ExploreListAdapter.SelectEventExploreItemListener() {
@@ -97,8 +110,7 @@ public class ExploreEventsFragment extends Fragment {
 
         mExploreRecyclerView.setAdapter(mExploreListAdapter);
 
-        HappRestClient.getInstance().getEvents(false);
-//        APIService.getEvents(false);
+        APIService.getEvents(false);
         createScrollListener();
 
         if(eventsRequestDoneReceiver == null) {
@@ -156,6 +168,14 @@ public class ExploreEventsFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        hideshowFilterListener.onShowFilter();
+//        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+
+    }
+
     private BroadcastReceiver createEventsRequestDoneReceiver() {
         return new BroadcastReceiver() {
             @Override
@@ -163,15 +183,6 @@ public class ExploreEventsFragment extends Fragment {
                 updateExploreEvents();
             }
         };
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
-        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
-
     }
 
     @Override

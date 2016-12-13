@@ -233,14 +233,15 @@ public class HappRestClient {
 
     public void getEvents(int page, boolean favs) {
         Call<EventsResponse> getEventsResponse;
-        Date date = new Date();
-        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("yyyyMMdd");
-        DateTime eventDate = new DateTime(date);
-        String today = eventDate.toString(dtFormatter);
+
+//        Date date = new Date();
+//        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("yyyyMMdd");
+//        DateTime eventDate = new DateTime(date);
+//        String today = eventDate.toString(dtFormatter);
         if (favs) {
-            getEventsResponse = this.happApi.getFavourites(page, today);
+            getEventsResponse = this.happApi.getFavourites(page);
         } else {
-            getEventsResponse = this.happApi.getEvents(page, today);
+            getEventsResponse = this.happApi.getEvents(page);
         }
         getEventsResponse.enqueue(new Callback<EventsResponse>() {
             @Override
@@ -286,12 +287,12 @@ public class HappRestClient {
             public void onResponse(Call<CitiesResponse> call, Response<CitiesResponse> response) {
 
                 if (response.isSuccessful()){
-                    List<City> citys = response.body().getCities();
+                    List<City> cities = response.body().getCities();
 
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
 
-                    realm.copyToRealmOrUpdate(citys);
+                    realm.copyToRealmOrUpdate(cities);
 
                     realm.commitTransaction();
                     realm.close();

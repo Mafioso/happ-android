@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -21,7 +22,6 @@ import com.happ.controllers_drawer.FeedActivity;
 import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
-import com.happ.retrofit.HappRestClient;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +42,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver didIsFavReceiver;
     private BroadcastReceiver filteredEventsDoneReceiver;
     private BroadcastReceiver mUserSettingsChangedBroadcastReceiver;
+    private BroadcastReceiver changeCityDoneReceiver;
 
     private String feedSearchText;
     private Date startDate;
@@ -72,12 +73,6 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         }
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (App.hasConnection(getContext())) HappRestClient.getInstance().getEvents(false);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -106,6 +101,17 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             if (mUserSettingsChangedBroadcastReceiver == null) {
                 mUserSettingsChangedBroadcastReceiver = createUserChangedBroadcastReceiver();
                 LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mUserSettingsChangedBroadcastReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+            }
+
+            if (changeCityDoneReceiver == null) {
+                changeCityDoneReceiver = changeCityReceiver();
+                LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+            }
+
+            if (App.hasConnection(getContext())) {
+                getEvents(1, false);
+            } else {
+                Toast.makeText(getContext(), "Events not updated", Toast.LENGTH_SHORT).show();
             }
 
         return view;
@@ -172,6 +178,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             mRLEmptyFrom.setVisibility(View.VISIBLE);
             mPersonalSubText.setText(R.string.feed_everything_empty);
             mBtnEmptyForm.setText(R.string.add_more_interests);
+            mIVEmpty.setImageResource(R.drawable.empty_feed);
 
             mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu_gray, R.drawable.ic_filter_gray);
 
@@ -196,6 +203,22 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         mDarkViewProgress.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+//        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+    }
+
+    private BroadcastReceiver changeCityReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                clearRealmForOldCity();
+                getEvents(1, false);
+            }
+        };
+    }
+
     private BroadcastReceiver createEventsRequestDoneReceiver() {
         return new BroadcastReceiver() {
             @Override
@@ -210,7 +233,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (intent.getBooleanExtra("EVENTS_CHANGED", false)) {
-                    getEvents(0, false);
+                    getEvents(1,false);
                 }
             }
         };
@@ -268,15 +291,23 @@ public class EverythingFeedFragment extends BaseFeedFragment {
 
         if (filteredEventsDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(filteredEventsDoneReceiver);
+            filteredEventsDoneReceiver = null;
         }
         if (eventsRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+            eventsRequestDoneReceiver = null;
         }
         if (didUpvoteReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
+            didUpvoteReceiver = null;
         }
         if (didIsFavReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
+            didIsFavReceiver = null;
+        }
+        if (changeCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
+            changeCityDoneReceiver = null;
         }
         super.onDestroy();
     }

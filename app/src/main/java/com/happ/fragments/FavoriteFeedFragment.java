@@ -34,7 +34,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver eventsRequestDoneReceiver;
     private BroadcastReceiver didUpvoteReceiver;
     private BroadcastReceiver didIsFavReceiver;
-
+    private BroadcastReceiver changeCityDoneReceiver;
     private BroadcastReceiver mUserSettingsChangedBroadcastReceiver;
 
     public static FavoriteFeedFragment newInstance() {
@@ -70,8 +70,14 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(mUserSettingsChangedBroadcastReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
         }
 
+        if (changeCityDoneReceiver == null) {
+            changeCityDoneReceiver = changeCityReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+        }
+
         return view;
     }
+
 
     @Override
     public void onStart() {
@@ -96,6 +102,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
             mRLEmptyFrom.setVisibility(View.VISIBLE);
             mPersonalSubText.setText(R.string.feed_favorites_empty);
             mBtnEmptyForm.setText(R.string.find_awesome_events);
+            mIVEmpty.setImageResource(R.drawable.fav_empty);
 
             mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu_gray, R.drawable.ic_filter_gray);
 
@@ -132,7 +139,18 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
             APIService.getEvents(page, true);
         }
     }
-    
+
+    private BroadcastReceiver changeCityReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                clearRealmForOldCity();
+                getEvents(1, true);
+            }
+        };
+    }
+
+
     protected BroadcastReceiver createUserChangedBroadcastReceiver() {
         return  new BroadcastReceiver() {
             @Override
@@ -170,6 +188,13 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+
+    }
+
+    @Override
     public void onDestroy() {
         if (eventsRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
@@ -179,6 +204,10 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         }
         if (didIsFavReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
+        }
+        if (changeCityDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
+            changeCityDoneReceiver = null;
         }
         super.onDestroy();
     }
