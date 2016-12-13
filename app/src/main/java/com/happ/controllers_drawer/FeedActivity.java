@@ -94,11 +94,12 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
     private EditText mFilterDate, mFilterTime;
 
-    private SwitchCompat mFilterFree;
+    private SwitchCompat mFilterFree, mFilterPopularity;
     private Date startDate, endDate;
     private String isFree = "";
     private ImageView mCloseRightNavigation, mCLoseLeftNavigation;
     private String searchText = "";
+    private boolean popularityEvents = false;
     private EditText mFeedSearchText;
     private BottomBar mBottomBar;
     private FragNavController fragNavController;
@@ -159,6 +160,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
         mBottomBar = (BottomBar) findViewById(R.id.bottombar_feed);
         mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
+        mFilterPopularity = (SwitchCompat) findViewById(R.id.filter_popularity_events);
 
         mViewFilterDate = (View) findViewById(R.id.view_filter_date);
         mViewFilterTime = (View) findViewById(R.id.view_filter_time);
@@ -277,10 +279,28 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
                 if (mFilterFree.isChecked()) {
                     isFree = "0";
-                    APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(), false);
+                    APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
                 } else {
                     isFree = "";
-                    APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(), false);
+                    APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
+                }
+            }
+        });
+
+        mFilterPopularity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String sD = "";
+                String eD = "";
+                if (startDate != null) sD = sdf.format(startDate);
+                if (endDate != null) eD = sdf.format(endDate);
+
+                if (mFilterPopularity.isChecked()) {
+                    popularityEvents = true;
+                    APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
+                } else {
+                    popularityEvents = false;
+                    APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
                 }
             }
         });
@@ -326,7 +346,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                                     String sD = sdf.format(startDate);
                                     String eD = sdf.format(endDate);
 
-                                    APIService.getFilteredEvents(1, getFeedSearch(), sD, eD, getMaxFree(), false);
+                                    APIService.getFilteredEvents(1, getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
 
                                     }
                                 }, now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH));
@@ -352,7 +372,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                 if (startDate != null) sD = sdf.format(startDate);
                 if (endDate != null) eD = sdf.format(endDate);
 
-                APIService.getFilteredEvents(1,searchText, sD, eD, getMaxFree(), false);
+                APIService.getFilteredEvents(1,searchText, sD, eD, getMaxFree(),getPopularityEvents(), false);
             }
 
             @Override
@@ -615,6 +635,9 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     }
     public String getFeedSearch() {
         return searchText;
+    }
+    public boolean getPopularityEvents() {
+        return popularityEvents;
     }
 
 

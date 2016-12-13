@@ -16,14 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.happ.App;
 import com.happ.R;
 import com.happ.models.Event;
@@ -97,38 +92,38 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 //        points.add(new LatLng(43.24432741, 76.94549292));   // Work Space
 //        points.add(new LatLng(43.2331407, 76.9565731));     // Dostyk Plaza
 
-        for (int p = 0; p < events.size(); p++) {
-            if (events.get(p).getGeopoint() != null) {
-
-                double lat = Double.parseDouble(events.get(p).getGeopoint().get(0).toString());
-                double lng = Double.parseDouble(events.get(p).getGeopoint().get(1).toString());
-                LatLng location = new LatLng(lat, lng);
-
-                map.addMarker(new MarkerOptions()
-                        .position(location)
-                        .icon(BitmapDescriptorFactory
-                                .fromBitmap(createDrawableFromView(
-                                        getActivity(),
-                                        markerView))))
-                        .setAnchor(0.0f, 1.0f);
-
-                map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
-            } else {
-                p++;
-            }
-        }
-
-        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
+//        for (int p = 0; p < events.size(); p++) {
+//            if (events.get(p).getGeopoint() != null) {
 //
-//                if (marker.getPosition().equals(events.)){
-//                    Toast.makeText(App.getContext(), "Number 1", Toast.LENGTH_SHORT).show();
-//                }
+//                double lat = Double.parseDouble(events.get(p).getGeopoint().get(0).toString());
+//                double lng = Double.parseDouble(events.get(p).getGeopoint().get(1).toString());
+//                LatLng location = new LatLng(lat, lng);
+//
+//                map.addMarker(new MarkerOptions()
+//                        .position(location)
+//                        .icon(BitmapDescriptorFactory
+//                                .fromBitmap(createDrawableFromView(
+//                                        getActivity(),
+//                                        markerView))))
+//                        .setAnchor(0.0f, 1.0f);
+//
+//                map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
+//            } else {
+//                p++;
+//            }
+//        }
 
-                return true;
-            }
-        });
+//        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+//            @Override
+//            public boolean onMarkerClick(Marker marker) {
+////
+////                if (marker.getPosition().equals(events.)){
+////                    Toast.makeText(App.getContext(), "Number 1", Toast.LENGTH_SHORT).show();
+////                }
+//
+//                return true;
+//            }
+//        });
     }
 
     public static Bitmap createDrawableFromView(Context context, View view) {

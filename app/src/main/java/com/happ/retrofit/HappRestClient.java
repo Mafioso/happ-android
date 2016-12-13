@@ -31,9 +31,6 @@ import com.happ.retrofit.serializers.GeopointDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
 import com.happ.retrofit.serializers.PhoneDeserializer;
 
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -819,14 +816,14 @@ public class HappRestClient {
         });
     }
 
-    public void getFilteredEvents(int page, String feedSearchText, String startDate, String endDate, String maxPrice, boolean favs) {
+    public void getFilteredEvents(int page, String feedSearchText, String startDate, String endDate, String maxPrice,boolean popularity, boolean favs) {
 
         if (favs) {
-            getFilteredFavs(page, feedSearchText, startDate, endDate, maxPrice);
+            getFilteredFavs(page, feedSearchText, startDate, endDate, maxPrice, popularity);
             return;
         }
 
-        happApi.getFilteredEvents(page, feedSearchText,  startDate, endDate, maxPrice).enqueue(new Callback<EventsResponse>() {
+        happApi.getFilteredEvents(page, feedSearchText,  startDate, endDate, maxPrice,popularity).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){
@@ -861,8 +858,8 @@ public class HappRestClient {
         });
     }
 
-    public void getFilteredFavs(int page, String feedSearchText, String startDate, String endDate, String maxPrice) {
-        happApi.getFilteredFavourites(page, feedSearchText, startDate, endDate, maxPrice).enqueue(new Callback<EventsResponse>() {
+    public void getFilteredFavs(int page, String feedSearchText, String startDate, String endDate, String maxPrice, boolean popularity) {
+        happApi.getFilteredFavourites(page, feedSearchText, startDate, endDate, maxPrice, popularity).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){

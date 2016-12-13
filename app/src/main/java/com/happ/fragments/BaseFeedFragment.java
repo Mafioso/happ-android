@@ -171,6 +171,7 @@ public class BaseFeedFragment extends Fragment {
                         String maxFree = ((FeedActivity)getActivity()).getMaxFree();
                         Date startDate = ((FeedActivity)getActivity()).getStartD();
                         Date endDate = ((FeedActivity)getActivity()).getEndD();
+                        boolean popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
                         String sD = "";
                         String eD = "";
@@ -178,11 +179,11 @@ public class BaseFeedFragment extends Fragment {
                         if (startDate != null) sD = sdf.format(startDate);
                         if (endDate != null) eD = sdf.format(endDate);
 
-                        if (startDate == null || endDate == null || maxFree.equals("") || feedSearchText.equals("")) {
+                        if (startDate == null || endDate == null || maxFree.equals("") || feedSearchText.equals("") || !popularityEvents) {
                             getEvents(nextPage, false);
                             Log.e("BASE_FEED_FRAGMENT", "Simple scroll");
                         } else {
-                            APIService.getFilteredEvents(nextPage, feedSearchText, sD, eD, maxFree, false);
+                            APIService.getFilteredEvents(nextPage, feedSearchText, sD, eD, maxFree,popularityEvents, false);
                             Log.e("BASE_FEED_FRAGMENT", "Filter scroll");
                         }
 
