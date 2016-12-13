@@ -75,6 +75,7 @@ public class APIService extends IntentService {
     private static final String EXTRA_STARTDATE = "com.happ.extra.EXTRA_STARTDATE";
     private static final String EXTRA_ENDDATE = "com.happ.extra.EXTRA_ENDDATE";
     private static final String EXTRA_FREEEVENTS = "com.happ.extra.EXTRA_FREEEVENTS";
+    private static final String EXTRA_POPULARITY_EVENTS = "com.happ.extra.EXTRA_POPULARITY_EVENTS";
 
 
 
@@ -99,6 +100,7 @@ public class APIService extends IntentService {
                                          String startDate,
                                          String endDate,
                                          String isFree,
+                                         boolean popularity,
                                          boolean favs) {
         Intent i = new Intent(App.getContext(), APIService.class);
         i.setAction(ACTION_GET_FILTERED_EVENTS);
@@ -107,6 +109,7 @@ public class APIService extends IntentService {
         i.putExtra(EXTRA_STARTDATE, startDate);
         i.putExtra(EXTRA_ENDDATE, endDate);
         i.putExtra(EXTRA_FREEEVENTS, isFree);
+        i.putExtra(EXTRA_POPULARITY_EVENTS, popularity);
         i.putExtra(EXTRA_GET_FAVS, favs);
         App.getContext().startService(i);
     }
@@ -318,8 +321,11 @@ public class APIService extends IntentService {
                 String startDate = intent.getStringExtra(EXTRA_STARTDATE);
                 String endDate = intent.getStringExtra(EXTRA_ENDDATE);
                 String isFree = intent.getStringExtra(EXTRA_FREEEVENTS);
+                boolean popularity = intent.getBooleanExtra(EXTRA_POPULARITY_EVENTS, false);
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
-                HappRestClient.getInstance().getFilteredEvents(page, feedSearchText, startDate, endDate, isFree, favs);
+                HappRestClient
+                        .getInstance()
+                        .getFilteredEvents(page, feedSearchText, startDate, endDate, isFree, popularity, favs);
             } else if (action.equals(ACTION_GET_CITIES)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 String searchText = intent.getStringExtra(EXTRA_SEARCH_TEXT);

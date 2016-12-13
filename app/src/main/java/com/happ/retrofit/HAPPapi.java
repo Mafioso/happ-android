@@ -41,11 +41,12 @@ public interface HAPPapi {
     @GET("events/feed/")
     Call<EventsResponse> getEvents(@Query("page") int page);
     @GET("events/feed/")
-    Call<EventsResponse> getFilteredEvents(@Query("page") int page,
-                                           @Query("feed_search") String feedSearchText,
-                                           @Query("start_date") String startDate,
-                                           @Query("end_date") String endDate,
-                                           @Query("max_price") String price);
+    Call<EventsResponse> getFilteredEvents( @Query("page") int page,
+                                            @Query("feed_search") String feedSearchText,
+                                            @Query("start_date") String startDate,
+                                            @Query("end_date") String endDate,
+                                            @Query("max_price") String price,
+                                            @Query("popularity_events") boolean popularity);
 
 
     @GET("interests/")
@@ -116,7 +117,8 @@ public interface HAPPapi {
                                                @Query("feed_search") String feedSearchText,
                                                @Query("start_date") String startDate,
                                                @Query("end_date") String endDate,
-                                               @Query("max_price") String price);
+                                               @Query("max_price") String price,
+                                               @Query("popularity_events") boolean popularity);
 
     @POST("events/")
     Call<Event> createEvent(@Body Event event);

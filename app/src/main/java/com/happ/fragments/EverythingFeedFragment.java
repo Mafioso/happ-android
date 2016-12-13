@@ -48,6 +48,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     private Date startDate;
     private Date endDate;
     private String maxFree;
+    private boolean popularityEvents;
 
     private boolean isUndoing = false;
 
@@ -65,8 +66,9 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         startDate = ((FeedActivity)getActivity()).getStartD();
         endDate = ((FeedActivity)getActivity()).getEndD();
         maxFree = ((FeedActivity)getActivity()).getMaxFree();
+        popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
-        if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null) {
+        if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null || popularityEvents) {
             filteredEventsList();
         } else {
             updateEventsList();
@@ -133,14 +135,18 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         startDate = ((FeedActivity)getActivity()).getStartD();
         endDate = ((FeedActivity)getActivity()).getEndD();
         maxFree = ((FeedActivity)getActivity()).getMaxFree();
+        popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
         Realm realm = Realm.getDefaultInstance();
-        RealmQuery q = realm.where(Event.class).equalTo("localOnly", false).beginGroup();
+        RealmQuery<Event> q = realm.where(Event.class).equalTo("localOnly", false).beginGroup();
         if (feedSearchText != null && feedSearchText.length() > 0) q.contains("title", feedSearchText);
         if (startDate != null) q.greaterThanOrEqualTo("startDate", startDate);
         if (endDate != null) q.lessThanOrEqualTo("startDate", endDate);
         if (maxFree != null && maxFree.length() > 0) q.equalTo("lowestPrice", 0);
-        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("startDate", Sort.ASCENDING);
+        if (popularityEvents) q.findAllSorted("votesCount", Sort.DESCENDING);
+//        if (!popularityEvents) q.findAllSorted("startDate", Sort.ASCENDING);
+        RealmResults<Event> eventRealmResults = q.endGroup().findAll();
+//        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("startDate", Sort.ASCENDING);
 
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
@@ -158,14 +164,15 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             startDate = ((FeedActivity)getActivity()).getStartD();
             endDate = ((FeedActivity)getActivity()).getEndD();
             maxFree = ((FeedActivity)getActivity()).getMaxFree();
+            popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
             String sD = "";
             String eD = "";
             if (startDate != null) sD = sdf.format(startDate);
             if (endDate != null) eD = sdf.format(endDate);
 
-            if (!feedSearchText.equals("") || startDate != null || endDate != null || !maxFree.equals("")) {
-                APIService.getFilteredEvents(page, feedSearchText, sD, eD, maxFree, false);
+            if (!feedSearchText.equals("") || startDate != null || endDate != null || !maxFree.equals("") || popularityEvents) {
+                APIService.getFilteredEvents(page, feedSearchText, sD, eD, maxFree,popularityEvents, false);
             } else {
                 APIService.getEvents(page, false);
             }
@@ -247,8 +254,9 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 startDate = ((FeedActivity)getActivity()).getStartD();
                 endDate = ((FeedActivity)getActivity()).getEndD();
                 maxFree = ((FeedActivity)getActivity()).getMaxFree();
+                popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
-                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null) {
+                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null || popularityEvents) {
                     filteredEventsList();
                 } else {
                     updateEventsList();
@@ -266,8 +274,9 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 startDate = ((FeedActivity)getActivity()).getStartD();
                 endDate = ((FeedActivity)getActivity()).getEndD();
                 maxFree = ((FeedActivity)getActivity()).getMaxFree();
+                popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
-                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null) {
+                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null || popularityEvents) {
                     filteredEventsList();
                 } else {
                     updateEventsList();
