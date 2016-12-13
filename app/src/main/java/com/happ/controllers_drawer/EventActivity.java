@@ -281,8 +281,8 @@ public class EventActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.nav_item_share_app) {
                     Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+//                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
+//                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
                     startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_happ_to)));
                 }
                 mDrawerLayout.closeDrawers();

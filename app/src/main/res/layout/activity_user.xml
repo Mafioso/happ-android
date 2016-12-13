@@ -31,7 +31,8 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_collapseMode="parallax">
+                app:layout_collapseMode="parallax"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv_user_avatar"
@@ -210,6 +211,7 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:hint="@string/birthday"
+                        android:clickable="false"
                         android:inputType="textNoSuggestions"/>
                 </android.support.design.widget.TextInputLayout>
 
