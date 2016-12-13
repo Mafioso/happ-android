@@ -107,10 +107,11 @@ public class BaseFeedFragment extends Fragment {
 
         mEventAdapter.setOnSelectItemListener(new EventsListAdapter.SelectEventItemListener() {
             @Override
-            public void onEventItemSelected(String eventId, ActivityOptionsCompat options) {
+            public void onEventItemSelected(String eventId, ActivityOptionsCompat options, int position) {
                 Intent intent = new Intent(activity, EventActivity.class);
                 intent.putExtra("event_id", eventId);
                 intent.putExtra("in_event_activity", true);
+                intent.putExtra("position", position);
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || options == null) {
                     activity.startActivity(intent);

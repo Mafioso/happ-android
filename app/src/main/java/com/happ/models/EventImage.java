@@ -14,9 +14,10 @@ public class EventImage extends RealmObject {
     private String path;
 
     public String getUrl() {
-        String host = App.getContext().getString(R.string.HOST);
-        String url = host.substring(0,host.length()-1) + this.path;
-        return url;
+        return path;
+//        String host = App.getContext().getString(R.string.HOST);
+//        String url = host.substring(0,host.length()-1) + this.path;
+//        return url;
     }
 
 

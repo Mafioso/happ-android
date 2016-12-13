@@ -85,13 +85,13 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     @Override
     public void onStart() {
         super.onStart();
-        fragmentActive = true;
         updateFavoritesEventsList();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        fragmentActive = true;
         updateFavoritesEventsList();
     }
 

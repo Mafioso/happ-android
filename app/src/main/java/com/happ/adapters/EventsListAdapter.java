@@ -43,6 +43,8 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
+
 /**
  * Created by iztiev on 8/4/16.
  */
@@ -301,10 +303,10 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
 //            final String url = urls[position%10];
 //
-            if (position % 11 < 10) {
-//            if(item.event.getImages().size() > 0){
-//                final String url = item.event.getImages().get(0).getUrl();
-                final String url = urls[position%11];
+//            if (position % 11 < 10) {
+            if(item.event.getImages().size() > 0){
+                final String url = item.event.getImages().get(0).getUrl();
+//                final String url = urls[position%11];
                 Glide.clear(itemHolder.mImageView);
                 itemHolder.mImagePreloader.setVisibility(View.VISIBLE);
                 try {
@@ -330,15 +332,28 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                                             @Override
                                             public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                                                 Log.d("GLIDE_OK", url);
-                                                Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
-                                                Palette p = Palette.from(bm).generate();
-
-                                                Palette.Swatch vibrantSwatch = p.getVibrantSwatch();
-                                                if (vibrantSwatch != null) {
-                                                    itemHolder.mBackground.setBackgroundColor(vibrantSwatch.getRgb());
-                                                } else {
-
-                                                }
+//                                                Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
+//                                                Palette p = Palette.from(bm).generate();
+//
+//                                                Palette.Swatch vibrantSwatch = p.getVibrantSwatch();
+//
+//                                                String strColor = String.format("#%06X", 0xFFFFFF & vibrantSwatch.getRgb());
+//
+//                                                Realm realm = Realm.getDefaultInstance();
+//                                                Event event = realm.where(Event.class).equalTo("id",item.event.getId()).findFirst();
+//                                                if (event != null) {
+//                                                    realm.beginTransaction();
+//                                                    event.setColor(strColor);
+//                                                    realm.copyToRealmOrUpdate(event);
+//                                                    realm.commitTransaction();
+//                                                }
+//                                                realm.close();
+//
+//                                                if (vibrantSwatch != null) {
+//                                                    itemHolder.mBackground.setBackgroundColor(vibrantSwatch.getRgb());
+//                                                } else {
+//
+//                                                }
                                               itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
                                                 return false;
                                             }

@@ -139,6 +139,7 @@ public class EventActivity extends AppCompatActivity {
 
     private LinearLayout mDrawerLLFooter;
     private TextView mDrawerVersionApp;
+    private int position;
 
     private String[] urls = {
             "http://www.freedigitalphotos.net/images/img/homepage/87357.jpg",
@@ -160,6 +161,7 @@ public class EventActivity extends AppCompatActivity {
         isOrg = intent.getBooleanExtra("is_organizer", false);
         inEventActivity = intent.getBooleanExtra("in_event_activity", false);
         eventId = intent.getStringExtra("event_id");
+        position = intent.getIntExtra("position", 10);
 
         setContentView(R.layout.activity_event);
         setTitle("");
@@ -476,8 +478,15 @@ public class EventActivity extends AppCompatActivity {
             event = realm.copyFromRealm(event);
             realm.close();
 
-            if (event.getImages().size() > 0) {
-                mEventImagesSwipeAdapter.setImageList(event.getImages());
+//            if (event.getImages().size() > 0) {
+            if (position % 11 < 10) {
+                EventImage image = new EventImage();
+                image.setPath(urls[position%11]);
+                image.setId("0");
+                RealmList<EventImage> images = new RealmList<>();
+                images.add(image);
+//                mEventImagesSwipeAdapter.setImageList(event.getImages());
+                mEventImagesSwipeAdapter.setImageList(images);
             } else {
                 viewPager.setVisibility(View.GONE);
             }
