@@ -37,6 +37,8 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     private BroadcastReceiver changeCityDoneReceiver;
     private BroadcastReceiver mUserSettingsChangedBroadcastReceiver;
 
+    protected boolean fragmentActive = false;
+
     public static FavoriteFeedFragment newInstance() {
         return new FavoriteFeedFragment();
     }
@@ -44,6 +46,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     public FavoriteFeedFragment() {
 
     }
+
 
     
     @Nullable
@@ -82,6 +85,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     @Override
     public void onStart() {
         super.onStart();
+        fragmentActive = true;
         updateFavoritesEventsList();
     }
 
@@ -92,33 +96,35 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     }
 
     protected void updateFavoritesEventsList() {
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("inFavorites", true).equalTo("localOnly", false).findAllSorted("startDate", Sort.ASCENDING);
-        events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
-        ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
-        realm.close();
+        if (fragmentActive) {
+            Realm realm = Realm.getDefaultInstance();
+            RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("inFavorites", true).equalTo("localOnly", false).findAllSorted("startDate", Sort.ASCENDING);
+            events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
+            ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
+            realm.close();
 
-        if (events.isEmpty()) {
-            mRLEmptyFrom.setVisibility(View.VISIBLE);
-            mPersonalSubText.setText(R.string.feed_favorites_empty);
-            mBtnEmptyForm.setText(R.string.find_awesome_events);
-            mIVEmpty.setImageResource(R.drawable.fav_empty);
+            if (events.isEmpty()) {
+                mRLEmptyFrom.setVisibility(View.VISIBLE);
+                mPersonalSubText.setText(R.string.feed_favorites_empty);
+                mBtnEmptyForm.setText(R.string.find_awesome_events);
+                mIVEmpty.setImageResource(R.drawable.fav_empty);
 
-            mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu_gray, R.drawable.ic_filter_gray);
+                mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu_gray, R.drawable.ic_filter_gray);
 
-            mBtnEmptyForm.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mChangeColorIconToolbarListener.onClickButtonEmpty();
-                }
-            });
-        } else {
-            mRLEmptyFrom.setVisibility(View.GONE);
-            mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu, R.drawable.ic_filter);
+                mBtnEmptyForm.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mChangeColorIconToolbarListener.onClickButtonEmpty();
+                    }
+                });
+            } else {
+                mRLEmptyFrom.setVisibility(View.GONE);
+                mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu, R.drawable.ic_filter);
+            }
+
+            mFeedEventsProgress.setVisibility(View.GONE);
+            mDarkViewProgress.setVisibility(View.GONE);
         }
-
-        mFeedEventsProgress.setVisibility(View.GONE);
-        mDarkViewProgress.setVisibility(View.GONE);
     }
 
     @Override
@@ -188,10 +194,12 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         };
     }
 
+
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+        fragmentActive = false;
+//        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
 
     }
 
@@ -199,12 +207,15 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
     public void onDestroy() {
         if (eventsRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+            eventsRequestDoneReceiver = null;
         }
         if (didUpvoteReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
+            didUpvoteReceiver = null;
         }
         if (didIsFavReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
+            didIsFavReceiver = null;
         }
         if (changeCityDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
