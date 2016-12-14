@@ -41,6 +41,7 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
     private int visibleThreshold;
     private int currencyPageSize;
     private BroadcastReceiver currenciesRequestDoneReceiver;
+    private BroadcastReceiver changeCurrencyRequestDoneReceiver;
 
     private boolean fromSettings = false;
 
@@ -72,6 +73,12 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
         currencies = new ArrayList<>();
 
         CurrencyListAdapter cla = new CurrencyListAdapter(this, currencies);
+        cla.setOnCurrencyItemSelectListener(new CurrencyListAdapter.SelectCurrencyItemListener() {
+            @Override
+            public void onCurrencyItemSelected(Currency currency) {
+                APIService.setCurrency(currency.getId());
+            }
+        });
         mCurrencyRecyclerView.setAdapter(cla);
 
         APIService.getCurrencies(1);
@@ -83,6 +90,13 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
             currenciesRequestDoneReceiver = createCurrenciesRequestDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currenciesRequestDoneReceiver, new IntentFilter(BroadcastIntents.CURRENCY_REQUEST_OK));
         }
+
+        if (changeCurrencyRequestDoneReceiver == null) {
+            changeCurrencyRequestDoneReceiver = changeCurrencyReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCurrencyRequestDoneReceiver, new IntentFilter(BroadcastIntents.SET_CURRENCY_OK));
+        }
+
+
     }
 
 
@@ -134,6 +148,15 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
         };
     }
 
+    private BroadcastReceiver changeCurrencyReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateCurrenciesList();
+            }
+        };
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -141,6 +164,11 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
         if (currenciesRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(currenciesRequestDoneReceiver);
             currenciesRequestDoneReceiver = null;
+        }
+
+        if (changeCurrencyRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCurrencyRequestDoneReceiver);
+            changeCurrencyRequestDoneReceiver = null;
         }
 
     }

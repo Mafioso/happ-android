@@ -40,7 +40,7 @@
             <com.roughike.bottombar.BottomBar
                 android:id="@+id/bottombar_org"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="bottom"
                 android:background="@color/bg_light"
                 app:bb_inActiveTabAlpha="0.6"
@@ -54,7 +54,6 @@
         <include layout="@layout/drawer_layout" />
 
         <include layout="@layout/drawer_layout_rigth_org"/>
-
 
     </android.support.v4.widget.DrawerLayout>
 

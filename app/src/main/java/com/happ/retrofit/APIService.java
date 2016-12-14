@@ -30,6 +30,7 @@ public class APIService extends IntentService {
     private static final String ACTION_SET_INTERESTS = "com.happ.action.ACTION_SET_INTERESTS";
     private static final String ACTION_SET_ALL_INTERESTS = "com.happ.action.ACTION_SET_ALL_INTERESTS";
     private static final String ACTION_SET_CITIES = "com.happ.action.ACTION_SET_CITIES";
+    private static final String ACTION_SET_CURRENCY = "com.happ.action.ACTION_SET_CURRENCY";
 
     private static final String ACTION_POST_USEREDIT = "com.happ.action.ACTION_POST_USEREDIT";
     private static final String ACTION_PATCH_EVENTEDIT = "com.happ.action.ACTION_PATCH_EVENTEDIT";
@@ -53,6 +54,7 @@ public class APIService extends IntentService {
     private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
     private static final String EXTRA_SET_ALL_INTERESTS = "com.happ.extra.EXTRA_SET_ALL_INTERESTS";
     private static final String EXTRA_SET_CITIES = "com.happ.extra.EXTRA_SET_CITIES";
+    private static final String EXTRA_SET_CURRENCY = "com.happ.extra.EXTRA_SET_CURRENCY";
     private static final String EXTRA_SEARCH_TEXT = "com.happ.extra.EXTRA_SEARCH_TEXT";
     private static final String EXTRA_EVENT_SEARCH_TEXT = "com.happ.extra.EXTRA_EVENT_SEARCH_TEXT";
 
@@ -190,6 +192,13 @@ public class APIService extends IntentService {
         city.setAction(ACTION_SET_CITIES);
         city.putExtra(EXTRA_SET_CITIES, id);
         App.getContext().startService(city);
+    }
+
+    public static void setCurrency(String id) {
+        Intent currency = new Intent(App.getContext(), APIService.class);
+        currency.setAction(ACTION_SET_CURRENCY);
+        currency.putExtra(EXTRA_SET_CURRENCY, id);
+        App.getContext().startService(currency);
     }
 
     public static void doLogin(String username, String password) {
@@ -371,6 +380,9 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_SET_CITIES)) {
                 String cityId = intent.getStringExtra(EXTRA_SET_CITIES);
                 HappRestClient.getInstance().setCity(cityId);
+            }else if (action.equals(ACTION_SET_CURRENCY)) {
+                String currencyId = intent.getStringExtra(EXTRA_SET_CURRENCY);
+                HappRestClient.getInstance().setCurrency(currencyId);
             } else if (action.equals(ACTION_GET_INTERESTS_FOR_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 HappRestClient.getInstance().getInterests(page);

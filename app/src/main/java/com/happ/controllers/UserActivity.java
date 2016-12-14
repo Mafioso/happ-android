@@ -3,18 +3,15 @@ package com.happ.controllers;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -32,13 +29,11 @@ import android.view.Display;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -49,8 +44,8 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
-import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -58,7 +53,7 @@ import java.util.Date;
 /**
  * Created by dante on 9/22/16.
  */
-public class UserActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity implements com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -71,6 +66,7 @@ public class UserActivity extends AppCompatActivity {
     private AppBarLayout mAppBarLayout;
 
     private EditText mUsername, mEmail, mPhoneNumber, mBirthday;
+    private EditText mOldPassword, mNewPassword, mReapeatNewPassword;
     private Date mDateBirthday;
     private Button mUserSave;
     private ImageView mBtnEditBirthday;
@@ -113,7 +109,7 @@ public class UserActivity extends AppCompatActivity {
         user = App.getCurrentUser();
         setContentView(R.layout.activity_user);
 
-        Display display = getWindowManager().getDefaultDisplay();
+        final Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();  // deprecated
 //        int height = display.getHeight();  // deprecated
 
@@ -137,6 +133,10 @@ public class UserActivity extends AppCompatActivity {
         mUserPhoto = (ImageView) findViewById(R.id.iv_user_avatar);
         mAvatarPlaceholder = (RelativeLayout) findViewById(R.id.avatar_placeholder);
 
+        mOldPassword = (EditText) findViewById(R.id.old_password);
+        mNewPassword = (EditText) findViewById(R.id.new_password);
+        mReapeatNewPassword = (EditText) findViewById(R.id.repeat_new_password);
+
 //        mUserPhoto.setMaxHeight(width);
 //        mUserPhoto.setMinimumHeight(width);
 
@@ -157,47 +157,48 @@ public class UserActivity extends AppCompatActivity {
             mUsername.setText(App.getCurrentUser().getFullName());
             mEmail.setText(App.getCurrentUser().getEmail());
             mPhoneNumber.setText(App.getCurrentUser().getPhone());
-            mDateBirthday = App.getCurrentUser().getBirthDate();
-//            if (mDateBirthday == null) {
-//                Calendar cal = Calendar.getInstance();
-//                int currentYear = cal.get(Calendar.YEAR);
-//                cal.set(Calendar.YEAR, currentYear-18);
-//                mDateBirthday = cal.getTime();
-//            }
-//            java.text.DateFormat format = DateFormat.getLongDateFormat(this);
-//            mBirthday.setText(format.format(mDateBirthday));
+            mDateBirthday = App.getCurrentUser().getDate_of_birth();
+
+            java.text.DateFormat format = DateFormat.getLongDateFormat(this);
+            mBirthday.setText(format.format(mDateBirthday));
 
             mBtnEditBirthday.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-//                    if (mDateBirthday == null) mDateBirthday = new Date();
-//                    Calendar now = Calendar.getInstance();
-//                    now.setTime(mDateBirthday);
 
-                    final Calendar c = Calendar.getInstance();
-                    int year = c.get(Calendar.YEAR);
-                    int month = c.get(Calendar.MONTH);
-                    int day = c.get(Calendar.DAY_OF_MONTH);
+//                    DatePickerDialog datePickerDialog = new DatePickerDialog(UserActivity.this, new DatePickerDialog.OnDateSetListener() {
+//                        @Override
+//                        public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
+//                            Calendar cal = Calendar.getInstance();
+//                            cal.set(Calendar.YEAR, year);
+//                            cal.set(Calendar.MONTH, monthOfYear);
+//                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+//                            mDateBirthday = cal.getTime();
+//
+//                            //Set DateBirthday in EditText
+//                            java.text.DateFormat format = DateFormat.getLongDateFormat(UserActivity.this);
+//                            mBirthday.setText(format.format(mDateBirthday));
+//                        }
+//                    }, year, month, day);
+//                    datePickerDialog.show();
 
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(UserActivity.this, new DatePickerDialog.OnDateSetListener() {
-                        @Override
-                        public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                            Calendar cal = Calendar.getInstance();
-                            cal.set(Calendar.YEAR, year);
-                            cal.set(Calendar.MONTH, monthOfYear);
-                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                            mDateBirthday = cal.getTime();
 
-                            //Set DateBirthday in EditText
-                            java.text.DateFormat format = DateFormat.getLongDateFormat(UserActivity.this);
-                            mBirthday.setText(format.format(mDateBirthday));
-                        }
-                    }, year, month, day);
-//                    Calendar cc = Calendar.getInstance();
-//                    cc.set(2014, 4, 22);
-//                    datePickerDialog.getDatePicker().setMinDate(cc.getTimeInMillis());
-                    datePickerDialog.show();
+
+                    Calendar now = Calendar.getInstance();
+                    now.setTime(mDateBirthday);
+                    DatePickerDialog dpd = DatePickerDialog.newInstance(
+                            UserActivity.this,
+                            now.get(Calendar.YEAR),
+                            now.get(Calendar.MONTH),
+                            now.get(Calendar.DAY_OF_MONTH )
+                    );
+
+
+                    dpd.show(getFragmentManager(), "Datepickerdialog");
+
+
+
                 }
             });
 
@@ -260,11 +261,15 @@ public class UserActivity extends AppCompatActivity {
 
                     });
                     colorAnimation.start();
-
                     hideSoftKeyboard(UserActivity.this, v);
+                    if (!mOldPassword.getText().toString().equals("") && mNewPassword.getText().toString().equals(mReapeatNewPassword.getText().toString())) {
+                        APIService.doChangePassword(mOldPassword.getText().toString(), mNewPassword.getText().toString());
+                    }
+
                     int gender = 0;
                     if (mFemale.isChecked()) gender = 1;
                     APIService.doUserEdit(mUsername.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), mDateBirthday, gender);
+
                 }
             });
         }
@@ -277,6 +282,21 @@ public class UserActivity extends AppCompatActivity {
 
         initViews();
 
+    }
+
+
+    @Override
+    public void onDateSet(com.wdullaer.materialdatetimepicker.date.DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+
+                            Calendar cal = Calendar.getInstance();
+                            cal.set(Calendar.YEAR, year);
+                            cal.set(Calendar.MONTH, monthOfYear);
+                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                            mDateBirthday = cal.getTime();
+
+                            //Set DateBirthday in EditText
+                            java.text.DateFormat format = DateFormat.getLongDateFormat(UserActivity.this);
+                            mBirthday.setText(format.format(mDateBirthday));
     }
 
     private void openGallery() {
@@ -293,7 +313,7 @@ public class UserActivity extends AppCompatActivity {
 
     protected void updateUserData() {
 //        user = App.getCurrentUser();
-        final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.user_done), Snackbar.LENGTH_INDEFINITE);
+        final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.user_done), Snackbar.LENGTH_SHORT);
         snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -401,38 +421,6 @@ public class UserActivity extends AppCompatActivity {
 //        return image;
     }
 
-//    public void btn_click_birthday(View view) {
-//        Calendar now = Calendar.getInstance();
-//        now.setTime(birthday);
-//        DatePickerDialog dpd = DatePickerDialog.newInstance(
-//                UserActivity.this,
-//                now.get(Calendar.YEAR),
-//                now.get(Calendar.MONTH),
-//                now.get(Calendar.DAY_OF_MONTH)
-//        );
-//        now.setTime(new Date());
-//        dpd.setMaxDate(now);
-//
-//        dpd.setAccentColor(getResources().getColor(R.color.colorPrimary));
-//        dpd.show(getFragmentManager(), "Datepickerdialog");
-//
-//    }
-
-
-//    @Override
-//    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth, int yearEnd, int monthOfYearEnd, int dayOfMonthEnd) {
-//        String date = dayOfMonth+" "+(monthOfYear)+" "+year;
-//        Calendar cal = Calendar.getInstance();
-//        cal.setTime(birthday);
-//        cal.set(Calendar.YEAR, year);
-//        cal.set(Calendar.MONTH, monthOfYear);
-//        cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//
-//        birthday = cal.getTime();
-//
-//        java.text.DateFormat format = DateFormat.getLongDateFormat(this);
-//        mBirthday.setText(format.format(birthday));
-//    }
 
 
     @Override
@@ -443,6 +431,7 @@ public class UserActivity extends AppCompatActivity {
             setUserEditOKReceiver = null;
         }
     }
+
 
     private enum State {
         EXPANDED,

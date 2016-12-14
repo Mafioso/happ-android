@@ -140,47 +140,19 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         super.onCreate(savedInstanceState);
         bundle = savedInstanceState;
         setContentView(R.layout.activity_feed);
+        binds();
         setTitle("");
+
         scf = SelectCityFragment.newInstance();
         everythingFeedFragment = EverythingFeedFragment.newInstance();
         favoriteFeedFragment = FavoriteFeedFragment.newInstance();
         exploreEventsFragment = ExploreEventsFragment.newInstance();
         mapFragment = MapFragment.newInstance();
 
-        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
-        rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
-        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
-        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
-        navigationViewRight = (NavigationView) findViewById(R.id.navigation_view_right);
-        mFeedSearchText = (EditText) findViewById(R.id.filter_search);
-        mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_navigation);
-        mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
-        mBottomBar = (BottomBar) findViewById(R.id.bottombar_feed);
-        mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
-        mFilterPopularity = (SwitchCompat) findViewById(R.id.filter_popularity_events);
-
-        mViewFilterDate = (View) findViewById(R.id.view_filter_date);
-        mViewFilterTime = (View) findViewById(R.id.view_filter_time);
-
-        mFilterDate = (EditText) findViewById(R.id.ff_edittext_filterdate);
-        mFilterTime = (EditText) findViewById(R.id.ff_edittext_filtertime);
-
-        menu = (Menu) findViewById(R.menu.menu_feed);
-        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
-        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
-        mRightDrawerLLFooter = (LinearLayout) findViewById(R.id.right_drawer_ll_footer);
-        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
-        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
-        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         setSupportActionBar(toolbar);
 
 
-        String versionName = BuildConfig.VERSION_NAME;
-        mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -228,6 +200,9 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
         mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
+
+        String versionName = BuildConfig.VERSION_NAME;
+        mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
 
         mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -410,6 +385,34 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     }
 
 
+    private void binds() {
+        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
+        rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
+        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
+        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
+        navigationViewRight = (NavigationView) findViewById(R.id.navigation_view_right);
+        mFeedSearchText = (EditText) findViewById(R.id.filter_search);
+        mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_navigation);
+        mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
+        mBottomBar = (BottomBar) findViewById(R.id.bottombar_feed);
+        mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
+        mFilterPopularity = (SwitchCompat) findViewById(R.id.filter_popularity_events);
+        mViewFilterDate = (View) findViewById(R.id.view_filter_date);
+        mViewFilterTime = (View) findViewById(R.id.view_filter_time);
+        mFilterDate = (EditText) findViewById(R.id.ff_edittext_filterdate);
+        mFilterTime = (EditText) findViewById(R.id.ff_edittext_filtertime);
+        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
+        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
+        mRightDrawerLLFooter = (LinearLayout) findViewById(R.id.right_drawer_ll_footer);
+        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
+        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
+        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
+
+    }
+
     private void setListenerToRootView() {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
         if (mKeyboardListener == null) {
@@ -561,14 +564,14 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     }
 
 
-    @Override
-    public void onBackPressed() {
-        if (fragNavController.canPop()) {
-            fragNavController.pop();
-        } else {
-            super.onBackPressed();
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+//        if (fragNavController.canPop()) {
+//            fragNavController.pop();
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {

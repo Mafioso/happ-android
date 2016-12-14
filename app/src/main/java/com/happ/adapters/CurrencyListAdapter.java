@@ -23,6 +23,7 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private ArrayList<Currency> mCurrency;
     private final Context context;
     private User currentUser;
+    SelectCurrencyItemListener listener;
 
     public CurrencyListAdapter(Context context, ArrayList<Currency> currencies) {
         this.context = context;
@@ -30,8 +31,17 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         currentUser = App.getCurrentUser();
     }
 
+    public interface SelectCurrencyItemListener {
+        void onCurrencyItemSelected(Currency currency);
+    }
+
+    public void setOnCurrencyItemSelectListener(SelectCurrencyItemListener listener) {
+        this.listener = listener;
+    }
+
     public void updateData(ArrayList<Currency> currencies) {
         this.mCurrency = currencies;
+        this.currentUser = App.getCurrentUser();
         this.notifyDataSetChanged();
     }
 
@@ -60,6 +70,12 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
 
             holder.mTitleCurrencies.setText(currency.getName());
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onCurrencyItemSelected(currency);
+            }
+        });
         holder.bind(currency);
     }
 
@@ -88,7 +104,6 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
         }
 
         public void bind(final Currency currency) {
-
         }
     }
 

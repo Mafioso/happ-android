@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -17,15 +20,20 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -33,13 +41,18 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.BuildConfig;
 import com.happ.R;
+import com.happ.controllers.EditCreateActivity;
+import com.happ.controllers.HtmlPageAcitivty;
 import com.happ.controllers.UserActivity;
+import com.happ.fragments.EventsOrganizerFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.retrofit.APIService;
 import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
+import com.roughike.bottombar.OnTabReselectListener;
+import com.roughike.bottombar.OnTabSelectListener;
 
-public class OrganizerModeActivity extends AppCompatActivity {
+public class OrganizerModeActivity extends AppCompatActivity implements FragNavController.TransactionListener, FragNavController.RootFragmentListener{
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -61,6 +74,10 @@ public class OrganizerModeActivity extends AppCompatActivity {
     private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
     private BroadcastReceiver changeCityDoneReceiver;
     private TextView mDrawerVersionApp;
+    private EventsOrganizerFragment eventsOrganizerFragment;
+    private boolean isKeyboarShown = false;
+    private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
+    private LinearLayout mDrawerLLFooter;
 
     private final int TAB_MY_EVENTS = FragNavController.TAB1;
 
@@ -68,8 +85,200 @@ public class OrganizerModeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_organizermode);
+        binds();
+        setSupportActionBar(toolbar);
+        setTitle(R.string.organizer_title);
+        eventsOrganizerFragment = EventsOrganizerFragment.newInstance();
+        setAllFunctionNavigationMenu();
+        setListenerToRootView();
+        setDrawerLayoutListener();
 
 
+        if (changeCityDoneReceiver == null) {
+            changeCityDoneReceiver = changeCityReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+        }
+
+    }
+
+
+    @Override
+    public Fragment getRootFragment(int index) {
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_gray);
+        }
+
+        switch (index) {
+            case TAB_MY_EVENTS:
+                return eventsOrganizerFragment;
+
+        }
+        throw new IllegalStateException("Need to send an index that we know");
+    }
+
+    @Override
+    public void onTabTransaction(Fragment fragment, int i) {
+        if (fragNavController.canPop()){
+            fragNavController.pop();
+        }
+    }
+
+    @Override
+    public void onFragmentTransaction(Fragment fragment) {
+        if (fragNavController.canPop()){
+            fragNavController.pop();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (fragNavController != null) {
+            fragNavController.onSaveInstanceState(outState);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_feed, menu);
+        this.menu = menu;
+
+        menu.getItem(0).setIcon(getResources().getDrawable(R.drawable.ic_filter_gray));
+
+        fragNavController = new FragNavController(null, getSupportFragmentManager(),R.id.org_container,this,1, TAB_MY_EVENTS);
+        fragNavController.setTransactionListener(this);
+        mBottomBar.setDefaultTabPosition(2);
+        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelected(@IdRes int tabId) {
+                switch (tabId) {
+                    case R.id.tab_analytics:
+                        Toast.makeText(OrganizerModeActivity.this, "Analytics", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case R.id.tab_pro_function:
+                        Toast.makeText(OrganizerModeActivity.this, "Pro-functions", Toast.LENGTH_SHORT).show();
+                        break;
+
+                    case R.id.tab_my_events:
+                        fragNavController.switchTab(TAB_MY_EVENTS);
+                        break;
+
+                    case R.id.tab_add_event:
+
+                        sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                        String name = sPref.getString("first_create_event", "");
+
+                        if (name == null || name.length() == 0) {
+                            sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                            sPref.edit().putString("first_create_event", FIRST_CREATE_EVENT).apply();
+
+                            Intent i = new Intent(OrganizerModeActivity.this, HtmlPageAcitivty.class);
+                            i.putExtra("from_organizermode", true);
+                            startActivity(i);
+
+                        } else {
+                            Intent i = new Intent(getApplicationContext(), EditCreateActivity.class);
+                            startActivity(i);
+                        }
+
+                        break;
+                }
+            }
+        });
+
+        mBottomBar.setOnTabReselectListener(new OnTabReselectListener() {
+            @Override
+            public void onTabReSelected(@IdRes int tabId) {
+                fragNavController.clearStack();
+            }
+        });
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.menu_filter:
+                mDrawerLayout.openDrawer(navigationViewRightOrg);
+                return true;
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setListenerToRootView() {
+        final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        if (mKeyboardListener == null) {
+            mKeyboardListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+
+                    Rect r = new Rect();
+                    activityRootView.getWindowVisibleDisplayFrame(r);
+                    int screenHeight = activityRootView.getRootView().getHeight();
+
+                    int keypadHeight = screenHeight - r.bottom;
+                    if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
+                        if (!isKeyboarShown) {
+                            navigationHeader.setVisibility(View.GONE);
+                            mBottomBar.setVisibility(View.GONE);
+                            mDrawerLLFooter.setVisibility(View.GONE);
+
+                        }
+                        isKeyboarShown = true;
+                    }
+                    else {
+                        navigationHeader.setVisibility(View.VISIBLE);
+                        mBottomBar.setVisibility(View.VISIBLE);
+                        mDrawerLLFooter.setVisibility(View.VISIBLE);
+                        isKeyboarShown = false;
+                    }
+                }
+            };
+        } else {
+            activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
+        }
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
+    }
+
+    private void setDrawerLayoutListener() {
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, 0, 0) {
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                InputMethodManager inputMethodManager = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+        };
+        mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
+    }
+
+    private void binds() {
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
@@ -84,17 +293,10 @@ public class OrganizerModeActivity extends AppCompatActivity {
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
-        String versionName = BuildConfig.VERSION_NAME;
-        mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
+        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
+    }
 
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        }
-        setTitle(R.string.organizer_title);
-
+    private void setAllFunctionNavigationMenu() {
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -139,10 +341,13 @@ public class OrganizerModeActivity extends AppCompatActivity {
         navigationMenu.getMenu().findItem(R.id.nav_item_organizer).setChecked(true);
         navigationMenu.getMenu().findItem(R.id.nav_item_organizer).setIcon(R.drawable.happ_drawer_icon);
 
-        ((TextView) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((TextView) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
-        ((TextView) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setOnClickListener(new View.OnClickListener() {
+        String versionName = BuildConfig.VERSION_NAME;
+        mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
+
+        mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(OrganizerModeActivity.this, UserActivity.class);
@@ -177,81 +382,8 @@ public class OrganizerModeActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawer(navigationView);
             }
         });
-
-        if (changeCityDoneReceiver == null) {
-            changeCityDoneReceiver = changeCityReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
-        }
-
-//        ArrayList<Fragment> fragments = new ArrayList<>(1);
-//        fragments.add(EventsOrganizerFragment.newInstance());
-//        fragNavController = new FragNavController(getSupportFragmentManager(),R.id.org_container,this,1,);
-
-//        mBottomBar.setDefaultTabPosition(2);
-//        mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
-//            @Override
-//            public void onTabSelected(@IdRes int tabId) {
-//                switch (tabId) {
-//                    case R.id.tab_analytics:
-//                        Toast.makeText(OrganizerModeActivity.this, "Analytics", Toast.LENGTH_SHORT).show();
-//                        break;
-//
-//                    case R.id.tab_pro_function:
-//                        Toast.makeText(OrganizerModeActivity.this, "Pro-functions", Toast.LENGTH_SHORT).show();
-//                        break;
-//
-//                    case R.id.tab_my_events:
-//                        fragNavController.switchTab(TAB_MY_EVENTS);
-//                        break;
-//
-//                    case R.id.tab_add_event:
-//
-//                        sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-//                        String name = sPref.getString("first_create_event", "");
-//
-//                        if (name == null || name.length() == 0) {
-//                            sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
-//                            sPref.edit().putString("first_create_event", FIRST_CREATE_EVENT).apply();
-//
-//                            Intent i = new Intent(OrganizerModeActivity.this, HtmlPageAcitivty.class);
-//                            i.putExtra("from_organizermode", true);
-//                            startActivity(i);
-//
-//                        } else {
-//                            Intent i = new Intent(getApplicationContext(), EditCreateActivity.class);
-//                            startActivity(i);
-//                        }
-//
-//                        break;
-//                    case R.id.tab_chat:
-//                        Toast.makeText(OrganizerModeActivity.this, "TAB_CHAT", Toast.LENGTH_SHORT).show();
-//                        break;
-//                }
-//            }
-//        });
-//
-//        mBottomBar.setOnTabReselectListener(new OnTabReselectListener() {
-//            @Override
-//            public void onTabReSelected(@IdRes int tabId) {
-//                if (tabId == R.id.tab_analytics) {
-//                    fragNavController.clearStack();
-//                }
-//                if (tabId == R.id.tab_pro_function) {
-//                    fragNavController.clearStack();
-//                }
-//                if (tabId == R.id.tab_my_events) {
-//                    fragNavController.clearStack();
-//                }
-//                if (tabId == R.id.tab_add_event) {
-//                    fragNavController.clearStack();
-//                }
-//                if (tabId == R.id.tab_chat) {
-//                    fragNavController.clearStack();
-//                }
-//            }
-//        });
-
     }
+
 
     public class MyCityPageAdapter extends FragmentPagerAdapter {
 
@@ -288,35 +420,10 @@ public class OrganizerModeActivity extends AppCompatActivity {
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        getMenuInflater().inflate(R.menu.menu_feed, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-            case R.id.menu_filter:
-                mDrawerLayout.openDrawer(navigationViewRightOrg);
-                return true;
-        }
-
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
-        ((TextView) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username)).setText(App.getCurrentUser().getFullName());
-        ((TextView) navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city)).setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
 
     private BroadcastReceiver changeCityReceiver() {
@@ -334,11 +441,11 @@ public class OrganizerModeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         if (changeCityDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(changeCityDoneReceiver);
             changeCityDoneReceiver = null;
         }
-
     }
 
 }

@@ -76,7 +76,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
 
     public void updateData(ArrayList<Event> events) {
         mItems = events;
-        Log.d("AAAAA", String.valueOf(events.size()));
+        Log.d("ORGANIZER_EVENTS_SIZE", String.valueOf(events.size()));
         this.notifyDataSetChanged();
     }
     

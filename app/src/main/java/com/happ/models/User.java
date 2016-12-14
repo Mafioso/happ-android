@@ -3,6 +3,7 @@ package com.happ.models;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -20,6 +21,7 @@ public class User extends RealmObject {
     private String email;
     private String id;
     private String phone;
+    private Date date_of_birth;
     private Settings settings;
     private int gender;
     private RealmList<Interest> interests;
@@ -116,4 +118,11 @@ public class User extends RealmObject {
         return "http://nick.mtvnimages.com/nick/video/images/avatar/avatar-118-16x9.jpg";
     }
 
+    public Date getDate_of_birth() {
+        return date_of_birth;
+    }
+
+    public void setDate_of_birth(Date date_of_birth) {
+        this.date_of_birth = date_of_birth;
+    }
 }

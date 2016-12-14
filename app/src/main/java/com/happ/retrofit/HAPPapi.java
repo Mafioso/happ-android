@@ -109,6 +109,9 @@ public interface HAPPapi {
     @POST("cities/{id}/set/")
     Call<Void> setCity(@Path("id") String cityId);
 
+    @POST("currencies/{id}/set/")
+    Call<Void> setCurrency(@Path("id") String currencyId);
+
     @GET("events/favourites/")
     Call<EventsResponse> getFavourites(@Query("page") int page);
 

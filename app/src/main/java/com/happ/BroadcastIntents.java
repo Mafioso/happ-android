@@ -44,6 +44,10 @@ public class BroadcastIntents {
     public static final String EVENT_UNFAV_REQUEST_OK = "com.happ.event_unfav_request_ok";
     public static final String EVENT_UNFAV_REQUEST_FAIL = "com.happ.event_unfav_request_fail";
 
+    public static final String SET_CURRENCY_OK = "com.happ.set_currency_ok";
+    public static final String SET_CURRENCY_FAIL = "com.happ.set_currency_fail";
+
+
 
     public static final String EXTRA_DID_UPVOTE = "com.happ.extra.did_upvote";
     public static final String EXTRA_DID_FAV = "com.happ.extra.did_fav";
