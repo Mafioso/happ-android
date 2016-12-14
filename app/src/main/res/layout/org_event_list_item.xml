@@ -23,22 +23,31 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/avatar"
                 android:scaleType="fitXY"
                 android:transitionName="event_image"
-                android:id="@+id/event_item_image_view"/>
+                android:id="@+id/org_event_item_imageview"/>
 
             <RelativeLayout
                 android:id="@+id/color_bg_iv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorAccent"
+                android:background="@color/dark57"
                 android:alpha="0.7"/>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/rl_bottom_iv">
+
+                <ImageView
+                    android:id="@+id/org_event_item_placeholder"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    app:srcCompat="@drawable/image_placeholder"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:visibility="visible"
+                    android:alpha="0.3"/>
 
                 <ProgressBar
                     style="@style/Widget.AppCompat.ProgressBar"
@@ -50,6 +59,7 @@
                     android:id="@+id/event_item_image_preloader"/>
 
                 <ImageView
+                    android:id="@+id/org_event_item_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_done"
@@ -88,7 +98,7 @@
                         android:textSize="14sp"
                         android:layout_gravity="center_vertical"
                         android:textColor="@color/bg_light"
-                        android:id="@+id/event_item_votes_count" />
+                        android:id="@+id/org_event_item_votes_count" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -113,7 +123,6 @@
 
                 </LinearLayout>
             </RelativeLayout>
-
         </RelativeLayout>
 
         <RelativeLayout
@@ -121,7 +130,7 @@
             android:layout_toRightOf="@+id/rl_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorAccent">
+            android:background="@color/dark57">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -141,7 +150,7 @@
                         android:layout_alignParentBottom="true"/>
 
                     <TextView
-                        android:id="@+id/event_item_title"
+                        android:id="@+id/org_event_item_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -157,8 +166,8 @@
 
 
                     <TextView
-                        android:id="@+id/event_item_interest"
-                        android:layout_below="@+id/event_item_title"
+                        android:id="@+id/org_event_item_interest"
+                        android:layout_below="@+id/org_event_item_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/white70"
@@ -170,89 +179,58 @@
                         android:transitionName="event_interest_name"
                         />
 
-                    <LinearLayout
-                        android:id="@+id/ll_datetime"
-                        android:layout_above="@+id/ll_money"
+
+                    <TextView
+                        android:id="@+id/org_event_item_datetime"
+                        android:layout_above="@+id/org_event_item_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginLeft="8dp"
+                        android:textSize="13sp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/bg_light"
+                        android:text="@string/event_date"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:paddingBottom="4dp"
                         android:layout_marginRight="32dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="32dp"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="14sp"
-                            android:textAllCaps="true"
-                            android:textColor="@color/bg_light"
-                            android:text="19:00 " />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="14sp"
-                            android:textAllCaps="true"
-                            android:textColor="@color/bg_light"
-                            android:text="— " />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="14sp"
-                            android:textAllCaps="true"
-                            android:textColor="@color/bg_light"
-                            android:text="23:00" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_money"
-                        android:layout_above="@+id/ll_place"
+                    <TextView
+                        android:id="@+id/org_event_item_price"
+                        android:layout_above="@+id/org_event_item_place"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginLeft="8dp"
+                        android:textSize="12sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="@color/white70"
+                        android:text="@string/price"
                         android:layout_marginRight="32dp"
-                        android:layout_marginBottom="2dp">
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="32dp"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:textColor="@color/white70"
-                            android:text="от " />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:id="@+id/event_item_price"
-                            android:textColor="@color/white70"
-                            android:text="500 тг" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_place"
+                    <TextView
+                        android:id="@+id/org_event_item_place"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:text="@string/event_place"
+                        android:textColor="@color/white70"
                         android:layout_alignParentBottom="true"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
+                        android:paddingBottom="8dp"
                         android:layout_marginRight="32dp"
-                        android:paddingBottom="8dp">
-
-                        <TextView
-                            android:id="@+id/events_list_place"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:text="Esentai Mall"
-                            android:textColor="@color/white70" />
-                    </LinearLayout>
-
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="32dp"/>
                 </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
-
-
 </RelativeLayout>

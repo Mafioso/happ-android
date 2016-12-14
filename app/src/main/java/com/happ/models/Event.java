@@ -59,6 +59,7 @@ public class Event extends RealmObject implements Serializable {
     @Ignore
     @SerializedName("interest_ids")
     private ArrayList<String> interestIds;
+    private int status;
 
     //geo for googleMap
     private RealmList<Geopoints> geopoint;
@@ -309,5 +310,13 @@ public class Event extends RealmObject implements Serializable {
 
     public void setGeopoint(RealmList<Geopoints> geopoint) {
         this.geopoint = geopoint;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

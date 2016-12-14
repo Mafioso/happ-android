@@ -11,13 +11,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/rl_image">
 
-
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="240dp"
             android:background="@color/dark28"
             android:transitionName="event_image"
-            android:id="@+id/event_item_image_view"/>
+            android:id="@+id/org_event_item_imageview"/>
 
         <ImageView
             android:id="@+id/event_item_image_placeholder"
@@ -71,7 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="8dp"
-                    android:id="@+id/event_item_title"
+                    android:id="@+id/org_event_item_title"
                     android:transitionName="event_title"
                     android:textSize="32sp"
                     android:textAllCaps="true"
@@ -82,12 +81,12 @@
                     android:paddingRight="24dp"/>
 
                 <TextView
-                    android:layout_below="@+id/event_item_title"
+                    android:layout_below="@+id/org_event_item_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/bg_light"
                     android:text="Music "
-                    android:id="@+id/event_item_interest"
+                    android:id="@+id/org_event_item_interest"
                     android:textSize="16sp"
                     android:transitionName="event_interest_name"
                     android:gravity="center"
@@ -131,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="16sp"
-                        android:id="@+id/event_item_price"
+                        android:id="@+id/org_event_item_price"
                         android:textColor="@color/bg_light"
                         android:text="от 500тг - 10000тг" />
                 </LinearLayout>
@@ -186,7 +185,7 @@
                             android:textSize="16sp"
                             android:layout_gravity="center_vertical"
                             android:textColor="@color/bg_light"
-                            android:id="@+id/event_item_votes_count" />
+                            android:id="@+id/org_event_item_votes_count" />
                     </LinearLayout>
 
                     <LinearLayout

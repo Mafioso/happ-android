@@ -549,7 +549,7 @@ public class EventActivity extends AppCompatActivity {
                 } else {
                     mAuthorEmail.setVisibility(View.GONE);
                 }
-                mAuthor.setText(event.getAuthor().getFullName());
+                mAuthor.setText(event.getAuthor().getFn());
             } else {
                 mEventAuthor.setVisibility(View.GONE);
             }
@@ -624,8 +624,10 @@ public class EventActivity extends AppCompatActivity {
                 mEventDate.setText(startDate + " - " + endDate);
             }
 
-            String startTime = event.getStartDateFormatted("h:mm a");
-            String endTime = event.getEndDateFormatted("h:mm a");
+//            String startTime = event.getStartDateFormatted("h:mm a");
+            String startTime = event.getStartDateFormatted("HH:mm");
+            String endTime = event.getEndDateFormatted("HH:mm");
+//            String endTime = event.getEndDateFormatted("h:mm a");
             String rangeTime = startTime + " — " + endTime;
 
             if (startTime.equals(endTime)) {

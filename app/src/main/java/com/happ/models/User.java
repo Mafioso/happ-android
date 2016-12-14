@@ -13,12 +13,12 @@ import io.realm.annotations.PrimaryKey;
  * Created by dante on 7/26/16.
  */
 public class User extends RealmObject {
-    @PrimaryKey
     private String username;
     @SerializedName("fullname")
     private String fullName;
     private String fn;
     private String email;
+    @PrimaryKey
     private String id;
     private String phone;
     private Date date_of_birth;

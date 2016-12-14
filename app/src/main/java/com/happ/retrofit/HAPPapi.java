@@ -38,8 +38,12 @@ public interface HAPPapi {
 //            @Query("sensor") boolean sensor,
 //            @Query("language") String language);
 
+    @GET("events/organizer/")
+    Call<EventsResponse> getOrgEvents(@Query("page") int page);
+
     @GET("events/feed/")
     Call<EventsResponse> getEvents(@Query("page") int page);
+
     @GET("events/feed/")
     Call<EventsResponse> getFilteredEvents( @Query("page") int page,
                                             @Query("feed_search") String feedSearchText,

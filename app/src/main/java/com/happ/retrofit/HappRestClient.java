@@ -228,6 +228,7 @@ public class HappRestClient {
         this.getEvents(1, favs);
     }
 
+
     public void getEvents(int page, boolean favs) {
         Call<EventsResponse> getEventsResponse;
 
@@ -256,6 +257,49 @@ public class HappRestClient {
                     realm.close();
 
                     Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventsResponse> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
+    public void getOrgEvents(int page) {
+        happApi.getOrgEvents(page).enqueue(new Callback<EventsResponse>() {
+            @Override
+            public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
+
+                if (response.isSuccessful()){
+                    List<Event> events = response.body().getEvents();
+                    User user = App.getCurrentUser();
+                    for (int i=0; i<events.size(); i++) {
+                        if (events.get(i).getAuthor().getId().equals(user.getId())) {
+                            events.get(i).setAuthor(user);
+                        }
+                    }
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(events);
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.ORG_EVENTS_REQUEST_OK);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
 
                 }

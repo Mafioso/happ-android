@@ -85,6 +85,7 @@ public class EventsOrganizerFragment extends Fragment {
                 Intent intent = new Intent(activity, EventActivity.class);
                 intent.putExtra("event_id", eventId);
                 intent.putExtra("is_organizer", true);
+                intent.putExtra("in_event_activity", true);
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || options == null) {
                     EventsOrganizerFragment.this.startActivity(intent);
                     (activity).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
@@ -104,7 +105,7 @@ public class EventsOrganizerFragment extends Fragment {
 
         if (eventsRequestDoneReceiver == null) {
             eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.ORG_EVENTS_REQUEST_OK));
         }
 
         if (deleteEventRequestDoneReceiver == null) {
@@ -112,7 +113,7 @@ public class EventsOrganizerFragment extends Fragment {
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(deleteEventRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTDELETE_REQUEST_OK));
         }
 
-        APIService.getEvents(false);
+        getEvents(1);
         createScrollListener();
 
         return view;
@@ -128,12 +129,10 @@ public class EventsOrganizerFragment extends Fragment {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Event> eventRealmResults = realm.where(Event.class)
                 .beginGroup()
-                .equalTo("author.id", App.getCurrentUser().getId())
-                .or().isNull("author")
+                    .equalTo("author.id", App.getCurrentUser().getId())
+                    .equalTo("localOnly", false)
                 .endGroup()
-                .equalTo("localOnly", false)
-                .findAllSorted("startDate", Sort.ASCENDING);
-
+                .findAllSorted("startDate", Sort.DESCENDING);
         orgEvents = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
         ((OrgEventsListAdapter) orgEventsRecyclerView.getAdapter()).updateData(orgEvents);
         realm.close();
@@ -188,7 +187,7 @@ public class EventsOrganizerFragment extends Fragment {
     }
 
     protected void getEvents(int page) {
-        APIService.getEvents(page, false);
+        APIService.getOrgEvents(page);
     }
 
     @Override

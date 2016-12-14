@@ -15,6 +15,7 @@ import java.util.Date;
 public class APIService extends IntentService {
     private static final String ACTION_GET_EVENTS = "com.happ.action.ACTION_GET_EVENTS";
     private static final String ACTION_GET_EVENTS_FOR_PAGE = "com.happ.action.ACTION_GET_EVENTS_FOR_PAGE";
+    private static final String ACTION_GET_ORG_EVENTS_PAGE = "com.happ.action.ACTION_GET_ORG_EVENTS_PAGE";
     private static final String ACTION_GET_FILTERED_EVENTS = "com.happ.action.ACTION_GET_FILTERED_EVENTS";
     private static final String ACTION_GET_CITIES = "com.happ.action.ACTION_GET_CITIES";
     private static final String ACTION_GET_INTERESTS = "com.happ.action.ACTION_GET_INTERESTS";
@@ -86,6 +87,13 @@ public class APIService extends IntentService {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_EVENTS);
         intent.putExtra(EXTRA_GET_FAVS, favs);
+        App.getContext().startService(intent);
+    }
+
+    public static void getOrgEvents(int page) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_ORG_EVENTS_PAGE);
+        intent.putExtra(EXTRA_PAGE, page);
         App.getContext().startService(intent);
     }
 
@@ -324,6 +332,9 @@ public class APIService extends IntentService {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
                 HappRestClient.getInstance().getEvents(page, favs);
+            } else if (action.equals(ACTION_GET_ORG_EVENTS_PAGE)) {
+                int page = intent.getIntExtra(EXTRA_PAGE, 1);
+                HappRestClient.getInstance().getOrgEvents(page);
             } else if (action.equals(ACTION_GET_FILTERED_EVENTS)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 String feedSearchText = intent.getStringExtra(EXTRA_EVENT_SEARCH_TEXT);

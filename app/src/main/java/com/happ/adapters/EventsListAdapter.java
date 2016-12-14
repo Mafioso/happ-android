@@ -317,6 +317,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                                             @Override
                                             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                                                 Log.e("GLIDE_ERR", url + " " + e.getMessage());
+
+                                                itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
                                                 return false;
                                             }
 
@@ -345,6 +347,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 //                                                } else {
 //
 //                                                }
+
+                                                itemHolder.mImagePlaceHolder.setVisibility(View.INVISIBLE);
                                               itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
                                                 return false;
                                             }
@@ -519,12 +523,12 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
         public EventsListItemViewHolder(final View itemView) {
             super(itemView);
-            mTextViewTitle = (TextView) itemView.findViewById(R.id.event_item_title);
+            mTextViewTitle = (TextView) itemView.findViewById(R.id.org_event_item_title);
             mTime = (TextView) itemView.findViewById(R.id.event_item_time);
-            mInterestTitle = (TextView) itemView.findViewById(R.id.event_item_interest);
-            mImageView = (ImageView) itemView.findViewById(R.id.event_item_image_view);
-            mPrice = (TextView) itemView.findViewById(R.id.event_item_price);
-            mVotesCount = (TextView) itemView.findViewById(R.id.event_item_votes_count);
+            mInterestTitle = (TextView) itemView.findViewById(R.id.org_event_item_interest);
+            mImageView = (ImageView) itemView.findViewById(R.id.org_event_item_imageview);
+            mPrice = (TextView) itemView.findViewById(R.id.org_event_item_price);
+            mVotesCount = (TextView) itemView.findViewById(R.id.org_event_item_votes_count);
             mImagePreloader = (ProgressBar) itemView.findViewById(R.id.event_item_image_preloader);
             mFavoritesImage = (ImageView) itemView.findViewById(R.id.clickimage_favorites);
             mUpvoteImage = (ImageView) itemView.findViewById(R.id.clickimage_like);

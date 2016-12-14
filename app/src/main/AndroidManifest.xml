@@ -105,7 +105,8 @@
 
         <activity android:name=".controllers.EventMapActivity"/>
 
-        <activity android:name=".controllers_drawer.OrganizerModeActivity" />
+        <activity android:name=".controllers_drawer.OrganizerModeActivity"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
 
         <activity android:name=".controllers.ChangeCurrencyActivity"/>
 

@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -76,7 +75,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
 
     public void updateData(ArrayList<Event> events) {
         mItems = events;
-        Log.d("ORGANIZER_EVENTS_SIZE", String.valueOf(events.size()));
+        Log.d("AAAAA", String.valueOf(events.size()));
         this.notifyDataSetChanged();
     }
     
@@ -145,22 +144,10 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
             }
         });
 
-
-        itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                eventSelected(itemHolder, event);
-            }
-        });
-
-        final String url = urls[position%10];
-        if(itemHolder.url == null || !itemHolder.url.equals(url)){
-            itemHolder.url = url;
-//            final String url = event.getImages().get(0).getUrl();
-//                final String url = "http://lorempixel.com/g/1080/610/nature/" + position + "/";
+        if(event.getImages().size() > 0){
+            final String url = event.getImages().get(0).getUrl();
             Glide.clear(itemHolder.mImageView);
             itemHolder.mImagePreloader.setVisibility(View.VISIBLE);
-            Glide.clear(itemHolder.mImageView);
             try {
                 ViewTreeObserver viewTreeObserver = itemHolder.mImageView.getViewTreeObserver();
                 if (viewTreeObserver.isAlive()) {
@@ -178,6 +165,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
                                         @Override
                                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                                             Log.e("GLIDE_ERR", url + " " + e.getMessage());
+                                            itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
                                             return false;
                                         }
 
@@ -189,6 +177,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
                                             itemHolder.mBgItem.setBackgroundColor(p.getMutedSwatch().getRgb());
                                             itemHolder.mBgImageViewColor.setBackgroundColor(p.getMutedSwatch().getRgb());
                                             itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
+                                            itemHolder.mImagePlaceHolder.setVisibility(View.GONE);
                                             return false;
                                         }
                                     })
@@ -231,19 +220,52 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
 //                }
                 Log.e("ORG", ex.getLocalizedMessage());
             }
-//        } else{
-//            Glide.clear(itemHolder.mImageView);
-//            itemHolder.mImageView.setImageDrawable(null);
-//            itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
+        } else {
+            Glide.clear(itemHolder.mImageView);
+            itemHolder.mImageView.setImageDrawable(null);
+            itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
+            itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
         }
 
-        itemHolder.mTitleView.setText(event.getTitle());
-        Typeface tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.ttf");
+        Typeface tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.otf");
         itemHolder.mTitleView.setTypeface(tfcs);
+        itemHolder.mTitleView.setText(event.getTitle());
 
-        itemHolder.mPrice.setText(event.getPriceRange());
-        itemHolder.mPlace.setText(event.getPlace());
+
+        if (event.getLowestPrice() == 0) {
+            itemHolder.mPrice.setText(context.getResources().getString(R.string.free));
+        } else {
+            String price = App.getContext().getResources().getString(R.string.from)
+                    + " " +
+                    event.getLowestPrice()
+                    + " ";
+            if (event.getCurrency().getCode() != null) {
+                price += event.getCurrency().getCode();
+            } else {
+                price += "KZT";
+            }
+            itemHolder.mPrice.setText(price);
+        }
+
+        if (event.getPlace() != null) {
+            itemHolder.mPlace.setText(event.getPlace());
+        } else {
+            itemHolder.mPlace.setText("Venue unknown");
+        }
+
+        String startTime = event.getStartDateFormatted("dd MMM HH:mm").toUpperCase();
+        String endTime = event.getEndDateFormatted("dd MMM HH:mm").toUpperCase();
+        String rangeTime = startTime + " — " + endTime;
+
+        if (startTime.equals(endTime)) {
+            itemHolder.mDateView.setText(startTime);
+        } else {
+            itemHolder.mDateView.setText(rangeTime);
+        }
+
         itemHolder.mVotesCount.setText(String.valueOf(event.getVotesCount()));
+
+
 //            itemHolder.mViewsCount.setText(String.valueOf(event.getViewsCount()));
 
         if ( event.getInterest() != null) {
@@ -283,7 +305,25 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
             itemHolder.mFavoritesImage.setImageResource(R.drawable.ic_not_in_favorites);
         }
 
-//            itemHolder.mDateView.setText(event.getStartDateFormatted("MMMM dd, yyyy 'a''t' h:mm a"));
+        itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                eventSelected(itemHolder, event);
+            }
+        });
+
+        if (event.getStatus() == 0) {
+            itemHolder.mEventStatus.setImageResource(R.drawable.ic_onreview);
+        } else if (event.getStatus() == 1) {
+            itemHolder.mEventStatus.setImageResource(R.drawable.ic_done);
+        } else if (event.getStatus() == 2) {
+            itemHolder.mEventStatus.setImageResource(R.drawable.ic_close_white);
+        }
+
+        // status
+        // на модерации - 0
+        // активный - 1
+        // отклонён - 2
 
 
         Menu menu = itemHolder.mToolbar.getMenu();
@@ -324,40 +364,42 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
 
     public class OrgEventsListItemViewHolder extends OrgEventsListViewHolder {
         public TextView mDateView;
-        public LinearLayout mInterestViewColor;
         public TextView mInterestTitle;
         public ImageView mImageView;
         public TextView mPrice;
         public TextView mVotesCount;
-        public TextView mViewsCount;
         public Event event;
         public ImageView mFavoritesImage;
-        public ImageView mUpvoteImage, mDownVoteImage;
+        public ImageView mUpvoteImage;
         public ProgressBar mImagePreloader;
         public Toolbar mToolbar;
         public RelativeLayout mBgItem;
         private TextView mPlace;
-        private String url;
         private RelativeLayout mBgImageViewColor;
+        private ImageView mImagePlaceHolder;
+        private ImageView mEventStatus;
 
 
         public OrgEventsListItemViewHolder(final View itemView) {
             super(itemView);
-            mTitleView = (TextView) itemView.findViewById(R.id.event_item_title);
-//            mDateView = (TextView) itemView.findViewById(R.id.events_list_item_start_date);
-//            mInterestViewColor = (LinearLayout) itemView.findViewById(R.id.events_list_interest_color);
-            mInterestTitle = (TextView) itemView.findViewById(R.id.event_item_interest);
-            mImageView = (ImageView) itemView.findViewById(R.id.event_item_image_view);
-            mPrice = (TextView) itemView.findViewById(R.id.event_item_price);
-            mVotesCount = (TextView) itemView.findViewById(R.id.event_item_votes_count);
-//            mViewsCount = (TextView) itemView.findViewById(R.id.events_list_views_count);
-            mImagePreloader = (ProgressBar) itemView.findViewById(R.id.event_item_image_preloader);
-            mFavoritesImage = (ImageView) itemView.findViewById(R.id.clickimage_favorites);
-            mUpvoteImage = (ImageView) itemView.findViewById(R.id.clickimage_like);
+            mTitleView = (TextView) itemView.findViewById(R.id.org_event_item_title);
+            mVotesCount = (TextView) itemView.findViewById(R.id.org_event_item_votes_count);
+            mPlace = (TextView) itemView.findViewById(R.id.org_event_item_place);
+            mInterestTitle = (TextView) itemView.findViewById(R.id.org_event_item_interest);
+            mImageView = (ImageView) itemView.findViewById(R.id.org_event_item_imageview);
+            mPrice = (TextView) itemView.findViewById(R.id.org_event_item_price);
+            mDateView = (TextView) itemView.findViewById(R.id.org_event_item_datetime);
+
             mToolbar = (Toolbar) itemView.findViewById(R.id.event_toolbar);
             mBgItem = (RelativeLayout) itemView.findViewById(R.id.bg_org_item);
-            mPlace = (TextView) itemView.findViewById(R.id.events_list_place);
             mBgImageViewColor = (RelativeLayout) itemView.findViewById(R.id.color_bg_iv);
+            mFavoritesImage = (ImageView) itemView.findViewById(R.id.clickimage_favorites);
+            mUpvoteImage = (ImageView) itemView.findViewById(R.id.clickimage_like);
+            mImagePreloader = (ProgressBar) itemView.findViewById(R.id.event_item_image_preloader);
+            mImagePlaceHolder = (ImageView) itemView.findViewById(R.id.org_event_item_placeholder);
+            mEventStatus = (ImageView) itemView.findViewById(R.id.org_event_item_status);
+
+
         }
 
     }

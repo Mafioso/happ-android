@@ -27,7 +27,7 @@
                 android:background="@color/dark80"
                 android:scaleType="fitXY"
                 android:transitionName="event_image"
-                android:id="@+id/event_item_image_view"/>
+                android:id="@+id/org_event_item_imageview"/>
 
 
             <ProgressBar
