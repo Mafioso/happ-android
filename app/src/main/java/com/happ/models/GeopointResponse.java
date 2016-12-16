@@ -5,7 +5,7 @@ import io.realm.RealmObject;
 /**
  * Created by dante on 12/5/16.
  */
-public class Geopoints extends RealmObject {
+public class GeopointResponse extends RealmObject {
 
     private float lat;
     private float lng;

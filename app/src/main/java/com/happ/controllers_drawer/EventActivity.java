@@ -4,10 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -165,58 +163,14 @@ public class EventActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_event);
         setTitle("");
+        binds();
 
-        mTitle = (TextView) findViewById(R.id.event_title);
         tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.otf");
         mTitle.setTypeface(tfcs);
-
-        mEventAuthor = (RelativeLayout) findViewById(R.id.event_author_form);
-        mPlace = (TextView) findViewById(R.id.event_place);
-        mFavoritesImage = (ImageView) findViewById(R.id.event_iv_favorites);
-        mVotesCount = (TextView) findViewById(R.id.event_votes_count);
-        mAuthor = (TextView) findViewById(R.id.event_author);
-        mAuthorEmail = (TextView) findViewById(R.id.event_author_email);
-        mDescription = (TextView) findViewById(R.id.event_description);
-        mWebSite = (TextView) findViewById(R.id.event_website);
-        mEventWEbSite = (LinearLayout) findViewById(R.id.event_website_form);
-        mEventEmail = (LinearLayout) findViewById(R.id.event_email_form);
-        mEventPhone = (LinearLayout) findViewById(R.id.event_phone_form);
-        mPhone = (TextView) findViewById(R.id.event_phone);
-        mPrice = (TextView) findViewById(R.id.event_price);
-        mEventDate = (TextView) findViewById(R.id.event_date);
-        mEventTime = (TextView) findViewById(R.id.event_time);
-        viewPager = (ViewPager) findViewById(R.id.slider_viewpager);
-        mEmail = (TextView) findViewById(R.id.event_email);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mToolbarTop = (Toolbar) findViewById(R.id.top_event_toolbar);
-        mLLToolbar = (LinearLayout) findViewById(R.id.ll_toolbar);
-        ctl = (CollapsingToolbarLayout) findViewById(R.id.event_collapsing_layout);
-        mUpvoteImage = (ImageView) findViewById(R.id.event_iv_did_upvote);
-        mCircleLLPlace = (LinearLayout) findViewById(R.id.ll_place_image);
-        mCircleLLCalendar = (LinearLayout) findViewById(R.id.ll_calendar_image);
-        mCircleLLPrice = (LinearLayout) findViewById(R.id.ll_price_image);
-        mFlashingImageViewPlace = (ImageView) findViewById(R.id.iv_flashing_place);
-        mLLVote = (LinearLayout) findViewById(R.id.ll_upvote_image);
-        mLLFav = (LinearLayout) findViewById(R.id.ll_fav_image);
-        mCurrency = (TextView) findViewById(R.id.event_currency);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
-        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
-        mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
-        rvPhones = (RecyclerView) findViewById(R.id.rv_event_phones);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
-        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
-
-        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
-        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
-        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
         String versionName = BuildConfig.VERSION_NAME;
         mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
-
         mFab.setVisibility(View.GONE);
+
         if (isOrg) {
             mFab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -364,6 +318,52 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
+    private void binds() {
+        mTitle = (TextView) findViewById(R.id.event_title);
+        mEventAuthor = (RelativeLayout) findViewById(R.id.event_author_form);
+        mPlace = (TextView) findViewById(R.id.event_place);
+        mFavoritesImage = (ImageView) findViewById(R.id.event_iv_favorites);
+        mVotesCount = (TextView) findViewById(R.id.event_votes_count);
+        mAuthor = (TextView) findViewById(R.id.event_author);
+        mAuthorEmail = (TextView) findViewById(R.id.event_author_email);
+        mDescription = (TextView) findViewById(R.id.event_description);
+        mWebSite = (TextView) findViewById(R.id.event_website);
+        mEventWEbSite = (LinearLayout) findViewById(R.id.event_website_form);
+        mEventEmail = (LinearLayout) findViewById(R.id.event_email_form);
+        mEventPhone = (LinearLayout) findViewById(R.id.event_phone_form);
+        mPhone = (TextView) findViewById(R.id.event_phone);
+        mPrice = (TextView) findViewById(R.id.event_price);
+        mEventDate = (TextView) findViewById(R.id.event_date);
+        mEventTime = (TextView) findViewById(R.id.event_time);
+        viewPager = (ViewPager) findViewById(R.id.slider_viewpager);
+        mEmail = (TextView) findViewById(R.id.event_email);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
+        mToolbarTop = (Toolbar) findViewById(R.id.top_event_toolbar);
+        mLLToolbar = (LinearLayout) findViewById(R.id.ll_toolbar);
+        ctl = (CollapsingToolbarLayout) findViewById(R.id.event_collapsing_layout);
+        mUpvoteImage = (ImageView) findViewById(R.id.event_iv_did_upvote);
+        mCircleLLPlace = (LinearLayout) findViewById(R.id.ll_place_image);
+        mCircleLLCalendar = (LinearLayout) findViewById(R.id.ll_calendar_image);
+        mCircleLLPrice = (LinearLayout) findViewById(R.id.ll_price_image);
+        mFlashingImageViewPlace = (ImageView) findViewById(R.id.iv_flashing_place);
+        mLLVote = (LinearLayout) findViewById(R.id.ll_upvote_image);
+        mLLFav = (LinearLayout) findViewById(R.id.ll_fav_image);
+        mCurrency = (TextView) findViewById(R.id.event_currency);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
+        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
+        mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
+        rvPhones = (RecyclerView) findViewById(R.id.rv_event_phones);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
+        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
+        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
+        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
+        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
+        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
+
+    }
 
     private void setListenerToRootView() {
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
@@ -400,8 +400,6 @@ public class EventActivity extends AppCompatActivity {
 
 
     private void setDrawerLayoutListener() {
-
-
         ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, null, 0, 0) {
             @Override
             public void onDrawerClosed(View drawerView) {
@@ -512,27 +510,27 @@ public class EventActivity extends AppCompatActivity {
             });
 
 
-            if (event.getColor() != null) {
-                mCircleLLCalendar.setBackgroundResource(R.drawable.circle_event);
-                mCircleLLPrice.setBackgroundResource(R.drawable.circle_event);
-                mCircleLLPlace.setBackgroundResource(R.drawable.circle_event);
-                mLLVote.setBackgroundResource(R.drawable.circle_event);
-                mFlashingImageViewPlace.setBackgroundResource(R.drawable.circle_event);
-
-                GradientDrawable gdCalendar = (GradientDrawable) mCircleLLCalendar.getBackground().getCurrent();
-                GradientDrawable gdPlace = (GradientDrawable) mCircleLLPlace.getBackground().getCurrent();
-                GradientDrawable gdPrice = (GradientDrawable) mCircleLLPrice.getBackground().getCurrent();
-                GradientDrawable gdVote = (GradientDrawable) mLLVote.getBackground().getCurrent();
-                GradientDrawable gdFlashingPlace = (GradientDrawable) mFlashingImageViewPlace.getBackground().getCurrent();
-
-                gdCalendar.setColor(Color.parseColor(event.getColor()));
-                gdPlace.setColor(Color.parseColor(event.getColor()));
-                gdPrice.setColor(Color.parseColor(event.getColor()));
-                gdVote.setColor(Color.parseColor(event.getColor()));
-                gdFlashingPlace.setColor(Color.parseColor(event.getColor()));
-
-                mLLToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
-            }
+//            if (event.getColor() != null) {
+//                mCircleLLCalendar.setBackgroundResource(R.drawable.circle_event);
+//                mCircleLLPrice.setBackgroundResource(R.drawable.circle_event);
+//                mCircleLLPlace.setBackgroundResource(R.drawable.circle_event);
+//                mLLVote.setBackgroundResource(R.drawable.circle_event);
+//                mFlashingImageViewPlace.setBackgroundResource(R.drawable.circle_event);
+//
+//                GradientDrawable gdCalendar = (GradientDrawable) mCircleLLCalendar.getBackground().getCurrent();
+//                GradientDrawable gdPlace = (GradientDrawable) mCircleLLPlace.getBackground().getCurrent();
+//                GradientDrawable gdPrice = (GradientDrawable) mCircleLLPrice.getBackground().getCurrent();
+//                GradientDrawable gdVote = (GradientDrawable) mLLVote.getBackground().getCurrent();
+//                GradientDrawable gdFlashingPlace = (GradientDrawable) mFlashingImageViewPlace.getBackground().getCurrent();
+//
+//                gdCalendar.setColor(Color.parseColor(event.getColor()));
+//                gdPlace.setColor(Color.parseColor(event.getColor()));
+//                gdPrice.setColor(Color.parseColor(event.getColor()));
+//                gdVote.setColor(Color.parseColor(event.getColor()));
+//                gdFlashingPlace.setColor(Color.parseColor(event.getColor()));
+//
+//                mLLToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
+//            }
 
             anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha_infiniti);
             mFlashingImageViewPlace.startAnimation(anim);

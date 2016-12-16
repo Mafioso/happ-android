@@ -2,7 +2,6 @@ package com.happ.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -431,9 +430,9 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mInterestTitle.setText("Null");
             }
 
-            if (item.event.getColor() != null) {
-                itemHolder.mBackground.setBackgroundColor(Color.parseColor(item.event.getColor()));
-            }
+//            if (item.event.getColor() != null) {
+//                itemHolder.mBackground.setBackgroundColor(Color.parseColor(item.event.getColor()));
+//            }
             if (item.event.isDidVote()) {
                 itemHolder.mUpvoteImage.setImageResource(R.drawable.ic_did_upvote);
             } else {

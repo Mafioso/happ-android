@@ -18,7 +18,7 @@ import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
 import com.happ.models.EventPhones;
 import com.happ.models.EventsResponse;
-import com.happ.models.Geopoints;
+import com.happ.models.GeopointResponse;
 import com.happ.models.HappToken;
 import com.happ.models.Interest;
 import com.happ.models.InterestResponse;
@@ -91,7 +91,7 @@ public class HappRestClient {
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
                     .registerTypeAdapter(Date.class, new DateDeserializer())
                     .registerTypeAdapter(EventPhones.class, new PhoneDeserializer())
-                    .registerTypeAdapter(Geopoints.class, new GeopointDeserializer())
+                    .registerTypeAdapter(GeopointResponse.class, new GeopointDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }

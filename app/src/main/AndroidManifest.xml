@@ -53,7 +53,7 @@
         <activity android:name=".controllers_drawer.EventActivity" />
         <activity
             android:name=".controllers.EditCreateActivity"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".controllers.UserActivity"
             android:label="@string/user_settings"
@@ -100,7 +100,6 @@
         </activity>
 
         <activity android:name=".controllers.WelcomeActivity" >
-            <!--welcome activity-->
         </activity>
 
         <activity android:name=".controllers.EventMapActivity"/>

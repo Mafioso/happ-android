@@ -3,8 +3,6 @@ package com.happ.models;
 import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
-import com.happ.App;
-import com.happ.R;
 
 import java.util.ArrayList;
 
@@ -23,7 +21,6 @@ public class Interest extends RealmObject {
     @SerializedName("parent")
     private String parentId;
     private String title;
-    private String color;
     private String url;
 
     public String getTitle() {
@@ -42,18 +39,18 @@ public class Interest extends RealmObject {
         return result;
     }
 
-    public String getColor() {
-        Interest parent = getParent();
-        if (parent != null) return parent.getColor();
-        if (this.color == null) {
-            return App.getContext().getResources().getString(0+R.color.colorPrimary);
-        }
-        return this.color;
-    }
+//    public String getColor() {
+//        Interest parent = getParent();
+//        if (parent != null) return parent.getColor();
+//        if (this.color == null) {
+//            return App.getContext().getResources().getString(0+R.color.colorPrimary);
+//        }
+//        return this.color;
+//    }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
+//    public void setColor(String color) {
+//        this.color = color;
+//    }
 
     public Interest getParent() {
         Realm realm = Realm.getDefaultInstance();

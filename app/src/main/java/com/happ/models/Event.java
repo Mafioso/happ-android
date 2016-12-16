@@ -62,7 +62,7 @@ public class Event extends RealmObject implements Serializable {
     private int status;
 
     //geo for googleMap
-    private RealmList<Geopoints> geopoint;
+    private RealmList<GeopointResponse> geopoint;
 
     public String getId() {
         return id;
@@ -288,13 +288,10 @@ public class Event extends RealmObject implements Serializable {
         this.interestIds = interestIds;
     }
 
-    public String getColor() {
-        return color;
-    }
+//    public String getColor() {
+//        return images.get(0).getColor();
+//    }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
 
     public RealmList<EventPhones> getPhones() {
         return phones;
@@ -304,11 +301,11 @@ public class Event extends RealmObject implements Serializable {
         this.phones = phones;
     }
 
-    public RealmList<Geopoints> getGeopoint() {
+    public RealmList<GeopointResponse> getGeopoint() {
         return geopoint;
     }
 
-    public void setGeopoint(RealmList<Geopoints> geopoint) {
+    public void setGeopoint(RealmList<GeopointResponse> geopoint) {
         this.geopoint = geopoint;
     }
 

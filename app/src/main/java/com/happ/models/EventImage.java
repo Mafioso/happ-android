@@ -12,6 +12,7 @@ public class EventImage extends RealmObject {
 
     private String id;
     private String path;
+    private String color;
 
     public String getUrl() {
         String host = App.getContext().getString(R.string.HOST);
@@ -34,5 +35,13 @@ public class EventImage extends RealmObject {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }
