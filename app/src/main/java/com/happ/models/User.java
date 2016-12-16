@@ -1,7 +1,5 @@
 package com.happ.models;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -14,8 +12,8 @@ import io.realm.annotations.PrimaryKey;
  */
 public class User extends RealmObject {
     private String username;
-    @SerializedName("fullname")
-    private String fullName;
+//    @SerializedName("fullname")
+    private String fullname;
     private String fn;
     private String email;
     @PrimaryKey
@@ -35,16 +33,16 @@ public class User extends RealmObject {
         this.username = username;
     }
 
-    public String getFullName() {
-        if (fullName == null) {
+    public String getFullname() {
+        if (fullname == null) {
             if (fn == null) return username;
             return fn;
         }
-        return fullName;
+        return fullname;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public String getEmail() {
@@ -72,11 +70,11 @@ public class User extends RealmObject {
     }
 
     public String getFn() {
-        return fullName;
+        return fullname;
     }
 
     public void setFn(String fn) {
-        this.fullName = fn;
+        this.fullname = fn;
     }
 
     public String getPhone() {

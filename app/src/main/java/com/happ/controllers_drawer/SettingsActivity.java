@@ -158,7 +158,7 @@ public class SettingsActivity extends AppCompatActivity {
         navigationMenu.getMenu().findItem(R.id.nav_item_settings).setChecked(true);
         navigationMenu.getMenu().findItem(R.id.nav_item_settings).setIcon(R.drawable.happ_drawer_icon);
 
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
         mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
@@ -226,7 +226,7 @@ public class SettingsActivity extends AppCompatActivity {
                 i.setType("message/rfc822");
                 i.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.settings_subject_contact)
                         + " " +
-                        App.getCurrentUser().getFullName() + App.getCurrentUser().getFn());
+                        App.getCurrentUser().getFullname() + App.getCurrentUser().getFn());
                 i.setData(Uri.parse("mailto:" + getResources().getString(R.string.happ_email)));
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
@@ -340,7 +340,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
     }

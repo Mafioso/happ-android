@@ -172,7 +172,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
                         sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
                         String name = sPref.getString("first_create_event", "");
 
-                        if (name == null || name.length() == 0) {
+                        if (name.equals("") || name.length() == 0) {
                             sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
                             sPref.edit().putString("first_create_event", FIRST_CREATE_EVENT).apply();
 
@@ -341,7 +341,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
         navigationMenu.getMenu().findItem(R.id.nav_item_organizer).setChecked(true);
         navigationMenu.getMenu().findItem(R.id.nav_item_organizer).setIcon(R.drawable.happ_drawer_icon);
 
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
         String versionName = BuildConfig.VERSION_NAME;
@@ -422,7 +422,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
     @Override
     public void onResume() {
         super.onResume();
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
 

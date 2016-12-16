@@ -154,7 +154,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
 
         if (user != null) {
 
-            mUsername.setText(App.getCurrentUser().getFullName());
+            mUsername.setText(App.getCurrentUser().getFullname());
             mEmail.setText(App.getCurrentUser().getEmail());
             mPhoneNumber.setText(App.getCurrentUser().getPhone());
             mDateBirthday = App.getCurrentUser().getDate_of_birth();

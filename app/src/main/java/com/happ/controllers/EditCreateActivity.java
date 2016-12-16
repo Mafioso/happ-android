@@ -68,7 +68,8 @@ public class    EditCreateActivity extends AppCompatActivity {
     private ImageButton mImgBtnSelectInterest,
                         mImgBtnSelectStartDate,
                         mImgBtnSelectEndDate,
-                        mImgBtnSelectPointMap;
+                        mImgBtnSelectPointMap,
+                        mImgBtnSelectCity;
 
     private View mViewSpaceListenerStartTime, mViewSpaceListenerEndTime;
 
@@ -249,6 +250,16 @@ public class    EditCreateActivity extends AppCompatActivity {
             }
         });
 
+        mImgBtnSelectCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
+
+
         mBtnCreateSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -288,6 +299,7 @@ public class    EditCreateActivity extends AppCompatActivity {
         mImgBtnSelectStartDate = (ImageButton) findViewById(R.id.ibtn_ec_edit_startdate);
         mImgBtnSelectEndDate = (ImageButton) findViewById(R.id.ibtn_ec_edit_enddate);
         mImgBtnSelectPointMap = (ImageButton) findViewById(R.id.ibtn_ec_edit_map);
+        mImgBtnSelectCity = (ImageButton) findViewById(R.id.ibtn_ec_edit_city);
 
         mViewSpaceListenerStartTime = (View) findViewById(R.id.view_click_starttime);
         mViewSpaceListenerEndTime = (View) findViewById(R.id.view_click_endtime);
@@ -321,17 +333,16 @@ public class    EditCreateActivity extends AppCompatActivity {
         }
         event.setPhones(phones);
 
-        RealmList<GeopointResponse> geopoint = new RealmList<GeopointResponse>();
+
         GeopointResponse geopoinstResponse = new GeopointResponse();
         geopoinstResponse.setLat((float) 43.239032);
         geopoinstResponse.setLng((float) 76.952740);
-        geopoint.add(geopoinstResponse);
-        event.setGeopoint(geopoint);
+        event.setGeopoint(geopoinstResponse);
 
         event.setEmail("dante666lcf@gmail.com");
 
         User author = new User();
-        author.setFullName(App.getCurrentUser().getFn());
+        author.setFullname(App.getCurrentUser().getFn());
         event.setAuthor(author);
 
 
@@ -369,10 +380,11 @@ public class    EditCreateActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String evendId = intent.getStringExtra("event_id");
-                intent = new Intent(EditCreateActivity.this, EventActivity.class);
-                intent.putExtra("in_event_activity", true);
-                intent.putExtra("event_id", evendId);
-                startActivity(intent);
+
+                Intent goToEventActivity = new Intent(EditCreateActivity.this, EventActivity.class);
+                goToEventActivity.putExtra("in_event_activity", true);
+                goToEventActivity.putExtra("event_id", evendId);
+                startActivity(goToEventActivity);
 
 //                intent = new Intent(context, EventActivity.class);
 //                intent.putExtra("event_id", evendId);

@@ -189,7 +189,7 @@ public class ConfirmEmailActivity extends AppCompatActivity {
             }
         });
 
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
         mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {

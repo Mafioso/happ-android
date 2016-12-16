@@ -301,7 +301,7 @@ import io.realm.RealmResults;
             navigationMenu.getMenu().findItem(R.id.nav_item_interests).setChecked(true);
             navigationMenu.getMenu().findItem(R.id.nav_item_interests).setIcon(R.drawable.happ_drawer_icon);
 
-            mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+            mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
             mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
             mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
@@ -461,7 +461,7 @@ import io.realm.RealmResults;
     @Override
     protected void onResume() {
         super.onResume();
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
 

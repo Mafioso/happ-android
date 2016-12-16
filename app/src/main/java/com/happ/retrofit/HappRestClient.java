@@ -778,7 +778,6 @@ public class HappRestClient {
                         Intent intent = new Intent(BroadcastIntents.EVENTCREATE_REQUEST_OK);
                         String eventId = event.getId();
                         intent.putExtra("event_id", eventId);
-                        intent.putExtra("in_event_activity", true);
                         LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                     } else {
                         Intent intent = new Intent(BroadcastIntents.EVENTCREATE_REQUEST_FAIL);

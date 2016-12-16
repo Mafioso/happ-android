@@ -139,6 +139,8 @@ public class EventActivity extends AppCompatActivity {
     private TextView mDrawerVersionApp;
     private int position;
 
+    private String currentUser, currentCity;
+
     private String[] urls = {
             "http://www.freedigitalphotos.net/images/img/homepage/87357.jpg",
             "http://assets.barcroftmedia.com.s3-website-eu-west-1.amazonaws.com/assets/images/recent-images-11.jpg",
@@ -163,6 +165,8 @@ public class EventActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_event);
         setTitle("");
+        currentUser = App.getCurrentUser().getFullname();
+        currentCity = App.getCurrentCity().getName();
         binds();
 
         tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.otf");
@@ -263,8 +267,8 @@ public class EventActivity extends AppCompatActivity {
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setIcon(R.drawable.happ_drawer_icon);
 
 
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
-        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
+        mDrawerHeaderTVUsername.setText(currentUser);
+        mDrawerHeaderTVCity.setText(currentCity);
 
 
         mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
@@ -543,11 +547,13 @@ public class EventActivity extends AppCompatActivity {
             final User author = event.getAuthor();
             if (author != null) {
                 if (author.getEmail() != null) {
-                    mAuthorEmail.setText(event.getAuthor().getEmail());
+                    mAuthorEmail.setText(author.getEmail());
                 } else {
                     mAuthorEmail.setVisibility(View.GONE);
                 }
-                mAuthor.setText(event.getAuthor().getFn());
+                mAuthor.setText(author.getFullname());
+                String string = author.getFullname();
+                System.out.print(string);
             } else {
                 mEventAuthor.setVisibility(View.GONE);
             }
@@ -695,12 +701,13 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        repopulateEvent();
-        if (isOrg && mFab.getVisibility() != View.VISIBLE) {
-            mFab.show();
-        }
-        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullName());
-        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
+//        repopulateEvent();
+//        if (isOrg && mFab.getVisibility() != View.VISIBLE) {
+//            mFab.show();
+//        }
+
+        mDrawerHeaderTVUsername.setText(currentUser);
+        mDrawerHeaderTVCity.setText(currentCity);
     }
 
     @Override
@@ -713,6 +720,8 @@ public class EventActivity extends AppCompatActivity {
         event = null;
         viewPager = null;
         mEventImagesSwipeAdapter = null;
+        mDrawerHeaderTVUsername = null;
+        mDrawerHeaderTVCity = null;
         mWebSite = null;
         mEmail = null;
         mPlace = null;
@@ -786,7 +795,7 @@ public class EventActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
+                mDrawerHeaderTVCity.setText(currentCity);
                 mDrawerHeaderArrow.setChecked(false);
                 mDrawerCityFragment.setVisibility(View.GONE);
                 mDrawerLayout.closeDrawer(GravityCompat.START);
