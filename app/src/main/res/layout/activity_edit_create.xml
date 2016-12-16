@@ -22,12 +22,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <LinearLayout
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:layout_width="0px"
+                    android:layout_height="0px"/>
+
                 <RelativeLayout
                     android:id="@+id/container_ec_images"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:background="@color/dark12"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/ec_image_rv"
@@ -54,21 +60,20 @@
                     android:paddingTop="24dp"
                     android:paddingBottom="24dp"
                     android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
-                    android:visibility="visible">
+                    android:paddingRight="16dp">
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_ec_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <EditText
-                            android:id="@+id/input_ec_name"
+                            android:id="@+id/input_ec_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
-                            android:hint="@string/event_name"
+                            android:hint="@string/event_title"
                             android:textSize="16sp"
                             android:inputType="textNoSuggestions"/>
                     </android.support.design.widget.TextInputLayout>
@@ -78,7 +83,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:layout_toLeftOf="@+id/iv_ec_edit_interest"
+                        android:layout_toLeftOf="@+id/ibtn_ec_edit_interest"
+                        android:layout_toStartOf="@+id/ibtn_ec_edit_interest"
                         android:layout_below="@+id/input_layout_ec_name"
                         android:visibility="visible">
 
@@ -89,19 +95,21 @@
                             android:maxLines="1"
                             android:textSize="16sp"
                             android:hint="@string/event_interest"
-                            android:inputType="textNoSuggestions"/>
+                            android:inputType="textNoSuggestions"
+                            android:enabled="false"/>
                     </android.support.design.widget.TextInputLayout>
 
-                    <ImageView
-                        android:id="@+id/iv_ec_edit_interest"
+                    <ImageButton
+                        android:id="@+id/ibtn_ec_edit_interest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:layout_marginLeft="8dp"
                         android:layout_below="@+id/input_layout_ec_name"
-                        android:layout_alignParentRight="true"
                         app:srcCompat="@drawable/ic_edit_compat"
-                        android:visibility="visible"/>
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:padding="16dp"
+                        android:visibility="visible"
+                        android:background="?android:selectableItemBackground" />
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_ec_description"
@@ -109,7 +117,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:visibility="visible">
+                        android:visibility="gone">
 
                         <EditText
                             android:id="@+id/input_ec_description"
@@ -123,14 +131,51 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp"
                             android:textSize="16sp"
                             android:text="@string/tap_here_description"/>
                     </android.support.design.widget.TextInputLayout>
 
 
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_ec_city"
+                        android:layout_below="@+id/input_layout_ec_description"
+                        android:layout_toLeftOf="@+id/ibtn_ec_edit_city"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible">
+
+                        <EditText
+                            android:id="@+id/input_ec_city"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textSize="16sp"
+                            android:enabled="false"
+                            android:hint="@string/city"
+                            android:inputType="textNoSuggestions"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/ibtn_ec_edit_city"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/input_layout_ec_description"
+                        app:srcCompat="@drawable/ic_edit_compat"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:padding="16dp"
+                        android:visibility="visible"
+                        android:background="?android:selectableItemBackground" />
+
+
+
+
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_ec_place"
-                        android:layout_below="@+id/input_layout_ec_description"
+                        android:layout_below="@+id/input_layout_ec_city"
+                        android:layout_toLeftOf="@+id/ibtn_ec_edit_map"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="visible">
@@ -141,9 +186,25 @@
                             android:layout_height="wrap_content"
                             android:maxLines="1"
                             android:textSize="16sp"
+                            android:enabled="false"
+
                             android:hint="@string/event_place"
                             android:inputType="textNoSuggestions"/>
                     </android.support.design.widget.TextInputLayout>
+
+
+                    <ImageButton
+                        android:id="@+id/ibtn_ec_edit_map"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/input_layout_ec_city"
+                        app:srcCompat="@drawable/ic_place_orange_compat"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:padding="16dp"
+                        android:visibility="visible"
+                        android:background="?android:selectableItemBackground" />
+
 
 
                     <RelativeLayout
@@ -158,7 +219,8 @@
                             android:id="@+id/input_layout_ec_min_price"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toLeftOf="@+id/dash_price">
+                            android:layout_toLeftOf="@+id/dash_price"
+                            android:layout_toStartOf="@+id/dash_price">
 
                             <EditText
                                 android:id="@+id/input_ec_min_price"
@@ -167,7 +229,8 @@
                                 android:maxLines="1"
                                 android:textSize="16sp"
                                 android:hint="@string/event_min_price"
-                                android:inputType="textNoSuggestions"/>
+                                android:inputType="number"
+                                android:gravity="center"/>
                         </android.support.design.widget.TextInputLayout>
 
                         <TextView
@@ -185,7 +248,8 @@
                             android:id="@+id/input_layout_ec_max_price"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@+id/dash_price">
+                            android:layout_toRightOf="@+id/dash_price"
+                            android:layout_toEndOf="@+id/dash_price">
 
                             <EditText
                                 android:id="@+id/input_ec_max_price"
@@ -194,13 +258,15 @@
                                 android:maxLines="1"
                                 android:textSize="16sp"
                                 android:hint="@string/event_max_price"
-                                android:inputType="textNoSuggestions"/>
+                                android:inputType="number"
+                                android:gravity="center"/>
                         </android.support.design.widget.TextInputLayout>
                     </RelativeLayout>
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_ec_currency"
                         android:layout_below="@+id/rl_price_ec"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -225,23 +291,27 @@
                         android:layout_marginTop="24dp"
                         android:text="@string/event_date"/>
 
-                    <ImageView
-                        android:id="@+id/iv_ec_edit_start_date"
+                    <ImageButton
+                        android:id="@+id/ibtn_ec_edit_startdate"
                         android:layout_below="@+id/tv_ec_event_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:srcCompat="@drawable/ic_edit_compat"
                         android:layout_alignParentRight="true"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="32dp" />
+                        android:layout_alignParentEnd="true"
+                        android:padding="16dp"
+                        android:background="?android:selectableItemBackground" />
+                    
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_ec_startdate"
                         android:layout_below="@+id/tv_ec_event_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/iv_ec_edit_start_date"
+                        android:layout_toLeftOf="@+id/ibtn_ec_edit_startdate"
+                        android:layout_toStartOf="@+id/ibtn_ec_edit_startdate"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="4dp">
 
                         <EditText
@@ -249,28 +319,32 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
+                            android:enabled="false"
                             android:hint="@string/start_date"
                             android:textSize="16sp"
                             android:inputType="textNoSuggestions"/>
                     </android.support.design.widget.TextInputLayout>
 
-                    <ImageView
-                        android:id="@+id/iv_ec_edit_end_date"
+                    <ImageButton
+                        android:id="@+id/ibtn_ec_edit_enddate"
                         android:layout_below="@+id/input_layout_ec_startdate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:srcCompat="@drawable/ic_edit_compat"
                         android:layout_alignParentRight="true"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginTop="24dp" />
+                        android:layout_alignParentEnd="true"
+                        android:padding="16dp"
+                        android:background="?android:selectableItemBackground" />
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_ec_enddate"
-                        android:layout_toLeftOf="@+id/iv_ec_edit_end_date"
+                        android:layout_toLeftOf="@+id/ibtn_ec_edit_enddate"
+                        android:layout_toStartOf="@+id/ibtn_ec_edit_enddate"
                         android:layout_below="@+id/input_layout_ec_startdate"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginStart="16dp"
                         android:layout_marginTop="4dp">
 
                         <EditText
@@ -278,6 +352,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
+                            android:enabled="false"
                             android:hint="@string/end_date"
                             android:textSize="16sp"
                             android:inputType="textNoSuggestions"/>
@@ -293,63 +368,79 @@
                         android:text="@string/event_duration"
                         android:visibility="visible"/>
 
-                    <RelativeLayout
-                        android:id="@+id/rl_datetime_ec"
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_ec_min_datetime"
                         android:layout_below="@+id/tv_ec_event_duration"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:layout_marginLeft="16dp"
-                        android:visibility="visible">
+                        android:layout_toLeftOf="@+id/dash_datetime"
+                        android:layout_toStartOf="@+id/dash_datetime">
 
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/input_layout_ec_min_datetime"
+                        <EditText
+                            android:id="@+id/input_ec_starttime"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toLeftOf="@+id/dash_datetime">
+                            android:maxLines="1"
+                            android:textSize="16sp"
+                            android:gravity="center"
+                            android:enabled="false"
+                            android:hint="@string/from"
+                            android:inputType="textNoSuggestions"/>
+                    </android.support.design.widget.TextInputLayout>
 
-                            <EditText
-                                android:id="@+id/input_ec_min_datetime"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:maxLines="1"
-                                android:textSize="16sp"
-                                android:hint="@string/from"
-                                android:inputType="textNoSuggestions"/>
-                        </android.support.design.widget.TextInputLayout>
+                    <View
+                        android:id="@+id/view_click_starttime"
+                        android:layout_below="@id/tv_ec_event_duration"
+                        android:layout_toLeftOf="@+id/dash_datetime"
+                        android:layout_toStartOf="@+id/dash_datetime"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"/>
 
-                        <TextView
-                            android:id="@+id/dash_datetime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerVertical="true"
-                            android:text="—"
-                            android:textSize="18sp"
-                            android:layout_marginLeft="4dp"
-                            android:layout_marginRight="4dp"/>
+                    <TextView
+                        android:id="@+id/dash_datetime"
+                        android:layout_below="@+id/tv_ec_event_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:text="—"
+                        android:textSize="18sp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="24dp"/>
 
-                        <android.support.design.widget.TextInputLayout
-                            android:id="@+id/input_layout_ec_max_datetime"
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_ec_max_datetime"
+                        android:layout_below="@+id/tv_ec_event_duration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/dash_datetime"
+                        android:layout_toEndOf="@+id/dash_datetime">
+
+                        <EditText
+                            android:id="@+id/input_ec_endtime"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@+id/dash_datetime">
+                            android:maxLines="1"
+                            android:gravity="center"
+                            android:textSize="16sp"
+                            android:enabled="false"
+                            android:hint="@string/up_to"
+                            android:inputType="textNoSuggestions"/>
+                    </android.support.design.widget.TextInputLayout>
 
-                            <EditText
-                                android:id="@+id/input_ec_max_datetime"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:maxLines="1"
-                                android:textSize="16sp"
-                                android:hint="@string/up_to"
-                                android:inputType="textNoSuggestions"/>
-                        </android.support.design.widget.TextInputLayout>
-                    </RelativeLayout>
-
+                    <View
+                        android:id="@+id/view_click_endtime"
+                        android:layout_below="@id/tv_ec_event_duration"
+                        android:layout_toRightOf="@+id/dash_datetime"
+                        android:layout_toEndOf="@+id/dash_datetime"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"/>
 
                     <RelativeLayout
                         android:id="@+id/rl_ec_continuing_event"
-                        android:layout_below="@+id/rl_datetime_ec"
+                        android:layout_below="@+id/dash_datetime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
@@ -358,6 +449,7 @@
                         <TextView
                             android:id="@+id/tv_ec_continuing_event"
                             android:layout_toLeftOf="@+id/switch_ec_continuing"
+                            android:layout_toStartOf="@+id/switch_ec_continuing"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
@@ -366,6 +458,7 @@
                         <TextView
                             android:layout_below="@+id/tv_ec_continuing_event"
                             android:layout_toLeftOf="@+id/switch_ec_continuing"
+                            android:layout_toStartOf="@+id/switch_ec_continuing"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="2"
@@ -376,8 +469,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="16dp"/>
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp"/>
                     </RelativeLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -405,7 +500,7 @@
                         android:layout_marginTop="8dp">
 
                         <EditText
-                            android:id="@+id/input_ec_tickets_link"
+                            android:id="@+id/input_ec_ticket_link"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
@@ -437,6 +532,7 @@
                             android:gravity="end"
                             android:textColor="@color/colorAccent183"
                             android:paddingRight="4dp"
+                            android:paddingEnd="4dp"
                             android:text="@string/warning_for_empty_box_email"/>
                     </android.support.design.widget.TextInputLayout>
 
@@ -461,6 +557,7 @@
                             android:gravity="end"
                             android:textColor="@color/colorAccent183"
                             android:paddingRight="4dp"
+                            android:paddingEnd="4dp"
                             android:text="@string/warning_for_empty_box_phone"/>
                     </android.support.design.widget.TextInputLayout>
 
@@ -475,6 +572,7 @@
                         <TextView
                             android:id="@+id/tv_ec_explicit_content_event"
                             android:layout_toLeftOf="@+id/switch_ec_explicit_content"
+                            android:layout_toStartOf="@+id/switch_ec_explicit_content"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="16sp"
@@ -483,6 +581,7 @@
                         <TextView
                             android:layout_below="@+id/tv_ec_explicit_content_event"
                             android:layout_toLeftOf="@+id/switch_ec_explicit_content"
+                            android:layout_toStartOf="@+id/switch_ec_explicit_content"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="2"
@@ -493,8 +592,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="16dp"/>
+                            android:layout_marginLeft="16dp"
+                            android:layout_marginStart="16dp"/>
                     </RelativeLayout>
                 </RelativeLayout>
             </RelativeLayout>

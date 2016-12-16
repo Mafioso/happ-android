@@ -210,65 +210,69 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-        MarkerOptions options = new MarkerOptions();
-        options.position(new LatLng(43.218282, 76.927793));
-        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-        mMap.addMarker(options);
+//        MarkerOptions options = new MarkerOptions();
+//        options.position(new LatLng(43.218282, 76.927793));
+//        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+//        mMap.addMarker(options);
 
-//        // Setting onclick event listener for the map
-//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-//
-//            @Override
-//            public void onMapClick(LatLng point) {
-//
-//                // Already two locations
-//                if (MarkerPoints.size() > 0) {
-//                    MarkerPoints.clear();
-//                    mMap.clear();
-//                }
-//
-//                // Adding new item to the ArrayList
-//                MarkerPoints.add(point);
-//
-//                // Creating MarkerOptions
-//                MarkerOptions options = new MarkerOptions();
-//
-//                // Setting the position of the marker
-//                options.position(point);
-//
-//                /**
-//                 * For the start location, the color of marker is GREEN and
-//                 * for the end location, the color of marker is RED.
-//                 */
-//                if (MarkerPoints.size() == 1) {
-//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-//                } else if (MarkerPoints.size() == 2) {
-//                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-//                }
-//
-//
-//                // Add new marker to the Google Map Android API V2
-//                mMap.addMarker(options);
-//
-//                // Checks, whether start and end locations are captured
-//                if (MarkerPoints.size() >= 2) {
-//                    LatLng origin = MarkerPoints.get(0);
-//                    LatLng dest = MarkerPoints.get(1);
-//
-//                    // Getting URL to the Google Directions API
-//                    String url = getUrl(origin, dest);
-//                    Log.d("onMapClick", url.toString());
-//                    FetchUrl FetchUrl = new FetchUrl();
-//
-//                    // Start downloading json data from Google Directions API
-//                    FetchUrl.execute(url);
-//                    //move map camera
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
-//                    mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-//                }
-//
-//            }
-//        });
+        final ArrayList<LatLng> MarkerPoints = new ArrayList<LatLng>();
+        MarkerPoints.add(new LatLng(43.218282, 76.927793));
+
+
+        // Setting onclick event listener for the map
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+
+            @Override
+            public void onMapClick(LatLng point) {
+
+                // Already two locations
+                if (MarkerPoints.size() > 0) {
+                    MarkerPoints.clear();
+                    mMap.clear();
+                }
+
+                // Adding new item to the ArrayList
+                MarkerPoints.add(point);
+
+                // Creating MarkerOptions
+                MarkerOptions options = new MarkerOptions();
+
+                // Setting the position of the marker
+                options.position(point);
+
+                /**
+                 * For the start location, the color of marker is GREEN and
+                 * for the end location, the color of marker is RED.
+                 */
+                if (MarkerPoints.size() == 1) {
+                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                } else if (MarkerPoints.size() == 2) {
+                    options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                }
+
+
+                // Add new marker to the Google Map Android API V2
+                mMap.addMarker(options);
+
+                // Checks, whether start and end locations are captured
+                if (MarkerPoints.size() >= 2) {
+                    LatLng origin = MarkerPoints.get(0);
+                    LatLng dest = MarkerPoints.get(1);
+
+                    // Getting URL to the Google Directions API
+                    String url = getUrl(origin, dest);
+                    Log.d("onMapClick", url.toString());
+                    FetchUrl FetchUrl = new FetchUrl();
+
+                    // Start downloading json data from Google Directions API
+                    FetchUrl.execute(url);
+                    //move map camera
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+                }
+
+            }
+        });
 
     }
 

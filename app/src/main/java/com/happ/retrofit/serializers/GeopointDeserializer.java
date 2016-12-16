@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 
         @Override
         public JsonElement serialize(GeopointResponse src, Type typeOfSrc, JsonSerializationContext context) {
+//            return new JsonPrimitive(src.getLat(), src.getLng());
             return null;
         }
     }

@@ -10,9 +10,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -24,7 +28,11 @@ import com.happ.models.EventPhones;
 import com.happ.models.GeopointResponse;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.Realm;
@@ -40,6 +48,29 @@ public class    EditCreateActivity extends AppCompatActivity {
     private Button mBtnCreateSave;
     private Event event;
     private String eventId;
+
+    private Date mStartDate, mEndDate, mStartTime, mEndTime;
+
+    private EditText    mEventTitle,
+                        mEventInterest,
+                        mEventDescription,
+                        mEventPlace,
+                        mEventMinPrice,
+                        mEventMaxPrice,
+                        mEventCurrency,
+                        mEventStartDate, mEventEndDate,
+                        mEventStartTime, mEventEndTime,
+                        mEventWebSite,
+                        mEventTicketLink,
+                        mEventEmail,
+                        mEventPhone;
+
+    private ImageButton mImgBtnSelectInterest,
+                        mImgBtnSelectStartDate,
+                        mImgBtnSelectEndDate,
+                        mImgBtnSelectPointMap;
+
+    private View mViewSpaceListenerStartTime, mViewSpaceListenerEndTime;
 
     private EventImagesSwipeAdapter mEventImagesSwipeAdapter;
     private BroadcastReceiver createEventReceiver;
@@ -61,7 +92,6 @@ public class    EditCreateActivity extends AppCompatActivity {
             realm.close();
         }
 
-
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -71,11 +101,153 @@ public class    EditCreateActivity extends AppCompatActivity {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    hideSoftKeyboard(EditCreateActivity.this, view);
                     finish();
                 }
             });
         }
 
+
+        mImgBtnSelectStartDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+                now.setTime(new Date());
+                DatePickerDialog dpd = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                                Calendar cal = Calendar.getInstance();
+                                if (mStartTime != null) {
+                                    cal.setTime(mStartTime);
+                                    cal.get(Calendar.HOUR_OF_DAY);
+                                    cal.get(Calendar.MINUTE);
+                                }
+                                cal.set(Calendar.YEAR, year);
+                                cal.set(Calendar.MONTH, monthOfYear);
+                                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                mStartDate = cal.getTime();
+
+                                //Set Start Date in EditText
+                                java.text.DateFormat format = DateFormat.getLongDateFormat(EditCreateActivity.this);
+                                mEventStartDate.setText(format.format(mStartDate));
+                            }
+                        },
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH )
+                );
+
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+            }
+        });
+
+        mImgBtnSelectEndDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar now = Calendar.getInstance();
+                now.setTime(new Date());
+                DatePickerDialog dpd = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                                Calendar cal = Calendar.getInstance();
+                                if (mEndTime != null) {
+                                    cal.setTime(mEndTime);
+                                    cal.get(Calendar.HOUR_OF_DAY);
+                                    cal.get(Calendar.MINUTE);
+                                }
+                                cal.set(Calendar.YEAR, year);
+                                cal.set(Calendar.MONTH, monthOfYear);
+                                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                                mEndDate = cal.getTime();
+
+                                //Set End Date in EditText
+                                java.text.DateFormat format = DateFormat.getLongDateFormat(EditCreateActivity.this);
+                                mEventEndDate.setText(format.format(mEndDate));
+                            }
+                        },
+                        now.get(Calendar.YEAR),
+                        now.get(Calendar.MONTH),
+                        now.get(Calendar.DAY_OF_MONTH )
+                );
+
+                dpd.show(getFragmentManager(), "Datepickerdialog");
+            }
+        });
+
+        mViewSpaceListenerStartTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mStartDate != null ) {
+                    Calendar now = Calendar.getInstance();
+                    TimePickerDialog tpd = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(mStartDate);
+                            cal.get(Calendar.YEAR);
+                            cal.get(Calendar.MONTH);
+                            cal.get(Calendar.DAY_OF_MONTH);
+                            cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                            cal.set(Calendar.MINUTE, minute);
+                            mStartTime = cal.getTime();
+                            mStartDate = mStartTime;
+
+                            //Set Start Time in EditText
+                            java.text.DateFormat format = DateFormat.getTimeFormat(EditCreateActivity.this);
+                            mEventStartTime.setText(format.format(mStartTime));
+                        }
+                    }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
+                    tpd.show(getFragmentManager(), "Timepickerdialog");
+                } else {
+                    Toast.makeText(EditCreateActivity.this, "Вы не указали старт события.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        mViewSpaceListenerEndTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mStartDate != null) {
+                    Calendar now = Calendar.getInstance();
+
+                    TimePickerDialog tpd = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+                            Calendar cal = Calendar.getInstance();
+                            if (mEndDate != null) {
+                                cal.setTime(mEndDate);
+                                cal.get(Calendar.YEAR);
+                                cal.get(Calendar.MONTH);
+                                cal.get(Calendar.DAY_OF_MONTH);
+                            } else {
+                                cal.setTime(mStartDate);
+                                cal.get(Calendar.YEAR);
+                                cal.get(Calendar.MONTH);
+                                cal.get(Calendar.DAY_OF_MONTH);
+                            }
+                            cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                            cal.set(Calendar.MINUTE, minute);
+                            mEndTime = cal.getTime();
+                            mEndDate = mEndTime;
+
+                            //Set End Time in EditText
+                            java.text.DateFormat format = DateFormat.getTimeFormat(EditCreateActivity.this);
+                            mEventEndTime .setText(format.format(mEndTime));
+                        }
+                    }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
+                    tpd.show(getFragmentManager(), "Timepickerdialog");
+                } else {
+                    Toast.makeText(EditCreateActivity.this, "Вы не указали старт события", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        mImgBtnSelectPointMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         mBtnCreateSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,12 +263,37 @@ public class    EditCreateActivity extends AppCompatActivity {
         }
     }
 
+
     private void binds() {
         toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
         mBtnCreateSave = (Button) findViewById(R.id.btn_editcreate_save);
-        mBtnCreateSave = (Button) findViewById(R.id.btn_editcreate_save);
+
+        mEventTitle = (EditText) findViewById(R.id.input_ec_title);
+        mEventInterest = (EditText) findViewById(R.id.input_ec_select_interest);
+        mEventDescription = (EditText) findViewById(R.id.input_ec_description);
+        mEventPlace = (EditText) findViewById(R.id.input_ec_place);
+        mEventMinPrice = (EditText) findViewById(R.id.input_ec_min_price);
+        mEventMaxPrice = (EditText) findViewById(R.id.input_ec_max_price);
+        mEventCurrency = (EditText) findViewById(R.id.input_ec_currency);
+        mEventStartDate = (EditText) findViewById(R.id.input_ec_startdate);
+        mEventEndDate = (EditText) findViewById(R.id.input_ec_enddate);
+        mEventStartTime = (EditText) findViewById(R.id.input_ec_starttime);
+        mEventEndTime = (EditText) findViewById(R.id.input_ec_endtime);
+        mEventWebSite = (EditText) findViewById(R.id.input_ec_website);
+        mEventTicketLink = (EditText) findViewById(R.id.input_ec_ticket_link);
+        mEventEmail = (EditText) findViewById(R.id.input_ec_email);
+        mEventPhone = (EditText) findViewById(R.id.input_ec_phone);
+
+        mImgBtnSelectInterest = (ImageButton) findViewById(R.id.ibtn_ec_edit_interest);
+        mImgBtnSelectStartDate = (ImageButton) findViewById(R.id.ibtn_ec_edit_startdate);
+        mImgBtnSelectEndDate = (ImageButton) findViewById(R.id.ibtn_ec_edit_enddate);
+        mImgBtnSelectPointMap = (ImageButton) findViewById(R.id.ibtn_ec_edit_map);
+
+        mViewSpaceListenerStartTime = (View) findViewById(R.id.view_click_starttime);
+        mViewSpaceListenerEndTime = (View) findViewById(R.id.view_click_endtime);
 
     }
+
     private void saveEvent() {
         event.setLocalOnly(true);
 
@@ -193,4 +390,5 @@ public class    EditCreateActivity extends AppCompatActivity {
             }
         };
     }
+
 }

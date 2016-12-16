@@ -166,25 +166,6 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                 @Override
                 public void onClick(View v) {
 
-
-//                    DatePickerDialog datePickerDialog = new DatePickerDialog(UserActivity.this, new DatePickerDialog.OnDateSetListener() {
-//                        @Override
-//                        public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-//                            Calendar cal = Calendar.getInstance();
-//                            cal.set(Calendar.YEAR, year);
-//                            cal.set(Calendar.MONTH, monthOfYear);
-//                            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-//                            mDateBirthday = cal.getTime();
-//
-//                            //Set DateBirthday in EditText
-//                            java.text.DateFormat format = DateFormat.getLongDateFormat(UserActivity.this);
-//                            mBirthday.setText(format.format(mDateBirthday));
-//                        }
-//                    }, year, month, day);
-//                    datePickerDialog.show();
-
-
-
                     Calendar now = Calendar.getInstance();
                     now.setTime(mDateBirthday);
                     DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -194,10 +175,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                             now.get(Calendar.DAY_OF_MONTH )
                     );
 
-
                     dpd.show(getFragmentManager(), "Datepickerdialog");
-
-
 
                 }
             });
