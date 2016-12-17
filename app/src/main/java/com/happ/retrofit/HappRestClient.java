@@ -749,6 +749,7 @@ public class HappRestClient {
         event = realm.copyFromRealm(event);
         realm.close();
 
+
         if (event != null) {
             ArrayList<String> interest_ids = new ArrayList<>();
             for (Interest interest: event.getInterests()
@@ -787,11 +788,21 @@ public class HappRestClient {
                         LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                     }
 
+//                    Realm realm = Realm.getDefaultInstance();
+//                    realm.beginTransaction();
+//                    Event oldEvent = realm.where(Event.class).equalTo("id", eventId).findFirst();
+//                    oldEvent.deleteFromRealm();
+//                    realm.commitTransaction();
+//                    realm.close();
+
                     Realm realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
-                    Event oldEvent = realm.where(Event.class).equalTo("id", eventId).findFirst();
-                    oldEvent.deleteFromRealm();
-                    realm.commitTransaction();
+                    final Event results = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            results.deleteFromRealm();
+                        }
+                    });
                     realm.close();
                 }
 

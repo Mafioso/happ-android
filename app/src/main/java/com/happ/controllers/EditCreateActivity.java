@@ -22,7 +22,6 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.EventImagesSwipeAdapter;
-import com.happ.controllers_drawer.EventActivity;
 import com.happ.models.Event;
 import com.happ.models.EventPhones;
 import com.happ.models.GeopointResponse;
@@ -381,10 +380,10 @@ public class    EditCreateActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 String evendId = intent.getStringExtra("event_id");
 
-                Intent goToEventActivity = new Intent(EditCreateActivity.this, EventActivity.class);
-                goToEventActivity.putExtra("in_event_activity", true);
-                goToEventActivity.putExtra("event_id", evendId);
-                startActivity(goToEventActivity);
+//                Intent goToEventActivity = new Intent(EditCreateActivity.this, EventActivity.class);
+//                goToEventActivity.putExtra("in_event_activity", true);
+//                goToEventActivity.putExtra("event_id", evendId);
+//                startActivity(goToEventActivity);
 
 //                intent = new Intent(context, EventActivity.class);
 //                intent.putExtra("event_id", evendId);

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bugsnag.android.Bugsnag;
@@ -78,6 +79,7 @@ public class App extends MultiDexApplication {
             User user = realm.where(User.class).equalTo("username", username).findFirst();
             currentUser = realm.copyFromRealm(user);
         } catch (Exception ex) {
+            Log.d("Log:", "error: " + ex);
         } finally {
             realm.close();
             return currentUser;
@@ -98,7 +100,7 @@ public class App extends MultiDexApplication {
             Jwt<Header,Claims> tokenData = Jwts.parser().parseClaimsJwt(unsignedToken);
             claims = tokenData.getBody();
         } catch (Exception ex) {
-
+            Log.d("Log:", "error: " + ex);
         } finally {
             realm.close();
             return claims;
