@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.multidex.MultiDexApplication;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.bugsnag.android.Bugsnag;
@@ -102,6 +104,14 @@ public class App extends MultiDexApplication {
         } finally {
             realm.close();
             return claims;
+        }
+    }
+
+    public static void setStatusBarTranslucent(Window window, boolean makeTranslucent) {
+        if (makeTranslucent) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
 

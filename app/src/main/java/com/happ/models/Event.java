@@ -24,9 +24,8 @@ public class Event extends RealmObject implements Serializable {
     private String title;
     private RealmList<Interest> interests;
     private String description;
-    private RealmList<EventImage> images;
-    private String color;
-    private RealmList<EventPhones> phones;
+    private RealmList<HappImage> images;
+    private RealmList<EventPhone> phones;
     @SerializedName("votes_num")
     private int votesCount;
     @SerializedName("is_upvoted")
@@ -86,11 +85,11 @@ public class Event extends RealmObject implements Serializable {
         this.description = description;
     }
 
-    public RealmList<EventImage> getImages() {
+    public RealmList<HappImage> getImages() {
         return images;
     }
 
-    public void setImages(RealmList<EventImage> images) {
+    public void setImages(RealmList<HappImage> images) {
         this.images = images;
     }
 
@@ -289,17 +288,19 @@ public class Event extends RealmObject implements Serializable {
     }
 
     public String getColor() {
+        String color = null;
         if (images.size() > 0) {
-            return  images.get(0).getColor();
+            color = images.get(0).getColor();
         }
-        return null;
+        if (color == null) color = "#595959";
+        return color;
     }
 
-    public RealmList<EventPhones> getPhones() {
+    public RealmList<EventPhone> getPhones() {
         return phones;
     }
 
-    public void setPhones(RealmList<EventPhones> phones) {
+    public void setPhones(RealmList<EventPhone> phones) {
         this.phones = phones;
     }
 

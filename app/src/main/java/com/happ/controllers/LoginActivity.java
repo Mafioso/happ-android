@@ -80,6 +80,9 @@ public class LoginActivity extends AppCompatActivity {
     private BroadcastReceiver loginFailedReceiver;
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
+    private BroadcastReceiver selectedInterestsReceiver;
+
+    private boolean selectedInterestsAsked;
 
     int idx = new Random().nextInt(login_bg.length);
     int randomBg = login_bg[idx];
@@ -187,6 +190,11 @@ public class LoginActivity extends AppCompatActivity {
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(currentCityDoneReceiver, new IntentFilter(BroadcastIntents.CITY_REQUEST_OK));
         }
 
+        if (selectedInterestsReceiver == null) {
+            selectedInterestsReceiver = getSelectedEventsSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(selectedInterestsReceiver, new IntentFilter(BroadcastIntents.SELECTED_INTERESTS_REQUEST_OK));
+        }
+
     }
 
 
@@ -289,6 +297,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 User currentUser = App.getCurrentUser();
+                APIService.getSelectedInterests();
                 if (currentUser.getSettings().getCity() != null) {
                     APIService.getCurrentCity();
 //                    HappRestClient.getInstance().getCurrentCity();
@@ -298,6 +307,20 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0,0);
                 }
+            }
+        };
+    }
+
+    private BroadcastReceiver getSelectedEventsSuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                selectedInterestsAsked = true;
+
+                Intent goToFeedIntent = new Intent(LoginActivity.this, FeedActivity.class);
+                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(goToFeedIntent);
+                overridePendingTransition(0, 0);
             }
         };
     }
@@ -313,7 +336,7 @@ public class LoginActivity extends AppCompatActivity {
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);
                     overridePendingTransition(0, 0);
-                } else {
+                } else if (selectedInterestsAsked){
                     Intent goToFeedIntent = new Intent(LoginActivity.this, SelectInterestsActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(goToFeedIntent);

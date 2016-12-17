@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.happ.App;
 import com.happ.R;
 import com.happ.models.Interest;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by iztiev on 10/21/16.
@@ -20,13 +20,27 @@ import java.util.ArrayList;
 
 public class ChildInterestsAdapter  extends RecyclerView.Adapter<ChildInterestsAdapter.ChildInterestsViewHolder> {
     ArrayList<Interest> interests;
+    ArrayList<String> selectedInterests;
     Context context;
+    OnChildItemChanged listener;
 
-    public ChildInterestsAdapter(Context context, ArrayList<Interest> interests) {
+    public ChildInterestsAdapter(Context context, ArrayList<Interest> interests, ArrayList<String> selectedInterests) {
         this.context = context;
         this.interests = interests.get(0).getChildren();
+        this.selectedInterests = selectedInterests;
 //        this.interests = interests;
     }
+
+    public void updateSelectedInterests(ArrayList<String> selectedInterests) {
+        this.selectedInterests = selectedInterests;
+        notifyDataSetChanged();
+    }
+
+    public void setOnChildItemChangedListener(OnChildItemChanged listener) {
+        this.listener = listener;
+    }
+
+
 
     @Override
     public ChildInterestsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -36,14 +50,22 @@ public class ChildInterestsAdapter  extends RecyclerView.Adapter<ChildInterestsA
 
     @Override
     public void onBindViewHolder(ChildInterestsViewHolder holder, int position) {
-        if (App.getCurrentUser().getInterests().get(position).getChildren().isEmpty()) {
-            holder.mImageView.setVisibility(View.GONE);
-            holder.mTitleView.setTextColor(context.getResources().getColor(R.color.dark87));
-        } else {
+        boolean isSelected = false;
+        for (Iterator<String> id = selectedInterests.iterator(); id.hasNext();) {
+            if (id.next().equals(interests.get(position).getId())) {
+                isSelected = true;
+                break;
+            }
+        }
+        if (isSelected) {
             holder.mImageView.setVisibility(View.VISIBLE);
             holder.mTitleView.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        } else {
+            holder.mImageView.setVisibility(View.GONE);
+            holder.mTitleView.setTextColor(context.getResources().getColor(R.color.dark87));
         }
         holder.mTitleView.setText(interests.get(position).getTitle());
+        holder.bind(interests.get(position).getId());
     }
 
     @Override
@@ -62,5 +84,20 @@ public class ChildInterestsAdapter  extends RecyclerView.Adapter<ChildInterestsA
             mImageView = (ImageView)itemView.findViewById(R.id.child_check);
         }
 
+        public void bind(final String childId) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        listener.onChildItemSwitched(childId);
+                    }
+                }
+            });
+        }
+
+    }
+
+    public interface OnChildItemChanged {
+        void onChildItemSwitched(String childId);
     }
 }

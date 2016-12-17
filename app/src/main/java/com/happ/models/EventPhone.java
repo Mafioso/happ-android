@@ -5,7 +5,7 @@ import io.realm.RealmObject;
 /**
  * Created by dante on 11/30/16.
  */
-public class EventPhones extends RealmObject {
+public class EventPhone extends RealmObject {
 
     private String phone;
 

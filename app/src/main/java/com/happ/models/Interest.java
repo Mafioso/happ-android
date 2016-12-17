@@ -21,7 +21,7 @@ public class Interest extends RealmObject {
     @SerializedName("parent")
     private String parentId;
     private String title;
-    private String url;
+    private HappImage image;
 
     public String getTitle() {
         return title;
@@ -38,19 +38,6 @@ public class Interest extends RealmObject {
         result.add(title);
         return result;
     }
-
-//    public String getColor() {
-//        Interest parent = getParent();
-//        if (parent != null) return parent.getColor();
-//        if (this.color == null) {
-//            return App.getContext().getResources().getString(0+R.color.colorPrimary);
-//        }
-//        return this.color;
-//    }
-
-//    public void setColor(String color) {
-//        this.color = color;
-//    }
 
     public Interest getParent() {
         Realm realm = Realm.getDefaultInstance();
@@ -133,11 +120,20 @@ public class Interest extends RealmObject {
         this.id = id;
     }
 
-    public String getUrl() {
-        return url;
+    public String getColor() {
+        String color = null;
+        if (this.image != null) {
+            color = this.image.getColor();
+        }
+        if (color == null) color = "#595959";
+        return color;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public HappImage getImage() {
+        return image;
+    }
+
+    public void setImage(HappImage image) {
+        this.image = image;
     }
 }

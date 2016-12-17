@@ -16,7 +16,7 @@ import com.happ.models.City;
 import com.happ.models.Currency;
 import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
-import com.happ.models.EventPhones;
+import com.happ.models.EventPhone;
 import com.happ.models.EventsResponse;
 import com.happ.models.GeopointResponse;
 import com.happ.models.HappToken;
@@ -31,6 +31,9 @@ import com.happ.retrofit.serializers.GeopointDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
 import com.happ.retrofit.serializers.PhoneDeserializer;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,6 +49,7 @@ import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.realm.Realm;
+import io.realm.RealmList;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -90,7 +94,7 @@ public class HappRestClient {
             gson = new GsonBuilder()
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
                     .registerTypeAdapter(Date.class, new DateDeserializer())
-                    .registerTypeAdapter(EventPhones.class, new PhoneDeserializer())
+                    .registerTypeAdapter(EventPhone.class, new PhoneDeserializer())
                     .registerTypeAdapter(GeopointResponse.class, new GeopointDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
@@ -232,14 +236,14 @@ public class HappRestClient {
     public void getEvents(int page, boolean favs) {
         Call<EventsResponse> getEventsResponse;
 
-//        Date date = new Date();
-//        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("yyyyMMdd");
-//        DateTime eventDate = new DateTime(date);
-//        String today = eventDate.toString(dtFormatter);
+        Date date = new Date();
+        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("yyyyMMdd");
+        DateTime eventDate = new DateTime(date);
+        String today = eventDate.toString(dtFormatter);
         if (favs) {
-            getEventsResponse = this.happApi.getFavourites(page);
+            getEventsResponse = this.happApi.getFavourites(page, today);
         } else {
-            getEventsResponse = this.happApi.getEvents(page);
+            getEventsResponse = this.happApi.getEvents(page, today);
         }
         getEventsResponse.enqueue(new Callback<EventsResponse>() {
             @Override
@@ -249,6 +253,19 @@ public class HappRestClient {
                     List<Event> events = response.body().getEvents();
 
                     Realm realm = Realm.getDefaultInstance();
+
+                    for (int i=0; i<events.size(); i++) {
+                        if (events.get(i).getInterest() != null) {
+                            RealmList<Interest> eventInterests = events.get(i).getInterests();
+                            for (int j=0; j<eventInterests.size(); j++) {
+                                String interestId = eventInterests.get(j).getId();
+                                Interest interest = realm.where(Interest.class).equalTo("id", interestId).findFirst();
+                                if (interest != null) eventInterests.set(j, interest);
+                            }
+
+                        }
+                    }
+
                     realm.beginTransaction();
 
                     realm.copyToRealmOrUpdate(events);
@@ -977,6 +994,61 @@ public class HappRestClient {
         });
     }
 
+    public void getSelectedInterests() {
+        getSelectedInterests(1);
+    }
+
+    public void getSelectedInterests(int page) {
+        final int currentPage = page;
+        happApi.getSelectedInterests(page).enqueue(new Callback<InterestResponse>() {
+            @Override
+            public void onResponse(Call<InterestResponse> call, Response<InterestResponse> response) {
+                if (response.isSuccessful()){
+                    List<Interest> interests = response.body().getInterests();
+                    User user = App.getCurrentUser();
+                    if (user.getInterests() == null) {
+                        user.setInterests(new RealmList<Interest>());
+                    }
+                    if (currentPage == 1) {
+                        user.setInterests(new RealmList<Interest>());
+                    }
+                    for (Iterator<Interest> i = interests.iterator(); i.hasNext();) {
+                        user.getInterests().add(i.next());
+                    }
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(user);
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.SELECTED_INTERESTS_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                    if (response.body().getNext() != null) {
+                        getSelectedInterests(currentPage + 1);
+                    }
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<InterestResponse> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.INTERESTS_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
     public void setInterests(ArrayList<String> ids) {
         happApi.setInterests(ids).enqueue(new Callback<Void>() {
             @Override
@@ -984,6 +1056,16 @@ public class HappRestClient {
                 if (response.isSuccessful()) {
                     Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_OK);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                    getSelectedInterests(1);
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.where(Event.class).notEqualTo("inFavorites", true).findAll().deleteAllFromRealm();
+                    realm.commitTransaction();
+                    realm.close();
+
+                    getEvents(false);
+
                 } else {
                     Intent intent = new Intent(BroadcastIntents.SET_INTERESTS_FAIL);
                     intent.putExtra("CODE", response.code());

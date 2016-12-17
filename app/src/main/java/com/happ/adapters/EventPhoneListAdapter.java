@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.happ.R;
-import com.happ.models.EventPhones;
+import com.happ.models.EventPhone;
 
 import io.realm.RealmList;
 
@@ -16,22 +16,22 @@ import io.realm.RealmList;
  * Created by dante on 11/30/16.
  */
 public class EventPhoneListAdapter extends RecyclerView.Adapter<EventPhoneListAdapter.EventPhonesListViewHolder> {
-    private RealmList<EventPhones> eventPhonesArrayList;
+    private RealmList<EventPhone> eventPhoneArrayList;
     private Context context;
 
     SelectEventPhoneItemListener listener;
 
     public interface SelectEventPhoneItemListener {
-        void onEventPhoneItemSelected(EventPhones eventPhones);
+        void onEventPhoneItemSelected(EventPhone eventPhone);
     }
 
     public void setOnSelectEventExploreListener(SelectEventPhoneItemListener listener) {
         this.listener = listener;
     }
 
-    public EventPhoneListAdapter(Context context, RealmList<EventPhones> eventPhones) {
+    public EventPhoneListAdapter(Context context, RealmList<EventPhone> eventPhones) {
         this.context = context;
-        this.eventPhonesArrayList = eventPhones;
+        this.eventPhoneArrayList = eventPhones;
     }
 
 
@@ -44,7 +44,7 @@ public class EventPhoneListAdapter extends RecyclerView.Adapter<EventPhoneListAd
     @Override
     public void onBindViewHolder(EventPhonesListViewHolder holder, int position) {
 
-        final EventPhones phone = eventPhonesArrayList.get(position);
+        final EventPhone phone = eventPhoneArrayList.get(position);
 
         holder.mTVPhone.setText(phone.getPhone());
         holder.bind(phone);
@@ -52,7 +52,7 @@ public class EventPhoneListAdapter extends RecyclerView.Adapter<EventPhoneListAd
 
     @Override
     public int getItemCount() {
-        return eventPhonesArrayList.size();
+        return eventPhoneArrayList.size();
     }
 
     public class EventPhonesListViewHolder extends RecyclerView.ViewHolder{
@@ -64,11 +64,11 @@ public class EventPhoneListAdapter extends RecyclerView.Adapter<EventPhoneListAd
             mTVPhone = (TextView) itemView.findViewById(R.id.event_phone);
         }
 
-        public void bind(final EventPhones eventPhones) {
+        public void bind(final EventPhone eventPhone) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onEventPhoneItemSelected(eventPhones);
+                    listener.onEventPhoneItemSelected(eventPhone);
                 }
             });
         }

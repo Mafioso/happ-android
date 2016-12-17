@@ -296,6 +296,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 //            }
 
 
+
             if(item.event.getImages().size() > 0){
                 final String url = item.event.getImages().get(0).getUrl();
                 Glide.clear(itemHolder.mImageView);
@@ -467,7 +468,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                     menuItem.setChecked(false);
                     if (menuItem.getItemId() == R.id.menu_unsubscribe) {
 
-                        mInterestsListAdapter = new InterestsListAdapter(context, interests);
+                        mInterestsListAdapter = new InterestsListAdapter(context, interests, true);
                         mInterestsListAdapter.setUserAcivityIds(App.getCurrentUser().getInterestIds());
                         ArrayList<String> selectedInterests = mInterestsListAdapter.getSelectedInterests();
                         String idInterest = item.event.getInterest().getId();

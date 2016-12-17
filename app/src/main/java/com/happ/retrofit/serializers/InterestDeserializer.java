@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.happ.models.HappImage;
 import com.happ.models.Interest;
 
 import java.lang.reflect.Type;
@@ -25,7 +26,7 @@ public class InterestDeserializer implements JsonDeserializer<Interest>, JsonSer
         boolean isSimple = false;
         String parentId = null;
         try {
-            if (!parent.isJsonNull()) {
+            if (parent != null && !parent.isJsonNull()) {
                 parentId = parent.getAsJsonPrimitive().getAsString();
             }
             isSimple = true;
@@ -37,12 +38,17 @@ public class InterestDeserializer implements JsonDeserializer<Interest>, JsonSer
         interest.setId(interestJson.get("id").getAsString());
         interest.setTitle(interestJson.get("title").getAsString());
 
-        interest.setUrl("http://www.avatar-mix.ru/avatars_200x200/1425.jpg");
-//        interest.setColor("#FF0000");
+        if (interestJson.get("image") != null && !interestJson.get("image").isJsonNull()) {
+            JsonObject imageJson = interestJson.get("image").getAsJsonObject();
+            HappImage image = new HappImage();
+            image.setId(imageJson.get("id").getAsString());
+            image.setPath(imageJson.get("path").getAsString());
+            if (!imageJson.get("color").isJsonNull()) {
+                image.setColor(imageJson.get("color").getAsString());
+            }
+            interest.setImage(image);
+        }
 
-//        if (!interestJson.get("color").isJsonNull()) {
-//            interest.setColor(interestJson.get("color").getAsString());
-//        }
 
         if (isSimple) {
             interest.setParentId(parentId);
@@ -56,10 +62,20 @@ public class InterestDeserializer implements JsonDeserializer<Interest>, JsonSer
                         Interest childInterest = new Interest();
                         childInterest.setId(child.get("id").getAsString());
                         childInterest.setTitle(child.get("title").getAsString());
-                        if (!child.get("color").isJsonNull()) {
-//                            childInterest.setColor(child.get("color").getAsString());
-                        }
                         childInterest.setParentId(interestJson.get("id").getAsString());
+
+
+                        if (child.get("image") != null && !child.get("image").isJsonNull()) {
+                            JsonObject imageJson = child.get("image").getAsJsonObject();
+                            HappImage image = new HappImage();
+                            image.setId(imageJson.get("id").getAsString());
+                            image.setPath(imageJson.get("path").getAsString());
+                            if (!imageJson.get("color").isJsonNull()) {
+                                image.setColor(imageJson.get("color").getAsString());
+                            }
+                            childInterest.setImage(image);
+                        }
+
                         interest.addChild(childInterest);
                     }
                 }
@@ -72,9 +88,18 @@ public class InterestDeserializer implements JsonDeserializer<Interest>, JsonSer
             Interest parentInterest = new Interest();
             parentInterest.setId(parentObject.get("id").getAsString());
             parentInterest.setTitle(parentObject.get("title").getAsString());
-            if (!parentObject.get("color").isJsonNull()) {
-//                parentInterest.setColor(parentObject.get("color").getAsString());
+
+            if (parentObject.get("image") != null && !parentObject.get("image").isJsonNull()) {
+                JsonObject imageJson = parentObject.get("image").getAsJsonObject();
+                HappImage image = new HappImage();
+                image.setId(imageJson.get("id").getAsString());
+                image.setPath(imageJson.get("path").getAsString());
+                if (!imageJson.get("color").isJsonNull()) {
+                    image.setColor(imageJson.get("color").getAsString());
+                }
+                parentInterest.setImage(image);
             }
+
             interest.setParent(parentInterest);
         }
 

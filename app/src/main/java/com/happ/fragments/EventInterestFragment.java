@@ -80,7 +80,7 @@ public class EventInterestFragment extends DialogFragment {
 
         interests = new ArrayList<>();
 
-        mInterestsListAdapter = new InterestsListAdapter(getContext(), interests);
+        mInterestsListAdapter = new InterestsListAdapter(getContext(), interests, true);
         mInterestsListAdapter.setSelectSingle(true);
         mInterestsListAdapter.setOnItemSelectedListener(new InterestsListAdapter.OnInterestClickedListener() {
             @Override

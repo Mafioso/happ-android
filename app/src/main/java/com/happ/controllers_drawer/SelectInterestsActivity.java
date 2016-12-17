@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -35,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -49,16 +47,18 @@ import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 /**
  * Created by dante on 9/6/16.
  */
-//public class SelectInterestsActivity extends AppCompatActivity
-//    implements InterestChildrenFragment.OnInterestChildrenInteractionListener {
-    public class SelectInterestsActivity extends AppCompatActivity {
+public class SelectInterestsActivity extends AppCompatActivity
+    implements InterestChildrenFragment.OnInterestChildrenInteractionListener {
 
     protected RecyclerView mInterestsRecyclerView;
     private GridLayoutManager mInterestsGridLayout;
@@ -68,8 +68,10 @@ import io.realm.RealmResults;
     protected BroadcastReceiver setInterestsOKReceiver;
     protected BroadcastReceiver getCurrentUserReceiver;
     protected BroadcastReceiver changeCityDoneReceiver;
+    protected BroadcastReceiver getSelectedInterestsDoneReceiver;
 
-    private FloatingActionButton mFab;
+    private HashMap<String, ArrayList<String>> selectedInterestIds;
+
     private Button mBtnSelectAllInterests;
     private int interestsPageSize;
     private DrawerLayout mDrawerLayout;
@@ -87,6 +89,8 @@ import io.realm.RealmResults;
     private ImageView mCLoserLeftNavigation;
     private FrameLayout childrenContainer;
     private int titleBarHeight;
+    private TextView cityName;
+    private Button mSaveButton;
 
 
     private CheckBox mDrawerHeaderArrow;
@@ -97,8 +101,24 @@ import io.realm.RealmResults;
     private LinearLayout mDrawerLLFooter;
     private TextView mDrawerVersionApp;
 
+    InterestChildrenFragment icf;
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (icf != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .remove(icf)
+                    .commit();
+            icf = null;
+            mSaveButton.setVisibility(View.VISIBLE);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     public SelectInterestsActivity() {
@@ -118,7 +138,6 @@ import io.realm.RealmResults;
         }
 
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
         navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
@@ -135,7 +154,9 @@ import io.realm.RealmResults;
         selectedRow = (RelativeLayout) findViewById(R.id.selected_row);
         selectedRowContainer = (RelativeLayout) findViewById(R.id.selected_row_container);
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
+        cityName = (TextView) findViewById(R.id.header_city_name);
         String versionName = BuildConfig.VERSION_NAME;
+        mSaveButton = (Button)findViewById(R.id.save_interests);
         mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
 
 //        selectedRow.setOnClickListener(new View.OnClickListener() {
@@ -153,16 +174,26 @@ import io.realm.RealmResults;
 //        setTitle(getResources().getString(R.string.select_interest_title));
         setTitle("");
         setSupportActionBar(toolbar);
+        cityName.setText(App.getCurrentCity().getName());
 
-        mFab.setVisibility(View.GONE);
-        mFab.setOnClickListener(new View.OnClickListener() {
+
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<String> selectedInterests = mInterestsListAdapter.getSelectedInterests();
-                // SEND DATA TO SERVER
-//                selectedInterests.remove(1);
+                ArrayList<String> selectedInterests = new ArrayList<String>();
+
+                for (Iterator<String> key = selectedInterestIds.keySet().iterator(); key.hasNext();) {
+                    String parentId = key.next();
+                    if (selectedInterestIds.get(parentId).size() == 0) {
+                        selectedInterests.add(parentId);
+                    } else {
+                        for (Iterator<String> child = selectedInterestIds.get(parentId).iterator(); child.hasNext();) {
+                            selectedInterests.add(child.next());
+                        }
+                    }
+                }
+
                 APIService.setInterests(selectedInterests);
-                mFab.setVisibility(View.GONE);
             }
         });
 
@@ -179,6 +210,7 @@ import io.realm.RealmResults;
 
 
 //        mInterestsRecyclerView.setNestedScrollingEnabled(false);
+        selectedInterestIds = new HashMap<>();
 
         Realm realm = Realm.getDefaultInstance();
         interests = new ArrayList<>();
@@ -193,16 +225,25 @@ import io.realm.RealmResults;
             realm.close();
         }
 
-        mInterestsListAdapter = new InterestsListAdapter(SelectInterestsActivity.this, interests);
+        mInterestsListAdapter = new InterestsListAdapter(SelectInterestsActivity.this, interests, true);
         if (fullActivity) {
             mInterestsListAdapter.setUserAcivityIds(App.getCurrentUser().getInterestIds());
         }
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
-        mFab.setVisibility(View.VISIBLE);
         mInterestsListAdapter.setOnInterestsSelectListener(new InterestsListAdapter.OnInterestsSelectListener() {
             @Override
-            public void onInterestsSelected(ArrayList<String> selectedChildren, String parentId) {
+            public void onParentInterestChanged(String parentId) {
                 //Простой клик. Полносью выбирается интерес
+                if (selectedInterestIds.get(parentId) == null) {
+                    selectedInterestIds.put(parentId, new ArrayList<String>());
+                } else {
+                    if (selectedInterestIds.get(parentId).size() > 0) {
+                        selectedInterestIds.get(parentId).clear();
+                    } else {
+                        selectedInterestIds.remove(parentId);
+                    }
+                }
+                mInterestsListAdapter.updateSelectedInterests(selectedInterestIds);
             }
 
             @Override
@@ -236,12 +277,17 @@ import io.realm.RealmResults;
                 realm.close();
 
 
-                InterestChildrenFragment icf = InterestChildrenFragment.newInstance(interestId,
-                        children, parents, top-titleBarHeight, height);
+                ArrayList<String> selectedChildren = selectedInterestIds.get(interestId);
+                if (selectedChildren == null) selectedChildren = new ArrayList<>();
+                icf = InterestChildrenFragment.newInstance(interestId,
+                        children, parents, selectedChildren,
+                        top-titleBarHeight, height);
 
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.city_children_fragment_container, icf)
                         .commit();
+
+                mSaveButton.setVisibility(View.GONE);
 
             }
         });
@@ -348,14 +394,8 @@ import io.realm.RealmResults;
 
         APIService.getInterests();
         APIService.getInterests(2);
+        APIService.getSelectedInterests();
         createScrollListener();
-
-        mInterestsListAdapter.setOnToastBeforeLongClicked(new InterestsListAdapter.OnToastBeforeLongClicked() {
-            @Override
-            public void longClickedListener() {
-                Toast.makeText(SelectInterestsActivity.this, "LOL", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         setListenerToRootView();
         setDrawerLayoutListener();
@@ -376,6 +416,76 @@ import io.realm.RealmResults;
             this.changeCityDoneReceiver = changeCityReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
         }
+        if (this.getSelectedInterestsDoneReceiver == null) {
+            this.getSelectedInterestsDoneReceiver = selectedInterestsDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(this.getSelectedInterestsDoneReceiver, new IntentFilter(BroadcastIntents.SELECTED_INTERESTS_REQUEST_OK));
+        }
+    }
+
+
+    private void rebuildSelectedInterests() {
+        HashMap<String, ArrayList<String>> newSelectedInterests = new HashMap<>();
+
+        RealmList<Interest> selectedInterests = App.getCurrentUser().getInterests();
+
+        for (Iterator<String> key = selectedInterestIds.keySet().iterator(); key.hasNext();) {
+            String parentId = key.next();
+            ArrayList<String> interestsForKey = selectedInterestIds.get(parentId);
+
+            for (int i=selectedInterests.size()-1; i>= 0;i--) {
+                String selectedParent = selectedInterests.get(i).getParentId();
+                boolean removed = false;
+                if (selectedParent != null && selectedParent.equals(parentId)) {
+                    boolean notInInterests = true;
+                    for (int j=0; j<interestsForKey.size(); j++) {
+                        if (interestsForKey.get(j).equals(selectedInterests.get(i).getId())) {
+                            notInInterests = false;
+                            break;
+                        }
+                    }
+                    if (notInInterests) interestsForKey.add(selectedInterests.get(i).getId());
+                    selectedInterests.remove(i);
+                    removed = true;
+                }
+                if (!removed && selectedInterests.get(i).getId().equals(parentId)) {
+                    selectedInterests.remove(i);
+                }
+            }
+            newSelectedInterests.put(parentId, interestsForKey);
+        }
+
+        Realm realm = Realm.getDefaultInstance();
+        while (selectedInterests.size() > 0) {
+            String id = selectedInterests.get(0).getId();
+            boolean isParent = true;
+            Interest temp = realm.where(Interest.class).equalTo("id", id).findFirst();
+            if (temp == null) {
+                selectedInterests.remove(0);
+                continue;
+            }
+            if (temp.getParentId() != null) {
+                isParent = false;
+                id = temp.getParentId();
+            }
+
+            RealmResults<Interest> children = realm.where(Interest.class).equalTo("parentId", id).findAll();
+            ArrayList<String> selectedChildren = new ArrayList<>();
+
+            for (int i=0; i<children.size(); i++) {
+                for (int j=selectedInterests.size()-1; j>=0; j--) {
+                    if (children.get(i).getId().equals(selectedInterests.get(j).getId())) {
+                        selectedChildren.add(selectedInterests.get(j).getId());
+                        selectedInterests.remove(j);
+                    }
+                }
+            }
+            newSelectedInterests.put(id, selectedChildren);
+            if (isParent) selectedInterests.remove(0);
+        }
+        realm.close();
+
+        selectedInterestIds = newSelectedInterests;
+        this.mInterestsListAdapter.updateSelectedInterests(selectedInterestIds);
     }
 
 
@@ -438,6 +548,20 @@ import io.realm.RealmResults;
         mDrawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
 
+    @Override
+    public void onChildrenUpdated(String parentId, ArrayList<String> childrenIds) {
+        ArrayList<String> currentChildren = selectedInterestIds.get(parentId);
+        if (currentChildren == null) {
+            selectedInterestIds.put(parentId, childrenIds);
+        } else {
+            if (childrenIds.size() == 0) {
+                selectedInterestIds.remove(parentId);
+            } else {
+                selectedInterestIds.put(parentId, childrenIds);
+            }
+        }
+        mInterestsListAdapter.updateSelectedInterests(selectedInterestIds);
+    }
 
 
     public class MyCityPageAdapter extends FragmentPagerAdapter {
@@ -508,6 +632,15 @@ import io.realm.RealmResults;
         };
     }
 
+    private BroadcastReceiver selectedInterestsDoneReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                rebuildSelectedInterests();
+            }
+        };
+    }
+
 
 
     protected void updateInterestsList() {
@@ -523,7 +656,6 @@ import io.realm.RealmResults;
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
-                    if (mFab.getVisibility() != View.GONE) mFab.hide();
                     visibleItemCount = mInterestsGridLayout.getChildCount();
                     totalItemCount = mInterestsGridLayout.getItemCount();
                     firstVisibleItem = mInterestsGridLayout.findFirstVisibleItemPosition();
@@ -541,9 +673,6 @@ import io.realm.RealmResults;
                         int nextPage = (totalItemCount / interestsPageSize) + 1;
                         APIService.getInterests(nextPage);
                     }
-                }
-                if (dy < 0) {
-                    if (mFab.getVisibility() != View.VISIBLE) mFab.show();
                 }
 
                 super.onScrolled(recyclerView, dx, dy);
@@ -569,6 +698,11 @@ import io.realm.RealmResults;
         if (this.changeCityDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(this.changeCityDoneReceiver);
             this.changeCityDoneReceiver = null;
+        }
+        if (this.getSelectedInterestsDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(this.getSelectedInterestsDoneReceiver);
+            this.getSelectedInterestsDoneReceiver = null;
+
         }
     }
 }

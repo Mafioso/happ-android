@@ -2,10 +2,8 @@ package com.happ.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,16 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.happ.App;
 import com.happ.R;
 import com.happ.models.Interest;
@@ -36,7 +30,8 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
-import jp.wasabeef.blurry.Blurry;
+import jp.wasabeef.glide.transformations.BlurTransformation;
+import jp.wasabeef.glide.transformations.CropSquareTransformation;
 
 /**
  * Created by iztiev on 8/4/16.
@@ -50,31 +45,19 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     private ArrayList<String> userInterestIds;
     private String activeInterestId;
 
-    private ArrayList<String> expandedInterests;
-
     private HashMap<String, InterestsListAdapter> expandedInterestAdapters;
+    private HashMap<String, ArrayList<String>> selectedInterestIds;
 
     private final Context context;
     private OnInterestsSelectListener listener;
-    private boolean isChild = false;
     private int itemWidth;
     private int margin;
     private int middleItemWidth;
-
-    private OnToastBeforeLongClicked toastClickedListener;
-
-
-    public interface OnToastBeforeLongClicked {
-        void longClickedListener();
-    }
-
-    public void setOnToastBeforeLongClicked(OnToastBeforeLongClicked listener) {
-        this.toastClickedListener = listener;
-    }
+    private boolean parentsView;
 
 
     public interface OnInterestsSelectListener {
-        void onInterestsSelected(ArrayList<String> selectedChildren, String parentId);
+        void onParentInterestChanged(String interestId);
         void onInterestExpandRequested(String interestId, int position, int top, int height);
     }
 
@@ -97,10 +80,6 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
-    public void setIsChild(boolean val) {
-        isChild = val;
-        notifyDataSetChanged();
-    }
 
     public void setUserAcivityIds(ArrayList<String> interestIds) {
         userInterestIds = interestIds;
@@ -112,26 +91,19 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         notifyDataSetChanged();
     }
 
+    public void updateSelectedInterests(HashMap<String, ArrayList<String>> selectedInterestIds) {
+        this.selectedInterestIds = selectedInterestIds;
+        notifyDataSetChanged();
+    }
 
-    private String[] urls = {
-            "http://www.freedigitalphotos.net/images/img/homepage/87357.jpg",
-            "http://assets.barcroftmedia.com.s3-website-eu-west-1.amazonaws.com/assets/images/recent-images-11.jpg",
-            "http://7606-presscdn-0-74.pagely.netdna-cdn.com/wp-content/uploads/2016/03/Dubai-Photos-Images-Oicture-Dubai-Landmarks-800x600.jpg",
-            "http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg",
-            "http://www.w3schools.com/css/trolltunga.jpg",
-            "http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg",
-            "http://www.planwallpaper.com/static/images/desktop-year-of-the-tiger-images-wallpaper.jpg",
-            "http://www.gettyimages.pt/gi-resources/images/Homepage/Hero/PT/PT_hero_42_153645159.jpg",
-            "http://www.planwallpaper.com/static/images/beautiful-sunset-images-196063.jpg",
-            "http://www.w3schools.com/css/img_fjords.jpg"
-    };
 
-    public InterestsListAdapter(Context context, List<Interest> interests) {
+    public InterestsListAdapter(Context context, List<Interest> interests, boolean parentsView) {
         this.context = context;
         this.mInterests = interests;
+        this.parentsView = parentsView;
         this.selectedInterests = new ArrayList<>();
-        this.expandedInterests = new ArrayList<>();
         this.expandedInterestAdapters = new HashMap<>();
+        this.selectedInterestIds = new HashMap<>();
         Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -221,13 +193,45 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
         final InterestsListViewHolder itemHolder = (InterestsListViewHolder)holder;
 
+        if (activeInterestId != null) {
+            if (!interest.getId().equals(activeInterestId)) {
+                holder.itemView.setAlpha(0.2f);
+            }
+        }
+
 //        if(interest.getUrl().length() > 0 || interest.getUrl() != null ){
 //            final String url = interest.getUrl();
 
-        final String url = urls[position%10];
-        if (holder.url == null || !holder.url.equals(url)) {
-            holder.url = url;
-            Glide.clear(holder.mInterestImageView);
+        boolean selected = false;
+        if (selectedInterestIds.get(interest.getId()) != null) {
+            if (selectedInterestIds.get(interest.getId()).size() > 0) {
+                int selectedCount = selectedInterestIds.get(interest.getId()).size();
+                int total = interest.getChildren().size();
+                if (selectedCount < total) {
+                    holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_white));
+                } else {
+                    holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_all_white));
+                }
+                String count = "" + selectedCount + "/" + total;
+                holder.mCountText.setText(count);
+
+                holder.mCheckImage.setVisibility(View.VISIBLE);
+                holder.mCountText.setVisibility(View.VISIBLE);
+            } else {
+                holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_all_white));
+                holder.mCheckImage.setVisibility(View.VISIBLE);
+                holder.mCountText.setVisibility(View.GONE);
+            }
+            selected = true;
+        } else {
+            holder.mCheckImage.setVisibility(View.GONE);
+            holder.mCountText.setVisibility(View.GONE);
+        }
+        final boolean isSelected = selected;
+
+        if (interest.getImage() != null) {
+            final String url = interest.getImage().getUrl();
+            holder.mInterestImageView.setImageDrawable(null);
             try {
                 ViewTreeObserver viewTreeObserver = holder.mInterestImageView.getViewTreeObserver();
                 if (viewTreeObserver.isAlive()) {
@@ -237,43 +241,21 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
                             holder.mInterestImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                             int viewWidth = holder.mInterestImageView.getWidth();
                             int viewHeight = holder.mInterestImageView.getHeight();
-                            Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth) + " " + String.valueOf(viewHeight));
-
-                            Glide.with(App.getContext())
-                                    .load(url)
-                                    .listener(new RequestListener<String, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            Log.e("GLIDE_ERR", url + " " + e.getMessage());
-                                            return false;
-                                        }
-
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            Log.d("GLIDE_OK", url);
-                                            Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
-                                            Palette p = Palette.from(bm).generate();
-                                            holder.mInterestBackground.setBackgroundColor(p.getMutedSwatch().getRgb());
-//                                            setBlurs(holder,position, interest.getId());
-                                            return false;
-                                        }
-                                    })
-                                    .override(viewWidth, viewHeight)
-                                    .centerCrop()
-                                    .into(holder.mInterestImageView);
-
-                            final Drawable image = holder.mInterestImageView.getDrawable();
-                            if (holder.mInterestImageView.getViewTreeObserver().isAlive()) {
-                                holder.mInterestImageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                                    @Override
-                                    public void onGlobalLayout() {
-                                        if (image != null && !image.equals(holder.mInterestImageView.getDrawable())) {
-                                            holder.mInterestImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                                            setBlurs(holder, position,interest.getId());
-                                        }
-                                    }
-                                });
-
+                            if (isSelected) {
+                                Glide.with(App.getContext())
+                                        .load(url)
+                                        .asBitmap()
+                                        .transform(new BlurTransformation(context), new CropSquareTransformation(context))
+//                                        .override(viewWidth, viewHeight)
+//                                        .centerCrop()
+                                        .into(holder.mInterestImageView);
+                            } else {
+                                Glide.with(App.getContext())
+                                        .load(url)
+                                        .asBitmap()
+                                        .override(viewWidth, viewHeight)
+                                        .centerCrop()
+                                        .into(holder.mInterestImageView);
                             }
                         }
                     });
@@ -281,175 +263,27 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
             } catch (Exception ex) {
                 Log.e("INTERESTS", ex.getLocalizedMessage());
             }
+
+        } else {
+            Glide.clear(holder.mInterestImageView);
         }
+        holder.mInterestBackground.setBackgroundColor(Color.parseColor(interest.getColor()));
 
         String id = interest.getId();
 
-        for (int i = 0; i < selectedInterests.size(); i++){
-            if (selectedInterests.get(i).equals(id)) {
-                holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_white));
-                holder.mCountText.setVisibility(View.GONE);
-                holder.mCheckImage.setVisibility(View.VISIBLE);
+
+        holder.mChildrenRecyclerView.setAdapter(null);
+        holder.mChildrenRecyclerView.setVisibility(View.GONE);
+
+        if (this.parentsView) {
+            if (interest.getChildren().size() > 0) {
+                holder.mSelectInterestsButton.setVisibility(View.VISIBLE);
             } else {
-                holder.mCountText.setVisibility(View.GONE);
-                holder.mCheckImage.setVisibility(View.GONE);
+                holder.mSelectInterestsButton.setVisibility(View.GONE);
             }
+            holder.bind(interest.getId(), listener, position);
         }
-
-//        if (this.selectSingle) {
-////            holder.mCheckBox.setVisibility(View.GONE);
-//        }
-
-//        if (selectedInterests.indexOf(id) >= 0) {
-//            removeChildrenFromSelectedInterests(interest);
-//            if (expandedInterestAdapters.get(interest.getId()) != null) {
-//                expandedInterestAdapters.get(interest.getId()).clearSelectedInterests();
-//            }
-////            if (!holder.mCheckBox.isChecked()) {
-////                holder.mCheckBox.toggle();
-////            }
-//        } else {
-////            if (holder.mCheckBox.isChecked()) {
-////                holder.mCheckBox.toggle();
-////            }
-//        }
-
-//        if(holder.mCheckBox.isChecked()) {
-//                Blurry.with(App.getContext())
-//                        .radius(25)
-//                        .sampling(1)
-//                        .async()
-//                        .capture(holder.mInterestImageView)
-//                        .into(holder.mInterestImageView);
-//        }
-
-        if (expandedInterests.indexOf(id) >= 0) {
-            if (!expandedInterestAdapters.containsKey(id)) {
-                Realm realm = Realm.getDefaultInstance();
-                RealmResults<Interest> children = realm.where(Interest.class).equalTo("parentId",id).findAll();
-                List<Interest> childrenList = realm.copyFromRealm(children);
-                realm.close();
-                InterestsListAdapter ila = new InterestsListAdapter(this.context, childrenList);
-                ila.setIsChild(true);
-                ila.setParentId(interest.getId());
-                ila.setSelectSingle(this.selectSingle);
-                if (userInterestIds != null) {
-                    ila.setUserAcivityIds(userInterestIds);
-                }
-
-                if (this.selectSingle) {
-                    ila.setOnItemSelectedListener(this.interestSelectedListener);
-                } else {
-                    ila.setOnInterestsSelectListener(new OnInterestsSelectListener() {
-                        @Override
-                        public void onInterestsSelected(ArrayList<String> selectedChildren, String parentId) {
-                            removeChildrenFromSelectedInterests(interest);
-                            if (selectedChildren.size() > 0) {
-                                if (selectedInterests.indexOf(parentId) >= 0) {
-                                    selectedInterests.remove(parentId);
-                                }
-                                selectedInterests.addAll(selectedChildren);
-                            }
-                            notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onInterestExpandRequested(String interestId, int position, int top, int height) {
-                            toastClickedListener.longClickedListener();
-                        }
-                    });
-                }
-                expandedInterestAdapters.put(id, ila);
-            }
-            holder.mChildrenRecyclerView.setAdapter(expandedInterestAdapters.get(id));
-            holder.mChildrenRecyclerView.setVisibility(View.VISIBLE);
-        } else {
-            holder.mChildrenRecyclerView.setAdapter(null);
-//            holder.mExpandChildrenButton.setImageDrawable(this.context.getResources().getDrawable(R.drawable.ic_chevron_down));
-            holder.mChildrenRecyclerView.setVisibility(View.GONE);
-        }
-
-//        if (this.isChild) {
-//            holder.mExpandChildrenButton.setVisibility(View.GONE);
-//        } else if (interest.hasChildren()) {
-//            holder.mExpandChildrenButton.setVisibility(View.VISIBLE);
-//            holder.mExpandChildrenButton.setEnabled(true);
-//        } else {
-//            holder.mExpandChildrenButton.setVisibility(View.GONE);
-//            holder.mExpandChildrenButton.setEnabled(false);
-//        }
-
-
-        if (activeInterestId != null) {
-            if (!mInterests.get(position).getId().equals(activeInterestId)) {
-                Blurry.delete(holder.mImageContainer);
-//                        .with(context)
-//                        .radius(0)
-//                        .sampling(0).async()
-//                        .capture(holder.mInterestImageView)
-//                        .into(holder.mInterestImageView);
-                holder.mInactiveOverlay.setVisibility(View.GONE);
-                holder.mImageContainer.setAlpha(0.2f);
-                holder.mInterestBackground.setAlpha(0.2f);
-            } else {
-                Blurry.with(context)
-                        .radius(4)
-                        .sampling(1)
-                        .async()
-                        .capture(holder.mInterestImageView)
-                        .into(holder.mInterestImageView);
-                holder.mInactiveOverlay.setVisibility(View.VISIBLE);
-                holder.mImageContainer.setAlpha(1f);
-                holder.mInterestBackground.setAlpha(1f);
-            }
-        } else {
-//            setBlurs(holder, position, interest.getId());
-        }
-        holder.bind(interest.getId(), listener, position);
     }
-
-//    private void setBlurs(InterestsListViewHolder holder, int position, String interestId) {
-//
-//        for (int i = 0; i < selectedInterests.size(); i++){
-//            if (interestId.equals(selectedInterests.get(i))) {
-//                holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_white));
-//                holder.mCountText.setVisibility(View.GONE);
-//                holder.mCheckImage.setVisibility(View.VISIBLE);
-//            } else {
-//                holder.mCountText.setVisibility(View.GONE);
-//                holder.mCheckImage.setVisibility(View.GONE);
-//            }
-//        }
-//
-////        if (idInAdapter.equals(idUserArrayInterest)) {
-//////            Blurry.with(context)
-//////                    .radius(20)
-//////                    .sampling(1)
-//////                    .async()
-//////                    .capture(holder.mInterestImageView)
-//////                    .into(holder.mInterestImageView);
-////            holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_white));
-////            holder.mCountText.setVisibility(View.GONE);
-////            holder.mCheckImage.setVisibility(View.VISIBLE);
-////        } else if (position % 13 == 0) {
-//////            Blurry.with(context)
-//////                    .radius(20)
-//////                    .sampling(1)
-//////                    .async()
-//////                    .capture(holder.mInterestImageView)
-//////                    .into(holder.mInterestImageView);
-////            int max = (int)Math.floor(20 * Math.random())+5;
-////            int curr = (int)Math.floor((max-1) * Math.random())+1;
-////            holder.mCountText.setText(""+curr + "/"+ max);
-////            holder.mCheckImage.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_check_all_white));
-////            holder.mCountText.setVisibility(View.VISIBLE);
-////            holder.mCheckImage.setVisibility(View.VISIBLE);
-////        } else {
-//////            Blurry.delete(holder.mImageContainer);
-////            holder.mCountText.setVisibility(View.GONE);
-////            holder.mCheckImage.setVisibility(View.GONE);
-////        }
-//    }
 
     @Override
     public int getItemCount() {
@@ -465,7 +299,7 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
         public TextView mInterestTitle;
         private RecyclerView mChildrenRecyclerView;
         private ImageView mInterestImageView;
-        private LinearLayout mInterestBackground;
+        private RelativeLayout mInterestBackground;
         private RelativeLayout mInterestContainer;
         private RelativeLayout mImageContainer;
         private String url;
@@ -473,15 +307,17 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
         private TextView mCountText;
         private ImageView mCheckImage;
+        private ImageButton mSelectInterestsButton;
 
         public InterestsListViewHolder(View itemView) {
             super(itemView);
             mInterestTitle = (TextView) itemView.findViewById(R.id.interest_title);
             mInterestImageView = (ImageView) itemView.findViewById(R.id.interest_imageview);
-            mInterestBackground = (LinearLayout) itemView.findViewById(R.id.interest_bg);
+            mInterestBackground = (RelativeLayout) itemView.findViewById(R.id.interest_bg);
             mInterestContainer = (RelativeLayout) itemView.findViewById(R.id.interest_container);
             mImageContainer = (RelativeLayout) itemView.findViewById(R.id.interest_image_container) ;
             mInactiveOverlay= (RelativeLayout) itemView.findViewById(R.id.inactive_overlay);
+            mSelectInterestsButton = (ImageButton) itemView.findViewById(R.id.show_children_button);
 
             mCountText = (TextView) itemView.findViewById(R.id.selected_count_text) ;
             mCheckImage = (ImageView) itemView.findViewById(R.id.selected_check);
@@ -489,6 +325,7 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
             mChildrenRecyclerView = (RecyclerView) itemView.findViewById(R.id.interest_children_list);
             mChildrenRecyclerView.setLayoutManager(new LinearLayoutManager(context));
             mChildrenRecyclerView.setVisibility(View.GONE);
+            mSelectInterestsButton.setVisibility(View.GONE);
         }
 
         public void bind(final String interestId, final OnInterestsSelectListener listener, final int position) {
@@ -496,11 +333,13 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-
-                    Log.e("AAAAAAAA", "Long Set On CLick Listener");
-                    int[] location = new int[2];
-                    itemView.getLocationInWindow(location);
-                    listener.onInterestExpandRequested(interestId, position, location[1], itemView.getHeight());
+                    Realm realm = Realm.getDefaultInstance();
+                    if (realm.where(Interest.class).equalTo("parentId", interestId).findAll().size() > 0) {
+                        int[] location = new int[2];
+                        itemView.getLocationInWindow(location);
+                        listener.onInterestExpandRequested(interestId, position, location[1], itemView.getHeight());
+                    }
+                    realm.close();
                     return true;
                 }
             });
@@ -508,20 +347,27 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("AAAAAAAA", "Simple Set On CLick Listener");
                     changeState(interestId, listener);
+                }
+            });
+
+            mSelectInterestsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Realm realm = Realm.getDefaultInstance();
+                    if (realm.where(Interest.class).equalTo("parentId", interestId).findAll().size() > 0) {
+                        int[] location = new int[2];
+                        itemView.getLocationInWindow(location);
+                        listener.onInterestExpandRequested(interestId, position, location[1], itemView.getHeight());
+                    }
+                    realm.close();
                 }
             });
         }
 
         private void changeState(String interestId, final OnInterestsSelectListener listener) {
-            if (selectedInterests.indexOf(interestId) >= 0) {
-                selectedInterests.remove(interestId);
-            } else {
-                selectedInterests.add(interestId);
-            }
             if (listener != null) {
-                listener.onInterestsSelected(selectedInterests, parentId);
+                listener.onParentInterestChanged(interestId);
             }
             if (interestSelectedListener != null) {
                 Realm realm = Realm.getDefaultInstance();

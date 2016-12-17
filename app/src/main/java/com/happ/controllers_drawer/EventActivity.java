@@ -54,8 +54,8 @@ import com.happ.controllers.EventMapActivity;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Event;
-import com.happ.models.EventImage;
-import com.happ.models.EventPhones;
+import com.happ.models.EventPhone;
+import com.happ.models.HappImage;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
@@ -201,7 +201,7 @@ public class EventActivity extends AppCompatActivity {
         }
 
         mEventImagesSwipeAdapter = new EventImagesSwipeAdapter(getSupportFragmentManager());
-        mEventImagesSwipeAdapter.setImageList(new RealmList<EventImage>());
+        mEventImagesSwipeAdapter.setImageList(new RealmList<HappImage>());
         viewPager.setAdapter(mEventImagesSwipeAdapter);
 
         setSupportActionBar(mToolbarTop);
@@ -320,6 +320,9 @@ public class EventActivity extends AppCompatActivity {
             changeCityDoneReceiver = changeCityReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
         }
+
+
+        App.setStatusBarTranslucent(getWindow(), true);
     }
 
     private void binds() {
@@ -482,10 +485,10 @@ public class EventActivity extends AppCompatActivity {
 
             if (event.getImages().size() > 0) {
 //            if (position % 11 < 10) {
-//                EventImage image = new EventImage();
+//                HappImage image = new HappImage();
 //                image.setPath(urls[position%11]);
 //                image.setId("0");
-//                RealmList<EventImage> images = new RealmList<>();
+//                RealmList<HappImage> images = new RealmList<>();
 //                images.add(image);
                 mEventImagesSwipeAdapter.setImageList(event.getImages());
 //                mEventImagesSwipeAdapter.setImageList(images);
@@ -566,8 +569,8 @@ public class EventActivity extends AppCompatActivity {
 
                 eventPhoneListAdapter.setOnSelectEventExploreListener(new EventPhoneListAdapter.SelectEventPhoneItemListener() {
                     @Override
-                    public void onEventPhoneItemSelected(EventPhones eventPhones) {
-                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", eventPhones.getPhone(), null));
+                    public void onEventPhoneItemSelected(EventPhone eventPhone) {
+                        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", eventPhone.getPhone(), null));
                         startActivity(intent);
                     }
                 });

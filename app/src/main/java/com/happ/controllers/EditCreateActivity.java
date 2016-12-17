@@ -24,7 +24,7 @@ import com.happ.R;
 import com.happ.adapters.EventImagesSwipeAdapter;
 import com.happ.controllers_drawer.EventActivity;
 import com.happ.models.Event;
-import com.happ.models.EventPhones;
+import com.happ.models.EventPhone;
 import com.happ.models.GeopointResponse;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
@@ -325,9 +325,9 @@ public class    EditCreateActivity extends AppCompatActivity {
         event.setLowestPrice(Integer.parseInt("0"));
         event.setHighestPrice(Integer.parseInt("1000"));
         event.setWebSite("http://vk.com/");
-        RealmList<EventPhones> phones = new RealmList<EventPhones>();
+        RealmList<EventPhone> phones = new RealmList<EventPhone>();
         for (int i = 0; i < 3; i++) {
-            EventPhones phone1 = new EventPhones();
+            EventPhone phone1 = new EventPhone();
             phone1.setPhone("+7701774176"+i);
             phones.add(phone1);
         }

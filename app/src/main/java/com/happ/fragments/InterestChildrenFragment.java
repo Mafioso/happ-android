@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.happ.R;
@@ -23,31 +24,25 @@ import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnInterestChildrenInteractionListener} interface
- * to handle interaction events.
- * Use the {@link InterestChildrenFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class InterestChildrenFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_INTEREST = "interest_id";
     private static final String ARG_CHILDREN = "children";
+    private static final String ARG_SEL_CHILDREN = "selected_children";
     private static final String ARG_PARENTS = "parent_interests";
     private static final String ARG_TOP = "top";
     private static final String ARG_HEIGHT = "height";
 
-    // TODO: Rename and change types of parameters
+
     private String mInterest;
     private ArrayList<String> mChildren;
+    private ArrayList<String> mSelectedChildren;
     private ArrayList<String> mParents;
     private int mTop;
     private int mHeight;
@@ -62,16 +57,16 @@ public class InterestChildrenFragment extends Fragment {
 
     private RecyclerView mChildrenView;
     private ChildInterestsAdapter mChildrenAdapter;
+    private Button mCloseButton;
 
     public InterestChildrenFragment() {
-        // Required empty public constructor
     }
 
 
-    // TODO: Rename and change types and number of parameters
     public static InterestChildrenFragment newInstance(String interestId,
                                                        ArrayList<String> children,
                                                        ArrayList<String> parents,
+                                                       ArrayList<String> selectedChildren,
                                                        int top,
                                                        int height) {
         InterestChildrenFragment fragment = new InterestChildrenFragment();
@@ -79,6 +74,7 @@ public class InterestChildrenFragment extends Fragment {
         args.putString(ARG_INTEREST, interestId);
         args.putStringArrayList(ARG_CHILDREN, children);
         args.putStringArrayList(ARG_PARENTS, parents);
+        args.putStringArrayList(ARG_SEL_CHILDREN, selectedChildren);
         args.putInt(ARG_TOP, top);
         args.putInt(ARG_HEIGHT, height);
 
@@ -93,6 +89,7 @@ public class InterestChildrenFragment extends Fragment {
             mInterest = getArguments().getString(ARG_INTEREST);
             mChildren = getArguments().getStringArrayList(ARG_CHILDREN);
             mParents = getArguments().getStringArrayList(ARG_PARENTS);
+            mSelectedChildren = getArguments().getStringArrayList(ARG_SEL_CHILDREN);
             mTop = getArguments().getInt(ARG_TOP);
             mHeight = getArguments().getInt(ARG_HEIGHT);
         }
@@ -106,6 +103,7 @@ public class InterestChildrenFragment extends Fragment {
 
         mContainer = (RelativeLayout)v.findViewById(R.id.selected_row_container);
         mParentsContainer = (RelativeLayout)v.findViewById(R.id.selected_row);
+        mCloseButton = (Button)v.findViewById(R.id.close_child_interests);
 
         mParentsView = (RecyclerView)v.findViewById(R.id.parents_list);
         mChildrenView = (RecyclerView)v.findViewById(R.id.children_list);
@@ -129,7 +127,9 @@ public class InterestChildrenFragment extends Fragment {
         RealmResults<Interest> interest_results = interest_query.findAll();
         ArrayList<Interest> parents = new ArrayList<>();
         if (interest_results != null) parents = (ArrayList<Interest>) realm.copyFromRealm(interest_results);
-        mParentsAdapter = new InterestsListAdapter(this.getActivity(), parents);
+
+
+        mParentsAdapter = new InterestsListAdapter(this.getActivity(), parents, false);
         mParentsAdapter.setActiveInterestId(mInterest);
 
         mParentsView.setHasFixedSize(true);
@@ -144,8 +144,37 @@ public class InterestChildrenFragment extends Fragment {
         if (children_results != null) children = (ArrayList<Interest>) realm.copyFromRealm(children_results);
         realm.close();
 
-        mChildrenAdapter = new ChildInterestsAdapter(this.getActivity(), children);
+        mChildrenAdapter = new ChildInterestsAdapter(this.getActivity(), children, mSelectedChildren);
         mChildrenView.setAdapter(mChildrenAdapter);
+
+        mCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+
+        mChildrenAdapter.setOnChildItemChangedListener(new ChildInterestsAdapter.OnChildItemChanged() {
+            @Override
+            public void onChildItemSwitched(String childId) {
+                boolean isDeleted = false;
+                if (mSelectedChildren.size() > 0) {
+                    for (int i = mSelectedChildren.size() - 1; i>=0; i--) {
+                        if (mSelectedChildren.get(i).equals(childId)) {
+                            mSelectedChildren.remove(i);
+                            isDeleted = true;
+                            break;
+                        }
+                    }
+                }
+                if (!isDeleted) mSelectedChildren.add(childId);
+                mChildrenAdapter.updateSelectedInterests(mSelectedChildren);
+                if (mListener != null) {
+                    mListener.onChildrenUpdated(mInterest, mSelectedChildren);
+//            mListener.onFragmentInteraction(uri);
+                }
+            }
+        });
 
         if (v.getViewTreeObserver().isAlive()) {
             v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -181,28 +210,12 @@ public class InterestChildrenFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-
-
-//        final ViewGroup sceneRoot = mContainer;
-//
-//        TransitionSet set = new TransitionSet();
-//        set.addTransition(new ChangeBounds());
-//        //                set.setOrdering(TransitionSet.ORDERING_TOGETHER);
-//        set.setDuration(500);
-//        set.setInterpolator(PathInterpolatorCompat.create(0.4f, 0.0f, 0.6f, 1.0f));
-//        TransitionManager.beginDelayedTransition(sceneRoot, set);
-//
-//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mParentsContainer.getLayoutParams();
-//        params.setMargins(0, 0, 0, 0);
-//        sceneRoot.setBackgroundColor(getResources().getColor(R.color.background));
-//        mParentsContainer.setLayoutParams(params);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+//            mListener.onFragmentInteraction(uri);
         }
     }
 
@@ -235,6 +248,7 @@ public class InterestChildrenFragment extends Fragment {
      */
     public interface OnInterestChildrenInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+//        void onFragmentInteraction(Uri uri);
+        void onChildrenUpdated(String parentId, ArrayList<String> childrenIds);
     }
 }

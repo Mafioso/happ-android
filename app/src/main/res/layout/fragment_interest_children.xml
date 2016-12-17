@@ -37,10 +37,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/selected_row"
+            android:layout_above="@+id/close_child_interests"
             >
 
 
         </android.support.v7.widget.RecyclerView>
+
+        <Button
+            android:id="@+id/close_child_interests"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/close"
+            android:background="?android:attr/selectableItemBackground"
+            android:textColor="@color/colorAccent"
+            android:layout_alignParentBottom="true"
+            android:textSize="16sp"
+            />
 
     </RelativeLayout>
 

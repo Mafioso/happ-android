@@ -43,6 +43,8 @@ public class APIService extends IntentService {
     private static final String ACTION_FAV_EVENT = "com.happ.extra.ACTION_FAV_EVENT";
     private static final String ACTION_PATCH_EVENTCREATE = "com.happ.action.ACTION_PATCH_EVENTCREATE";
 
+    private static final String ACTION_GET_SELECTED_INTERESTS = "com.happ.action.ACTION_GET_SELECTED_INTERESTS";
+
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
     private static final String EXTRA_GET_FAVS = "com.happ.extra.EXTRA_GET_FAVS";
@@ -121,6 +123,12 @@ public class APIService extends IntentService {
         i.putExtra(EXTRA_FREEEVENTS, isFree);
         i.putExtra(EXTRA_POPULARITY_EVENTS, popularity);
         i.putExtra(EXTRA_GET_FAVS, favs);
+        App.getContext().startService(i);
+    }
+
+    public static void getSelectedInterests() {
+        Intent i = new Intent(App.getContext(), APIService.class);
+        i.setAction(ACTION_GET_SELECTED_INTERESTS);
         App.getContext().startService(i);
     }
 
@@ -328,6 +336,8 @@ public class APIService extends IntentService {
             if (action.equals(ACTION_GET_EVENTS)) {
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
                 HappRestClient.getInstance().getEvents(favs);
+            } else if (action.equals(ACTION_GET_SELECTED_INTERESTS)) {
+                HappRestClient.getInstance().getSelectedInterests();
             } else if (action.equals(ACTION_GET_EVENTS_FOR_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);

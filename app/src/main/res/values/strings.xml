@@ -144,7 +144,7 @@
     <string name="want_to_go">I Want To Go!</string>
     <string name="empty_city">Empty city</string>
     <string name="click_to_change_city">Click on city name to change it</string>
-    <string name="save">save</string>
+    <string name="save">Save</string>
 
     <string name="push_notifications">Push notifications</string>
     <string name="cities_manager">Cities Manager</string>
@@ -232,5 +232,8 @@
     <string name="navigation_drawer_close">Drawer close</string>
     <string name="price">Price</string>
     <string name="votes_count">Votes Count</string>
+    <string name="show_more">Show more</string>
+    <string name="subinterests">Subinterests</string>
+    <string name="close">Close</string>
 
 </resources>

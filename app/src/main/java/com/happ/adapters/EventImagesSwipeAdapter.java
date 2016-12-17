@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.happ.fragments.ImageViewFragment;
-import com.happ.models.EventImage;
+import com.happ.models.HappImage;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ import io.realm.RealmList;
 public class EventImagesSwipeAdapter extends FragmentStatePagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private RealmList<EventImage> imageList;
+    private RealmList<HappImage> imageList;
     private ImageView mImageView;
     private ProgressBar mProgressBar;
     private ArrayList<ImageViewFragment> imageFragments;
@@ -32,9 +32,9 @@ public class EventImagesSwipeAdapter extends FragmentStatePagerAdapter {
         imageFragments = new ArrayList<>();
     }
 
-    public void setImageList(RealmList<EventImage> imageList) {
+    public void setImageList(RealmList<HappImage> imageList) {
         this.imageList = imageList;
-        if (imageList.size() == 0) imageList.add(new EventImage());
+        if (imageList.size() == 0) imageList.add(new HappImage());
         imageFragments.clear();
         for (int i=0; i<getCount();i++) {
             imageFragments.add(null);

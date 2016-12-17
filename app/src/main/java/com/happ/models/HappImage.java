@@ -8,7 +8,7 @@ import io.realm.RealmObject;
 /**
  * Created by dante on 7/26/16.
  */
-public class EventImage extends RealmObject {
+public class HappImage extends RealmObject {
 
     private String id;
     private String path;

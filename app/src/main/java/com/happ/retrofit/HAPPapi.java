@@ -42,7 +42,7 @@ public interface HAPPapi {
     Call<EventsResponse> getOrgEvents(@Query("page") int page);
 
     @GET("events/feed/")
-    Call<EventsResponse> getEvents(@Query("page") int page);
+    Call<EventsResponse> getEvents(@Query("page") int page, @Query("start_date") String startDate);
 
     @GET("events/feed/")
     Call<EventsResponse> getFilteredEvents( @Query("page") int page,
@@ -55,6 +55,9 @@ public interface HAPPapi {
 
     @GET("interests/")
     Call<InterestResponse> getInterests(@Query("page") int page);
+
+    @GET("interests/my/")
+    Call<InterestResponse> getSelectedInterests(@Query("page") int page);
 
     @POST("auth/login/")
     Call<HappToken> doLogin(@Body LoginData data);
@@ -117,7 +120,7 @@ public interface HAPPapi {
     Call<Void> setCurrency(@Path("id") String currencyId);
 
     @GET("events/favourites/")
-    Call<EventsResponse> getFavourites(@Query("page") int page);
+    Call<EventsResponse> getFavourites(@Query("page") int page, @Query("start_date") String startDate);
 
     @GET("events/favourites/")
     Call<EventsResponse> getFilteredFavourites(@Query("page") int page,
