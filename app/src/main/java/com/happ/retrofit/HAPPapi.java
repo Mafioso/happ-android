@@ -80,6 +80,9 @@ public interface HAPPapi {
     @PATCH("events/{id}/")
     Call<Event> doEventEdit(@Path("id") String eventEditID, @Body Event event);
 
+    @POST("events/")
+    Call<Event> createEvent(@Body Event event);
+
     @DELETE("events/{id}/")
     Call<Event> doEventDelete(@Path("id") String eventID);
 
@@ -126,8 +129,5 @@ public interface HAPPapi {
                                                @Query("end_date") String endDate,
                                                @Query("max_price") String price,
                                                @Query("popularity_events") boolean popularity);
-
-    @POST("events/")
-    Call<Event> createEvent(@Body Event event);
 
 }

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <com.google.android.gms.maps.MapView
         android:id="@+id/event_mapview"
         android:layout_width="match_parent"
@@ -22,13 +23,21 @@
 
 
             <ImageView
+                android:id="@+id/event_item_map_imageview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/dark80"
                 android:scaleType="fitXY"
-                android:transitionName="event_image"
-                android:id="@+id/org_event_item_imageview"/>
+                android:transitionName="event_image" />
 
+            <ImageView
+                android:id="@+id/event_item_map_placeholder"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@drawable/image_placeholder"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="gone"/>
 
             <ProgressBar
                 style="@style/Widget.AppCompat.ProgressBar"
@@ -37,7 +46,8 @@
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:id="@+id/event_item_image_preloader"/>
+                android:id="@+id/event_item_map_preloader"/>
+
         </RelativeLayout>
 
         <RelativeLayout
@@ -47,148 +57,106 @@
             android:layout_height="wrap_content"
             android:background="@color/bg_light">
 
-            <!--<RelativeLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:background="@color/dark38">-->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/event_item_map_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:transitionName="event_title"
+                    android:textSize="20sp"
+                    android:textAllCaps="true"
+                    android:lines="1"
+                    android:singleLine="true"
+                    android:text="Event Title Very Very Long"
+                    android:textColor="@color/dark87"
+                    android:paddingLeft="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingRight="32dp"
+                    android:paddingEnd="32dp"/>
+
 
                 <RelativeLayout
+                    android:id="@+id/rl_place"
+                    android:layout_below="@+id/event_item_map_title"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="2dp"
+                    android:paddingLeft="8dp"
+                    android:paddingStart="8dp"
+                    android:paddingRight="32dp"
+                    android:paddingEnd="32dp">
+
+                    <ImageView
+                        android:id="@+id/iv_marker_map"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        app:srcCompat="@drawable/ic_marker_map"/>
 
                     <TextView
-                        android:id="@+id/event_item_map_title"
-                        android:layout_width="match_parent"
+                        android:id="@+id/event_item_map_distance"
+                        android:layout_toRightOf="@+id/iv_marker_map"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:transitionName="event_title"
-                        android:textSize="20sp"
-                        android:textAllCaps="true"
-                        android:lines="1"
-                        android:singleLine="true"
-                        android:text="Event Title Very Very Long"
-                        android:textColor="@color/dark87"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="32dp"/>
-
-
-                    <RelativeLayout
-                        android:id="@+id/rl_place"
-                        android:layout_marginTop="8dp"
-                        android:layout_below="@+id/event_item_map_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="2dp">
-
-                        <ImageView
-                            android:id="@+id/iv_location"
-                            app:srcCompat="@drawable/ic_marker_map"
-                            android:layout_marginLeft="8dp"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"/>
-
-                        <TextView
-                            android:id="@+id/event_item_map_distance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"
-                            android:text="1.23 km"
-                            android:textColor="@color/colorAccent"
-                            android:layout_toRightOf="@+id/iv_location" />
-
-                        <LinearLayout
-                            android:id="@+id/ll_place"
-                            android:layout_toRightOf="@+id/event_item_map_distance"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="4dp">
-
-                            <TextView
-                                android:id="@+id/event_item_map_place"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textSize="12sp"
-                                android:text="Esentai Mall"
-                                android:textColor="@color/dark57" />
-                        </LinearLayout>
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_datetime"
-                        android:layout_below="@+id/rl_place"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="32dp"
-                        android:layout_marginBottom="2dp">
-
-                        <TextView
-                            android:id="@+id/event_item_map_startdate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            android:textAllCaps="true"
-                            android:textColor="@color/dark57"
-                            android:text="19:00 " />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            android:textAllCaps="true"
-                            android:textColor="@color/dark57"
-                            android:text="— " />
-
-                        <TextView
-                            android:id="@+id/event_item_map_enddate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            android:textAllCaps="true"
-                            android:textColor="@color/dark57"
-                            android:text="23:00" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_money"
-                        android:layout_below="@id/ll_datetime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="32dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            android:textColor="@color/dark57"
-                            android:text="от " />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"
-                            android:id="@+id/event_item_map_price"
-                            android:textColor="@color/dark57"
-                            android:text="500 тг" />
-                    </LinearLayout>
-
-                    <Button
-                        android:id="@+id/btn_event_page"
-                        android:layout_width="match_parent"
-                        android:layout_height="34dp"
-                        style="?attr/borderlessButtonStyle"
-                        android:textColor="@color/colorAccent"
                         android:textSize="12sp"
-                        android:textAllCaps="true"
-                        android:layout_alignParentBottom="true"
-                        android:background="@color/bg_light"
-                        android:text="@string/go_to_event_page"
+                        android:text="1.23 km"
                         android:gravity="center"
-                        android:layout_gravity="bottom"/>
+                        android:textColor="@color/colorAccent"/>
+
+                    <TextView
+                        android:id="@+id/event_item_map_place"
+                        android:layout_toRightOf="@+id/event_item_map_distance"
+                        android:layout_toEndOf="@+id/event_item_map_distance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:text="@string/event_place"
+                        android:textColor="@color/dark57"
+                        android:paddingLeft="8dp"
+                        android:paddingStart="8dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        />
+
+                    <TextView
+                        android:id="@+id/event_item_map_eventdate"
+                        android:layout_below="@+id/event_item_map_distance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="10sp"
+                        android:textAllCaps="false"
+                        android:textColor="@color/dark57"
+                        android:text="@string/event_date"
+                        android:layout_marginTop="4dp"/>
+
+                    <TextView
+                        android:id="@+id/event_item_map_price"
+                        android:layout_below="@+id/event_item_map_eventdate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="10sp"
+                        android:textColor="@color/dark57"
+                        android:text="@string/price"
+                        android:layout_marginTop="4dp"/>
                 </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btn_event_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="34dp"
+                    style="?attr/borderlessButtonStyle"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp"
+                    android:textAllCaps="true"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/bg_light"
+                    android:text="@string/go_to_event_page"
+                    android:gravity="center"
+                    android:layout_gravity="bottom"/>
+            </RelativeLayout>
         </RelativeLayout>
 
     </RelativeLayout>

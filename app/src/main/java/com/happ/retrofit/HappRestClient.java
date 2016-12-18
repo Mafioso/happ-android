@@ -248,6 +248,13 @@ public class HappRestClient {
                 if (response.isSuccessful()){
                     List<Event> events = response.body().getEvents();
 
+                    User user = App.getCurrentUser();
+                    for (int i=0; i<events.size(); i++) {
+                        if (events.get(i).getAuthor().getId().equals(user.getId())) {
+                            events.get(i).setAuthor(user);
+                        }
+                    }
+
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
 
@@ -293,6 +300,7 @@ public class HappRestClient {
                             events.get(i).setAuthor(user);
                         }
                     }
+
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
                     realm.copyToRealmOrUpdate(events);
@@ -527,6 +535,10 @@ public class HappRestClient {
                     if (response.isSuccessful()) {
 
                         Event event = response.body();
+                        User user = App.getCurrentUser();
+                        if (event.getAuthor().getId().equals(user.getId())) {
+                            event.setAuthor(user);
+                        }
 
                         Realm realm = Realm.getDefaultInstance();
                         realm.beginTransaction();
@@ -768,6 +780,11 @@ public class HappRestClient {
 
                         Event event = response.body();
 
+                        User user = App.getCurrentUser();
+                        if (event.getAuthor().getId().equals(user.getId())) {
+                            event.setAuthor(user);
+                        }
+
                         Realm realm = Realm.getDefaultInstance();
                         realm.beginTransaction();
 
@@ -788,21 +805,11 @@ public class HappRestClient {
                         LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                     }
 
-//                    Realm realm = Realm.getDefaultInstance();
-//                    realm.beginTransaction();
-//                    Event oldEvent = realm.where(Event.class).equalTo("id", eventId).findFirst();
-//                    oldEvent.deleteFromRealm();
-//                    realm.commitTransaction();
-//                    realm.close();
-
                     Realm realm = Realm.getDefaultInstance();
-                    final Event results = realm.where(Event.class).equalTo("id", eventId).findFirst();
-                    realm.executeTransaction(new Realm.Transaction() {
-                        @Override
-                        public void execute(Realm realm) {
-                            results.deleteFromRealm();
-                        }
-                    });
+                    realm.beginTransaction();
+                    Event oldEvent = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    oldEvent.deleteFromRealm();
+                    realm.commitTransaction();
                     realm.close();
                 }
 
@@ -882,6 +889,13 @@ public class HappRestClient {
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){
                     List<Event> fEvents = response.body().getEvents();
+
+                    User user = App.getCurrentUser();
+                    for (int i=0; i<fEvents.size(); i++) {
+                        if (fEvents.get(i).getAuthor().getId().equals(user.getId())) {
+                            fEvents.get(i).setAuthor(user);
+                        }
+                    }
 
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
