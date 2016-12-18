@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -527,27 +529,27 @@ public class EventActivity extends AppCompatActivity {
             });
 
 
-//            if (event.getColor() != null) {
-//                mCircleLLCalendar.setBackgroundResource(R.drawable.circle_event);
-//                mCircleLLPrice.setBackgroundResource(R.drawable.circle_event);
-//                mCircleLLPlace.setBackgroundResource(R.drawable.circle_event);
-//                mLLVote.setBackgroundResource(R.drawable.circle_event);
-//                mFlashingImageViewPlace.setBackgroundResource(R.drawable.circle_event);
-//
-//                GradientDrawable gdCalendar = (GradientDrawable) mCircleLLCalendar.getBackground().getCurrent();
-//                GradientDrawable gdPlace = (GradientDrawable) mCircleLLPlace.getBackground().getCurrent();
-//                GradientDrawable gdPrice = (GradientDrawable) mCircleLLPrice.getBackground().getCurrent();
-//                GradientDrawable gdVote = (GradientDrawable) mLLVote.getBackground().getCurrent();
-//                GradientDrawable gdFlashingPlace = (GradientDrawable) mFlashingImageViewPlace.getBackground().getCurrent();
-//
-//                gdCalendar.setColor(Color.parseColor(event.getColor()));
-//                gdPlace.setColor(Color.parseColor(event.getColor()));
-//                gdPrice.setColor(Color.parseColor(event.getColor()));
-//                gdVote.setColor(Color.parseColor(event.getColor()));
-//                gdFlashingPlace.setColor(Color.parseColor(event.getColor()));
-//
-//                mLLToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
-//            }
+            if (event.getColor() != null) {
+                mCircleLLCalendar.setBackgroundResource(R.drawable.circle_event);
+                mCircleLLPrice.setBackgroundResource(R.drawable.circle_event);
+                mCircleLLPlace.setBackgroundResource(R.drawable.circle_event);
+                mLLVote.setBackgroundResource(R.drawable.circle_event);
+                mFlashingImageViewPlace.setBackgroundResource(R.drawable.circle_event);
+
+                GradientDrawable gdCalendar = (GradientDrawable) mCircleLLCalendar.getBackground().getCurrent();
+                GradientDrawable gdPlace = (GradientDrawable) mCircleLLPlace.getBackground().getCurrent();
+                GradientDrawable gdPrice = (GradientDrawable) mCircleLLPrice.getBackground().getCurrent();
+                GradientDrawable gdVote = (GradientDrawable) mLLVote.getBackground().getCurrent();
+                GradientDrawable gdFlashingPlace = (GradientDrawable) mFlashingImageViewPlace.getBackground().getCurrent();
+
+                gdCalendar.setColor(Color.parseColor(event.getColor()));
+                gdPlace.setColor(Color.parseColor(event.getColor()));
+                gdPrice.setColor(Color.parseColor(event.getColor()));
+                gdVote.setColor(Color.parseColor(event.getColor()));
+                gdFlashingPlace.setColor(Color.parseColor(event.getColor()));
+
+                mLLToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
+            }
 
             anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha_infiniti);
             mFlashingImageViewPlace.startAnimation(anim);
