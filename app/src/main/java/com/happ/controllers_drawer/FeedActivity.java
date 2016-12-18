@@ -130,8 +130,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     private Bundle bundle;
     private TextView mDrawerVersionApp;
     private LinearLayout mDrawerLLFooter, mRightDrawerLLFooter;
-    private String currentUser;
-    private String currentCity;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -144,8 +142,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         setContentView(R.layout.activity_feed);
         binds();
         setTitle("");
-        currentUser = App.getCurrentUser().getFullname();
-        currentCity = App.getCurrentCity().getName();
         scf = SelectCityFragment.newInstance();
         everythingFeedFragment = EverythingFeedFragment.newInstance();
         favoriteFeedFragment = FavoriteFeedFragment.newInstance();
@@ -201,8 +197,9 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setIcon(R.drawable.happ_drawer_icon);
 
-        mDrawerHeaderTVUsername.setText(currentUser);
-        mDrawerHeaderTVCity.setText(currentCity);
+
+        mDrawerHeaderTVUsername.setText( App.getCurrentUser().getFullname());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
         String versionName = BuildConfig.VERSION_NAME;
         mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
@@ -668,8 +665,9 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     @Override
     public void onResume() {
         super.onResume();
-        mDrawerHeaderTVUsername.setText(currentUser);
-        mDrawerHeaderTVCity.setText(currentCity);
+
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
 //        java.text.DateFormat format = DateFormat.getLongDateFormat(App.getContext());
 //        mStartDateText.setText(format.format(startDate));
@@ -685,7 +683,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mDrawerHeaderTVCity.setText(currentCity);
+                mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
                 mDrawerHeaderArrow.setChecked(false);
                 mDrawerCityFragment.setVisibility(View.GONE);
                 mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -697,7 +695,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mDrawerHeaderTVUsername.setText(currentUser);
+                mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
 
             }
         };

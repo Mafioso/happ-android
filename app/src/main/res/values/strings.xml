@@ -237,5 +237,6 @@
     <string name="close">Close</string>
     <string name="route_is_built">The route is built</string>
     <string name="gps_is_not_enabled">Your phone is not connected to the GPS Navigation</string>
+    <string name="event_location">Event location</string>
 
 </resources>

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Base application theme. -->
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="AppTheme" parent="AppTheme.Base">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
@@ -8,12 +16,11 @@
     <style name="TransparentActionBar" parent="Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/TransparentBackground</item>
         <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:textColorPrimary">@color/white57</item>
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/TransparentBackground</item>
         <item name="windowActionBarOverlay">true</item>
-        <item name="android:textColorPrimary">@color/dark38</item>
-        <item name="colorPrimary">@android:color/transparent</item>
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorPrimary">@color/white57</item>
     </style>
 
 </resources>

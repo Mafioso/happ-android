@@ -287,7 +287,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 APIService.getCurrentUser();
-//                HappRestClient.getInstance().getCurrentUser();
             }
         };
     }
@@ -316,7 +315,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 selectedInterestsAsked = true;
-
                 Intent goToFeedIntent = new Intent(LoginActivity.this, FeedActivity.class);
                 goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(goToFeedIntent);
@@ -377,6 +375,11 @@ public class LoginActivity extends AppCompatActivity {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(currentCityDoneReceiver);
             currentCityDoneReceiver = null;
         }
+        if (selectedInterestsReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(selectedInterestsReceiver);
+            selectedInterestsReceiver = null;
+        }
+
         super.onDestroy();
     }
 

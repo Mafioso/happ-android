@@ -102,7 +102,8 @@
         <activity android:name=".controllers.WelcomeActivity" >
         </activity>
 
-        <activity android:name=".controllers.EventMapActivity"/>
+        <activity android:name=".controllers.EventMapActivity"
+            android:label="@string/event_location"/>
 
         <activity android:name=".controllers_drawer.OrganizerModeActivity"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
@@ -115,8 +116,15 @@
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="com.happ.Browser" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="http" />
+                <data android:scheme="https|http" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="com.happ.Browser" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="https" />
+            </intent-filter>
+
         </activity>
 
         <service

@@ -371,9 +371,9 @@ public class RegistrationActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mProgressBar.setVisibility(View.INVISIBLE);
 
-                Intent goToFeedIntent = new Intent(RegistrationActivity.this, CityActivity.class);
-                goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(goToFeedIntent);
+                Intent goToCityActivity = new Intent(RegistrationActivity.this, CityActivity.class);
+                goToCityActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(goToCityActivity);
                 overridePendingTransition(0,0);
 
             }
@@ -387,7 +387,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 User currentUser = App.getCurrentUser();
                 if (currentUser.getSettings().getCity() != null) {
                     APIService.getCurrentCity();
-//                    HappRestClient.getInstance().getCurrentCity();
                 } else {
                     mProgressBar.setVisibility(View.INVISIBLE);
                     Intent goToFeedIntent = new Intent(RegistrationActivity.this, CityActivity.class);

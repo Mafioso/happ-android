@@ -10,9 +10,7 @@
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:context=".controllers_drawer.FeedActivity"
-        android:background="@color/bg_light">
+        tools:context=".controllers_drawer.ConfirmEmailActivity">
 
         <RelativeLayout
             android:layout_width="match_parent"

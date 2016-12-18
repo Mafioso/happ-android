@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    android:id="@+id/root_layout"
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -8,46 +8,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".controllers_drawer.FeedActivity">
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:background="@color/bg_light">
+        android:paddingTop="@dimen/drawer_top_padding">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <FrameLayout
-                    android:id="@+id/feed_container"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="50dp"
-                    android:visibility="visible"/>
+                    android:layout_height="wrap_content">
 
-                <include layout="@layout/toolbar"/>
+                    <FrameLayout
+                        android:id="@+id/feed_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="50dp"
+                        android:visibility="visible"/>
 
-                <com.roughike.bottombar.BottomBar
-                    android:id="@+id/bottombar_feed"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_gravity="bottom"
-                    android:background="@color/bottom_bar_white"
-                    app:bb_inActiveTabAlpha="0.6"
-                    app:bb_activeTabAlpha="1"
-                    app:bb_inActiveTabColor="@color/bb_darkBackgroundColor"
-                    app:bb_activeTabColor="@color/colorAccent"
-                    app:bb_tabXmlResource="@xml/bottombar_feed_tabs"
-                    android:layout_alignParentBottom="true"
-                    android:visibility="visible"/>
+                    <include layout="@layout/toolbar_transparent"/>
 
-            </RelativeLayout>
+                    <com.roughike.bottombar.BottomBar
+                        android:id="@+id/bottombar_feed"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:layout_gravity="bottom"
+                        android:background="@color/bottom_bar_white"
+                        app:bb_inActiveTabAlpha="0.6"
+                        app:bb_activeTabAlpha="1"
+                        app:bb_inActiveTabColor="@color/bb_darkBackgroundColor"
+                        app:bb_activeTabColor="@color/colorAccent"
+                        app:bb_tabXmlResource="@xml/bottombar_feed_tabs"
+                        android:layout_alignParentBottom="true"
+                        android:visibility="visible"/>
 
-        <include layout="@layout/drawer_layout" />
+                </RelativeLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
-        <include layout="@layout/drawer_layout_rigth"/>
+    <include layout="@layout/drawer_layout" />
 
-    </android.support.v4.widget.DrawerLayout>
-
-</android.support.design.widget.CoordinatorLayout>
+    <include layout="@layout/drawer_layout_rigth"/>
+</android.support.v4.widget.DrawerLayout>

@@ -15,8 +15,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -41,7 +43,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.happ.App;
@@ -78,16 +79,14 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
 
+    private Toolbar mToolbar;
     private FloatingActionButton mFabRoad, mFabLocation;
-
     private MapView mapView;
 
     private GoogleMap mMap;
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    Marker mCurrLocationMarker;
-    LocationRequest mLocationRequest;
-
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private LocationRequest mLocationRequest;
 
     private TextView mEventTitle,mEventPlace,mEventDistance,mEventPrice,mEventDate,mEventPriceCurrency;
 
@@ -112,6 +111,19 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         eventId = intent.getStringExtra("event_id_for_map");
         fromEventActivity = intent.getBooleanExtra("from_event_activity", false);
         setContentView(R.layout.activity_map_event);
+
+        setSupportActionBar(mToolbar);
+        final ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_right_arrow_grey);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        }
 
         Realm realm = Realm.getDefaultInstance();
         event = realm.where(Event.class).equalTo("id", eventId).findFirst();
@@ -518,7 +530,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
                 lineOptions.width(12);
-                lineOptions.color(R.color.colorAccent183);
+                lineOptions.color(getResources().getColor(R.color.colorAccent183));
 
                 Log.d("onPostExecute", "onPostExecute lineoptions decoded");
 

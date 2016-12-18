@@ -141,20 +141,6 @@ public class EventActivity extends AppCompatActivity {
     private TextView mDrawerVersionApp;
     private int position;
 
-    private String currentUser, currentCity;
-
-    private String[] urls = {
-            "http://www.freedigitalphotos.net/images/img/homepage/87357.jpg",
-            "http://assets.barcroftmedia.com.s3-website-eu-west-1.amazonaws.com/assets/images/recent-images-11.jpg",
-            "http://7606-presscdn-0-74.pagely.netdna-cdn.com/wp-content/uploads/2016/03/Dubai-Photos-Images-Oicture-Dubai-Landmarks-800x600.jpg",
-            "http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg",
-            "http://www.w3schools.com/css/trolltunga.jpg",
-            "http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg",
-            "http://www.planwallpaper.com/static/images/desktop-year-of-the-tiger-images-wallpaper.jpg",
-            "http://www.gettyimages.pt/gi-resources/images/Homepage/Hero/PT/PT_hero_42_153645159.jpg",
-            "http://www.planwallpaper.com/static/images/beautiful-sunset-images-196063.jpg",
-            "http://www.w3schools.com/css/img_fjords.jpg"
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -167,8 +153,6 @@ public class EventActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_event);
         setTitle("");
-        currentUser = App.getCurrentUser().getFullname();
-        currentCity = App.getCurrentCity().getName();
         binds();
 
         tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.otf");
@@ -270,8 +254,8 @@ public class EventActivity extends AppCompatActivity {
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setIcon(R.drawable.happ_drawer_icon);
 
 
-        mDrawerHeaderTVUsername.setText(currentUser);
-        mDrawerHeaderTVCity.setText(currentCity);
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
 
         mDrawerHeaderTVUsername.setOnClickListener(new View.OnClickListener() {
@@ -721,8 +705,8 @@ public class EventActivity extends AppCompatActivity {
             mFab.show();
         }
 
-        mDrawerHeaderTVUsername.setText(currentUser);
-        mDrawerHeaderTVCity.setText(currentCity);
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
 
     @Override
@@ -799,7 +783,7 @@ public class EventActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mDrawerHeaderTVCity.setText(currentCity);
+                mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
                 mDrawerHeaderArrow.setChecked(false);
                 mDrawerCityFragment.setVisibility(View.GONE);
                 mDrawerLayout.closeDrawer(GravityCompat.START);

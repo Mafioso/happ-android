@@ -31,9 +31,8 @@
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/TransparentBackground</item>
         <item name="windowActionBarOverlay">true</item>
-        <item name="android:textColorPrimary">@color/dark38</item>
+        <item name="android:textColorPrimary">@android:color/transparent</item>
         <item name="colorPrimary">@android:color/transparent</item>
-        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="TransparentBackground"

@@ -8,6 +8,4 @@
     app:layout_collapseMode="pin"
     app:layout_scrollFlags="scroll|enterAlways"
     android:background="@android:color/transparent"
-    app:titleTextColor="@color/colorElementsToolbar"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
+    app:titleTextColor="@color/colorElementsToolbar"/>

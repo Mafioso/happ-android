@@ -154,13 +154,18 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
 
         if (user != null) {
 
-            mUsername.setText(App.getCurrentUser().getFullname());
-            mEmail.setText(App.getCurrentUser().getEmail());
-            mPhoneNumber.setText(App.getCurrentUser().getPhone());
-            mDateBirthday = App.getCurrentUser().getDate_of_birth();
+            mUsername.setText(user.getFullname());
 
-            java.text.DateFormat format = DateFormat.getLongDateFormat(this);
-            mBirthday.setText(format.format(mDateBirthday));
+            if (user.getEmail() != null) mEmail.setText(user.getEmail());
+
+            if (user.getPhone() != null) mPhoneNumber.setText(user.getPhone());
+
+            if (user.getDate_of_birth() != null) {
+                mDateBirthday = user.getDate_of_birth();
+                java.text.DateFormat format = DateFormat.getLongDateFormat(this);
+                mBirthday.setText(format.format(mDateBirthday));
+            }
+
 
             mBtnEditBirthday.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -180,8 +185,8 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                 }
             });
 
-            mMale.setChecked(App.getCurrentUser().getGender() == 0);
-            mFemale.setChecked(App.getCurrentUser().getGender() > 0);
+            mMale.setChecked(user.getGender() == 0);
+            mFemale.setChecked(user.getGender() > 0);
 
 //            final String imageUrl = user.getImageUrl();
             final String imageUrl = null;
@@ -290,7 +295,6 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
     }
 
     protected void updateUserData() {
-//        user = App.getCurrentUser();
         final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.user_done), Snackbar.LENGTH_SHORT);
         snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
             @Override
