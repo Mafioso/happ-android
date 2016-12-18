@@ -191,6 +191,7 @@ public class EventActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent i = new Intent(EventActivity.this, EventMapActivity.class);
                 i.putExtra("event_id_for_map", eventId);
+                i.putExtra("from_event_activity", true);
                 startActivity(i);
             }
         });
@@ -446,12 +447,21 @@ public class EventActivity extends AppCompatActivity {
 
         switch (id) {
             case android.R.id.home:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    EventActivity.this.supportFinishAfterTransition();
-                } else {
-                    finish();
+                if (isOrg) {
+                    Intent intent = new Intent(EventActivity.this, OrganizerModeActivity.class);
+                    intent.putExtra("is_full", true);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                     EventActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        EventActivity.this.supportFinishAfterTransition();
+                    } else {
+                        finish();
+                        EventActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
+                    }
                 }
+
                 return true;
             case R.id.menu_ea_share_event:
                 if (inEventActivity) {
@@ -704,10 +714,10 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        repopulateEvent();
-//        if (isOrg && mFab.getVisibility() != View.VISIBLE) {
-//            mFab.show();
-//        }
+        repopulateEvent();
+        if (isOrg && mFab.getVisibility() != View.VISIBLE) {
+            mFab.show();
+        }
 
         mDrawerHeaderTVUsername.setText(currentUser);
         mDrawerHeaderTVCity.setText(currentCity);
@@ -760,17 +770,6 @@ public class EventActivity extends AppCompatActivity {
         if (didUpvoteReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
             didUpvoteReceiver = null;
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            EventActivity.this.supportFinishAfterTransition();
-        } else {
-            finish();
-            EventActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
         }
     }
 

@@ -22,6 +22,7 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.EventImagesSwipeAdapter;
+import com.happ.controllers_drawer.EventActivity;
 import com.happ.models.Event;
 import com.happ.models.EventPhone;
 import com.happ.models.GeopointResponse;
@@ -41,7 +42,7 @@ import io.realm.RealmList;
 /**
  * Created by dante on 8/19/16.
  */
-public class    EditCreateActivity extends AppCompatActivity {
+public class EditCreateActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private Button mBtnCreateSave;
@@ -89,7 +90,29 @@ public class    EditCreateActivity extends AppCompatActivity {
             setTitle(getString(R.string.edit_event));
             Realm realm = Realm.getDefaultInstance();
             event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+            event = realm.copyFromRealm(event);
             realm.close();
+
+            mEventTitle.setText(event.getTitle());
+            mEventDescription.setText(event.getDescription());
+
+            if (event.getPlace() != null) mEventPlace.setText(event.getPlace());
+            mEventMinPrice.setText(Integer.toString(event.getLowestPrice()));
+            mEventMaxPrice.setText(Integer.toString(event.getHighestPrice()));
+            if (event.getCurrency() != null) mEventCurrency.setText(event.getCurrency().getName());
+
+            java.text.DateFormat format = DateFormat.getLongDateFormat(EditCreateActivity.this);
+            mEventStartDate.setText(format.format(event.getStartDate()));
+            mEventEndDate .setText(format.format(event.getEndDate()));
+
+            java.text.DateFormat timeFormat = DateFormat.getTimeFormat(EditCreateActivity.this);
+            mEventStartTime.setText(timeFormat.format(event.getStartDate()));
+            mEventEndTime.setText(timeFormat.format(event.getEndDate()));
+
+            if (event.getWebSite() != null) mEventWebSite.setText(event.getWebSite());
+            mEventTicketLink.setText("ЗДЕСЬ СЫЛКА НА БИЛЕТ");
+            if (event.getEmail() != null)mEventEmail.setText(event.getEmail());
+            if (event.getPhones().size() > 0) mEventPhone.setText(event.getPhones().get(0).getPhone());
         }
 
         setSupportActionBar(toolbar);
@@ -195,6 +218,7 @@ public class    EditCreateActivity extends AppCompatActivity {
                             //Set Start Time in EditText
                             java.text.DateFormat format = DateFormat.getTimeFormat(EditCreateActivity.this);
                             mEventStartTime.setText(format.format(mStartTime));
+
                         }
                     }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
                     tpd.show(getFragmentManager(), "Timepickerdialog");
@@ -263,7 +287,8 @@ public class    EditCreateActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard(EditCreateActivity.this, view);
-                saveEvent();
+//                saveEvent();
+                Toast.makeText(EditCreateActivity.this, "На стадии разработки Create and Save Button", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -306,6 +331,7 @@ public class    EditCreateActivity extends AppCompatActivity {
     }
 
     private void saveEvent() {
+
         event.setLocalOnly(true);
 
         if (eventId != null) {
@@ -365,14 +391,6 @@ public class    EditCreateActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (createEventReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(createEventReceiver);
-            createEventReceiver = null;
-        }
-    }
 
     private BroadcastReceiver createSaveDoneReceiver() {
         return new BroadcastReceiver() {
@@ -380,26 +398,31 @@ public class    EditCreateActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 String evendId = intent.getStringExtra("event_id");
 
-//                Intent goToEventActivity = new Intent(EditCreateActivity.this, EventActivity.class);
-//                goToEventActivity.putExtra("in_event_activity", true);
-//                goToEventActivity.putExtra("event_id", evendId);
-//                startActivity(goToEventActivity);
-
-//                intent = new Intent(context, EventActivity.class);
-//                intent.putExtra("event_id", evendId);
-//                intent.putExtra("in_event_activity", true);
-//                startActivity(intent);
+                intent = new Intent(EditCreateActivity.this, EventActivity.class);
+                intent.putExtra("in_event_activity", true);
+                intent.putExtra("is_organizer", true);
+                intent.putExtra("event_id", evendId);
+                startActivity(intent);
 
 //                final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.event_done), Snackbar.LENGTH_INDEFINITE);
-//                snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            snackbar.dismiss();
-//                        }
-//                    });
-//                snackbar.show();
+////                snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
+////                        @Override
+////                        public void onClick(View view) {
+////                            snackbar.dismiss();
+////                        }
+////                    });
+////                snackbar.show();
             }
         };
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (createEventReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(createEventReceiver);
+            createEventReceiver = null;
+        }
     }
 
 }
