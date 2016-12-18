@@ -285,7 +285,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
         navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
         navigationViewRightOrg = (NavigationView) findViewById(R.id.navigation_view_right_org);
-        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mBottomBar = (BottomBar) findViewById(R.id.bottombar_org);
         mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_org_navigation);
         mCLoserLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);

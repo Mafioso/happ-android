@@ -4,8 +4,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+        <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
@@ -17,12 +17,12 @@
     <style name="TransparentActionBar" parent="Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/TransparentBackground</item>
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:textColorPrimary">@color/colorAccentDark</item>
-        <item name="android:statusBarColor">@color/colorAccentDark</item>
+        <item name="android:textColorPrimary">@color/colorElementsToolbar</item>
+        <item name="android:colorPrimary">@color/bg_light</item>
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/TransparentBackground</item>
         <item name="windowActionBarOverlay">true</item>
-        <item name="colorPrimaryDark">@color/colorAccentDark</item>
+        <item name="colorPrimaryDark">@color/colorElementsToolbar</item>
     </style>
 
 </resources>

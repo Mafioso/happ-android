@@ -54,7 +54,7 @@ public class HtmlPageAcitivty extends AppCompatActivity {
         fromOrgCreateEvent = getIntent().getBooleanExtra("from_organizermode", false);
         setContentView(R.layout.activity_html_page);
 
-        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mLLbottom = (LinearLayout) findViewById(R.id.ll_bottom);
         mBtnDisagree = (Button) findViewById(R.id.btn_org_rules_disagree);
         mBtnAgree = (Button) findViewById(R.id.btn_org_rules_agree);

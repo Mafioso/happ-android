@@ -12,23 +12,24 @@
         android:layout_height="match_parent"
         tools:context=".controllers_drawer.ConfirmEmailActivity">
 
-        <RelativeLayout
+        <com.happ.LockableScrollView
+            android:id="@+id/fake_scrollview"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.happ.LockableScrollView
-                android:id="@+id/fake_scrollview"
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/iv_confirm_email_bg"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                app:srcCompat="@drawable/login_bg_5"/>
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/iv_confirm_email_bg"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:adjustViewBounds="true"
-                    app:srcCompat="@drawable/login_bg_5"/>
+        </com.happ.LockableScrollView>
 
-            </com.happ.LockableScrollView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/drawer_top_padding">
 
             <LinearLayout
                 android:focusable="true"
@@ -131,7 +132,7 @@
 
             </RelativeLayout>
 
-            <include layout="@layout/toolbar"/>
+            <include layout="@layout/toolbar_transparent"/>
             <include layout="@layout/copyright"/>
 
         </RelativeLayout>

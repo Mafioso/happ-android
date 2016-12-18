@@ -115,7 +115,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
 
         mRootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         mScrollView = (NestedScrollView) findViewById(R.id.event_edit_srollview);
-        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
         ctl = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);

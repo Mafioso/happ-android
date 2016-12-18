@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout android:id="@+id/root_layout"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/root_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:segmentedgroup="http://schemas.android.com/tools"
@@ -124,11 +125,16 @@
                     <!--app:srcCompat="@drawable/ic_camera_white" />-->
             <!--</RelativeLayout>-->
 
-            <include layout="@layout/toolbar"/>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlways"
+                android:background="@android:color/transparent"
+                app:titleTextColor="@color/colorElementsToolbar"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
-
-
 
     </android.support.design.widget.AppBarLayout>
 

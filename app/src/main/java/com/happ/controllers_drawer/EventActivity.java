@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -60,8 +61,6 @@ import com.happ.models.EventPhone;
 import com.happ.models.HappImage;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
-
-import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -332,7 +331,7 @@ public class EventActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.slider_viewpager);
         mEmail = (TextView) findViewById(R.id.event_email);
         mFab = (FloatingActionButton) findViewById(R.id.fab);
-        mToolbarTop = (Toolbar) findViewById(R.id.top_event_toolbar);
+        mToolbarTop = (Toolbar) findViewById(R.id.toolbar);
         mLLToolbar = (LinearLayout) findViewById(R.id.ll_toolbar);
         ctl = (CollapsingToolbarLayout) findViewById(R.id.event_collapsing_layout);
         mUpvoteImage = (ImageView) findViewById(R.id.event_iv_did_upvote);
@@ -350,7 +349,7 @@ public class EventActivity extends AppCompatActivity {
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
         rvPhones = (RecyclerView) findViewById(R.id.rv_event_phones);
-        appBarLayout = (AppBarLayout) findViewById(R.id.appBarLayout);
+        appBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
         mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));

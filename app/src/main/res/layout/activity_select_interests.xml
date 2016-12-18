@@ -7,15 +7,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".controllers_drawer.SelectInterestsActivity"
-    android:background="@android:color/transparent"
-    android:orientation="vertical"
-    android:theme="@style/TransparentActionBar"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
 
                 <android.support.design.widget.AppBarLayout
                     android:id="@+id/header"
@@ -26,7 +24,8 @@
                     android:padding="0dp"
                     android:gravity="center_horizontal"
                     app:elevation="0dp"
-                    android:layout_margin="0dp">
+                    android:layout_margin="0dp"
+                    android:background="@color/bg_light">
 
                     <TextView
                         android:layout_marginTop="16dp"
@@ -91,13 +90,7 @@
                 </android.support.v7.widget.RecyclerView>
 
 
-
-
-            <!--</android.support.v4.widget.NestedScrollView>-->
-
-
-
-            <include layout="@layout/toolbar"/>
+            <include layout="@layout/toolbar_transparent"/>
 
             <Button
                 android:id="@+id/save_interests"

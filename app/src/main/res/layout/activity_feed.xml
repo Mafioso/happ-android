@@ -6,13 +6,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".controllers_drawer.FeedActivity">
+    tools:context=".controllers_drawer.FeedActivity"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="@dimen/drawer_top_padding">
+        android:layout_height="match_parent">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -31,7 +31,6 @@
                         android:id="@+id/bottombar_feed"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_gravity="bottom"
                         android:background="@color/bottom_bar_white"
                         app:bb_inActiveTabAlpha="0.6"
                         app:bb_activeTabAlpha="1"

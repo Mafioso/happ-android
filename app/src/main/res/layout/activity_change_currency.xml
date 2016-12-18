@@ -3,22 +3,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light"
-    android:orientation="horizontal"
-    android:paddingTop="@dimen/drawer_top_padding">
+    android:fitsSystemWindows="true"
+    android:background="@color/colorAccent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/select_currency_toolbar"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"/>
+        android:layout_height="match_parent"
+        android:background="@color/bg_light">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="8dp"
-        android:layout_below="@+id/select_currency_toolbar"
-        android:id="@+id/activity_currency_rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
+        <include layout="@layout/toolbar_transparent"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="8dp"
+            android:layout_below="@+id/toolbar"
+            android:id="@+id/activity_currency_rv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
 
 </RelativeLayout>

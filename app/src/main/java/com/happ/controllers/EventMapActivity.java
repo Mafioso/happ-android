@@ -112,24 +112,12 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         fromEventActivity = intent.getBooleanExtra("from_event_activity", false);
         setContentView(R.layout.activity_map_event);
 
-        setSupportActionBar(mToolbar);
-        final ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_right_arrow_grey);
-            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    finish();
-                }
-            });
-        }
-
         Realm realm = Realm.getDefaultInstance();
         event = realm.where(Event.class).equalTo("id", eventId).findFirst();
         event = realm.copyFromRealm(event);
         realm.close();
 
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mFabLocation = (FloatingActionButton) findViewById(R.id.fab_my_location);
         mFabRoad = (FloatingActionButton) findViewById(R.id.fab_road);
         mBtnEventPage = (Button) findViewById(R.id.btn_event_page);
@@ -144,6 +132,18 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         mImagePlaceHolder = (ImageView) findViewById(R.id.event_item_map_placeholder);
         mImagePreloader = (MaterialProgressBar) findViewById(R.id.event_item_map_preloader);
 
+        setSupportActionBar(mToolbar);
+        final ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_right_arrow_grey);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    finish();
+                }
+            });
+        }
 
         mapView = (MapView) findViewById(R.id.event_mapview);
         mapView.onCreate(savedInstanceState);

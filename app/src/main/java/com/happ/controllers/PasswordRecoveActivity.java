@@ -76,7 +76,7 @@ public class PasswordRecoveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recove_password);
 
-        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mEmail = (EditText) findViewById(R.id.input_recove_mail);
         mBtnRecovePassword = (Button) findViewById(R.id.btn_recover_password);
         mImgLogo = (ImageView) findViewById(R.id.img_logo);

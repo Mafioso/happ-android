@@ -55,7 +55,7 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
         currencyPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
 //        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
         visibleThreshold = 10;
-        toolbar = (Toolbar) findViewById(R.id.select_currency_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mCurrencyRecyclerView = (RecyclerView) findViewById(R.id.activity_currency_rv);
 
 

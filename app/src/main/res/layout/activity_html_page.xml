@@ -1,71 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/drawer_top_padding"
-    android:background="@color/bg_light">
+    android:fitsSystemWindows="true"
+    android:background="@color/colorAccent"
+    tools:context=".controllers.HtmlPageAcitivty">
 
-    <include layout="@layout/toolbar"/>
-
-    <WebView
-        android:layout_below="@+id/ll_toolbar"
-        android:layout_above="@+id/ll_bottom"
-        android:id="@+id/webview_html_page"
-        android:layout_margin="8dp"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"/>
+        android:background="@android:color/white">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:layout_alignParentBottom="true"
-        android:background="@color/bg_light"
-        android:id="@+id/ll_bottom"
-        android:visibility="visible">
+        <include layout="@layout/toolbar_transparent"/>
 
-        <Button
-            android:id="@+id/btn_org_rules_disagree"
-            android:layout_width="wrap_content"
+        <WebView
+            android:layout_below="@+id/toolbar"
+            android:layout_above="@+id/ll_bottom"
+            android:id="@+id/webview_html_page"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="?attr/borderlessButtonStyle"
-            android:textSize="16sp"
-            android:textAllCaps="true"
-            android:text="@string/disagree"
-            android:textColor="@android:color/holo_red_dark"/>
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_alignParentBottom="true"
+            android:background="@color/bg_light"
+            android:id="@+id/ll_bottom"
+            android:visibility="visible">
 
-        <Button
-            android:id="@+id/btn_org_rules_agree"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="?attr/borderlessButtonStyle"
-            android:textSize="16sp"
-            android:textAllCaps="true"
-            android:text="@string/agree"
-            android:textColor="@android:color/holo_green_dark"/>
+            <Button
+                android:id="@+id/btn_org_rules_disagree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/borderlessButtonStyle"
+                android:textSize="16sp"
+                android:textAllCaps="true"
+                android:text="@string/disagree"
+                android:textColor="@android:color/holo_red_dark"/>
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/btn_org_rules_agree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?attr/borderlessButtonStyle"
+                android:textSize="16sp"
+                android:textAllCaps="true"
+                android:text="@string/agree"
+                android:textColor="@android:color/holo_green_dark"/>
 
-    <View
-        android:layout_below="@+id/ll_toolbar"
-        android:id="@+id/dark_view_html_page_progress"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/dark80"
-        android:visibility="gone"
-        />
+        </LinearLayout>
 
-    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
-        android:id="@+id/html_page_progress"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone"
-        />
+        <View
+            android:layout_below="@+id/toolbar"
+            android:id="@+id/dark_view_html_page_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/dark80"
+            android:visibility="gone"
+            />
 
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/html_page_progress"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            />
+    </RelativeLayout>
 </RelativeLayout>

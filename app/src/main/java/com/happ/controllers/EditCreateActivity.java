@@ -300,7 +300,7 @@ public class EditCreateActivity extends AppCompatActivity {
 
 
     private void binds() {
-        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mBtnCreateSave = (Button) findViewById(R.id.btn_editcreate_save);
 
         mEventTitle = (EditText) findViewById(R.id.input_ec_title);

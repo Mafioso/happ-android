@@ -10,17 +10,17 @@
     </style>
 
     <style name="AppTheme" parent="AppTheme.Base">
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
     </style>
 
     <style name="TransparentActionBar" parent="Theme.AppCompat.Light">
         <item name="android:actionBarStyle">@style/TransparentBackground</item>
         <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:textColorPrimary">@color/white57</item>
+        <item name="android:textColorPrimary">@color/colorElementsToolbar</item>
         <!-- Support library compatibility -->
         <item name="actionBarStyle">@style/TransparentBackground</item>
         <item name="windowActionBarOverlay">true</item>
-        <item name="colorPrimary">@color/white57</item>
+        <!--<item name="textColorPrimary">@color/colorElementsToolbar</item>-->
     </style>
 
 </resources>

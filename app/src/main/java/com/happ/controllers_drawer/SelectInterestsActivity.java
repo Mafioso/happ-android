@@ -142,7 +142,7 @@ public class SelectInterestsActivity extends AppCompatActivity
         navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
         navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         mInterestsRecyclerView = (RecyclerView) findViewById(R.id.activity_interests_rv);
         childrenContainer = (FrameLayout) findViewById(R.id.city_children_fragment_container);
         mCLoserLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);

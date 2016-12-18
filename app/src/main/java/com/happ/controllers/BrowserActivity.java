@@ -34,7 +34,7 @@ public class BrowserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browser);
 
-        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         viewDarkBrowser = (View) findViewById(R.id.dark_view_event_browser_progress);
         materialProgressBar = (MaterialProgressBar) findViewById(R.id.event_browser_progress);
         setSupportActionBar(toolbar);

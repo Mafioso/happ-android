@@ -8,7 +8,7 @@
     <include layout="@layout/toolbar"/>
 
     <WebView
-        android:layout_below="@+id/ll_toolbar"
+        android:layout_below="@+id/toolbar"
         android:id="@+id/event_link_webview"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
         android:visibility="visible"/>
 
     <View
-        android:layout_below="@+id/ll_toolbar"
+        android:layout_below="@+id/toolbar"
         android:id="@+id/dark_view_event_browser_progress"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

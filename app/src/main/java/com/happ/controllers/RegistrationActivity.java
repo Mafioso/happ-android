@@ -167,7 +167,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         mCreateAccountButton.setVisibility(View.INVISIBLE);
 
-        toolbar = (Toolbar) findViewById(R.id.ll_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         setTitle("");
 
