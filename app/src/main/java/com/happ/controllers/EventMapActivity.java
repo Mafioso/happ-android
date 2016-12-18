@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -94,6 +93,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     private String eventId;
 
     private LatLng myLocationLatLng;
+    private LatLng eventLocation = new LatLng(43.218282, 76.927793);
 
     private boolean fromEventActivity;
 
@@ -153,9 +153,8 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
                 boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
                 if (enabled) {
-//                    LatLng origin = MarkerPoints.get(0);
                     LatLng origin = myLocationLatLng;
-                    LatLng dest = new LatLng(43.218282, 76.927793);
+                    LatLng dest = eventLocation;
 
                     // Getting URL to the Google Directions API
                     String url = getUrl(origin, dest);
@@ -164,14 +163,15 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                     // Start downloading json data from Google Directions API
                     FetchUrl.execute(url);
+
                     //move map camera
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(eventLocation));
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
                     mRouteBuilt = true;
-                    Toast.makeText(EventMapActivity.this, "Маршрут построен", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EventMapActivity.this, R.string.route_is_built, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(EventMapActivity.this, "Ваш телефон не подклюен к GPS Навигации", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EventMapActivity.this, R.string.gps_is_not_enabled, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -212,14 +212,17 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-//        MarkerOptions options = new MarkerOptions();
-//        options.position(new LatLng(43.218282, 76.927793));
-//        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-//        mMap.addMarker(options);
+//        final ArrayList<LatLng> MarkerPoints = new ArrayList<LatLng>();
+//        MarkerPoints.add(eventLocation);
 
-        final ArrayList<LatLng> MarkerPoints = new ArrayList<LatLng>();
-        MarkerPoints.add(new LatLng(43.218282, 76.927793));
+        Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_circle_orange_border);
+        BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
 
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(eventLocation);
+        markerOptions.title("Current Position");
+        markerOptions.icon(markerIcon);
+        mMap.addMarker(markerOptions);
 
 //        // Setting onclick event listener for the map
 //        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -472,26 +475,17 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onLocationChanged(Location location) {
 
-        Resources resources = getResources();
         mLastLocation = location;
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
+//        if (mCurrLocationMarker != null) {
+//            mCurrLocationMarker.remove();
+//        }
 
-        Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_circle_orange_border);
-        BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
-
-        //Place current location marker
         myLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(myLocationLatLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(markerIcon);
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
+
 
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocationLatLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(17));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
         //stop location updates
         if (mGoogleApiClient != null) {

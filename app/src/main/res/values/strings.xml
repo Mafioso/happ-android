@@ -232,5 +232,7 @@
     <string name="navigation_drawer_close">Drawer close</string>
     <string name="price">Price</string>
     <string name="votes_count">Votes Count</string>
+    <string name="route_is_built">The route is built</string>
+    <string name="gps_is_not_enabled">Your phone is not connected to the GPS Navigation</string>
 
 </resources>
