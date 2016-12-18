@@ -165,14 +165,15 @@ public class Event extends RealmObject implements Serializable {
 
     public Interest getInterest() {
         if (this.interests != null && this.interests.size() > 0) {
-            for (Iterator<Interest> interest = this.interests.iterator(); interest.hasNext();) {
-                Interest tmp = interest.next();
-                for (Iterator<Interest> selected = App.getCurrentUser().getInterests().iterator();selected.hasNext();) {
-                    if (tmp.getId().equals(selected.next())) {
-                        return tmp;
-                    }
-                }
-            }
+            return interests.get(0);
+//            for (Iterator<Interest> interest = this.interests.iterator(); interest.hasNext();) {
+//                Interest tmp = interest.next();
+//                for (Iterator<Interest> selected = App.getCurrentUser().getInterests().iterator();selected.hasNext();) {
+//                    if (tmp.getId().equals(selected.next())) {
+//                        return tmp;
+//                    }
+//                }
+//            }
         }
         return null;
     }
