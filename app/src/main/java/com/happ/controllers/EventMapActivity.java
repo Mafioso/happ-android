@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -20,11 +19,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -59,6 +63,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by dante on 11/8/16.
@@ -84,10 +89,11 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     LocationRequest mLocationRequest;
 
 
-    private TextView mEventTitle,mEventPlace,mEventDistance,mEventPrice,mEventDate;
+    private TextView mEventTitle,mEventPlace,mEventDistance,mEventPrice,mEventDate,mEventPriceCurrency;
 
     private Button mBtnEventPage;
-    private ImageView mImagePost;
+    private ImageView mImageView, mImagePlaceHolder;
+    private MaterialProgressBar mImagePreloader;
 
     private Event event;
     private String eventId;
@@ -121,6 +127,10 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         mEventPlace = (TextView) findViewById(R.id.event_item_map_place);
         mEventPrice = (TextView) findViewById(R.id.event_item_map_price);
         mEventDate = (TextView) findViewById(R.id.event_item_map_eventdate);
+        
+        mImageView = (ImageView) findViewById(R.id.event_item_map_imageview);
+        mImagePlaceHolder = (ImageView) findViewById(R.id.event_item_map_placeholder);
+        mImagePreloader = (MaterialProgressBar) findViewById(R.id.event_item_map_preloader);
 
 
         mapView = (MapView) findViewById(R.id.event_mapview);
@@ -135,9 +145,98 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         mEventTitle.setText(event.getTitle());
         mEventPlace.setText(event.getPlace());
+
+        if (event.getLowestPrice() == 0) {
+            mEventPrice.setText(App.getContext().getResources().getString(R.string.free));
+        } else {
+            String price = App.getContext().getResources().getString(R.string.from)
+                    + " " +
+                    event.getLowestPrice()
+                    + " ";
+            if (event.getCurrency().getCode() != null) {
+                price += event.getCurrency().getCode();
+            } else {
+                price += event.getCurrency().getName();
+            }
+            mEventPrice.setText(price);
+        }
+
         mEventPrice.setText(event.getPriceRange());
         mEventDate.setText(event.getStartDateFormatted("dd MMM"));
 
+        if(event.getImages().size() > 0){
+            final String url = event.getImages().get(0).getUrl();
+            Glide.clear(mImageView);
+            mImagePreloader.setVisibility(View.VISIBLE);
+            try {
+                ViewTreeObserver viewTreeObserver = mImageView.getViewTreeObserver();
+                if (viewTreeObserver.isAlive()) {
+                    viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            int viewWidth = mImageView.getWidth();
+                            int viewHeight = mImageView.getHeight();
+                            Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth) + " " + String.valueOf(viewHeight));
+
+                            Glide.with(App.getContext())
+                                    .load(url)
+                                    .listener(new RequestListener<String, GlideDrawable>() {
+                                        @Override
+                                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                            Log.e("GLIDE_ERR", url + " " + e.getMessage());
+
+                                            mImagePlaceHolder.setVisibility(View.VISIBLE);
+                                            return false;
+                                        }
+
+                                        @Override
+                                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                            Log.d("GLIDE_OK", url);
+//                                                Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
+//                                                Palette p = Palette.from(bm).generate();
+//
+//                                                Palette.Swatch vibrantSwatch = p.getVibrantSwatch();
+//
+//                                                String strColor = String.format("#%06X", 0xFFFFFF & vibrantSwatch.getRgb());
+//
+//                                                Realm realm = Realm.getDefaultInstance();
+//                                                Event event = realm.where(Event.class).equalTo("id",item.event.getId()).findFirst();
+//                                                if (event != null) {
+//                                                    realm.beginTransaction();
+//                                                    event.setColor(strColor);
+//                                                    realm.copyToRealmOrUpdate(event);
+//                                                    realm.commitTransaction();
+//                                                }
+//                                                realm.close();
+//
+//                                                if (vibrantSwatch != null) {
+//                                                    mBackground.setBackgroundColor(vibrantSwatch.getRgb());
+//                                                } else {
+//
+//                                                }
+
+                                            mImagePlaceHolder.setVisibility(View.INVISIBLE);
+                                            mImagePreloader.setVisibility(View.INVISIBLE);
+                                            return false;
+                                        }
+                                    })
+                                    .override(viewWidth, viewHeight)
+                                    .centerCrop()
+                                    .into(mImageView);
+                            
+                        }
+                    });
+                }
+            } catch (Exception ex) {
+                Log.e("EVENTS PAGE", ex.getLocalizedMessage());
+            }
+        } else {
+            Glide.clear(mImageView);
+            mImagePlaceHolder.setVisibility(View.VISIBLE);
+        }
+        
+        
         mFabLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -418,8 +517,8 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(10);
-                lineOptions.color(Color.RED);
+                lineOptions.width(12);
+                lineOptions.color(R.color.colorAccent183);
 
                 Log.d("onPostExecute", "onPostExecute lineoptions decoded");
 

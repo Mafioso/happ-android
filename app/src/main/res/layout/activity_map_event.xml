@@ -39,7 +39,7 @@
                 android:layout_centerHorizontal="true"
                 android:visibility="gone"/>
 
-            <ProgressBar
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
                 style="@style/Widget.AppCompat.ProgressBar"
                 android:theme="@style/CircularProgress"
                 android:layout_width="24dp"
@@ -135,12 +135,28 @@
                     <TextView
                         android:id="@+id/event_item_map_price"
                         android:layout_below="@+id/event_item_map_eventdate"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="10sp"
                         android:textColor="@color/dark57"
                         android:text="@string/price"
-                        android:layout_marginTop="4dp"/>
+                        android:layout_marginTop="4dp"
+                        android:paddingRight="8dp"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/event_item_map_price_currency"-->
+                        <!--android:layout_below="@+id/event_item_map_eventdate"-->
+                        <!--android:layout_toRightOf="@+id/event_item_map_price"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textSize="10sp"-->
+                        <!--android:textColor="@color/dark57"-->
+                        <!--android:text="@string/event_currency"-->
+                        <!--android:layout_marginTop="4dp"-->
+                        <!--android:maxLines="1"-->
+                        <!--android:ellipsize="end"/>-->
                 </RelativeLayout>
 
                 <Button
