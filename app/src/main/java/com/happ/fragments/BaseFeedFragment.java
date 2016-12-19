@@ -13,6 +13,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.happ.App;
 import com.happ.R;
 import com.happ.adapters.EventsListAdapter;
 import com.happ.controllers_drawer.EventActivity;
@@ -56,6 +58,7 @@ public class BaseFeedFragment extends Fragment {
     protected AppCompatImageView mIVEmpty;
     protected MaterialProgressBar mFeedEventsProgress;
     protected TextView mPersonalSubText;
+    protected String userId = App.getCurrentUser().getId();
 
     protected ChangeColorIconToolbarListener mChangeColorIconToolbarListener;
 
@@ -89,6 +92,9 @@ public class BaseFeedFragment extends Fragment {
 //        return super.onCreateView(inflater, container, savedInstanceState);
         final View view = inflater.inflate(R.layout.feeds_fragment, container, false);
         final Activity activity = getActivity();
+
+        final Display display = activity.getWindowManager().getDefaultDisplay();
+        int width = display.getWidth();
 
         mRLEmptyFrom = (RelativeLayout) view.findViewById(R.id.rl_empty_form);
         eventsListView = (RecyclerView) view.findViewById(R.id.events_list_view);
@@ -136,7 +142,8 @@ public class BaseFeedFragment extends Fragment {
 
     protected void clearRealmForOldCity(){
         Realm realm = Realm.getDefaultInstance();
-        final RealmResults<Event> results = realm.where(Event.class).notEqualTo("inFavorites", true).findAll();
+//        final RealmResults<Event> results = realm.where(Event.class).notEqualTo("inFavorites", true).findAll();
+        final RealmResults<Event> results = realm.where(Event.class).findAll();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {

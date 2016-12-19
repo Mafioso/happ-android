@@ -23,6 +23,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -130,7 +131,9 @@ public class SelectInterestsActivity extends AppCompatActivity
             Intent intent = getIntent();
             fullActivity = intent.getBooleanExtra("is_full", false);
         setContentView(R.layout.activity_select_interests);
-
+        final Display display = getWindowManager().getDefaultDisplay();
+        int width = display.getWidth();  // deprecated
+//        int height = display.getHeight();  // deprecated
         titleBarHeight = 0;
         int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {

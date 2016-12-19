@@ -24,7 +24,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -35,15 +34,13 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.IOException;
@@ -198,23 +195,21 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                 mUserPhoto.setVisibility(View.GONE);
                 mAvatarPlaceholder.setVisibility(View.VISIBLE);
             } else {
-                Glide.with(App.getContext())
+                Picasso.with(App.getContext())
                         .load(imageUrl)
-                        .listener(new RequestListener<String, GlideDrawable>() {
+                        .fit()
+                        .centerCrop()
+                        .into(mUserPhoto, new Callback() {
                             @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                Log.e("GLIDE_ERR", imageUrl + " " + e.getMessage());
-                                return false;
+                            public void onSuccess() {
+                                photoDidSet();
                             }
 
                             @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                Log.d("GLIDE_OK", imageUrl);
-                                photoDidSet();
-                                return false;
+                            public void onError() {
+
                             }
-                        })
-                        .into(mUserPhoto);
+                        });
             }
 
 

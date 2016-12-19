@@ -5,232 +5,215 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/rlView"
-    android:layout_margin="0dp"
-    app:cardElevation="0dp"
-    app:cardMaxElevation="0dp"
-    app:cardCornerRadius="1dp">
+    android:layout_margin="0dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="125dp">
+        android:layout_height="125dp"
+        android:background="@color/dark38">
+
+        <ImageView
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:scaleType="fitXY"
+            android:transitionName="event_image"
+            android:id="@+id/org_event_item_imageview"/>
+
 
         <RelativeLayout
-            android:id="@+id/rl_image"
-            android:layout_width="125dp"
-            android:layout_height="125dp">
+            android:id="@+id/org_event_item_bg_color"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.6"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/rl_bottom_bar"
+            android:layout_toLeftOf="@+id/bg_org_item">
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:transitionName="event_image"
-                android:id="@+id/org_event_item_imageview"/>
+                android:id="@+id/org_event_item_placeholder"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                app:srcCompat="@drawable/image_placeholder"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:visibility="visible"
+                android:alpha="0.3"/>
 
-            <RelativeLayout
-                android:id="@+id/color_bg_iv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/dark57"
-                android:alpha="0.7"/>
+            <ProgressBar
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:theme="@style/CircularProgress"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/event_item_image_preloader"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/rl_bottom_iv">
+            <ImageView
+                android:id="@+id/org_event_item_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_done"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
 
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/rl_bottom_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/bg_org_item"
+            android:background="@color/dark80"
+            android:paddingBottom="6dp"
+            android:paddingTop="6dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp">
+
+            <LinearLayout
+                android:id="@+id/ll_like"
+                android:layout_alignParentLeft="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
                 <ImageView
-                    android:id="@+id/org_event_item_placeholder"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    app:srcCompat="@drawable/image_placeholder"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:visibility="visible"
-                    android:alpha="0.3"/>
-
-                <ProgressBar
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:theme="@style/CircularProgress"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:id="@+id/event_item_image_preloader"/>
-
-                <ImageView
-                    android:id="@+id/org_event_item_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_done"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"/>
-                
-            </RelativeLayout>
-            
-
-            <RelativeLayout
-                android:id="@+id/rl_bottom_iv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="@color/dark80"
-                android:paddingBottom="6dp"
-                android:paddingTop="6dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp">
-
-                <LinearLayout
-                    android:id="@+id/ll_like"
-                    android:layout_alignParentLeft="true"
+                    app:srcCompat="@drawable/ic_did_not_upvote"
+                    android:paddingRight="4dp"
+                    android:id="@+id/clickimage_like"/>
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_did_not_upvote"
-                        android:paddingRight="4dp"
-                        android:id="@+id/clickimage_like"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="63K"
-                        android:textSize="14sp"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/bg_light"
-                        android:id="@+id/org_event_item_votes_count" />
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:text="63K"
+                    android:textSize="14sp"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/bg_light"
+                    android:id="@+id/org_event_item_votes_count" />
+            </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/ll_favorites"
-                    android:layout_alignParentRight="true"
+            <LinearLayout
+                android:id="@+id/ll_favorites"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingRight="4dp"
-                        app:srcCompat="@drawable/ic_not_in_favorites"
-                        android:id="@+id/clickimage_favorites"/>
+                    android:layout_height="wrap_content"
+                    android:paddingRight="4dp"
+                    app:srcCompat="@drawable/ic_not_in_favorites"
+                    android:id="@+id/clickimage_favorites"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="20k"
-                        android:textSize="14sp"
-                        android:layout_gravity="center_vertical"
-                        android:textColor="@color/bg_light" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20k"
+                    android:textSize="14sp"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="@color/bg_light" />
 
-                </LinearLayout>
-            </RelativeLayout>
+            </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/bg_org_item"
-            android:layout_toRightOf="@+id/rl_image"
+            android:layout_toRightOf="@+id/org_event_item_imageview"
+            android:layout_toEndOf="@+id/org_event_item_imageview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/dark57">
+            android:background="@color/dark38">
 
-            <RelativeLayout
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                android:theme="@style/EventToolbar"
+                android:id="@+id/event_toolbar"
+                android:layout_alignParentBottom="true"/>
+
+            <TextView
+                android:id="@+id/org_event_item_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/dark38">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <android.support.v7.widget.Toolbar
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:background="@android:color/transparent"
-                        android:theme="@style/EventToolbar"
-                        android:id="@+id/event_toolbar"
-                        android:layout_alignParentBottom="true"/>
-
-                    <TextView
-                        android:id="@+id/org_event_item_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:transitionName="event_title"
-                        android:textSize="20sp"
-                        android:textAllCaps="true"
-                        android:lines="1"
-                        android:singleLine="true"
-                        android:text="Event Title Very Very Long"
-                        android:textColor="@color/bg_light"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="32dp"/>
+                android:layout_marginTop="8dp"
+                android:transitionName="event_title"
+                android:textSize="20sp"
+                android:textAllCaps="true"
+                android:lines="1"
+                android:singleLine="true"
+                android:text="Event Title Very Very Long"
+                android:textColor="@color/bg_light"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="32dp"/>
 
 
-                    <TextView
-                        android:id="@+id/org_event_item_interest"
-                        android:layout_below="@+id/org_event_item_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white70"
-                        android:text="Music "
-                        android:textSize="12sp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="32dp"
-                        android:layout_marginTop="4dp"
-                        android:transitionName="event_interest_name"
-                        />
+            <TextView
+                android:id="@+id/org_event_item_interest"
+                android:layout_below="@+id/org_event_item_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white70"
+                android:text="Music "
+                android:textSize="12sp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="4dp"
+                android:transitionName="event_interest_name"
+                />
 
 
-                    <TextView
-                        android:id="@+id/org_event_item_datetime"
-                        android:layout_above="@+id/org_event_item_price"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="13sp"
-                        android:textAllCaps="true"
-                        android:textColor="@color/bg_light"
-                        android:text="@string/event_date"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:paddingBottom="4dp"
-                        android:layout_marginRight="32dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="32dp"/>
+            <TextView
+                android:id="@+id/org_event_item_datetime"
+                android:layout_above="@+id/org_event_item_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textAllCaps="true"
+                android:textColor="@color/bg_light"
+                android:text="@string/event_date"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:paddingBottom="4dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="32dp"/>
 
 
 
-                    <TextView
-                        android:id="@+id/org_event_item_price"
-                        android:layout_above="@+id/org_event_item_place"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:textColor="@color/white70"
-                        android:text="@string/price"
-                        android:layout_marginRight="32dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="32dp"/>
+            <TextView
+                android:id="@+id/org_event_item_price"
+                android:layout_above="@+id/org_event_item_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/white70"
+                android:text="@string/price"
+                android:layout_marginRight="32dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="32dp"/>
 
-                    <TextView
-                        android:id="@+id/org_event_item_place"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="12sp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:text="@string/event_place"
-                        android:textColor="@color/white70"
-                        android:layout_alignParentBottom="true"
-                        android:paddingBottom="8dp"
-                        android:layout_marginRight="32dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="32dp"/>
-                </RelativeLayout>
-            </RelativeLayout>
+            <TextView
+                android:id="@+id/org_event_item_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="@string/event_place"
+                android:textColor="@color/white70"
+                android:layout_alignParentBottom="true"
+                android:paddingBottom="8dp"
+                android:layout_marginRight="32dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="32dp"/>
         </RelativeLayout>
     </RelativeLayout>
 </RelativeLayout>

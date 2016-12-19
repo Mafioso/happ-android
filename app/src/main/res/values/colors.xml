@@ -38,6 +38,10 @@
     <color name="background_title_event">#B79078</color>
     <color name="second_circle">#FBDCCD</color>
 
+    <color name="declined_event_color">#c33838</color>
+
+
+
     <!-- for welcome screen -->
     <!-- Screens background action_navigation_item_text_color-->
     <color name="bg_screen1">#f64c73</color>

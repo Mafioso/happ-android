@@ -122,7 +122,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     protected void updateEventsList() {
 
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).findAllSorted("startDate", Sort.ASCENDING);
+        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).notEqualTo("author.id", userId).findAllSorted("startDate", Sort.ASCENDING);
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();
@@ -144,6 +144,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         if (endDate != null) q.lessThanOrEqualTo("startDate", endDate);
         if (maxFree != null && maxFree.length() > 0) q.equalTo("lowestPrice", 0);
         if (popularityEvents) q.findAllSorted("votesCount", Sort.DESCENDING);
+        q.notEqualTo("author.id", userId);
 //        if (!popularityEvents) q.findAllSorted("startDate", Sort.ASCENDING);
         RealmResults<Event> eventRealmResults = q.endGroup().findAll();
 //        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("startDate", Sort.ASCENDING);

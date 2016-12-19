@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/cardview_light_background"
@@ -11,5 +11,7 @@
         android:id="@+id/org_events_list_view"
         />
 
+    <include layout="@layout/empty_form" />
 
-</LinearLayout>
+
+</RelativeLayout>

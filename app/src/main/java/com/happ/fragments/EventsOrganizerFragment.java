@@ -12,11 +12,17 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -60,6 +66,11 @@ public class EventsOrganizerFragment extends Fragment {
     private int previousTotal = 0;
     private int visibleThreshold;
 
+    protected RelativeLayout mRLEmptyFrom;
+    protected Button mBtnEmptyForm;
+    protected AppCompatImageView mIVEmpty;
+    protected TextView mPersonalSubText;
+
     private BroadcastReceiver eventsRequestDoneReceiver;
     private BroadcastReceiver deleteEventRequestDoneReceiver;
 
@@ -70,10 +81,15 @@ public class EventsOrganizerFragment extends Fragment {
         final Activity activity = getActivity();
 
         orgEventsRecyclerView = (RecyclerView) view.findViewById(R.id.org_events_list_view);
+        mRLEmptyFrom = (RelativeLayout) view.findViewById(R.id.rl_empty_form);
+        mBtnEmptyForm = (Button) view.findViewById(R.id.btn_empty_form);
+        mPersonalSubText = (TextView) view.findViewById(R.id.tv_empty_personal_text);
+        mIVEmpty = (AppCompatImageView) view.findViewById(R.id.iv_logo_empty);
 
-        eventsFeedPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
-        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
+        mRLEmptyFrom.setVisibility(View.GONE);
 
+        eventsFeedPageSize = 10;
+        visibleThreshold = 2;
         eventsListLayoutManager = new LinearLayoutManager(activity);
         orgEventsRecyclerView.setLayoutManager(eventsListLayoutManager);
         orgEvents = new ArrayList<>();
@@ -114,7 +130,7 @@ public class EventsOrganizerFragment extends Fragment {
         }
 
         getEvents(1);
-        createScrollListener();
+//        createScrollListener();
 
         return view;
     }
@@ -124,6 +140,7 @@ public class EventsOrganizerFragment extends Fragment {
         super.onResume();
         updateEventsList();
     }
+
 
     protected void updateEventsList() {
         Realm realm = Realm.getDefaultInstance();
@@ -136,6 +153,8 @@ public class EventsOrganizerFragment extends Fragment {
         orgEvents = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
         ((OrgEventsListAdapter) orgEventsRecyclerView.getAdapter()).updateData(orgEvents);
         realm.close();
+
+        isEmpty();
     }
 
     private BroadcastReceiver createEventsRequestDoneReceiver() {
@@ -201,6 +220,31 @@ public class EventsOrganizerFragment extends Fragment {
         }
 
         super.onDestroy();
+    }
+
+    private void isEmpty() {
+        if (orgEvents.isEmpty()) {
+
+            mRLEmptyFrom.setVisibility(View.VISIBLE);
+            mPersonalSubText.setText(R.string.feed_everything_empty);
+            mBtnEmptyForm.setText(R.string.add_more_interests);
+            mIVEmpty.setImageResource(R.drawable.empty_feed);
+
+            mBtnEmptyForm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.animatealpha);
+                    mBtnEmptyForm.startAnimation(anim);
+
+                    Intent intent = new Intent(App.getContext(), EditCreateActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                }
+            });
+        } else {
+            mRLEmptyFrom.setVisibility(View.GONE);
+        }
+
     }
 
 }

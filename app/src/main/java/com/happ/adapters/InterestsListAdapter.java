@@ -12,16 +12,14 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.happ.App;
 import com.happ.R;
 import com.happ.models.Interest;
+import com.squareup.picasso.Picasso;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import java.util.ArrayList;
@@ -29,9 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import io.realm.Realm;
-import io.realm.RealmResults;
-import jp.wasabeef.glide.transformations.BlurTransformation;
-import jp.wasabeef.glide.transformations.CropSquareTransformation;
+import jp.wasabeef.picasso.transformations.BlurTransformation;
 
 /**
  * Created by iztiev on 8/4/16.
@@ -231,42 +227,22 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
 
         if (interest.getImage() != null) {
             final String url = interest.getImage().getUrl();
-            holder.mInterestImageView.setImageDrawable(null);
-            try {
-                ViewTreeObserver viewTreeObserver = holder.mInterestImageView.getViewTreeObserver();
-                if (viewTreeObserver.isAlive()) {
-                    viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            holder.mInterestImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            int viewWidth = holder.mInterestImageView.getWidth();
-                            int viewHeight = holder.mInterestImageView.getHeight();
-                            if (isSelected) {
-                                Glide.with(App.getContext())
-                                        .load(url)
-                                        .asBitmap()
-                                        .transform(new BlurTransformation(context), new CropSquareTransformation(context))
-//                                        .override(viewWidth, viewHeight)
-//                                        .centerCrop()
-                                        .into(holder.mInterestImageView);
-                            } else {
-                                Glide.with(App.getContext())
-                                        .load(url)
-                                        .asBitmap()
-                                        .override(viewWidth, viewHeight)
-                                        .centerCrop()
-                                        .into(holder.mInterestImageView);
-                            }
-                        }
-                    });
-                }
-            } catch (Exception ex) {
-                Log.e("INTERESTS", ex.getLocalizedMessage());
-            }
-
-        } else {
-            Glide.clear(holder.mInterestImageView);
+            if (isSelected) {
+                Picasso.with(context)
+                        .load(url)
+                        .fit()
+                        .centerCrop()
+                        .transform(new BlurTransformation(context))
+                        .into(holder.mInterestImageView);
+            } else {
+                Picasso.with(context)
+                        .load(url)
+                        .fit()
+                        .centerCrop()
+                        .into(holder.mInterestImageView);
+                 }
         }
+
         holder.mInterestBackground.setBackgroundColor(Color.parseColor(interest.getColor()));
 
         String id = interest.getId();
