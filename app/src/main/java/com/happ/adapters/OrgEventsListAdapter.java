@@ -18,10 +18,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.R;
@@ -60,7 +62,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
 
     public void updateData(ArrayList<Event> events) {
         mItems = events;
-        Log.d("AAAAA", String.valueOf(events.size()));
+        Log.d("ORG EVENTS SIZE", String.valueOf(events.size()));
         this.notifyDataSetChanged();
     }
     
@@ -99,7 +101,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
     @Override
     public void onBindViewHolder(final OrgEventsListViewHolder holder, int position) {
         final Event event = mItems.get(position);
-        holder.itemView.setOnClickListener(null);
+
         final OrgEventsListItemViewHolder itemHolder = (OrgEventsListItemViewHolder)holder;
 
         Typeface tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.otf");
@@ -173,10 +175,9 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
             }
         });
 
-
         if(event.getImages().size() > 0) {
-            String url = event.getImages().get(0).getUrl();
 
+            final String url = event.getImages().get(0).getUrl();
             itemHolder.mImagePreloader.setVisibility(View.VISIBLE);
 
             Picasso.with(context)
@@ -186,47 +187,67 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
                     .into(itemHolder.mImageView, new Callback() {
                         @Override
                         public void onSuccess() {
-                            itemHolder.mImagePlaceHolder.setVisibility(View.GONE);
                             itemHolder.mImagePreloader.setVisibility(View.GONE);
+                            itemHolder.mImagePlaceHolder.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError() {
-                            itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
+                            itemHolder.mImagePreloader.setVisibility(View.VISIBLE);
                         }
                     });
+
         } else {
             itemHolder.mImagePreloader.setVisibility(View.GONE);
             itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
+            itemHolder.mImageView.setImageResource(android.R.color.transparent);
         }
 
-
         if (event.getStatus() == 2) {
-            itemHolder.mEventStatus.setImageResource(R.drawable.ic_close_x);
-            itemHolder.mBottomBar.setVisibility(View.GONE);
+            setUnlocked(itemHolder.mImageView);
             itemHolder.mBgItem.setBackgroundColor(ContextCompat.getColor(context, R.color.declined_event_color));
+            itemHolder.mEventStatus.setImageResource(R.drawable.ic_close_x);
             itemHolder.mPlace.setVisibility(View.GONE);
             itemHolder.mPrice.setVisibility(View.GONE);
             itemHolder.mDateView.setVisibility(View.GONE);
+            itemHolder.mBottomBar.setVisibility(View.GONE);
+            itemHolder.mButtonSeeDetails.setVisibility(View.VISIBLE);
+            itemHolder.mErrorMsg.setVisibility(View.VISIBLE);
         } else if (event.getEndDate().getTime() < new Date().getTime()) {
-
             setLocked(itemHolder.mImageView);
-            itemHolder.mEventStatus.setVisibility(View.GONE);
             itemHolder.mBgItem.setBackgroundColor(ContextCompat.getColor(context, R.color.dark57));
-        } else {
-
+            itemHolder.mEventStatus.setImageResource(R.drawable.ic_empty);
+            itemHolder.mPlace.setVisibility(View.VISIBLE);
+            itemHolder.mPrice.setVisibility(View.VISIBLE);
+            itemHolder.mDateView.setVisibility(View.VISIBLE);
+            itemHolder.mBottomBar.setVisibility(View.VISIBLE);
+            itemHolder.mButtonSeeDetails.setVisibility(View.GONE);
+            itemHolder.mErrorMsg.setVisibility(View.GONE);
+        } else if (event.getStatus() == 0) {
+            setUnlocked(itemHolder.mImageView);
             itemHolder.mBgItem.setBackgroundColor(Color.parseColor(event.getColor()));
-
-            if (event.getStatus() == 0) {
-                itemHolder.mEventStatus.setImageResource(R.drawable.ic_onreview);
-            } else if (event.getStatus() == 1) {
-                itemHolder.mEventStatus.setImageResource(R.drawable.ic_done);
-            }
+            itemHolder.mEventStatus.setImageResource(R.drawable.ic_onreview);
+            itemHolder.mPlace.setVisibility(View.VISIBLE);
+            itemHolder.mPrice.setVisibility(View.VISIBLE);
+            itemHolder.mDateView.setVisibility(View.VISIBLE);
+            itemHolder.mBottomBar.setVisibility(View.GONE);
+            itemHolder.mButtonSeeDetails.setVisibility(View.GONE);
+            itemHolder.mErrorMsg.setVisibility(View.GONE);
+        } else if (event.getStatus() == 1) {
+            setUnlocked(itemHolder.mImageView);
+            itemHolder.mBgItem.setBackgroundColor(Color.parseColor(event.getColor()));
+            itemHolder.mEventStatus.setImageResource(R.drawable.ic_done);
+            itemHolder.mPlace.setVisibility(View.VISIBLE);
+            itemHolder.mPrice.setVisibility(View.VISIBLE);
+            itemHolder.mDateView.setVisibility(View.VISIBLE);
+            itemHolder.mBottomBar.setVisibility(View.VISIBLE);
+            itemHolder.mButtonSeeDetails.setVisibility(View.GONE);
+            itemHolder.mErrorMsg.setVisibility(View.GONE);
+        }
             // status
             // на модерации - 0
             // активный - 1
             // отклонён - 2
-        }
 
 
         if (event.isDidVote()) {
@@ -245,6 +266,13 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
             @Override
             public void onClick(View view) {
                 eventSelected(itemHolder, event);
+            }
+        });
+
+        itemHolder.mButtonSeeDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(App.getContext(), "in progress... ^_^", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -273,6 +301,11 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
         ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
         v.setColorFilter(cf);
         v.setAlpha(128);   // 128 = 0.5
+    }
+
+    public static void  setUnlocked(ImageView v) {
+        v.setColorFilter(null);
+        v.setAlpha(255);
     }
 
     @Override
@@ -309,6 +342,9 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
         private RelativeLayout mBgItem;
         private RelativeLayout mBottomBar;
 
+        private Button mButtonSeeDetails;
+        private TextView mErrorMsg;
+
 
         public OrgEventsListItemViewHolder(final View itemView) {
             super(itemView);
@@ -330,8 +366,11 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
             mImagePreloader = (ProgressBar) itemView.findViewById(R.id.event_item_image_preloader);
             mBottomBar = (RelativeLayout) itemView.findViewById(R.id.rl_bottom_bar);
 
+            mButtonSeeDetails = (Button) itemView.findViewById(R.id.btn_see_details);
+            mErrorMsg = (TextView) itemView.findViewById(R.id.org_event_item_err_msg);
 
         }
 
     }
+
 }

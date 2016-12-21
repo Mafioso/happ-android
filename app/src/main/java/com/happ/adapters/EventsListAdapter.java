@@ -238,72 +238,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
             }
 
-
-//            if(item.event.getImages().size() > 0){
-////                final String url = item.event.getImages().get(0).getUrl();
-//                final String url = item.event.getImages().get(0).getUrl();
-//                Glide.clear(itemHolder.mImageView);
-//                itemHolder.mImagePreloader.setVisibility(View.VISIBLE);
-//                try {
-//                    ViewTreeObserver viewTreeObserver = itemHolder.mImageView.getViewTreeObserver();
-//                    if (viewTreeObserver.isAlive()) {
-//                        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-//                            @Override
-//                            public void onGlobalLayout() {
-//                                itemHolder.mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//                                int viewWidth = itemHolder.mImageView.getWidth();
-//                                int viewHeight = itemHolder.mImageView.getHeight();
-//                                Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth) + " " + String.valueOf(viewHeight));
-//
-//                                Glide.with(App.getContext())
-//                                        .load(url)
-//                                        .listener(new RequestListener<String, GlideDrawable>() {
-//                                            @Override
-//                                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-//                                                Log.e("GLIDE_ERR", url + " " + e.getMessage());
-//
-//                                                itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
-//                                                return false;
-//                                            }
-//
-//                                            @Override
-//                                            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//                                                Log.d("GLIDE_OK", url);
-//
-//                                                itemHolder.mImagePlaceHolder.setVisibility(View.INVISIBLE);
-//                                                itemHolder.mImagePreloader.setVisibility(View.INVISIBLE);
-//                                                return false;
-//                                            }
-//                                        })
-//                                        .override(viewWidth, viewHeight)
-//                                        .centerCrop()
-//                                        .into(itemHolder.mImageView);
-//
-////                            final Drawable image = holder.mImageView.getDrawable();
-////                            if (holder.mImageView.getVie  wTreeObserver().isAlive()) {
-////                                holder.mImageView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-////                                    @Override
-////                                    public void onGlobalLayout() {
-////                                        if (image != null && !image.equals(holder.mImageView.getDrawable())) {
-////                                            holder.mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-////                                            setBlurs(holder, position);
-////                                        }
-////                                    }
-////                                });
-////
-////                            }
-//                            }
-//                        });
-//                    }
-//                } catch (Exception ex) {
-//                    Log.e("EVENTS", ex.getLocalizedMessage());
-//                }
-//            } else {
-//                Glide.clear(itemHolder.mImageView);
-//                itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
-//            }
-
-
             Typeface tfcs = Typefaces.get(App.getContext(), "fonts/WienLight_Normal.otf");
             itemHolder.mTextViewTitle.setTypeface(tfcs);
             itemHolder.mTextViewTitle.setText(item.event.getTitle());
@@ -331,18 +265,6 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
             if ( item.event.getInterest() != null) {
                 ArrayList<String> fullTitle = item.event.getInterest().getFullTitle();
-
-//                if (item.event.getInterest().getColor() != null) {
-//                    String colorString =  item.event.getInterest().getColor();
-//                    if (colorString.length() > 6) {
-//                        colorString = colorString.substring(colorString.length()-6);
-//                    }
-//                    String action_navigation_item_text_color = "#" + colorString;
-//
-//                    itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor(action_navigation_item_text_color));
-//                } else {
-//                    itemHolder.mInterestViewColor.setBackgroundColor(Color.parseColor("#FF1493"));
-//                }
 
                 String fullTitleString = fullTitle.get(0);
                 if (fullTitle.size() > 1) {

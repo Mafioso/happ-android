@@ -26,10 +26,14 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
     private final Context context;
     SelectCityItemListener listener;
     private User currentUser;
+    private boolean fromEditCreateActivity;
+    private String mySelectedCityId;
 
-    public CityListAdapter(Context context, ArrayList<City> cities) {
+    public CityListAdapter(Context context, ArrayList<City> cities, boolean fromEAC, String mySelectedCityId) {
         this.context = context;
         this.mCities = cities;
+        this.fromEditCreateActivity = fromEAC;
+        this.mySelectedCityId = mySelectedCityId;
         currentUser = App.getCurrentUser();
     }
 
@@ -61,13 +65,26 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
         final City city = mCities.get(position);
         String name_city = city.getName();
 
-        if (city.getId().equals(currentUser.getSettings().getCity())) {
-            holder.mImageHappIcon.setVisibility(View.VISIBLE);
-            holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        if (fromEditCreateActivity) {
+            if (mySelectedCityId.equals(city.getId())) {
+                holder.mImageHappIcon.setVisibility(View.VISIBLE);
+                holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            } else {
+                holder.mImageHappIcon.setVisibility(View.INVISIBLE);
+                holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.dark57));
+            }
         } else {
-            holder.mImageHappIcon.setVisibility(View.INVISIBLE);
-            holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.dark57));
+            if (city.getId().equals(currentUser.getSettings().getCity())) {
+                holder.mImageHappIcon.setVisibility(View.VISIBLE);
+                holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            } else {
+                holder.mImageHappIcon.setVisibility(View.INVISIBLE);
+                holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.dark57));
+            }
         }
+
+
+
         if (name_city.equals("")) {
             holder.mTitleCities.setText(context.getResources().getString(R.string.empty_city));
         } else {

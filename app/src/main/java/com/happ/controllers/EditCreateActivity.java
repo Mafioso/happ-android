@@ -23,6 +23,10 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.EventImagesSwipeAdapter;
 import com.happ.controllers_drawer.EventActivity;
+import com.happ.fragments.ChangeCurrencyFragment;
+import com.happ.fragments.SelectCityFragment;
+import com.happ.models.City;
+import com.happ.models.Currency;
 import com.happ.models.Event;
 import com.happ.models.EventPhone;
 import com.happ.models.GeopointResponse;
@@ -54,6 +58,7 @@ public class EditCreateActivity extends AppCompatActivity {
     private EditText    mEventTitle,
                         mEventInterest,
                         mEventDescription,
+                        mEventCity,
                         mEventPlace,
                         mEventMinPrice,
                         mEventMaxPrice,
@@ -69,12 +74,16 @@ public class EditCreateActivity extends AppCompatActivity {
                         mImgBtnSelectStartDate,
                         mImgBtnSelectEndDate,
                         mImgBtnSelectPointMap,
-                        mImgBtnSelectCity;
+                        mImgBtnSelectCity,
+                        mImgBtnSelectCurreny;
 
     private View mViewSpaceListenerStartTime, mViewSpaceListenerEndTime;
 
     private EventImagesSwipeAdapter mEventImagesSwipeAdapter;
     private BroadcastReceiver createEventReceiver;
+
+    private City selectedCity = App.getCurrentCity();
+    private String selectedCurrency = App.getCurrentUser().getSettings().getCurrency();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +94,9 @@ public class EditCreateActivity extends AppCompatActivity {
 
         if (eventId == null) {
             setTitle(getString(R.string.create_event));
+            mBtnCreateSave.setText(getResources().getString(R.string.create_event));
+            mEventCurrency.setText(App.getCurrentUser().getSettings().getCurrencyObject().getName());
+            mEventCity.setText(selectedCity.getName());
             event = new Event();
         } else {
             setTitle(getString(R.string.edit_event));
@@ -92,6 +104,8 @@ public class EditCreateActivity extends AppCompatActivity {
             event = realm.where(Event.class).equalTo("id", eventId).findFirst();
             event = realm.copyFromRealm(event);
             realm.close();
+
+            mBtnCreateSave.setText(getResources().getString(R.string.save));
 
             mEventTitle.setText(event.getTitle());
             mEventDescription.setText(event.getDescription());
@@ -269,6 +283,7 @@ public class EditCreateActivity extends AppCompatActivity {
         mImgBtnSelectPointMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Toast.makeText(EditCreateActivity.this, "in progress... ^_^", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -277,18 +292,69 @@ public class EditCreateActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                final SelectCityFragment scf = new SelectCityFragment();
+                Bundle args = new Bundle();
+                args.putBoolean("from_edit_create_activity", true);
+                args.putString("selectedCity", selectedCity.getId());
+                scf.setArguments(args);
+
+                scf.setOnCitySelectListener(new SelectCityFragment.OnCitySelectListener() {
+                    @Override
+                    public void onCitySelected(City city, float x, float y) {
+
+                    }
+
+                    @Override
+                    public void onCancel(float x, float y) {
+
+                    }
+
+                    @Override
+                    public void onCitySelectedFromEditCreate(City city) {
+                        selectedCity = city;
+                        mEventCity.setText(selectedCity.getName().trim());
+                    }
+
+                });
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_container, scf)
+                        .commit();
             }
         });
 
 
+        mImgBtnSelectCurreny.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                final ChangeCurrencyFragment ccf = new ChangeCurrencyFragment();
+                Bundle args = new Bundle();
+//                args.putBoolean("from_edit_create_activity", true);
+                args.putString("selectedCurrency", selectedCurrency);
+                ccf.setArguments(args);
+
+                ccf.setOnCurrencyListener(new ChangeCurrencyFragment.OnCurrencySelectListener() {
+                    @Override
+                    public void onSelectedCurrency(Currency currency) {
+                        selectedCurrency = currency.getId();
+                        mEventCurrency.setText(currency.getName());
+                    }
+                });
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_container, ccf)
+                        .commit();
+            }
+        });
 
 
         mBtnCreateSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 hideSoftKeyboard(EditCreateActivity.this, view);
-//                saveEvent();
-                Toast.makeText(EditCreateActivity.this, "На стадии разработки Create and Save Button", Toast.LENGTH_SHORT).show();
+                saveEvent();
             }
         });
 
@@ -318,12 +384,14 @@ public class EditCreateActivity extends AppCompatActivity {
         mEventTicketLink = (EditText) findViewById(R.id.input_ec_ticket_link);
         mEventEmail = (EditText) findViewById(R.id.input_ec_email);
         mEventPhone = (EditText) findViewById(R.id.input_ec_phone);
+        mEventCity = (EditText) findViewById(R.id.input_ec_city);
 
         mImgBtnSelectInterest = (ImageButton) findViewById(R.id.ibtn_ec_edit_interest);
         mImgBtnSelectStartDate = (ImageButton) findViewById(R.id.ibtn_ec_edit_startdate);
         mImgBtnSelectEndDate = (ImageButton) findViewById(R.id.ibtn_ec_edit_enddate);
         mImgBtnSelectPointMap = (ImageButton) findViewById(R.id.ibtn_ec_edit_map);
         mImgBtnSelectCity = (ImageButton) findViewById(R.id.ibtn_ec_edit_city);
+        mImgBtnSelectCurreny = (ImageButton) findViewById(R.id.ibtn_ec_edit_currency);
 
         mViewSpaceListenerStartTime = (View) findViewById(R.id.view_click_starttime);
         mViewSpaceListenerEndTime = (View) findViewById(R.id.view_click_endtime);
@@ -339,37 +407,57 @@ public class EditCreateActivity extends AppCompatActivity {
         }
         event.setId("local_event_" + (new Date()).getTime());
 
-        event.setTitle("CS:GO Beta test");
-        event.setDescription("Test Description ...");
-        event.setCityId(App.getCurrentCity().getId());
-        event.setCurrencyId(App.getCurrentUser().getSettings().getCurrency());
-        event.setPlace("Esentai Mall");
-        event.setStartDate(new Date());
-        event.setEndDate(new Date());
+        event.setTitle(mEventTitle.getText().toString());
+        event.setDescription(mEventDescription.getText().toString());
+        event.setCityId(selectedCity.getId());
 
-        event.setLowestPrice(Integer.parseInt("0"));
-        event.setHighestPrice(Integer.parseInt("1000"));
-        event.setWebSite("http://vk.com/");
-        RealmList<EventPhone> phones = new RealmList<EventPhone>();
-        for (int i = 0; i < 3; i++) {
-            EventPhone phone1 = new EventPhone();
-            phone1.setPhone("+7701774176"+i);
-            phones.add(phone1);
-        }
-        event.setPhones(phones);
 
+        event.setCurrencyId(selectedCurrency);
+
+        if (!mEventPlace.getText().toString().equals(""))
+            event.setPlace(mEventPlace.getText().toString());
 
         GeopointResponse geopoinstResponse = new GeopointResponse();
         geopoinstResponse.setLat((float) 43.239032);
         geopoinstResponse.setLng((float) 76.952740);
         event.setGeopoint(geopoinstResponse);
 
-        event.setEmail("dante666lcf@gmail.com");
+
+        event.setStartDate(mStartDate);
+        event.setEndDate(mEndDate);
+
+        if (mEventMinPrice.getText().toString().equals("")) {
+            event.setLowestPrice(0);
+        } else {
+            event.setLowestPrice(Integer.parseInt(mEventMinPrice.getText().toString()));
+        }
+
+        if (mEventMaxPrice.getText().toString().equals("")) {
+            event.setHighestPrice(0);
+        } else {
+            event.setHighestPrice(Integer.parseInt(mEventMaxPrice.getText().toString()));
+        }
+
+        if (!mEventWebSite.getText().toString().equals(""))
+            event.setWebSite(mEventWebSite.getText().toString());
+
+        if (!mEventEmail.getText().toString().equals(""))
+            event.setEmail(mEventEmail.getText().toString());
+        
+        RealmList<EventPhone> phones = new RealmList<EventPhone>();
+        for (int i = 0; i < 2; i++) {
+            EventPhone phone1 = new EventPhone();
+            phone1.setPhone("+7701774176"+i);
+            phones.add(phone1);
+        }
+        event.setPhones(phones);
+
+        if (!mEventPhone.getText().toString().equals(""))
+            event.setEmail(mEventPhone.getText().toString());
 
         User author = new User();
         author.setFullname(App.getCurrentUser().getFn());
         event.setAuthor(author);
-
 
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();

@@ -1,4 +1,4 @@
-package com.happ.controllers;
+package com.happ.fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -6,12 +6,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -26,11 +31,10 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by dante on 11/24/16.
+ * Created by dante on 9/5/16.
  */
-public class ChangeCurrencyActivity extends AppCompatActivity {
+public class ChangeCurrencyFragment extends Fragment {
 
-    private Toolbar toolbar;
     private RecyclerView mCurrencyRecyclerView;
     private LinearLayoutManager llm;
     private ArrayList<Currency> currencies;
@@ -42,42 +46,58 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
     private int currencyPageSize;
     private BroadcastReceiver currenciesRequestDoneReceiver;
     private BroadcastReceiver changeCurrencyRequestDoneReceiver;
+    private OnCurrencySelectListener listener;
+    private String selectedCurrency;
 
-    private boolean fromSettings = false;
+    public void setOnCurrencyListener(OnCurrencySelectListener listener) {
+        this.listener = listener;
+    }
 
+    public interface OnCurrencySelectListener {
+        void onSelectedCurrency(Currency currency);
+    }
+
+    public ChangeCurrencyFragment() {
+    }
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    public static ChangeCurrencyFragment newInstance() {
+        ChangeCurrencyFragment fragment = new ChangeCurrencyFragment();
+        Bundle args = new Bundle();
+
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        fromSettings = getIntent().getBooleanExtra("from_settings", false);
-        setContentView(R.layout.activity_change_currency);
-        setTitle(R.string.change_currency);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        selectedCurrency = getArguments().getString("selectedCurrency");
+        final View contentView = inflater.inflate(R.layout.fragment_change_currency, container, false);
+        final AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         currencyPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
-//        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
         visibleThreshold = 10;
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        mCurrencyRecyclerView = (RecyclerView) findViewById(R.id.activity_currency_rv);
 
 
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_right_arrow_grey);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mCurrencyRecyclerView = (RecyclerView) contentView.findViewById(R.id.rv_currency);
 
-        llm = new LinearLayoutManager(ChangeCurrencyActivity.this);
+        llm = new LinearLayoutManager(App.getContext());
         mCurrencyRecyclerView.setLayoutManager(llm);
         currencies = new ArrayList<>();
 
-        // "" - пустой выбранынй город
-        CurrencyListAdapter cla = new CurrencyListAdapter(this, currencies,false,"");
+        CurrencyListAdapter cla = new CurrencyListAdapter(App.getContext(), currencies, true, selectedCurrency);
         cla.setOnCurrencyItemSelectListener(new CurrencyListAdapter.SelectCurrencyItemListener() {
             @Override
             public void onCurrencyItemSelected(Currency currency) {
-                APIService.setCurrency(currency.getId());
+                listener.onSelectedCurrency(currency);
+                clearFragment();
             }
         });
         mCurrencyRecyclerView.setAdapter(cla);
@@ -98,6 +118,15 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
         }
 
 
+        return contentView;
+    }
+
+    private void clearFragment() {
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        FragmentTransaction trans = manager.beginTransaction();
+        trans.remove(ChangeCurrencyFragment.this);
+        trans.commit();
+        manager.popBackStack();
     }
 
 
@@ -159,7 +188,7 @@ public class ChangeCurrencyActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
 
         if (currenciesRequestDoneReceiver != null) {

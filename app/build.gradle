@@ -59,7 +59,6 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.15.0'
     compile 'com.roughike:bottom-bar:2.0.2'
     compile 'com.ncapdevi:frag-nav:1.2.5'
-//    compile 'jp.wasabeef:blurry:2.0.3'
     compile 'info.hoang8f:android-segmented:1.0.6'
     compile 'com.github.ozodrukh:RippleDrawable:2.0.0'
     compile 'com.andkulikov:transitionseverywhere:1.6.9'
@@ -67,8 +66,10 @@ dependencies {
     compile 'me.relex:circleindicator:1.2.2@aar'
 
     compile 'com.google.maps.android:android-maps-utils:0.4+'
-    compile 'com.google.android.gms:play-services-maps:9.8.0'
-    compile 'com.google.android.gms:play-services-location:9.8.0'
+//    compile 'com.google.android.gms:play-services-maps:9.8.0'
+//    compile 'com.google.android.gms:play-services-location:9.8.0'
+
+    compile 'com.google.android.gms:play-services:10.0.1'
 
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.leavjenn.smoothdaterangepicker:library:0.2.0'

@@ -110,7 +110,7 @@ public class CityActivity extends AppCompatActivity {
 
                 final SelectCityFragment scf = new SelectCityFragment();
                 Bundle args = new Bundle();
-                args.putBoolean("from_city_activity", true);
+                args.putBoolean("from_edit_create_activity", true);
                 scf.setArguments(args);
 
                 scf.setOnCitySelectListener(new SelectCityFragment.OnCitySelectListener() {
@@ -125,6 +125,11 @@ public class CityActivity extends AppCompatActivity {
                     @Override
                     public void onCancel(float x, float y) {
                         hideCitiesList(x, y);
+                    }
+
+                    @Override
+                    public void onCitySelectedFromEditCreate(City city) {
+
                     }
 
                 });

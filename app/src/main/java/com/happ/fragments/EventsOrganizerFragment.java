@@ -88,8 +88,8 @@ public class EventsOrganizerFragment extends Fragment {
 
         mRLEmptyFrom.setVisibility(View.GONE);
 
-        eventsFeedPageSize = 10;
-        visibleThreshold = 2;
+        eventsFeedPageSize = 9;
+        visibleThreshold = 4;
         eventsListLayoutManager = new LinearLayoutManager(activity);
         orgEventsRecyclerView.setLayoutManager(eventsListLayoutManager);
         orgEvents = new ArrayList<>();
@@ -130,7 +130,7 @@ public class EventsOrganizerFragment extends Fragment {
         }
 
         getEvents(1);
-//        createScrollListener();
+        createScrollListener();
 
         return view;
     }
@@ -213,10 +213,12 @@ public class EventsOrganizerFragment extends Fragment {
     public void onDestroy() {
         if (eventsRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+            eventsRequestDoneReceiver = null;
         }
 
         if (deleteEventRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(deleteEventRequestDoneReceiver);
+            deleteEventRequestDoneReceiver = null;
         }
 
         super.onDestroy();

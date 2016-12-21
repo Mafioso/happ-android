@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
@@ -18,7 +19,13 @@ import java.lang.reflect.Type;
 public class GeopointDeserializer implements JsonDeserializer<GeopointResponse>, JsonSerializer<GeopointResponse> {
     @Override
     public GeopointResponse deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonArray geopointArray = json.getAsJsonArray();
+        JsonObject geoJson = json.getAsJsonObject();
+        JsonArray geopointArray;
+        if (json.isJsonArray()) {
+            geopointArray = geoJson.getAsJsonArray();
+        } else {
+            geopointArray = geoJson.get("coordinates").getAsJsonArray();
+        }
         GeopointResponse eventGeopoints = new GeopointResponse();
         eventGeopoints.setLat(geopointArray.get(0).getAsFloat());
         eventGeopoints.setLng(geopointArray.get(1).getAsFloat());

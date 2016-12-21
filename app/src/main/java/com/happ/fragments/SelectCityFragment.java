@@ -44,8 +44,6 @@ public class SelectCityFragment extends Fragment {
     protected RecyclerView mCityRecyclerView;
     private ArrayList<City> cities;
     private CityListAdapter mCitiesListAdapter;
-    private String mCity = "";
-    private City city;
 
     private BroadcastReceiver citiesRequestDoneReceiver;
     private BroadcastReceiver changeCityDoneReceiver;
@@ -63,7 +61,10 @@ public class SelectCityFragment extends Fragment {
     private int visibleThreshold;
     private String searchText = "";
     private City selectedCity;
-    private boolean fromCityActivity = false;
+    private boolean fromCityActivity;
+    private boolean fromEditCreateActivity;
+    private String mySelectedCityId = App.getCurrentCity().getId();
+
     private EditText search;
 
 
@@ -83,6 +84,7 @@ public class SelectCityFragment extends Fragment {
         return fragment;
     }
 
+
     public void setOnCitySelectListener(OnCitySelectListener listener) {
         this.listener = listener;
     }
@@ -90,6 +92,7 @@ public class SelectCityFragment extends Fragment {
     public interface OnCitySelectListener {
         void onCitySelected(City city, float x, float y);
         void onCancel(float x, float y);
+        void onCitySelectedFromEditCreate(City city);
     }
 
 
@@ -102,7 +105,9 @@ public class SelectCityFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        fromCityActivity = getArguments().getBoolean("from_city_activity");
+        fromCityActivity = getArguments().getBoolean("from_city_activity", false);
+        fromEditCreateActivity = getArguments().getBoolean("from_edit_create_activity", false);
+        mySelectedCityId = getArguments().getString("selectedCity");
         final View contentView = inflater.inflate(R.layout.select_city_fragment, container, false);
         final AppCompatActivity activity = (AppCompatActivity) getActivity();
 
@@ -111,22 +116,24 @@ public class SelectCityFragment extends Fragment {
         mCityRecyclerView = (RecyclerView)contentView.findViewById(R.id.activity_cities_rv);
         mLoadingProgress = (MaterialProgressBar) contentView.findViewById(R.id.cities_progress);
 
-        if (fromCityActivity) {
+        if (fromCityActivity || fromEditCreateActivity) {
             activity.setSupportActionBar(toolbar);
             toolbar.setNavigationIcon(R.drawable.ic_close_orange);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    clearFragment();
-                    float middleX = v.getX() + (v.getWidth()/2);
-                    float middleY = v.getY() + (v.getHeight()/2);
-                    if (listener != null) listener.onCancel(middleX, middleY);
+                    if (fromEditCreateActivity) {
+                        clearFragment();
+                    } else if (fromCityActivity) {
+                        float middleX = v.getX() + (v.getWidth()/2);
+                        float middleY = v.getY() + (v.getHeight()/2);
+                        if (listener != null) listener.onCancel(middleX, middleY);
+                    }
                 }
             });
         } else {
             toolbar.setVisibility(View.GONE);
         }
-
 
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
@@ -134,13 +141,15 @@ public class SelectCityFragment extends Fragment {
         citiesListLayoutManager = new LinearLayoutManager(activity);
         mCityRecyclerView.setLayoutManager(citiesListLayoutManager);
         cities = new ArrayList<>();
-        mCitiesListAdapter = new CityListAdapter(activity, cities);
+        mCitiesListAdapter = new CityListAdapter(activity, cities, fromEditCreateActivity, mySelectedCityId);
         mCitiesListAdapter.setOnCityItemSelectListener(new CityListAdapter.SelectCityItemListener() {
             @Override
             public void onCityItemSelected(City city, float x, float y) {
                 if (fromCityActivity) {
                     listener.onCitySelected(city, x, y);
-//                    clearFragment();
+                } else if (fromEditCreateActivity) {
+                  listener.onCitySelectedFromEditCreate(city);
+                    clearFragment();
                 } else {
                     selectedCity = city;
                     APIService.setCity(selectedCity.getId());

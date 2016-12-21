@@ -73,6 +73,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
+                            android:textColor="@color/dark87"
                             android:hint="@string/event_title"
                             android:textSize="16sp"
                             android:inputType="textNoSuggestions"/>
@@ -95,6 +96,7 @@
                             android:maxLines="1"
                             android:textSize="16sp"
                             android:hint="@string/event_interest"
+                            android:textColor="@color/dark87"
                             android:inputType="textNoSuggestions"
                             android:enabled="false"/>
                     </android.support.design.widget.TextInputLayout>
@@ -109,7 +111,7 @@
                         android:layout_alignParentEnd="true"
                         android:padding="16dp"
                         android:visibility="visible"
-                        android:background="?android:selectableItemBackground" />
+                        android:background="?android:selectableItemBackground"/>
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_ec_description"
@@ -125,6 +127,7 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/event_description"
                             android:textSize="16sp"
+                            android:textColor="@color/dark87"
                             android:inputType="textNoSuggestions"/>
 
                         <TextView
@@ -153,6 +156,7 @@
                             android:maxLines="1"
                             android:textSize="16sp"
                             android:enabled="false"
+                            android:textColor="@color/dark87"
                             android:hint="@string/city"
                             android:inputType="textNoSuggestions"/>
                     </android.support.design.widget.TextInputLayout>
@@ -184,7 +188,7 @@
                             android:maxLines="1"
                             android:textSize="16sp"
                             android:enabled="false"
-
+                            android:textColor="@color/dark87"
                             android:hint="@string/event_place"
                             android:inputType="textNoSuggestions"/>
                     </android.support.design.widget.TextInputLayout>
@@ -224,6 +228,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:maxLines="1"
+                                android:textColor="@color/dark87"
                                 android:textSize="16sp"
                                 android:hint="@string/event_min_price"
                                 android:inputType="number"
@@ -254,6 +259,7 @@
                                 android:layout_height="wrap_content"
                                 android:maxLines="1"
                                 android:textSize="16sp"
+                                android:textColor="@color/dark87"
                                 android:hint="@string/event_max_price"
                                 android:inputType="number"
                                 android:gravity="center"/>
@@ -263,7 +269,7 @@
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_ec_currency"
                         android:layout_below="@+id/rl_price_ec"
-
+                        android:layout_toLeftOf="@+id/ibtn_ec_edit_currency"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -274,10 +280,24 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
+                            android:enabled="false"
+                            android:textColor="@color/dark87"
                             android:textSize="16sp"
                             android:hint="@string/event_currency"
                             android:inputType="textNoSuggestions"/>
                     </android.support.design.widget.TextInputLayout>
+
+                    <ImageButton
+                        android:id="@+id/ibtn_ec_edit_currency"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/rl_price_ec"
+                        app:srcCompat="@drawable/ic_edit_compat"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:padding="16dp"
+                        android:visibility="visible"
+                        android:background="?android:selectableItemBackground"/>
 
                     <TextView
                         android:layout_below="@id/input_layout_ec_currency"
@@ -317,6 +337,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="1"
                             android:enabled="false"
+                            android:textColor="@color/dark87"
                             android:hint="@string/start_date"
                             android:textSize="16sp"
                             android:inputType="textNoSuggestions"/>
@@ -350,6 +371,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="1"
                             android:enabled="false"
+                            android:textColor="@color/dark87"
                             android:hint="@string/end_date"
                             android:textSize="16sp"
                             android:inputType="textNoSuggestions"/>
@@ -380,6 +402,7 @@
                             android:maxLines="1"
                             android:textSize="16sp"
                             android:gravity="center"
+                            android:textColor="@color/dark87"
                             android:enabled="false"
                             android:hint="@string/from"
                             android:inputType="textNoSuggestions"/>
@@ -421,6 +444,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="1"
                             android:gravity="center"
+                            android:textColor="@color/dark87"
                             android:textSize="16sp"
                             android:enabled="false"
                             android:hint="@string/up_to"
@@ -486,6 +510,7 @@
                             android:maxLines="1"
                             android:hint="@string/event_website"
                             android:textSize="16sp"
+                            android:textColor="@color/dark87"
                             android:inputType="textNoSuggestions"/>
                     </android.support.design.widget.TextInputLayout>
 
@@ -502,6 +527,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="1"
                             android:hint="@string/event_tickets_link"
+                            android:textColor="@color/dark87"
                             android:textSize="16sp"
                             android:inputType="textNoSuggestions"/>
                     </android.support.design.widget.TextInputLayout>
@@ -519,6 +545,7 @@
                             android:layout_height="wrap_content"
                             android:maxLines="1"
                             android:hint="@string/event_email"
+                            android:textColor="@color/dark87"
                             android:textSize="16sp"
                             android:inputType="textNoSuggestions"/>
 
@@ -544,6 +571,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:maxLines="1"
+                            android:textColor="@color/dark87"
                             android:hint="@string/event_phone"
                             android:textSize="16sp"
                             android:inputType="textNoSuggestions"/>
@@ -612,6 +640,12 @@
             android:text="@string/save"
             android:gravity="center"
             android:layout_gravity="bottom"/>
+
+        <FrameLayout
+            android:id="@+id/fl_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"/>
 
     </RelativeLayout>
 </RelativeLayout>

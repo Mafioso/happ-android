@@ -24,10 +24,14 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     private final Context context;
     private User currentUser;
     SelectCurrencyItemListener listener;
+    private String selectedCurrencyId;
+    private boolean fromFragment;
 
-    public CurrencyListAdapter(Context context, ArrayList<Currency> currencies) {
+    public CurrencyListAdapter(Context context, ArrayList<Currency> currencies, boolean fromFragment, String selectedCurrency) {
         this.context = context;
         this.mCurrency = currencies;
+        this.selectedCurrencyId = selectedCurrency;
+        this.fromFragment = fromFragment;
         currentUser = App.getCurrentUser();
     }
 
@@ -60,15 +64,25 @@ public class CurrencyListAdapter extends RecyclerView.Adapter<CurrencyListAdapte
     public void onBindViewHolder(CurrenciesListViewHolder holder, int position) {
         final Currency currency = mCurrency.get(position);
 
-        if (currency.getId().equals(currentUser.getSettings().getCurrency())) {
-            holder.mImageHappIcon.setVisibility(View.VISIBLE);
-            holder.mTitleCurrencies.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        if (fromFragment) {
+            if (selectedCurrencyId.equals(currency.getId())) {
+                holder.mImageHappIcon.setVisibility(View.VISIBLE);
+                holder.mTitleCurrencies.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            } else {
+                holder.mImageHappIcon.setVisibility(View.INVISIBLE);
+                holder.mTitleCurrencies.setTextColor(context.getResources().getColor(R.color.dark57));
+            }
         } else {
-            holder.mImageHappIcon.setVisibility(View.INVISIBLE);
-            holder.mTitleCurrencies.setTextColor(context.getResources().getColor(R.color.dark57));
+            if (currency.getId().equals(currentUser.getSettings().getCurrency())) {
+                holder.mImageHappIcon.setVisibility(View.VISIBLE);
+                holder.mTitleCurrencies.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            } else {
+                holder.mImageHappIcon.setVisibility(View.INVISIBLE);
+                holder.mTitleCurrencies.setTextColor(context.getResources().getColor(R.color.dark57));
+            }
         }
 
-            holder.mTitleCurrencies.setText(currency.getName());
+        holder.mTitleCurrencies.setText(currency.getName());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
