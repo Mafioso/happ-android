@@ -405,8 +405,7 @@ public class APIService extends IntentService {
                 String isFree = intent.getStringExtra(EXTRA_FREEEVENTS);
                 boolean popularity = intent.getBooleanExtra(EXTRA_POPULARITY_EVENTS, false);
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
-                HappRestClient
-                        .getInstance()
+                HappRestClient.getInstance()
                         .getFilteredEvents(page, feedSearchText, startDate, endDate, isFree, popularity, favs);
             } else if (action.equals(ACTION_GET_CITIES)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);

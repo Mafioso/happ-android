@@ -48,7 +48,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     private Date startDate;
     private Date endDate;
     private String maxFree;
-    private boolean popularityEvents;
+    private boolean popularityEvents = false;
 
     private boolean isUndoing = false;
 
@@ -138,14 +138,15 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
         Realm realm = Realm.getDefaultInstance();
-        RealmQuery<Event> q = realm.where(Event.class).equalTo("localOnly", false).beginGroup();
+        RealmQuery<Event> q = realm.where(Event.class).beginGroup();
+        q.notEqualTo("author.id", userId);
+        q.equalTo("localOnly", false);
         if (feedSearchText != null && feedSearchText.length() > 0) q.contains("title", feedSearchText);
         if (startDate != null) q.greaterThanOrEqualTo("startDate", startDate);
         if (endDate != null) q.lessThanOrEqualTo("startDate", endDate);
         if (maxFree != null && maxFree.length() > 0) q.equalTo("lowestPrice", 0);
-        if (popularityEvents) q.findAllSorted("votesCount", Sort.DESCENDING);
-        q.notEqualTo("author.id", userId);
-//        if (!popularityEvents) q.findAllSorted("startDate", Sort.ASCENDING);
+        if (popularityEvents) q.or().findAllSorted("votesCount", Sort.DESCENDING);
+        if (!popularityEvents) q.findAllSorted("startDate", Sort.ASCENDING);
         RealmResults<Event> eventRealmResults = q.endGroup().findAll();
 //        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("startDate", Sort.ASCENDING);
 

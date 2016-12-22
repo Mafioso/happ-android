@@ -32,9 +32,12 @@ import com.happ.controllers.EditCreateActivity;
 import com.happ.controllers_drawer.EventActivity;
 import com.happ.controllers_drawer.OrganizerModeActivity;
 import com.happ.models.Event;
+import com.happ.models.EventStatus;
 import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;
@@ -167,26 +170,41 @@ public class EventsOrganizerFragment extends Fragment {
 
     protected void updateFilteredEventsList() {
 
-        boolean isActive = ((OrganizerModeActivity)getActivity()).getFilterIsActive();
-        boolean isInactive = ((OrganizerModeActivity)getActivity()).getFilterIsInactive();
-        boolean isOnreview = ((OrganizerModeActivity)getActivity()).getFilterIsOnreview();
-        boolean isRejected = ((OrganizerModeActivity)getActivity()).getFilterIsRejected();
-        boolean isFinished = ((OrganizerModeActivity)getActivity()).getFilterIsFinished();
+        Date today = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(today);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        today = cal.getTime();
 
-        //  status
-            // на модерации - 0
-            // активный - 1
-            // отклонён - 2
+        ArrayList<Integer> selectedStatuses = new ArrayList<>();
+        if (((OrganizerModeActivity)getActivity()).getFilterIsActive()) selectedStatuses.add(EventStatus.ACTIVE);
+        if (((OrganizerModeActivity)getActivity()).getFilterIsOnreview()) selectedStatuses.add(EventStatus.ON_REVIEW);
+        if (((OrganizerModeActivity)getActivity()).getFilterIsRejected()) selectedStatuses.add(EventStatus.REJECTED);
+        if (((OrganizerModeActivity)getActivity()).getFilterIsFinished()) selectedStatuses.add(EventStatus.FINISHED);
 
         Realm realm = Realm.getDefaultInstance();
         RealmQuery<Event> q = realm.where(Event.class).beginGroup();
         q.equalTo("localOnly", false);
         q.equalTo("author.id", App.getCurrentUser().getId());
-        if (isActive) q.equalTo("status", 1);
-//        if(isInactive) q.equalTo("status", )
-        if (isOnreview) q.or().equalTo("status", 0);
-        if (isRejected) q.or().equalTo("status", 2);
-//        if (isFinished) q.equalTo("...")
+        q.beginGroup();
+        for (int i=0; i<selectedStatuses.size(); i++) {
+            int status = selectedStatuses.get(i);
+            if (i > 0) q.or();
+            if (status == EventStatus.FINISHED) {
+                q.beginGroup().equalTo("status", EventStatus.ACTIVE).lessThan("endDate", today).endGroup();
+            } else if (status == EventStatus.ACTIVE){
+                q.beginGroup().equalTo("status", EventStatus.ACTIVE).greaterThanOrEqualTo("endDate", today).endGroup();
+            } else {
+                q.equalTo("status", status);
+            }
+        }
+        if (selectedStatuses.size() == 0) {
+            q.equalTo("status", Integer.MAX_VALUE);
+        }
+        q.endGroup();
 
         RealmResults<Event> eventRealmResults = q.endGroup().findAll();
 
