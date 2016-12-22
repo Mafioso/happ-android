@@ -18,7 +18,6 @@ import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
 import com.happ.models.EventPhone;
 import com.happ.models.EventsResponse;
-import com.happ.models.GeopointResponse;
 import com.happ.models.HappToken;
 import com.happ.models.Interest;
 import com.happ.models.InterestResponse;
@@ -27,7 +26,6 @@ import com.happ.models.SignUpData;
 import com.happ.models.User;
 import com.happ.models.UserEditData;
 import com.happ.retrofit.serializers.DateDeserializer;
-import com.happ.retrofit.serializers.GeopointDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
 import com.happ.retrofit.serializers.PhoneDeserializer;
 
@@ -95,7 +93,6 @@ public class HappRestClient {
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
                     .registerTypeAdapter(Date.class, new DateDeserializer())
                     .registerTypeAdapter(EventPhone.class, new PhoneDeserializer())
-                    .registerTypeAdapter(GeopointResponse.class, new GeopointDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }
@@ -946,7 +943,8 @@ public class HappRestClient {
             return;
         }
 
-        happApi.getFilteredEvents(page, feedSearchText,  startDate, endDate, maxPrice,popularity).enqueue(new Callback<EventsResponse>() {
+        boolean popul = popularity;
+        happApi.getFilteredEvents(page, feedSearchText,  startDate, endDate, maxPrice,popul).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){

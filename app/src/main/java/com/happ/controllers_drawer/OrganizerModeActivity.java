@@ -177,30 +177,30 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
             }
         });
 
-//        isRejected.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (isRejected.isChecked()) {
-//                    is_rejected = true;
-//                    APIService.getFilteredOrgEvents(
-//                            1,
-//                            getFilterIsActive(),
-//                            getFilterIsInactive(),
-//                            getFilterIsOnreview(),
-//                            getFilterIsRejected(),
-//                            getFilterIsFinished());
-//                } else {
-//                    is_rejected = false;
-//                    APIService.getFilteredOrgEvents(
-//                            1,
-//                            getFilterIsActive(),
-//                            getFilterIsInactive(),
-//                            getFilterIsOnreview(),
-//                            getFilterIsRejected(),
-//                            getFilterIsFinished());
-//                }
-//            }
-//        });
+        isRejected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isRejected.isChecked()) {
+                    is_rejected = true;
+                    APIService.getFilteredOrgEvents(
+                            1,
+                            getFilterIsActive(),
+                            getFilterIsInactive(),
+                            getFilterIsOnreview(),
+                            getFilterIsRejected(),
+                            getFilterIsFinished());
+                } else {
+                    is_rejected = false;
+                    APIService.getFilteredOrgEvents(
+                            1,
+                            getFilterIsActive(),
+                            getFilterIsInactive(),
+                            getFilterIsOnreview(),
+                            getFilterIsRejected(),
+                            getFilterIsFinished());
+                }
+            }
+        });
 
         isFinished.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -431,6 +431,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
         isActive = (SwitchCompat) findViewById(R.id.filter_activ);
         isInactive = (SwitchCompat) findViewById(R.id.filter_inactive);
         isOnreview = (SwitchCompat) findViewById(R.id.filter_onreview);
+        isRejected = (SwitchCompat) findViewById(R.id.filter_rejected);
         isFinished = (SwitchCompat) findViewById(R.id.filter_finished);
     }
 

@@ -183,9 +183,9 @@ public class EventsOrganizerFragment extends Fragment {
         q.equalTo("localOnly", false);
         q.equalTo("author.id", App.getCurrentUser().getId());
         if (isActive) q.equalTo("status", 1);
-//        if(isInactive) q.equalTo("status", )
         if (isOnreview) q.or().equalTo("status", 0);
         if (isRejected) q.or().equalTo("status", 2);
+//        if(isInactive) q.equalTo("status", )
 //        if (isFinished) q.equalTo("...")
 
         RealmResults<Event> eventRealmResults = q.endGroup().findAll();
