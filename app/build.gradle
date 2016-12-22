@@ -69,7 +69,8 @@ dependencies {
 //    compile 'com.google.android.gms:play-services-maps:9.8.0'
 //    compile 'com.google.android.gms:play-services-location:9.8.0'
 
-    compile 'com.google.android.gms:play-services:10.0.1'
+    compile 'com.google.android.gms:play-services-maps:10.0.1'
+    compile 'com.google.android.gms:play-services-location:10.0.1'
 
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.leavjenn.smoothdaterangepicker:library:0.2.0'
