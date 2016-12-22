@@ -1,16 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="260dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
-        android:id="@+id/drawer_avatar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/my_avatar"/>
+    <RelativeLayout
+        android:background="@android:color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_collapseMode="parallax"
+        android:visibility="visible">
+
+        <RelativeLayout
+            android:id="@+id/avatar_placeholder"
+            android:background="@color/dark3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="64dp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                app:srcCompat="@drawable/dashed_bg_darker"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_centerInParent="true"
+                android:alpha="0.7">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/avatar_placeholder"
+                    android:layout_gravity="center_horizontal"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/iv_user_avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/my_avatar"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:padding="8dp">
+
+
+            <ImageButton
+                android:id="@+id/add_image_button"
+                android:padding="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_camera_white"
+                android:background="?android:selectableItemBackground" />
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+
+    <!--<ImageView-->
+        <!--android:id="@+id/drawer_avatar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@drawable/my_avatar"/>-->
 
     <LinearLayout
         android:layout_alignParentBottom="true"

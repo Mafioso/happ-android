@@ -147,7 +147,7 @@ public interface HAPPapi {
                                                @Query("popularity_events") boolean popularity);
 
     @Multipart
-    @POST("upload")
-    Call<HappImage> uploadImage(@Part MultipartBody.Part file);
+    @POST("upload/")
+    Call<List<HappImage>> uploadImage(@Part MultipartBody.Part file);
 
 }

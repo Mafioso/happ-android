@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -45,6 +46,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.BuildConfig;
@@ -61,6 +65,8 @@ import com.happ.models.EventPhone;
 import com.happ.models.HappImage;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -132,6 +138,9 @@ public class EventActivity extends AppCompatActivity {
 
     private CheckBox mDrawerHeaderArrow;
     private TextView mDrawerHeaderTVCity, mDrawerHeaderTVUsername;
+
+    private ImageView mDrawerHeaderAvatar;
+    private RelativeLayout mDrawerHeaderAvatarPlaceholder;
 
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
@@ -252,7 +261,6 @@ public class EventActivity extends AppCompatActivity {
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setChecked(true);
         navigationMenu.getMenu().findItem(R.id.nav_item_feed).setIcon(R.drawable.happ_drawer_icon);
 
-
         mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 
@@ -309,6 +317,45 @@ public class EventActivity extends AppCompatActivity {
 
 
         App.setStatusBarTranslucent(getWindow(), true);
+
+        final String url = App.getCurrentUser().getImageUrl();
+        if (url != null) {
+            Glide.with(App.getContext()).load(url).asBitmap().listener(new RequestListener<String, Bitmap>() {
+                @Override
+                public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
+                    mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
+                    return false;
+                }
+            }).into(mDrawerHeaderAvatar);
+//            Picasso.with(App.getContext())
+//                .load(url)
+//                .fit()
+//                .centerCrop()
+//                .into(mDrawerHeaderAvatar, new Callback() {
+//                    @Override
+//                    public void onSuccess() {
+//                        mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
+//                        mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
+//                    }
+//
+//                    @Override
+//                    public void onError() {
+////                            itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
+//                    }
+//                });
+        } else {
+            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+            mDrawerHeaderAvatar.setVisibility(View.GONE);
+        }
+
+
+
     }
 
     private void binds() {
@@ -354,6 +401,8 @@ public class EventActivity extends AppCompatActivity {
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
+        mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.iv_user_avatar));
+        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.avatar_placeholder));
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
 
     }

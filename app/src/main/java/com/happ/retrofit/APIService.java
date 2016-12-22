@@ -96,8 +96,7 @@ public class APIService extends IntentService {
     private static final String EXTRA_ENDDATE = "com.happ.extra.EXTRA_ENDDATE";
     private static final String EXTRA_FREEEVENTS = "com.happ.extra.EXTRA_FREEEVENTS";
     private static final String EXTRA_POPULARITY_EVENTS = "com.happ.extra.EXTRA_POPULARITY_EVENTS";
-
-
+    private static final String EXTRA_AVATAR_ID ="com.happ.extra.EXTRA_AVATAR_ID" ;
 
 
     public static void getEvents(boolean favs) {
@@ -274,7 +273,7 @@ public class APIService extends IntentService {
     }
 
 
-    public static void doUserEdit(String edit_fullname, String edit_email, String edit_phone, Date edit_dateofbirth, int gender) {
+    public static void doUserEdit(String edit_fullname, String edit_email, String edit_phone, Date edit_dateofbirth, int gender, String imageId) {
         Intent userEdit = new Intent(App.getContext(), APIService.class);
         userEdit.setAction(ACTION_POST_USEREDIT);
         userEdit.putExtra(EXTRA_FULLNAME, edit_fullname);
@@ -282,6 +281,7 @@ public class APIService extends IntentService {
         userEdit.putExtra(EXTRA_PHONE, edit_phone);
         userEdit.putExtra(EXTRA_DATEOFBIRTH, edit_dateofbirth.getTime());
         userEdit.putExtra(EXTRA_GENDER, gender);
+        userEdit.putExtra(EXTRA_AVATAR_ID, imageId);
         App.getContext().startService(userEdit);
     }
 
@@ -425,10 +425,11 @@ public class APIService extends IntentService {
                 String edit_fullname = intent.getStringExtra(EXTRA_FULLNAME);
                 String edit_email = intent.getStringExtra(EXTRA_EMAIL);
                 String edit_phone = intent.getStringExtra(EXTRA_PHONE);
+                String avatar_id = intent.getStringExtra(EXTRA_AVATAR_ID);
                 long birthDateLong = intent.getLongExtra(EXTRA_DATEOFBIRTH, 0);
                 int gender = intent.getIntExtra(EXTRA_GENDER, 0);
                 Date edit_dateofbirth = new Date(birthDateLong);
-                HappRestClient.getInstance().doUserEdit(edit_fullname, edit_email, edit_phone, edit_dateofbirth, gender);
+                HappRestClient.getInstance().doUserEdit(edit_fullname, edit_email, edit_phone, edit_dateofbirth, gender, avatar_id);
             } else if (action.equals(ACTION_POST_SIGNUP)) {
                 String username = intent.getStringExtra(EXTRA_USERNAME);
                 String password = intent.getStringExtra(EXTRA_PASSWORD);
