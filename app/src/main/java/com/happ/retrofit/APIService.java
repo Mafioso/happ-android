@@ -2,6 +2,7 @@ package com.happ.retrofit;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Process;
 
 import com.happ.App;
@@ -46,6 +47,9 @@ public class APIService extends IntentService {
 
     private static final String ACTION_GET_SELECTED_INTERESTS = "com.happ.action.ACTION_GET_SELECTED_INTERESTS";
 
+    private static final String ACTION_UPLOAD_IMAGE = "com.happ.action.ACTION_UPLOAD_IMAGE";
+
+    private static final String EXTRA_URI = "com.happ.extra.EXTRA_URI";
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
     private static final String EXTRA_GET_FAVS = "com.happ.extra.EXTRA_GET_FAVS";
@@ -107,6 +111,14 @@ public class APIService extends IntentService {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_ORG_EVENTS_PAGE);
         intent.putExtra(EXTRA_PAGE, page);
+        App.getContext().startService(intent);
+    }
+
+    public static void uploadImage(Uri uri) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_UPLOAD_IMAGE);
+//        intent.putExtra(EXTRA_URI, uri.toString());
+        intent.setData(uri);
         App.getContext().startService(intent);
     }
 
@@ -361,7 +373,11 @@ public class APIService extends IntentService {
 
         if (intent != null) {
             final String action = intent.getAction();
-            if (action.equals(ACTION_GET_EVENTS)) {
+            if (action.equals(ACTION_UPLOAD_IMAGE)) {
+//                String uriString = intent.getStringExtra(EXTRA_URI);
+                Uri uri = intent.getData();
+                HappRestClient.getInstance().uploadFile(uri);
+            } else if (action.equals(ACTION_GET_EVENTS)) {
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
                 HappRestClient.getInstance().getEvents(favs);
             } else if (action.equals(ACTION_GET_SELECTED_INTERESTS)) {

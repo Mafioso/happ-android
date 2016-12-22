@@ -329,6 +329,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                 Uri selectedImageUri = data.getData();
 //                selectedImagePath = getPath(selectedImageUri);
                 updateImage(selectedImageUri);
+                APIService.uploadImage(selectedImageUri);
             }
         }
     }

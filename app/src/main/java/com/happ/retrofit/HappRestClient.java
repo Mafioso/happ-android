@@ -1,6 +1,8 @@
 package com.happ.retrofit;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -38,7 +40,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -95,7 +102,7 @@ public class HappRestClient {
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
                     .registerTypeAdapter(Date.class, new DateDeserializer())
                     .registerTypeAdapter(EventPhone.class, new PhoneDeserializer())
-                    .registerTypeAdapter(GeopointResponse.class, new GeopointDeserializer())
+//                    .registerTypeAdapter(GeopointResponse.class, new GeopointDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }
@@ -1520,6 +1527,44 @@ public class HappRestClient {
 //                        e.printStackTrace();
             }
         }
+    }
+
+
+
+    
+    public void uploadFile(Uri uri) {
+//        File file = new File(uri.getPath());
+//        MediaStore.Images.Media.getBitmap(App.getContext().getContentResolver(),uri);
+        InputStream input = null;
+        OutputStream output = null;
+        File file = null;
+        try {
+            input = App.getContext().getContentResolver().openInputStream(uri);
+            file = new File("/tmp/" + uri.getPath());
+            output = new FileOutputStream(file);
+            byte[] buffer = new byte[4 * 1024]; // or other buffer size
+            int read;
+
+            while ((read = input.read(buffer)) != -1) {
+                output.write(buffer, 0, read);
+            }
+            output.flush();
+
+        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {}
+        finally {
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException ex) {}
+            }
+            if (output != null) {
+                try {
+                    output.close();
+                } catch (IOException ex) {}
+            }
+        }
+        int a = 1000;
     }
 
 }
