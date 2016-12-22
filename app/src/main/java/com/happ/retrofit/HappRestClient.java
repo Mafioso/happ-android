@@ -347,6 +347,51 @@ public class HappRestClient {
         });
     }
 
+
+    public void getFilteredOrgEvents(int page, boolean is_active, boolean is_inactive, boolean is_onreview, boolean is_rejected, boolean is_finished) {
+        happApi.getFilteredOrgEvents(page, is_active, is_inactive, is_onreview, is_rejected, is_finished).enqueue(new Callback<EventsResponse>() {
+            @Override
+            public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
+                if (response.isSuccessful()){
+                    List<Event> fEventsOrg = response.body().getEvents();
+
+                    User user = App.getCurrentUser();
+                    for (int i=0; i<fEventsOrg.size(); i++) {
+                        if (fEventsOrg.get(i).getAuthor().getId().equals(user.getId())) {
+                            fEventsOrg.get(i).setAuthor(user);
+                        }
+                    }
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(fEventsOrg);
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.FILTERED_ORG_EVENTS_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.FILTERED_ORG_EVENTS_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventsResponse> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.FILTERED_ORG_EVENTS_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
     public void getCities(int page, String searchText) {
         happApi.getCities(page, searchText).enqueue(new Callback<CitiesResponse>() {
             @Override
@@ -949,6 +994,13 @@ public class HappRestClient {
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){
                     List<Event> fEvents = response.body().getEvents();
+
+                    User user = App.getCurrentUser();
+                    for (int i=0; i<fEvents.size(); i++) {
+                        if (fEvents.get(i).getAuthor().getId().equals(user.getId())) {
+                            fEvents.get(i).setAuthor(user);
+                        }
+                    }
 
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();

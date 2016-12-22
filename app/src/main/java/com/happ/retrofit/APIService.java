@@ -17,6 +17,7 @@ public class APIService extends IntentService {
     private static final String ACTION_GET_EVENTS_FOR_PAGE = "com.happ.action.ACTION_GET_EVENTS_FOR_PAGE";
     private static final String ACTION_GET_ORG_EVENTS_PAGE = "com.happ.action.ACTION_GET_ORG_EVENTS_PAGE";
     private static final String ACTION_GET_FILTERED_EVENTS = "com.happ.action.ACTION_GET_FILTERED_EVENTS";
+    private static final String ACTION_GET_ORG_FILTERED_EVENTS = "com.happ.action.ACTION_GET_ORG_FILTERED_EVENTS";
     private static final String ACTION_GET_CITIES = "com.happ.action.ACTION_GET_CITIES";
     private static final String ACTION_GET_INTERESTS = "com.happ.action.ACTION_GET_INTERESTS";
     private static final String ACTION_GET_INTERESTS_FOR_PAGE = "com.happ.action.ACTION_GET_INTERESTS_FOR_PAGE";
@@ -50,6 +51,16 @@ public class APIService extends IntentService {
     private static final String EXTRA_GET_FAVS = "com.happ.extra.EXTRA_GET_FAVS";
     private static final String EXTRA_USERNAME = "com.happ.extra.EXTRA_USERNAME";
     private static final String EXTRA_PASSWORD = "com.happ.extra.EXTRA_PASSWORD";
+
+
+    private static final String EXTRA_ACTIVE = "com.happ.extra.EXTRA_PASSWORD";
+    private static final String EXTRA_INACTIVE = "com.happ.extra.EXTRA_PASSWORD";
+    private static final String EXTRA_ONREVIEW = "com.happ.extra.EXTRA_PASSWORD";
+    private static final String EXTRA_REJECTED = "com.happ.extra.EXTRA_PASSWORD";
+    private static final String EXTRA_FINISHED = "com.happ.extra.EXTRA_PASSWORD";
+
+
+
 
     private static final String EXTRA_OLD_PASSWORD = "com.happ.extra.EXTRA_OLD_PASSWORD";
     private static final String EXTRA_NEW_PASSWORD = "com.happ.extra.EXTRA_NEW_PASSWORD";
@@ -96,6 +107,23 @@ public class APIService extends IntentService {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_ORG_EVENTS_PAGE);
         intent.putExtra(EXTRA_PAGE, page);
+        App.getContext().startService(intent);
+    }
+
+    public static void getFilteredOrgEvents(int page,
+                                            boolean is_active,
+                                            boolean is_inactive,
+                                            boolean is_onreview,
+                                            boolean is_rejected,
+                                            boolean is_finished) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_ORG_FILTERED_EVENTS);
+        intent.putExtra(EXTRA_PAGE, page);
+        intent.putExtra(EXTRA_ACTIVE, is_active);
+        intent.putExtra(EXTRA_INACTIVE, is_inactive);
+        intent.putExtra(EXTRA_ONREVIEW, is_onreview);
+        intent.putExtra(EXTRA_REJECTED, is_rejected);
+        intent.putExtra(EXTRA_FINISHED, is_finished);
         App.getContext().startService(intent);
     }
 
@@ -345,6 +373,14 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_GET_ORG_EVENTS_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 HappRestClient.getInstance().getOrgEvents(page);
+            } else if (action.equals(ACTION_GET_ORG_FILTERED_EVENTS)){
+                int page = intent.getIntExtra(EXTRA_PAGE, 1);
+                boolean is_active = intent.getBooleanExtra(EXTRA_ACTIVE, false);
+                boolean is_inactive = intent.getBooleanExtra(EXTRA_INACTIVE, false);
+                boolean is_onreview = intent.getBooleanExtra(EXTRA_ONREVIEW, false);
+                boolean is_rejected = intent.getBooleanExtra(EXTRA_REJECTED, false);
+                boolean is_finished = intent.getBooleanExtra(EXTRA_FINISHED, false);
+                HappRestClient.getInstance().getFilteredOrgEvents(page, is_active, is_inactive, is_onreview, is_rejected, is_finished);
             } else if (action.equals(ACTION_GET_FILTERED_EVENTS)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 String feedSearchText = intent.getStringExtra(EXTRA_EVENT_SEARCH_TEXT);

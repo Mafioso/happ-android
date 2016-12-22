@@ -30,12 +30,14 @@ import com.happ.R;
 import com.happ.adapters.OrgEventsListAdapter;
 import com.happ.controllers.EditCreateActivity;
 import com.happ.controllers_drawer.EventActivity;
+import com.happ.controllers_drawer.OrganizerModeActivity;
 import com.happ.models.Event;
 import com.happ.retrofit.APIService;
 
 import java.util.ArrayList;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
@@ -72,6 +74,7 @@ public class EventsOrganizerFragment extends Fragment {
     protected TextView mPersonalSubText;
 
     private BroadcastReceiver eventsRequestDoneReceiver;
+    private BroadcastReceiver filteredEventsRequestDoneReceiver;
     private BroadcastReceiver deleteEventRequestDoneReceiver;
 
     @Nullable
@@ -124,6 +127,11 @@ public class EventsOrganizerFragment extends Fragment {
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.ORG_EVENTS_REQUEST_OK));
         }
 
+        if (filteredEventsRequestDoneReceiver == null) {
+            filteredEventsRequestDoneReceiver = filteredEventsRequestReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(filteredEventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.FILTERED_ORG_EVENTS_REQUEST_OK));
+        }
+
         if (deleteEventRequestDoneReceiver == null) {
             deleteEventRequestDoneReceiver = deleteEventRequestDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(deleteEventRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTDELETE_REQUEST_OK));
@@ -157,6 +165,40 @@ public class EventsOrganizerFragment extends Fragment {
         isEmpty();
     }
 
+    protected void updateFilteredEventsList() {
+
+        boolean isActive = ((OrganizerModeActivity)getActivity()).getFilterIsActive();
+        boolean isInactive = ((OrganizerModeActivity)getActivity()).getFilterIsInactive();
+        boolean isOnreview = ((OrganizerModeActivity)getActivity()).getFilterIsOnreview();
+        boolean isRejected = ((OrganizerModeActivity)getActivity()).getFilterIsRejected();
+        boolean isFinished = ((OrganizerModeActivity)getActivity()).getFilterIsFinished();
+
+        //  status
+            // на модерации - 0
+            // активный - 1
+            // отклонён - 2
+
+        Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Event> q = realm.where(Event.class).beginGroup();
+        q.equalTo("localOnly", false);
+        q.equalTo("author.id", App.getCurrentUser().getId());
+        if (isActive) q.equalTo("status", 1);
+//        if(isInactive) q.equalTo("status", )
+        if (isOnreview) q.or().equalTo("status", 0);
+        if (isRejected) q.or().equalTo("status", 2);
+//        if (isFinished) q.equalTo("...")
+
+        RealmResults<Event> eventRealmResults = q.endGroup().findAll();
+
+
+
+        orgEvents = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
+        ((OrgEventsListAdapter) orgEventsRecyclerView.getAdapter()).updateData(orgEvents);
+        realm.close();
+
+        isEmpty();
+    }
+
     private BroadcastReceiver createEventsRequestDoneReceiver() {
         return new BroadcastReceiver() {
             @Override
@@ -165,6 +207,16 @@ public class EventsOrganizerFragment extends Fragment {
 
             }
         };
+    }
+
+    private BroadcastReceiver filteredEventsRequestReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateFilteredEventsList();
+            }
+        };
+
     }
 
     private BroadcastReceiver deleteEventRequestDoneReceiver() {
@@ -221,6 +273,11 @@ public class EventsOrganizerFragment extends Fragment {
             deleteEventRequestDoneReceiver = null;
         }
 
+        if (filteredEventsRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(filteredEventsRequestDoneReceiver);
+            filteredEventsRequestDoneReceiver = null;
+        }
+
         super.onDestroy();
     }
 
@@ -228,9 +285,7 @@ public class EventsOrganizerFragment extends Fragment {
         if (orgEvents.isEmpty()) {
 
             mRLEmptyFrom.setVisibility(View.VISIBLE);
-            mPersonalSubText.setText(R.string.feed_everything_empty);
-            mBtnEmptyForm.setText(R.string.add_more_interests);
-            mIVEmpty.setImageResource(R.drawable.empty_feed);
+            mIVEmpty.setImageResource(R.drawable.fav_empty);
 
             mBtnEmptyForm.setOnClickListener(new View.OnClickListener() {
                 @Override

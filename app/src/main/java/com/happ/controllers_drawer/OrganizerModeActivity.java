@@ -23,6 +23,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,6 +80,14 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     private LinearLayout mDrawerLLFooter;
 
+    private SwitchCompat isActive, isInactive, isOnreview, isRejected, isFinished;
+    private boolean
+            is_active = false,
+            is_inacitve = false,
+            is_onreview = false,
+            is_rejected = false,
+            is_finished = false;
+
     private final int TAB_MY_EVENTS = FragNavController.TAB1;
 
     @Override
@@ -93,6 +102,130 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
         setListenerToRootView();
         setDrawerLayoutListener();
 
+        isActive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isActive.isChecked()) {
+                    is_active = true;
+                    APIService.getFilteredOrgEvents(
+                            1,
+                            getFilterIsActive(),
+                            getFilterIsInactive(),
+                            getFilterIsOnreview(),
+                            getFilterIsRejected(),
+                            getFilterIsFinished());
+                } else {
+                    is_active = false;
+                    APIService.getFilteredOrgEvents(
+                            1,
+                            getFilterIsActive(),
+                            getFilterIsInactive(),
+                            getFilterIsOnreview(),
+                            getFilterIsRejected(),
+                            getFilterIsFinished());
+                }
+            }
+        });
+
+//        isInactive.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (isInactive.isChecked()) {
+//                    is_inacitve = true;
+//                    APIService.getFilteredOrgEvents(
+//                            1,
+//                            getFilterIsActive(),
+//                            getFilterIsInactive(),
+//                            getFilterIsOnreview(),
+//                            getFilterIsRejected(),
+//                            getFilterIsFinished());
+//                } else {
+//                    is_inacitve = false;
+//                    APIService.getFilteredOrgEvents(
+//                            1,
+//                            getFilterIsActive(),
+//                            getFilterIsInactive(),
+//                            getFilterIsOnreview(),
+//                            getFilterIsRejected(),
+//                            getFilterIsFinished());
+//                }
+//            }
+//        });
+
+        isOnreview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isOnreview.isChecked()) {
+                    is_onreview = true;
+                    APIService.getFilteredOrgEvents(
+                            1,
+                            getFilterIsActive(),
+                            getFilterIsInactive(),
+                            getFilterIsOnreview(),
+                            getFilterIsRejected(),
+                            getFilterIsFinished());
+                } else {
+                    is_onreview = false;
+                    APIService.getFilteredOrgEvents(
+                            1,
+                            getFilterIsActive(),
+                            getFilterIsInactive(),
+                            getFilterIsOnreview(),
+                            getFilterIsRejected(),
+                            getFilterIsFinished());
+                }
+            }
+        });
+
+//        isRejected.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (isRejected.isChecked()) {
+//                    is_rejected = true;
+//                    APIService.getFilteredOrgEvents(
+//                            1,
+//                            getFilterIsActive(),
+//                            getFilterIsInactive(),
+//                            getFilterIsOnreview(),
+//                            getFilterIsRejected(),
+//                            getFilterIsFinished());
+//                } else {
+//                    is_rejected = false;
+//                    APIService.getFilteredOrgEvents(
+//                            1,
+//                            getFilterIsActive(),
+//                            getFilterIsInactive(),
+//                            getFilterIsOnreview(),
+//                            getFilterIsRejected(),
+//                            getFilterIsFinished());
+//                }
+//            }
+//        });
+
+        isFinished.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isFinished.isChecked()) {
+                    is_finished = true;
+                    APIService.getFilteredOrgEvents(
+                            1,
+                            getFilterIsActive(),
+                            getFilterIsInactive(),
+                            getFilterIsOnreview(),
+                            getFilterIsRejected(),
+                            getFilterIsFinished());
+                } else {
+                    is_finished = false;
+                    APIService.getFilteredOrgEvents(
+                            1,
+                            getFilterIsActive(),
+                            getFilterIsInactive(),
+                            getFilterIsOnreview(),
+                            getFilterIsRejected(),
+                            getFilterIsFinished());
+                }
+            }
+        });
 
         if (changeCityDoneReceiver == null) {
             changeCityDoneReceiver = changeCityReceiver();
@@ -294,6 +427,31 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
         mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
+
+        isActive = (SwitchCompat) findViewById(R.id.filter_activ);
+        isInactive = (SwitchCompat) findViewById(R.id.filter_inactive);
+        isOnreview = (SwitchCompat) findViewById(R.id.filter_onreview);
+        isFinished = (SwitchCompat) findViewById(R.id.filter_finished);
+    }
+
+    public boolean getFilterIsActive() {
+        return is_active;
+    }
+
+    public boolean getFilterIsInactive() {
+        return is_inacitve;
+    }
+
+    public boolean getFilterIsOnreview() {
+        return is_onreview;
+    }
+
+    public boolean getFilterIsRejected() {
+        return is_rejected;
+    }
+
+    public boolean getFilterIsFinished() {
+        return is_finished;
     }
 
     private void setAllFunctionNavigationMenu() {
@@ -434,6 +592,8 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
                 mDrawerHeaderArrow.setChecked(false);
                 mDrawerCityFragment.setVisibility(View.GONE);
                 mDrawerLayout.closeDrawer(GravityCompat.START);
+
+
             }
         };
     }

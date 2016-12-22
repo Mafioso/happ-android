@@ -24,7 +24,12 @@ public class GeopointDeserializer implements JsonDeserializer<GeopointResponse>,
         if (json.isJsonArray()) {
             geopointArray = geoJson.getAsJsonArray();
         } else {
-            geopointArray = geoJson.get("coordinates").getAsJsonArray();
+            if (geoJson.get("coordinates").isJsonArray()) {
+                geopointArray = geoJson.get("coordinates").getAsJsonArray();
+            } else {
+                geoJson = geoJson.get("coordinates").getAsJsonObject();
+                geopointArray = geoJson.get("coordinates").getAsJsonArray();
+            }
         }
         GeopointResponse eventGeopoints = new GeopointResponse();
         eventGeopoints.setLat(geopointArray.get(0).getAsFloat());
@@ -37,7 +42,10 @@ public class GeopointDeserializer implements JsonDeserializer<GeopointResponse>,
         JsonArray geoArray = new JsonArray();
         geoArray.add(new JsonPrimitive(src.getLat()));
         geoArray.add(new JsonPrimitive(src.getLng()));
-        return geoArray;
+
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "Point");
+        obj.add("coordinates", geoArray);
+        return obj;
     }
 }
-

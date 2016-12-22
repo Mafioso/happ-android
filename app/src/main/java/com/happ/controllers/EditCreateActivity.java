@@ -110,17 +110,25 @@ public class EditCreateActivity extends AppCompatActivity {
             mEventTitle.setText(event.getTitle());
             mEventDescription.setText(event.getDescription());
 
-            if (event.getPlace() != null) mEventPlace.setText(event.getPlace());
+            if (event.getPlace() != null)
+                mEventPlace.setText(event.getPlace());
+
             mEventMinPrice.setText(Integer.toString(event.getLowestPrice()));
             mEventMaxPrice.setText(Integer.toString(event.getHighestPrice()));
-            if (event.getCurrency() != null) mEventCurrency.setText(event.getCurrency().getName());
+
+            if (event.getCurrency() != null)
+                mEventCurrency.setText(event.getCurrency().getName());
 
             java.text.DateFormat format = DateFormat.getLongDateFormat(EditCreateActivity.this);
             mEventStartDate.setText(format.format(event.getStartDate()));
+            mStartDate = event.getStartDate();
+
             mEventEndDate .setText(format.format(event.getEndDate()));
+            mEndDate = event.getEndDate();
 
             java.text.DateFormat timeFormat = DateFormat.getTimeFormat(EditCreateActivity.this);
             mEventStartTime.setText(timeFormat.format(event.getStartDate()));
+
             mEventEndTime.setText(timeFormat.format(event.getEndDate()));
 
             if (event.getWebSite() != null) mEventWebSite.setText(event.getWebSite());
@@ -149,7 +157,11 @@ public class EditCreateActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Calendar now = Calendar.getInstance();
-                now.setTime(new Date());
+                if (mStartDate != null) {
+                    now.setTime(mStartDate);
+                } else {
+                    now.setTime(new Date());
+                }
                 DatePickerDialog dpd = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
@@ -182,7 +194,11 @@ public class EditCreateActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Calendar now = Calendar.getInstance();
-                now.setTime(new Date());
+                if (mEndDate != null) {
+                    now.setTime(mEndDate);
+                } else {
+                    now.setTime(new Date());
+                }
                 DatePickerDialog dpd = DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
@@ -247,7 +263,6 @@ public class EditCreateActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (mStartDate != null) {
                     Calendar now = Calendar.getInstance();
-
                     TimePickerDialog tpd = TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
                         @Override
                         public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
@@ -443,7 +458,7 @@ public class EditCreateActivity extends AppCompatActivity {
 
         if (!mEventEmail.getText().toString().equals(""))
             event.setEmail(mEventEmail.getText().toString());
-        
+
         RealmList<EventPhone> phones = new RealmList<EventPhone>();
         for (int i = 0; i < 2; i++) {
             EventPhone phone1 = new EventPhone();
@@ -451,9 +466,6 @@ public class EditCreateActivity extends AppCompatActivity {
             phones.add(phone1);
         }
         event.setPhones(phones);
-
-        if (!mEventPhone.getText().toString().equals(""))
-            event.setEmail(mEventPhone.getText().toString());
 
         User author = new User();
         author.setFullname(App.getCurrentUser().getFn());
