@@ -179,12 +179,14 @@ public class EventsOrganizerFragment extends Fragment {
             // отклонён - 2
 
         Realm realm = Realm.getDefaultInstance();
-        RealmQuery<Event> q = realm.where(Event.class).beginGroup();
-        q.equalTo("localOnly", false);
-        q.equalTo("author.id", App.getCurrentUser().getId());
+        RealmQuery<Event> q = realm.where(Event.class)
+                .equalTo("author.id", App.getCurrentUser().getId())
+                .equalTo("localOnly", false)
+                .beginGroup();
+
         if (isActive) q.equalTo("status", 1);
-        if (isOnreview) q.or().equalTo("status", 0);
-        if (isRejected) q.or().equalTo("status", 2);
+        if (isOnreview) q.equalTo("status", 0);
+        if (isRejected) q.equalTo("status", 2);
 //        if(isInactive) q.equalTo("status", )
 //        if (isFinished) q.equalTo("...")
 
