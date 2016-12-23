@@ -1,7 +1,6 @@
 package com.happ.models;
 
 import com.google.gson.annotations.SerializedName;
-import com.happ.App;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -10,7 +9,6 @@ import org.joda.time.format.DateTimeFormatter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -61,6 +59,10 @@ public class Event extends RealmObject implements Serializable {
     @SerializedName("interest_ids")
     private ArrayList<String> interestIds;
     private int status;
+    @SerializedName("is_active")
+    private boolean isActive;
+    @SerializedName("rejection_reasons")
+    private RealmList<RejectionReasons> rejectionReasons;
 
     //geo for googleMap
     private GeopointResponse geopoint;
@@ -328,5 +330,21 @@ public class Event extends RealmObject implements Serializable {
 
     public void setGeopoint(GeopointResponse geopoint) {
         this.geopoint = geopoint;
+    }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(boolean active) {
+        isActive = active;
+    }
+
+    public RealmList<RejectionReasons> getRejectionReasons() {
+        return rejectionReasons;
+    }
+
+    public void setRejectionReasons(RealmList<RejectionReasons> rejectionReasons) {
+        this.rejectionReasons = rejectionReasons;
     }
 }

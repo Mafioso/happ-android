@@ -411,6 +411,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
 
+
     }
 
     private void setListenerToRootView() {

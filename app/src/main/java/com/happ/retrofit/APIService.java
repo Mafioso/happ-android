@@ -16,6 +16,7 @@ public class APIService extends IntentService {
     private static final String ACTION_GET_EVENTS = "com.happ.action.ACTION_GET_EVENTS";
     private static final String ACTION_GET_EVENTS_FOR_PAGE = "com.happ.action.ACTION_GET_EVENTS_FOR_PAGE";
     private static final String ACTION_GET_ORG_EVENTS_PAGE = "com.happ.action.ACTION_GET_ORG_EVENTS_PAGE";
+    private static final String ACTION_GET_EXPLORE_EVENTS_PAGE = "com.happ.action.ACTION_GET_EXPLORE_EVENTS_PAGE";
     private static final String ACTION_GET_FILTERED_EVENTS = "com.happ.action.ACTION_GET_FILTERED_EVENTS";
     private static final String ACTION_GET_ORG_FILTERED_EVENTS = "com.happ.action.ACTION_GET_ORG_FILTERED_EVENTS";
     private static final String ACTION_GET_CITIES = "com.happ.action.ACTION_GET_CITIES";
@@ -53,11 +54,11 @@ public class APIService extends IntentService {
     private static final String EXTRA_PASSWORD = "com.happ.extra.EXTRA_PASSWORD";
 
 
-    private static final String EXTRA_ACTIVE = "com.happ.extra.EXTRA_PASSWORD";
-    private static final String EXTRA_INACTIVE = "com.happ.extra.EXTRA_PASSWORD";
-    private static final String EXTRA_ONREVIEW = "com.happ.extra.EXTRA_PASSWORD";
-    private static final String EXTRA_REJECTED = "com.happ.extra.EXTRA_PASSWORD";
-    private static final String EXTRA_FINISHED = "com.happ.extra.EXTRA_PASSWORD";
+    private static final String EXTRA_ACTIVE = "com.happ.extra.EXTRA_ACTIVE";
+    private static final String EXTRA_INACTIVE = "com.happ.extra.EXTRA_INACTIVE";
+    private static final String EXTRA_ONREVIEW = "com.happ.extra.EXTRA_ONREVIEW";
+    private static final String EXTRA_REJECTED = "com.happ.extra.EXTRA_REJECTED";
+    private static final String EXTRA_FINISHED = "com.happ.extra.EXTRA_FINISHED";
 
 
 
@@ -110,6 +111,13 @@ public class APIService extends IntentService {
         App.getContext().startService(intent);
     }
 
+    public static void getExploreEvents(int page) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_GET_EXPLORE_EVENTS_PAGE);
+        intent.putExtra(EXTRA_PAGE, page);
+        App.getContext().startService(intent);
+    }
+
     public static void getFilteredOrgEvents(int page,
                                             boolean is_active,
                                             boolean is_inactive,
@@ -124,6 +132,7 @@ public class APIService extends IntentService {
         intent.putExtra(EXTRA_ONREVIEW, is_onreview);
         intent.putExtra(EXTRA_REJECTED, is_rejected);
         intent.putExtra(EXTRA_FINISHED, is_finished);
+
         App.getContext().startService(intent);
     }
 
@@ -373,6 +382,9 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_GET_ORG_EVENTS_PAGE)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 HappRestClient.getInstance().getOrgEvents(page);
+            } else if (action.equals(ACTION_GET_EXPLORE_EVENTS_PAGE)) {
+                int page = intent.getIntExtra(EXTRA_PAGE, 1);
+                HappRestClient.getInstance().getExploreEvents(page);
             } else if (action.equals(ACTION_GET_ORG_FILTERED_EVENTS)){
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 boolean is_active = intent.getBooleanExtra(EXTRA_ACTIVE, false);
@@ -389,7 +401,8 @@ public class APIService extends IntentService {
                 String isFree = intent.getStringExtra(EXTRA_FREEEVENTS);
                 boolean popularity = intent.getBooleanExtra(EXTRA_POPULARITY_EVENTS, false);
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
-                HappRestClient.getInstance()
+                HappRestClient
+                        .getInstance()
                         .getFilteredEvents(page, feedSearchText, startDate, endDate, isFree, popularity, favs);
             } else if (action.equals(ACTION_GET_CITIES)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);

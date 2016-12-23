@@ -48,7 +48,7 @@ public class ExploreEventsFragment extends Fragment {
     private int previousTotal = 0;
     private int visibleThreshold;
     private HideShowFilterListener hideshowFilterListener;
-    private BroadcastReceiver eventsRequestDoneReceiver;
+    private BroadcastReceiver exploreEventsRequestDoneReceiver;
 
     public ExploreEventsFragment() {
 
@@ -75,7 +75,7 @@ public class ExploreEventsFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
-        visibleThreshold = Integer.parseInt(this.getString(R.string.event_feeds_visible_treshold_for_loading_next_items));
+        visibleThreshold = 6;
     }
 
     @Nullable
@@ -110,12 +110,12 @@ public class ExploreEventsFragment extends Fragment {
 
         mExploreRecyclerView.setAdapter(mExploreListAdapter);
 
-        APIService.getEvents(false);
+        APIService.getExploreEvents(1);
         createScrollListener();
 
-        if(eventsRequestDoneReceiver == null) {
-            eventsRequestDoneReceiver = createEventsRequestDoneReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTS_REQUEST_OK));
+        if(exploreEventsRequestDoneReceiver == null) {
+            exploreEventsRequestDoneReceiver = createExploreEventsRequestDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(exploreEventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EXPLORE_EVENTS_REQUEST_OK));
         }
         return contentView;
     }
@@ -157,7 +157,7 @@ public class ExploreEventsFragment extends Fragment {
                         int nextPage = (totalItemCount / interestsPageSize) + 1;
                         dataLoading = true;
 
-                        APIService.getEvents(nextPage, false);
+                        APIService.getExploreEvents(nextPage);
                     }
                 }
                 if (dy < 0) {
@@ -172,11 +172,9 @@ public class ExploreEventsFragment extends Fragment {
     public void onPause() {
         super.onPause();
         hideshowFilterListener.onShowFilter();
-//        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-
     }
 
-    private BroadcastReceiver createEventsRequestDoneReceiver() {
+    private BroadcastReceiver createExploreEventsRequestDoneReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -188,8 +186,9 @@ public class ExploreEventsFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (eventsRequestDoneReceiver != null) {
-            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventsRequestDoneReceiver);
+        if (exploreEventsRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(exploreEventsRequestDoneReceiver);
+            exploreEventsRequestDoneReceiver = null;
         }
     }
 }

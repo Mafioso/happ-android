@@ -230,14 +230,18 @@ public class SettingsActivity extends AppCompatActivity {
                 i.setData(Uri.parse("mailto:" + getResources().getString(R.string.happ_email)));
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 try {
-                    startActivity(Intent.createChooser(i, "Send mail..."));
+                    startActivity(Intent.createChooser(i, getResources().getString(R.string.send_email)));
                 } catch (android.content.ActivityNotFoundException ex) {
                     Toast.makeText(SettingsActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.btn_faq:
-                Toast.makeText(SettingsActivity.this, "FAQ Page", Toast.LENGTH_SHORT).show();
+                Intent goToFAQ = new Intent(getApplicationContext(), HtmlPageAcitivty.class);
+                goToFAQ.putExtra("from_settings", true);
+                goToFAQ.putExtra("link_faq", true);
+                startActivity(goToFAQ);
+                overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
                 break;
 
             case R.id.btn_terms_service:

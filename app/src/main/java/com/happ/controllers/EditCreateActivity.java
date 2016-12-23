@@ -80,7 +80,7 @@ public class EditCreateActivity extends AppCompatActivity {
     private View mViewSpaceListenerStartTime, mViewSpaceListenerEndTime;
 
     private EventImagesSwipeAdapter mEventImagesSwipeAdapter;
-    private BroadcastReceiver createEventReceiver;
+    private BroadcastReceiver createEventReceiver, eventEditReceiver;
 
     private City selectedCity = App.getCurrentCity();
     private String selectedCurrency = App.getCurrentUser().getSettings().getCurrency();
@@ -377,6 +377,12 @@ public class EditCreateActivity extends AppCompatActivity {
             createEventReceiver = createSaveDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(createEventReceiver, new IntentFilter(BroadcastIntents.EVENTCREATE_REQUEST_OK));
         }
+        if (eventEditReceiver == null) {
+            eventEditReceiver = eventEditSaveDoneReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventEditReceiver, new IntentFilter(BroadcastIntents.EVENTEDIT_REQUEST_OK));
+        }
+
+
     }
 
 
@@ -485,12 +491,10 @@ public class EditCreateActivity extends AppCompatActivity {
 
     }
 
-
     public static void hideSoftKeyboard (Activity activity, View view) {
         InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
-
 
     private BroadcastReceiver createSaveDoneReceiver() {
         return new BroadcastReceiver() {
@@ -516,12 +520,32 @@ public class EditCreateActivity extends AppCompatActivity {
         };
     }
 
+    private BroadcastReceiver eventEditSaveDoneReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String evendId = intent.getStringExtra("event_id");
+
+                intent = new Intent(EditCreateActivity.this, EventActivity.class);
+                intent.putExtra("in_event_activity", true);
+                intent.putExtra("is_organizer", true);
+                intent.putExtra("event_id", evendId);
+                startActivity(intent);
+            }
+        };
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (createEventReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(createEventReceiver);
             createEventReceiver = null;
+        }
+
+        if (eventEditReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventEditReceiver);
+            eventEditReceiver = null;
         }
     }
 

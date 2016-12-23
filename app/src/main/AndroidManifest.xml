@@ -66,6 +66,8 @@
         <activity android:name=".controllers_drawer.ConfirmEmailActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"/>
 
+        <activity android:name=".controllers.RejectionReasonsActivity"/>
+
         <activity
             android:name=".controllers.HtmlPageAcitivty"/>
 

@@ -61,6 +61,9 @@ public interface HAPPapi {
                                             @Query("popularity_events") boolean popularity);
 
 
+    @GET("events/explore/")
+    Call<EventsResponse> getExploreEvents(@Query("page") int page);
+
     @GET("interests/")
     Call<InterestResponse> getInterests(@Query("page") int page);
 

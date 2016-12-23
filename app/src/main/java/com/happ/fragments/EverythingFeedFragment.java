@@ -212,11 +212,6 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         mDarkViewProgress.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-//        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-    }
 
     private BroadcastReceiver changeCityReceiver() {
         return new BroadcastReceiver() {

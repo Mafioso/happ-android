@@ -22,12 +22,14 @@ import com.happ.models.HappToken;
 import com.happ.models.Interest;
 import com.happ.models.InterestResponse;
 import com.happ.models.LoginData;
+import com.happ.models.RejectionReasons;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
 import com.happ.models.UserEditData;
 import com.happ.retrofit.serializers.DateDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
 import com.happ.retrofit.serializers.PhoneDeserializer;
+import com.happ.retrofit.serializers.RejectionReasonsDeserializer;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -93,6 +95,7 @@ public class HappRestClient {
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
                     .registerTypeAdapter(Date.class, new DateDeserializer())
                     .registerTypeAdapter(EventPhone.class, new PhoneDeserializer())
+                    .registerTypeAdapter(RejectionReasons.class, new RejectionReasonsDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }
@@ -337,6 +340,50 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<EventsResponse> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENTS_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
+    public void getExploreEvents(int page) {
+        happApi.getExploreEvents(page).enqueue(new Callback<EventsResponse>() {
+            @Override
+            public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
+
+                if (response.isSuccessful()){
+                    List<Event> events = response.body().getEvents();
+                    User user = App.getCurrentUser();
+                    for (int i=0; i<events.size(); i++) {
+                        if (events.get(i).getAuthor().getId().equals(user.getId())) {
+                            events.get(i).setAuthor(user);
+                        }
+                    }
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+                    realm.copyToRealmOrUpdate(events);
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.EXPLORE_EVENTS_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.EXPLORE_EVENTS_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventsResponse> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.EXPLORE_EVENTS_REQUEST_FAIL);
                 Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
@@ -943,8 +990,7 @@ public class HappRestClient {
             return;
         }
 
-        boolean popul = popularity;
-        happApi.getFilteredEvents(page, feedSearchText,  startDate, endDate, maxPrice,popul).enqueue(new Callback<EventsResponse>() {
+        happApi.getFilteredEvents(page, feedSearchText,  startDate, endDate, maxPrice,popularity).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){

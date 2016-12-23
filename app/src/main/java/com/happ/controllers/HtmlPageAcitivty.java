@@ -30,11 +30,12 @@ public class HtmlPageAcitivty extends AppCompatActivity {
 
     private Toolbar toolbar;
 
-    private boolean fromSettings = false;
-    private boolean linkTermsOfService = false;
-    private boolean linkPrivacyPolicy = false;
-    private boolean fromOrgCreateEvent = false;
-    private boolean linkOrganizerRules = false;
+    private boolean fromSettings;
+    private boolean linkTermsOfService;
+    private boolean linkPrivacyPolicy;
+    private boolean fromOrgCreateEvent;
+    private boolean linkOrganizerRules;
+    private boolean linkFAQ;
 
 
     private LinearLayout mLLbottom;
@@ -52,6 +53,7 @@ public class HtmlPageAcitivty extends AppCompatActivity {
         linkPrivacyPolicy = getIntent().getBooleanExtra("link_privacy_policy", false);
         linkOrganizerRules = getIntent().getBooleanExtra("link_organizer_rules", false);
         fromOrgCreateEvent = getIntent().getBooleanExtra("from_organizermode", false);
+        linkFAQ = getIntent().getBooleanExtra("link_faq", false);
         setContentView(R.layout.activity_html_page);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -103,6 +105,9 @@ public class HtmlPageAcitivty extends AppCompatActivity {
         } else if (linkOrganizerRules) {
             setTitle(R.string.organizer_rules);
             webView.loadUrl(host + api_url + "organizer-rules/");
+        } else if (linkFAQ) {
+            setTitle(R.string.faq_help);
+            webView.loadUrl(host + api_url + "faq/");
         }
 
 

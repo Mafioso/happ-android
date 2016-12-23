@@ -29,6 +29,7 @@ import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.adapters.OrgEventsListAdapter;
 import com.happ.controllers.EditCreateActivity;
+import com.happ.controllers.RejectionReasonsActivity;
 import com.happ.controllers_drawer.EventActivity;
 import com.happ.controllers_drawer.OrganizerModeActivity;
 import com.happ.models.Event;
@@ -79,6 +80,8 @@ public class EventsOrganizerFragment extends Fragment {
     private BroadcastReceiver eventsRequestDoneReceiver;
     private BroadcastReceiver filteredEventsRequestDoneReceiver;
     private BroadcastReceiver deleteEventRequestDoneReceiver;
+    private BroadcastReceiver didUpvoteReceiver;
+    private BroadcastReceiver didIsFavReceiver;
 
     @Nullable
     @Override
@@ -94,8 +97,8 @@ public class EventsOrganizerFragment extends Fragment {
 
         mRLEmptyFrom.setVisibility(View.GONE);
 
-        eventsFeedPageSize = 9;
-        visibleThreshold = 4;
+        eventsFeedPageSize = 10;
+        visibleThreshold = 5;
         eventsListLayoutManager = new LinearLayoutManager(activity);
         orgEventsRecyclerView.setLayoutManager(eventsListLayoutManager);
         orgEvents = new ArrayList<>();
@@ -122,6 +125,13 @@ public class EventsOrganizerFragment extends Fragment {
                 intent.putExtra("event_id", eventId);
                 startActivity(intent);
             }
+
+            @Override
+            public void onEventRejectionReasonsActivity(String eventId) {
+                Intent intent = new Intent(activity, RejectionReasonsActivity.class);
+                intent.putExtra("event_id", eventId);
+                startActivity(intent);
+            }
         });
         orgEventsRecyclerView.setAdapter(oela);
 
@@ -138,6 +148,16 @@ public class EventsOrganizerFragment extends Fragment {
         if (deleteEventRequestDoneReceiver == null) {
             deleteEventRequestDoneReceiver = deleteEventRequestDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(deleteEventRequestDoneReceiver, new IntentFilter(BroadcastIntents.EVENTDELETE_REQUEST_OK));
+        }
+
+        if (didUpvoteReceiver == null) {
+            didUpvoteReceiver = createUpvoteReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
+        }
+
+        if (didIsFavReceiver == null) {
+            didIsFavReceiver = createFavReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
         }
 
         getEvents(1);
@@ -208,8 +228,6 @@ public class EventsOrganizerFragment extends Fragment {
 
         RealmResults<Event> eventRealmResults = q.endGroup().findAll();
 
-
-
         orgEvents = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
         ((OrgEventsListAdapter) orgEventsRecyclerView.getAdapter()).updateData(orgEvents);
         realm.close();
@@ -246,6 +264,26 @@ public class EventsOrganizerFragment extends Fragment {
         };
     }
 
+
+    private BroadcastReceiver createUpvoteReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateFilteredEventsList();
+            }
+        };
+    }
+
+    private BroadcastReceiver createFavReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateFilteredEventsList();
+            }
+        };
+    }
+
+
     protected void createScrollListener() {
         orgEventsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -276,7 +314,15 @@ public class EventsOrganizerFragment extends Fragment {
     }
 
     protected void getEvents(int page) {
-        APIService.getOrgEvents(page);
+//        APIService.getOrgEvents(page);
+
+        boolean isActive = ((OrganizerModeActivity)getActivity()).getFilterIsActive();
+        boolean isInactive = ((OrganizerModeActivity)getActivity()).getFilterIsInactive();
+        boolean isOnreview = ((OrganizerModeActivity)getActivity()).getFilterIsOnreview();
+        boolean isRejected = ((OrganizerModeActivity)getActivity()).getFilterIsRejected();
+        boolean isFinished = ((OrganizerModeActivity)getActivity()).getFilterIsFinished();
+
+        APIService.getFilteredOrgEvents(page, isActive, isInactive, isOnreview, isRejected,isFinished);
     }
 
     @Override
@@ -294,6 +340,15 @@ public class EventsOrganizerFragment extends Fragment {
         if (filteredEventsRequestDoneReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(filteredEventsRequestDoneReceiver);
             filteredEventsRequestDoneReceiver = null;
+        }
+
+        if (didUpvoteReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didUpvoteReceiver);
+            didUpvoteReceiver = null;
+        }
+        if (didIsFavReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
+            didIsFavReceiver = null;
         }
 
         super.onDestroy();

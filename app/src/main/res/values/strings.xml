@@ -243,5 +243,10 @@
     <string name="add_first_event">Add First Event</string>
     <string name="organizer_empty">You don\'t have any created events</string>
     <string name="filter_rejected">Rejected</string>
+    <string name="send_email">Send email</string>
+    <string name="rra_header_text">According to the policy and rules of “HAPP” the event you posted can not be published.</string>
+    <string name="rra_please_edit_this">Please edit the following:</string>
+    <string name="rra_event_details">Event details</string>
+    <string name="dash_long">—</string>
 
 </resources>

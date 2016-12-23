@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.R;
@@ -48,6 +47,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
     public interface SelectEventItemListener {
         void onEventItemSelected(String eventId, ActivityOptionsCompat options);
         void onEventEditSelected(String eventId);
+        void onEventRejectionReasonsActivity(String eventId);
     }
 
     public void setOnSelectItemListener(SelectEventItemListener listener) {
@@ -272,9 +272,10 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
         itemHolder.mButtonSeeDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(App.getContext(), "in progress... ^_^", Toast.LENGTH_SHORT).show();
+                mSelectItemListener.onEventRejectionReasonsActivity(event.getId());
             }
         });
+
 
         Menu menu = itemHolder.mToolbar.getMenu();
         if (menu != null) menu.clear();
