@@ -36,6 +36,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +61,8 @@ import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -132,6 +135,9 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     private TextView mDrawerVersionApp;
     private LinearLayout mDrawerLLFooter, mRightDrawerLLFooter;
 
+    private ImageView mDrawerHeaderAvatar;
+    private RelativeLayout mDrawerHeaderAvatarPlaceholder;
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -143,15 +149,102 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         setContentView(R.layout.activity_feed);
         binds();
         setTitle("");
+
         scf = SelectCityFragment.newInstance();
         everythingFeedFragment = EverythingFeedFragment.newInstance();
         favoriteFeedFragment = FavoriteFeedFragment.newInstance();
         exploreEventsFragment = ExploreEventsFragment.newInstance();
         mapFragment = MapFragment.newInstance();
 
-        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         setSupportActionBar(toolbar);
+        setAllFunctionNavigationMenu();
+        setListenerToRootView();
+        setDrawerLayoutListener();
 
+        setDrawerHeaderAvatar();
+
+        if (userRequestDoneReceiver == null) {
+            userRequestDoneReceiver = createLoginSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
+        }
+
+        if (changeCityDoneReceiver == null) {
+            changeCityDoneReceiver = changeCityReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+        }
+
+        if (didUpvoteReceiver == null) {
+            didUpvoteReceiver = createUpvoteReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
+        }
+        if (didIsFavReceiver == null) {
+            didIsFavReceiver = createFavReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
+        }
+
+    }
+
+
+    private void binds() {
+        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
+        rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
+        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
+        navigationViewRight = (NavigationView) findViewById(R.id.navigation_view_right);
+        mFeedSearchText = (EditText) findViewById(R.id.filter_search);
+        mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_navigation);
+        mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
+        mBottomBar = (BottomBar) findViewById(R.id.bottombar_feed);
+        mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
+        mFilterPopularity = (SwitchCompat) findViewById(R.id.filter_popularity_events);
+        mViewFilterDate = (View) findViewById(R.id.view_filter_date);
+        mViewFilterTime = (View) findViewById(R.id.view_filter_time);
+        mFilterDate = (EditText) findViewById(R.id.ff_edittext_filterdate);
+        mFilterTime = (EditText) findViewById(R.id.ff_edittext_filtertime);
+        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
+        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
+        mRightDrawerLLFooter = (LinearLayout) findViewById(R.id.right_drawer_ll_footer);
+        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
+        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
+        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
+
+        mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.dr_iv_user_avatar));
+        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.dr_avatar_placeholder));
+
+    }
+
+    private void setDrawerHeaderAvatar() {
+        if (App.getCurrentUser().getAvatar() != null) {
+            String url = App.getCurrentUser().getAvatar().getUrl();
+            mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
+            Picasso.with(App.getContext())
+                    .load(url)
+                    .fit()
+                    .centerCrop()
+                    .into(mDrawerHeaderAvatar, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+
+        } else {
+            mDrawerHeaderAvatar.setVisibility(View.GONE);
+            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setAllFunctionNavigationMenu() {
+        final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 
         navigationMenu.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -297,32 +390,32 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                                                                int yearStart, int monthStart,
                                                                int dayStart, int yearEnd,
                                                                int monthEnd, int dayEnd) {
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.set(Calendar.YEAR, yearStart);
-                                    cal.set(Calendar.MONTH, monthStart);
-                                    cal.set(Calendar.DAY_OF_MONTH, dayStart);
-                                    startDate = cal.getTime();
+                                        Calendar cal = Calendar.getInstance();
+                                        cal.set(Calendar.YEAR, yearStart);
+                                        cal.set(Calendar.MONTH, monthStart);
+                                        cal.set(Calendar.DAY_OF_MONTH, dayStart);
+                                        startDate = cal.getTime();
 
-                                    cal.set(Calendar.YEAR, yearEnd);
-                                    cal.set(Calendar.MONTH, monthEnd);
-                                    cal.set(Calendar.DAY_OF_MONTH, dayEnd);
-                                    endDate = cal.getTime();
+                                        cal.set(Calendar.YEAR, yearEnd);
+                                        cal.set(Calendar.MONTH, monthEnd);
+                                        cal.set(Calendar.DAY_OF_MONTH, dayEnd);
+                                        endDate = cal.getTime();
 
 
-                                    DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("MMM dd");
-                                    DateTime eventStartDate = new DateTime(getStartD());
-                                    DateTime eventEndDate = new DateTime(getEndD());
+                                        DateTimeFormatter dtFormatter = DateTimeFormat.forPattern("MMM dd");
+                                        DateTime eventStartDate = new DateTime(getStartD());
+                                        DateTime eventEndDate = new DateTime(getEndD());
 
-                                    String filterDate =
-                                            eventStartDate.toString(dtFormatter)
-                                            + " - " +
-                                            eventEndDate.toString(dtFormatter);
+                                        String filterDate =
+                                                eventStartDate.toString(dtFormatter)
+                                                        + " - " +
+                                                        eventEndDate.toString(dtFormatter);
 
-                                    mFilterDate.setText(filterDate);
-                                    String sD = sdf.format(startDate);
-                                    String eD = sdf.format(endDate);
+                                        mFilterDate.setText(filterDate);
+                                        String sD = sdf.format(startDate);
+                                        String eD = sdf.format(endDate);
 
-                                    APIService.getFilteredEvents(1, getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
+                                        APIService.getFilteredEvents(1, getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
 
                                     }
                                 }, now.get(Calendar.YEAR),now.get(Calendar.MONTH),now.get(Calendar.DAY_OF_MONTH));
@@ -359,60 +452,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             public void afterTextChanged(Editable editable) {
             }
         });
-
-        setListenerToRootView();
-        setDrawerLayoutListener();
-
-
-        if (userRequestDoneReceiver == null) {
-            userRequestDoneReceiver = createLoginSuccessReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(userRequestDoneReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
-        }
-
-        if (changeCityDoneReceiver == null) {
-            changeCityDoneReceiver = changeCityReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
-        }
-
-        if (didUpvoteReceiver == null) {
-            didUpvoteReceiver = createUpvoteReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
-        }
-        if (didIsFavReceiver == null) {
-            didIsFavReceiver = createFavReceiver();
-            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
-        }
-
-    }
-
-
-    private void binds() {
-        mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
-        rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationMenu = (NavigationView) findViewById(R.id.navigation_menu);
-        navigationHeader = (NavigationView) findViewById(R.id.navigation_header);
-        navigationViewRight = (NavigationView) findViewById(R.id.navigation_view_right);
-        mFeedSearchText = (EditText) findViewById(R.id.filter_search);
-        mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_navigation);
-        mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
-        mBottomBar = (BottomBar) findViewById(R.id.bottombar_feed);
-        mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
-        mFilterPopularity = (SwitchCompat) findViewById(R.id.filter_popularity_events);
-        mViewFilterDate = (View) findViewById(R.id.view_filter_date);
-        mViewFilterTime = (View) findViewById(R.id.view_filter_time);
-        mFilterDate = (EditText) findViewById(R.id.ff_edittext_filterdate);
-        mFilterTime = (EditText) findViewById(R.id.ff_edittext_filtertime);
-        mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
-        mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
-        mRightDrawerLLFooter = (LinearLayout) findViewById(R.id.right_drawer_ll_footer);
-        mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
-        mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
-        mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-
-
     }
 
     private void setListenerToRootView() {
@@ -565,16 +604,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         }
     }
 
-
-//    @Override
-//    public void onBackPressed() {
-//        if (fragNavController.canPop()) {
-//            fragNavController.pop();
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
-
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_feed, menu);
@@ -672,6 +701,9 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                         .getResources()
                         .getConfiguration()
                         .locale.getLanguage());
+
+
+        setDrawerHeaderAvatar();
 
         mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());

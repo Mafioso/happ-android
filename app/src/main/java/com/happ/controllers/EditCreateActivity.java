@@ -506,6 +506,7 @@ public class EditCreateActivity extends AppCompatActivity {
                 intent.putExtra("in_event_activity", true);
                 intent.putExtra("is_organizer", true);
                 intent.putExtra("event_id", evendId);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
 
 //                final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.event_done), Snackbar.LENGTH_INDEFINITE);
@@ -530,6 +531,7 @@ public class EditCreateActivity extends AppCompatActivity {
                 intent.putExtra("in_event_activity", true);
                 intent.putExtra("is_organizer", true);
                 intent.putExtra("event_id", evendId);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
             }
         };

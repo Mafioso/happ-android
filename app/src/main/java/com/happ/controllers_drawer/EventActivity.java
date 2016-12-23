@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -46,9 +45,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.BuildConfig;
@@ -298,7 +294,8 @@ public class EventActivity extends AppCompatActivity {
         repopulateEvent();
         setDrawerLayoutListener();
         setListenerToRootView();
-
+        App.setStatusBarTranslucent(getWindow(), true);
+        setDrawerHeaderAvatar();
 
         if (didUpvoteReceiver == null) {
             didUpvoteReceiver = createUpvoteReceiver();
@@ -314,47 +311,6 @@ public class EventActivity extends AppCompatActivity {
             changeCityDoneReceiver = changeCityReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
         }
-
-
-        App.setStatusBarTranslucent(getWindow(), true);
-
-        final String url = App.getCurrentUser().getImageUrl();
-        if (url != null) {
-            Glide.with(App.getContext()).load(url).asBitmap().listener(new RequestListener<String, Bitmap>() {
-                @Override
-                public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                    mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
-                    mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
-                    return false;
-                }
-            }).into(mDrawerHeaderAvatar);
-//            Picasso.with(App.getContext())
-//                .load(url)
-//                .fit()
-//                .centerCrop()
-//                .into(mDrawerHeaderAvatar, new Callback() {
-//                    @Override
-//                    public void onSuccess() {
-//                        mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
-//                        mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
-//                    }
-//
-//                    @Override
-//                    public void onError() {
-////                            itemHolder.mImagePlaceHolder.setVisibility(View.VISIBLE);
-//                    }
-//                });
-        } else {
-            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
-            mDrawerHeaderAvatar.setVisibility(View.GONE);
-        }
-
-
 
     }
 
@@ -401,10 +357,37 @@ public class EventActivity extends AppCompatActivity {
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-        mDrawerHeaderAvatar = ((ImageView)findViewById(R.id.dr_iv_user_avatar));
-        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)findViewById(R.id.dr_avatar_placeholder));
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
 
+        mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.dr_iv_user_avatar));
+        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.dr_avatar_placeholder));
+
+    }
+
+    private void setDrawerHeaderAvatar() {
+        if (App.getCurrentUser().getAvatar() != null) {
+            mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
+            Picasso.with(App.getContext())
+                    .load(App.getCurrentUser().getAvatar().getUrl())
+                    .fit()
+                    .centerCrop()
+                    .into(mDrawerHeaderAvatar, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+
+        } else {
+            mDrawerHeaderAvatar.setVisibility(View.GONE);
+            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setListenerToRootView() {
@@ -481,21 +464,21 @@ public class EventActivity extends AppCompatActivity {
 
         switch (id) {
             case android.R.id.home:
-                if (!isOrg) {
-                    Intent intent = new Intent(EventActivity.this, OrganizerModeActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);
-                    EventActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
-                } else {
+//                if (!isOrg) {
+//                    Intent intent = new Intent(EventActivity.this, OrganizerModeActivity.class);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+//                    startActivity(intent);
+//                    EventActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
+//                } else {
 //                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                        EventActivity.this.supportFinishAfterTransition();
 //                    } else {
                         finish();
                         EventActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
 //                    }
-                }
-
+//                }
                 return true;
+
             case R.id.menu_ea_share_event:
                 if (inEventActivity) {
                     String title = "";
@@ -752,6 +735,7 @@ public class EventActivity extends AppCompatActivity {
             mFab.show();
         }
 
+        setDrawerHeaderAvatar();
         mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
@@ -824,7 +808,6 @@ public class EventActivity extends AppCompatActivity {
             }
         };
     }
-
 
     private BroadcastReceiver changeCityReceiver() {
         return new BroadcastReceiver() {

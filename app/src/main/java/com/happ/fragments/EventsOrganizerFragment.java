@@ -210,6 +210,7 @@ public class EventsOrganizerFragment extends Fragment {
         if (((OrganizerModeActivity)getActivity()).getFilterIsOnreview()) selectedStatuses.add(EventStatus.ON_REVIEW);
         if (((OrganizerModeActivity)getActivity()).getFilterIsRejected()) selectedStatuses.add(EventStatus.REJECTED);
         if (((OrganizerModeActivity)getActivity()).getFilterIsFinished()) selectedStatuses.add(EventStatus.FINISHED);
+        if (((OrganizerModeActivity)getActivity()).getFilterIsInactive()) selectedStatuses.add(EventStatus.INACTIVE);
 
         Realm realm = Realm.getDefaultInstance();
         RealmQuery<Event> q = realm.where(Event.class).beginGroup();
@@ -222,7 +223,9 @@ public class EventsOrganizerFragment extends Fragment {
             if (status == EventStatus.FINISHED) {
                 q.beginGroup().equalTo("status", EventStatus.ACTIVE).lessThan("endDate", today).endGroup();
             } else if (status == EventStatus.ACTIVE){
-                q.beginGroup().equalTo("status", EventStatus.ACTIVE).greaterThanOrEqualTo("endDate", today).endGroup();
+                q.beginGroup().notEqualTo("isActive", false).equalTo("status", EventStatus.ACTIVE).greaterThanOrEqualTo("endDate", today).endGroup();
+            } else if (status == EventStatus.INACTIVE){
+                q.beginGroup().equalTo("isActive", false).greaterThanOrEqualTo("endDate", today).endGroup();
             } else {
                 q.equalTo("status", status);
             }
@@ -232,7 +235,7 @@ public class EventsOrganizerFragment extends Fragment {
         }
         q.endGroup();
 
-        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("startDate", Sort.DESCENDING);;
+        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("endDate", Sort.DESCENDING);;
 
         orgEvents = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
         ((OrgEventsListAdapter) orgEventsRecyclerView.getAdapter()).updateData(orgEvents);
@@ -296,7 +299,6 @@ public class EventsOrganizerFragment extends Fragment {
             }
         };
     }
-
 
     protected void createScrollListener() {
         orgEventsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

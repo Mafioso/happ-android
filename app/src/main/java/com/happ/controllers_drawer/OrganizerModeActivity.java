@@ -33,6 +33,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,8 @@ import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 public class OrganizerModeActivity extends AppCompatActivity implements FragNavController.TransactionListener, FragNavController.RootFragmentListener{
 
@@ -80,6 +83,8 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     private LinearLayout mDrawerLLFooter;
+    private ImageView mDrawerHeaderAvatar;
+    private RelativeLayout mDrawerHeaderAvatarPlaceholder;
 
     private SwitchCompat isActive, isInactive, isOnreview, isRejected, isFinished;
     private boolean
@@ -102,6 +107,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
         setAllFunctionNavigationMenu();
         setListenerToRootView();
         setDrawerLayoutListener();
+        setDrawerHeaderAvatar();
 
         isActive.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +117,19 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
                     getFilteredOrganizerEvents();
                 } else {
                     is_active = false;
+                    getFilteredOrganizerEvents();
+                }
+            }
+        });
+
+        isInactive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isInactive.isChecked()) {
+                    is_inacitve = true;
+                    getFilteredOrganizerEvents();
+                } else {
+                    is_inacitve = false;
                     getFilteredOrganizerEvents();
                 }
             }
@@ -160,6 +179,33 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
         }
 
+    }
+
+    private void setDrawerHeaderAvatar() {
+        if (App.getCurrentUser().getAvatar() != null) {
+            String url = App.getCurrentUser().getAvatar().getUrl();
+            mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
+            Picasso.with(App.getContext())
+                    .load(url)
+                    .fit()
+                    .centerCrop()
+                    .into(mDrawerHeaderAvatar, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+
+        } else {
+            mDrawerHeaderAvatar.setVisibility(View.GONE);
+            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+        }
     }
 
     private void getFilteredOrganizerEvents() {
@@ -365,6 +411,9 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
         mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
 
+        mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.dr_iv_user_avatar));
+        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.dr_avatar_placeholder));
+
         isActive = (SwitchCompat) findViewById(R.id.filter_activ);
         isInactive = (SwitchCompat) findViewById(R.id.filter_inactive);
         isOnreview = (SwitchCompat) findViewById(R.id.filter_onreview);
@@ -553,6 +602,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
     @Override
     public void onResume() {
         super.onResume();
+        setDrawerHeaderAvatar();
         mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }

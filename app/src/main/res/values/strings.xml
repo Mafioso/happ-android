@@ -83,7 +83,7 @@
     <string name="city_name_label">Your City is</string>
     <string name="select_city_button">Select city</string>
     <string name="city_search">Find City... </string>
-    <string name="organizer_title">Organizer Mode</string>
+    <string name="organizer_title">My events</string>
     <string name="user_settings">Profile Settings</string>
 
     <string name="did_upvote">You Like Event </string>

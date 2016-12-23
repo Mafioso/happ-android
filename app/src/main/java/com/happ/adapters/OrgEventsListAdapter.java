@@ -236,7 +236,12 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
         } else if (event.getStatus() == 1) {
             setUnlocked(itemHolder.mImageView);
             itemHolder.mBgItem.setBackgroundColor(Color.parseColor(event.getColor()));
-            itemHolder.mEventStatus.setImageResource(R.drawable.ic_done);
+            if (event.getIsActive()) {
+                itemHolder.mEventStatus.setImageResource(R.drawable.ic_done);
+            } else {
+                itemHolder.mEventStatus.setImageResource(R.drawable.ic_inactive);
+            }
+
             itemHolder.mPlace.setVisibility(View.VISIBLE);
             itemHolder.mPrice.setVisibility(View.VISIBLE);
             itemHolder.mDateView.setVisibility(View.VISIBLE);
@@ -292,8 +297,19 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
                 deactivateMenu.setIcon(R.drawable.ic_active_compat);
                 deactivateMenu.setTitle(R.string.menu_activate);
             }
-        }
 
+            if (event.getStatus() == 0 || event.getStatus() == 2) {
+                MenuItem isActivateMenu = menu.findItem(R.id.menu_is_active);
+                isActivateMenu.setVisible(false);
+                MenuItem editMenu = menu.findItem(R.id.menu_edit);
+                editMenu.setVisible(false);
+            } else {
+                MenuItem isActivateMenu = menu.findItem(R.id.menu_is_active);
+                isActivateMenu.setVisible(true);
+                MenuItem editMenu = menu.findItem(R.id.menu_edit);
+                editMenu.setVisible(true);
+            }
+        }
         itemHolder.mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
