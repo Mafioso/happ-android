@@ -54,6 +54,7 @@ import com.happ.models.City;
 import com.happ.models.Event;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.happ.retrofit.HappRestClient;
 import com.leavjenn.smoothdaterangepicker.date.SmoothDateRangePickerFragment;
 import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
@@ -666,6 +667,11 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     @Override
     public void onResume() {
         super.onResume();
+        HappRestClient.getInstance()
+                .setLanguage(getApplicationContext()
+                        .getResources()
+                        .getConfiguration()
+                        .locale.getLanguage());
 
         mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());

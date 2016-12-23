@@ -39,6 +39,7 @@
             android:paddingLeft="48dp"
             android:paddingRight="48dp"
             android:paddingTop="24dp"
+            android:gravity="center"
             android:layout_above="@+id/rl_footer">
 
             <ImageView

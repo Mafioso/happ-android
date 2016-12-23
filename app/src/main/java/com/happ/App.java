@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.bugsnag.android.Bugsnag;
@@ -41,9 +41,6 @@ public class App extends MultiDexApplication {
         context = this.getApplicationContext();
         JodaTimeAndroid.init(context);
         Bugsnag.init(this);
-
-        String language = getApplicationContext().getResources().getConfiguration().locale.getLanguage();
-        System.out.print(language);
 
         RealmConfiguration realmConfiguration = new RealmConfiguration
                 .Builder(this)
@@ -165,7 +162,6 @@ public class App extends MultiDexApplication {
         realm.commitTransaction();
         realm.close();
     }
-
 
     public static Context getContext() {
         return context;

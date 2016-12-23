@@ -14,12 +14,21 @@
                 android:icon="@drawable/ic_edit_compat"
                 android:title="@string/menu_edit"
                 />
+
+            <item
+                android:id="@+id/menu_is_active"
+                android:visible="true"
+                android:icon="@drawable/ic_deactivate_compat"
+                android:title="@string/menu_deactivate"
+                />
+
             <item
                 android:id="@+id/menu_hide"
                 android:visible="true"
                 android:icon="@drawable/ic_hide_compat"
                 android:title="@string/menu_hide"
                 />
+
             <item
                 android:id="@+id/menu_delete"
                 android:visible="true"

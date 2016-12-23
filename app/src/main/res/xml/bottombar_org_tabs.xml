@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <tabs>
-    <tab
-        id="@+id/tab_analytics"
-        icon="@drawable/ic_bb_analytics"
-        title="Analytics" />
-    <tab
-        id="@+id/tab_pro_function"
-        icon="@drawable/ic_bb_pro_functions"
-        
-        title="Pro-Functions" />
+
     <tab
         id="@+id/tab_my_events"
         icon="@drawable/bb_ic_feed"
@@ -17,5 +9,15 @@
         id="@+id/tab_add_event"
         icon="@drawable/ic_bb_add_event"
         title="Add event" />
+
+    <tab
+        id="@+id/tab_pro_function"
+        icon="@drawable/ic_bb_pro_functions"
+        title="Pro-Functions" />
+
+    <tab
+        id="@+id/tab_analytics"
+        icon="@drawable/ic_bb_analytics"
+        title="Analytics" />
 
 </tabs>

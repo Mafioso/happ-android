@@ -21,6 +21,7 @@ import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
 import com.happ.models.Interest;
 import com.happ.models.InterestResponse;
+import com.happ.models.LanguageData;
 import com.happ.models.LoginData;
 import com.happ.models.RejectionReasons;
 import com.happ.models.SignUpData;
@@ -474,6 +475,7 @@ public class HappRestClient {
             }
         });
     }
+
     public void doLogin(String username, String password) {
 
         LoginData loginData = new LoginData();
@@ -518,6 +520,41 @@ public class HappRestClient {
                 Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void setLanguage(String language) {
+
+        LanguageData languageData = new LanguageData();
+        languageData.setLanguage(language);
+
+        happApi.setLanguage(languageData).enqueue(new Callback<HappToken>() {
+            @Override
+            public void onResponse(Call<HappToken> call, Response<HappToken> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()));
+                Log.d("HAPP_API", response.message());
+
+                if(response.isSuccessful()) {
+
+                    HappToken happToken = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(happToken);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    setAuthHeader();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HappToken> call, Throwable t) {
+
             }
         });
     }
@@ -770,6 +807,84 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 Intent intent = new Intent(BroadcastIntents.EVENT_UPVOTE_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
+    public void doActivate(final String eventId) {
+
+        happApi.doActivate(eventId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+
+                    Realm realm = Realm.getDefaultInstance();
+                    Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    if (event != null) {
+                        realm.beginTransaction();
+                        event.setIsActive(true);
+                        realm.copyToRealmOrUpdate(event);
+                        realm.commitTransaction();
+                    }
+
+                    Intent intent = new Intent(BroadcastIntents.EVENT_ISACTIVATE_REQUEST_OK);
+                    intent.putExtra(BroadcastIntents.EXTRA_EVENT_ID, eventId);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                } else {
+                    Intent intent = new Intent(BroadcastIntents.EVENT_ISACTIVATE_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.EVENT_ISACTIVATE_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
+    public void doDeactivate(final String eventId) {
+
+        happApi.doDeactivate(eventId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+
+                    Realm realm = Realm.getDefaultInstance();
+                    Event event = realm.where(Event.class).equalTo("id", eventId).findFirst();
+                    if (event != null) {
+                        realm.beginTransaction();
+                        event.setIsActive(false);
+                        realm.copyToRealmOrUpdate(event);
+                        realm.commitTransaction();
+                    }
+
+                    Intent intent = new Intent(BroadcastIntents.EVENT_ISACTIVATE_REQUEST_OK);
+                    intent.putExtra(BroadcastIntents.EXTRA_EVENT_ID, eventId);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                } else {
+                    Intent intent = new Intent(BroadcastIntents.EVENT_ISACTIVATE_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.EVENT_ISACTIVATE_REQUEST_FAIL);
                 Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                 intent.putExtra("MESSAGE", t.getLocalizedMessage());
                 LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);

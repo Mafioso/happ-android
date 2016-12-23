@@ -432,19 +432,18 @@ public class EventActivity extends AppCompatActivity {
 
         switch (id) {
             case android.R.id.home:
-                if (isOrg) {
+                if (!isOrg) {
                     Intent intent = new Intent(EventActivity.this, OrganizerModeActivity.class);
-                    intent.putExtra("is_full", true);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                     EventActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
                 } else {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        EventActivity.this.supportFinishAfterTransition();
-                    } else {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                        EventActivity.this.supportFinishAfterTransition();
+//                    } else {
                         finish();
                         EventActivity.this.overridePendingTransition(R.anim.pull_from_back, R.anim.slide_out_to_right);
-                    }
+//                    }
                 }
 
                 return true;

@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -82,6 +81,8 @@ public class EventsOrganizerFragment extends Fragment {
     private BroadcastReceiver deleteEventRequestDoneReceiver;
     private BroadcastReceiver didUpvoteReceiver;
     private BroadcastReceiver didIsFavReceiver;
+    private BroadcastReceiver didIsActivate;
+
 
     @Nullable
     @Override
@@ -111,12 +112,12 @@ public class EventsOrganizerFragment extends Fragment {
                 intent.putExtra("event_id", eventId);
                 intent.putExtra("is_organizer", true);
                 intent.putExtra("in_event_activity", true);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || options == null) {
-                    EventsOrganizerFragment.this.startActivity(intent);
-                    (activity).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
-                } else {
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || options == null) {
+//                    EventsOrganizerFragment.this.startActivity(intent);
+//                    (activity).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+//                } else {
                     EventsOrganizerFragment.this.startActivity(intent, options.toBundle());
-                }
+//                }
             }
 
             @Override
@@ -159,6 +160,10 @@ public class EventsOrganizerFragment extends Fragment {
             didIsFavReceiver = createFavReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsFavReceiver, new IntentFilter(BroadcastIntents.EVENT_UNFAV_REQUEST_OK));
         }
+        if (didIsActivate == null) {
+            didIsActivate = createIsActivateReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didIsActivate, new IntentFilter(BroadcastIntents.EVENT_ISACTIVATE_REQUEST_OK));
+        }
 
         getEvents(1);
         createScrollListener();
@@ -169,7 +174,8 @@ public class EventsOrganizerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        updateEventsList();
+//        updateEventsList();
+        updateFilteredEventsList();
     }
 
 
@@ -226,7 +232,7 @@ public class EventsOrganizerFragment extends Fragment {
         }
         q.endGroup();
 
-        RealmResults<Event> eventRealmResults = q.endGroup().findAll();
+        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("startDate", Sort.DESCENDING);;
 
         orgEvents = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
         ((OrgEventsListAdapter) orgEventsRecyclerView.getAdapter()).updateData(orgEvents);
@@ -275,6 +281,14 @@ public class EventsOrganizerFragment extends Fragment {
     }
 
     private BroadcastReceiver createFavReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                updateFilteredEventsList();
+            }
+        };
+    }
+    private BroadcastReceiver createIsActivateReceiver() {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -349,6 +363,10 @@ public class EventsOrganizerFragment extends Fragment {
         if (didIsFavReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsFavReceiver);
             didIsFavReceiver = null;
+        }
+        if (didIsActivate != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(didIsActivate);
+            didIsActivate = null;
         }
 
         super.onDestroy();

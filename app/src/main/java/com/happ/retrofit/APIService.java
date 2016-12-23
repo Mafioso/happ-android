@@ -44,6 +44,9 @@ public class APIService extends IntentService {
     private static final String ACTION_UNFAV_EVENT = "com.happ.extra.ACTION_UNFAV_EVENT";
     private static final String ACTION_FAV_EVENT = "com.happ.extra.ACTION_FAV_EVENT";
     private static final String ACTION_PATCH_EVENTCREATE = "com.happ.action.ACTION_PATCH_EVENTCREATE";
+    private static final String ACTION_ACTIVATE_EVENT = "com.happ.action.ACTION_ACTIVATE_EVENT";
+    private static final String ACTION_DEACTIVATE_EVENT = "com.happ.action.ACTION_DEACTIVATE_EVENT";
+
 
     private static final String ACTION_GET_SELECTED_INTERESTS = "com.happ.action.ACTION_GET_SELECTED_INTERESTS";
 
@@ -59,9 +62,6 @@ public class APIService extends IntentService {
     private static final String EXTRA_ONREVIEW = "com.happ.extra.EXTRA_ONREVIEW";
     private static final String EXTRA_REJECTED = "com.happ.extra.EXTRA_REJECTED";
     private static final String EXTRA_FINISHED = "com.happ.extra.EXTRA_FINISHED";
-
-
-
 
     private static final String EXTRA_OLD_PASSWORD = "com.happ.extra.EXTRA_OLD_PASSWORD";
     private static final String EXTRA_NEW_PASSWORD = "com.happ.extra.EXTRA_NEW_PASSWORD";
@@ -88,6 +88,8 @@ public class APIService extends IntentService {
     private static final String EXTRA_DOWNVOTE_EVENT = "com.happ.extra.EXTRA_DOWNVOTE_EVENT";
     private static final String EXTRA_UNFAV_EVENT = "com.happ.extra.EXTRA_UNFAV_EVENT";
     private static final String EXTRA_FAV_EVENT = "com.happ.extra.EXTRA_FAV_EVENT";
+    private static final String EXTRA_ACTIVATE_EVENT = "com.happ.extra.EXTRA_ACTIVATE_EVENT";
+    private static final String EXTRA_DEACTIVATE_EVENT = "com.happ.extra.EXTRA_DEACTIVATE_EVENT";
 
     private static final String EXTRA_STARTDATE = "com.happ.extra.EXTRA_STARTDATE";
     private static final String EXTRA_ENDDATE = "com.happ.extra.EXTRA_ENDDATE";
@@ -317,6 +319,20 @@ public class APIService extends IntentService {
         App.getContext().startService(eventEdit);
     }
 
+    public static void doActivate(String eventId) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_ACTIVATE_EVENT);
+        intent.putExtra(EXTRA_ACTIVATE_EVENT, eventId);
+        App.getContext().startService(intent);
+    }
+
+    public static void doDeactivate(String eventId) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_DEACTIVATE_EVENT);
+        intent.putExtra(EXTRA_DEACTIVATE_EVENT, eventId);
+        App.getContext().startService(intent);
+    }
+
     public static void doSignUp (String username, String password) {
         Intent signUp = new Intent(App.getContext(), APIService.class);
         signUp.setAction(ACTION_POST_SIGNUP);
@@ -467,6 +483,12 @@ public class APIService extends IntentService {
             } else if (action.equals(ACTION_DOWNVOTE_EVENT)) {
                 String eventId = intent.getStringExtra(EXTRA_DOWNVOTE_EVENT);
                 HappRestClient.getInstance().doDownVote(eventId);
+            } else if (action.equals(ACTION_ACTIVATE_EVENT)) {
+                String eventId = intent.getStringExtra(EXTRA_ACTIVATE_EVENT);
+                HappRestClient.getInstance().doActivate(eventId);
+            } else if (action.equals(ACTION_DEACTIVATE_EVENT)) {
+                String eventId = intent.getStringExtra(EXTRA_DEACTIVATE_EVENT);
+                HappRestClient.getInstance().doDeactivate(eventId);
             } else if (action.equals(ACTION_PATCH_EVENTCREATE)) {
                 String eventId = intent.getStringExtra(EXTRA_EE_ID);
                 HappRestClient.getInstance().createEvent(eventId);

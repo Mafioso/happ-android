@@ -277,10 +277,23 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
         });
 
 
-        Menu menu = itemHolder.mToolbar.getMenu();
+        final Menu menu = itemHolder.mToolbar.getMenu();
         if (menu != null) menu.clear();
         itemHolder.mToolbar.setVisibility(View.VISIBLE);
         itemHolder.mToolbar.inflateMenu(R.menu.menu_event_org);
+
+        if (menu != null) {
+            if (event.getIsActive()) {
+                MenuItem deactivateMenu = menu.findItem(R.id.menu_is_active);
+                deactivateMenu.setIcon(R.drawable.ic_deactivate_compat);
+                deactivateMenu.setTitle(R.string.menu_deactivate);
+            } else {
+                MenuItem deactivateMenu = menu.findItem(R.id.menu_is_active);
+                deactivateMenu.setIcon(R.drawable.ic_active_compat);
+                deactivateMenu.setTitle(R.string.menu_activate);
+            }
+        }
+
         itemHolder.mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -288,8 +301,11 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
                 if (menuItem.getItemId() == R.id.menu_edit) {
                     mSelectItemListener.onEventEditSelected(event.getId());
                 }
+                if (menuItem.getItemId() == R.id.menu_is_active) {
+                    ((OrganizerModeActivity) context).functionIsActivateToRun(event);
+                }
                 if (menuItem.getItemId() == R.id.menu_delete) {
-                    ((OrganizerModeActivity) context).functionToRun(event.getId());
+                    ((OrganizerModeActivity) context).functionDeleteToRun(event.getId());
                 }
                 return false;
             }

@@ -65,5 +65,7 @@ public class BroadcastIntents {
     public static final String FILTERED_EVENTS_REQUEST_OK = "com.happ.filtered_events_request_ok";
     public static final String FILTERED_EVENTS_REQUEST_FAIL = "com.happ.filtered_events_request_fail";
 
+    public static final String EVENT_ISACTIVATE_REQUEST_OK = "com.happ.event_isactivate_request_ok";
+    public static final String EVENT_ISACTIVATE_REQUEST_FAIL = "com.happ.event_isactivate_request_fail";
 
 }

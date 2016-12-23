@@ -47,6 +47,7 @@ import com.happ.controllers.HtmlPageAcitivty;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.EventsOrganizerFragment;
 import com.happ.fragments.SelectCityFragment;
+import com.happ.models.Event;
 import com.happ.retrofit.APIService;
 import com.ncapdevi.fragnav.FragNavController;
 import com.roughike.bottombar.BottomBar;
@@ -219,7 +220,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
 
         fragNavController = new FragNavController(null, getSupportFragmentManager(),R.id.org_container,this,1, TAB_MY_EVENTS);
         fragNavController.setTransactionListener(this);
-        mBottomBar.setDefaultTabPosition(2);
+        mBottomBar.setDefaultTabPosition(0);
         mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
@@ -504,7 +505,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
     }
 
 
-    public void functionToRun(final String eventId) {
+    public void functionDeleteToRun(final String eventId) {
         new MaterialDialog.Builder(this)
                 .title(getResources().getString(R.string.delete_confirm_title))
                 .content(getResources().getString(R.string.delete_confirm_description))
@@ -517,6 +518,35 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
                 })
                 .negativeText(getResources().getString(R.string.cancel))
                 .show();
+    }
+
+    public void functionIsActivateToRun(final Event event) {
+        if (event.getIsActive()) {
+                    new MaterialDialog.Builder(this)
+                        .title(getResources().getString(R.string.deactivate_confirm_title))
+                        .content(getResources().getString(R.string.deactivate_confirm_description)).positiveText(getResources().getString(R.string.agree))
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                APIService.doDeactivate(event.getId());
+                            }
+                        })
+                        .negativeText(getResources().getString(R.string.cancel))
+                        .show();
+                } else {
+                    new MaterialDialog.Builder(this)
+                            .title(getResources().getString(R.string.activate_confirm_title))
+                            .content(getResources().getString(R.string.activate_confirm_description))
+                            .positiveText(getResources().getString(R.string.agree))
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    APIService.doActivate(event.getId());
+                                }
+                            })
+                            .negativeText(getResources().getString(R.string.cancel))
+                            .show();
+                }
     }
 
 

@@ -8,6 +8,7 @@ import com.happ.models.Event;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappToken;
 import com.happ.models.InterestResponse;
+import com.happ.models.LanguageData;
 import com.happ.models.LoginData;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
@@ -109,6 +110,12 @@ public interface HAPPapi {
     @POST("events/{id}/fav/")
     Call<Void> doFav(@Path("id") String eventID, @Body EmptyBody body);
 
+    @POST("events/{id}/activate/")
+    Call<Void> doActivate(@Path("id") String eventID);
+
+    @POST("events/{id}/deactivate/")
+    Call<Void> doDeactivate(@Path("id") String eventID);
+
     @POST("events/{id}/unfav/")
     Call<Void> doUnFav(@Path("id") String eventID, @Body EmptyBody   body);
 
@@ -143,5 +150,8 @@ public interface HAPPapi {
                                                @Query("end_date") String endDate,
                                                @Query("max_price") String price,
                                                @Query("popularity_events") boolean popularity);
+
+    @POST("users/current/set/language/")
+    Call<HappToken> setLanguage(@Body LanguageData languageData);
 
 }
