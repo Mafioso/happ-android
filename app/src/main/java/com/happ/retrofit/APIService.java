@@ -2,6 +2,7 @@ package com.happ.retrofit;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Process;
 
 import com.happ.App;
@@ -50,6 +51,9 @@ public class APIService extends IntentService {
 
     private static final String ACTION_GET_SELECTED_INTERESTS = "com.happ.action.ACTION_GET_SELECTED_INTERESTS";
 
+    private static final String ACTION_UPLOAD_IMAGE = "com.happ.action.ACTION_UPLOAD_IMAGE";
+
+    private static final String EXTRA_URI = "com.happ.extra.EXTRA_URI";
 
     private static final String EXTRA_PAGE = "com.happ.extra.EXTRA_PAGE";
     private static final String EXTRA_GET_FAVS = "com.happ.extra.EXTRA_GET_FAVS";
@@ -95,8 +99,7 @@ public class APIService extends IntentService {
     private static final String EXTRA_ENDDATE = "com.happ.extra.EXTRA_ENDDATE";
     private static final String EXTRA_FREEEVENTS = "com.happ.extra.EXTRA_FREEEVENTS";
     private static final String EXTRA_POPULARITY_EVENTS = "com.happ.extra.EXTRA_POPULARITY_EVENTS";
-
-
+    private static final String EXTRA_AVATAR_ID ="com.happ.extra.EXTRA_AVATAR_ID" ;
 
 
     public static void getEvents(boolean favs) {
@@ -117,6 +120,14 @@ public class APIService extends IntentService {
         Intent intent = new Intent(App.getContext(), APIService.class);
         intent.setAction(ACTION_GET_EXPLORE_EVENTS_PAGE);
         intent.putExtra(EXTRA_PAGE, page);
+        App.getContext().startService(intent);
+    }
+
+    public static void uploadImage(Uri uri) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_UPLOAD_IMAGE);
+//        intent.putExtra(EXTRA_URI, uri.toString());
+        intent.setData(uri);
         App.getContext().startService(intent);
     }
 
@@ -273,7 +284,7 @@ public class APIService extends IntentService {
     }
 
 
-    public static void doUserEdit(String edit_fullname, String edit_email, String edit_phone, Date edit_dateofbirth, int gender) {
+    public static void doUserEdit(String edit_fullname, String edit_email, String edit_phone, Date edit_dateofbirth, int gender, String imageId) {
         Intent userEdit = new Intent(App.getContext(), APIService.class);
         userEdit.setAction(ACTION_POST_USEREDIT);
         userEdit.putExtra(EXTRA_FULLNAME, edit_fullname);
@@ -281,6 +292,7 @@ public class APIService extends IntentService {
         userEdit.putExtra(EXTRA_PHONE, edit_phone);
         userEdit.putExtra(EXTRA_DATEOFBIRTH, edit_dateofbirth.getTime());
         userEdit.putExtra(EXTRA_GENDER, gender);
+        userEdit.putExtra(EXTRA_AVATAR_ID, imageId);
         App.getContext().startService(userEdit);
     }
 
@@ -386,7 +398,11 @@ public class APIService extends IntentService {
 
         if (intent != null) {
             final String action = intent.getAction();
-            if (action.equals(ACTION_GET_EVENTS)) {
+            if (action.equals(ACTION_UPLOAD_IMAGE)) {
+//                String uriString = intent.getStringExtra(EXTRA_URI);
+                Uri uri = intent.getData();
+                HappRestClient.getInstance().uploadFile(uri);
+            } else if (action.equals(ACTION_GET_EVENTS)) {
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
                 HappRestClient.getInstance().getEvents(favs);
             } else if (action.equals(ACTION_GET_SELECTED_INTERESTS)) {
@@ -438,10 +454,11 @@ public class APIService extends IntentService {
                 String edit_fullname = intent.getStringExtra(EXTRA_FULLNAME);
                 String edit_email = intent.getStringExtra(EXTRA_EMAIL);
                 String edit_phone = intent.getStringExtra(EXTRA_PHONE);
+                String avatar_id = intent.getStringExtra(EXTRA_AVATAR_ID);
                 long birthDateLong = intent.getLongExtra(EXTRA_DATEOFBIRTH, 0);
                 int gender = intent.getIntExtra(EXTRA_GENDER, 0);
                 Date edit_dateofbirth = new Date(birthDateLong);
-                HappRestClient.getInstance().doUserEdit(edit_fullname, edit_email, edit_phone, edit_dateofbirth, gender);
+                HappRestClient.getInstance().doUserEdit(edit_fullname, edit_email, edit_phone, edit_dateofbirth, gender, avatar_id);
             } else if (action.equals(ACTION_POST_SIGNUP)) {
                 String username = intent.getStringExtra(EXTRA_USERNAME);
                 String password = intent.getStringExtra(EXTRA_PASSWORD);

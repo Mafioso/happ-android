@@ -68,4 +68,7 @@ public class BroadcastIntents {
     public static final String EVENT_ISACTIVATE_REQUEST_OK = "com.happ.event_isactivate_request_ok";
     public static final String EVENT_ISACTIVATE_REQUEST_FAIL = "com.happ.event_isactivate_request_fail";
 
+    public static final String IMAGE_UPLOAD_FAIL = "com.happ.image_upload_fail";
+    public static final String IMAGE_UPLOAD_OK = "com.happ.image_upload_ok";
+    public static final String IMAGE_UPLOAD_EXTRA_ID = "com.happ.image_upload_extra_id";
 }

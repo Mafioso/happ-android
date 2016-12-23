@@ -1,10 +1,13 @@
 package com.happ.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
+import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -23,6 +26,9 @@ public class User extends RealmObject {
     private Settings settings;
     private int gender;
     private RealmList<Interest> interests;
+    @SerializedName("avatar_id")
+    private String avatarId;
+    private HappImage avatar;
 
 
     public String getUsername() {
@@ -113,7 +119,9 @@ public class User extends RealmObject {
     }
 
     public String getImageUrl() {
-        return "http://nick.mtvnimages.com/nick/video/images/avatar/avatar-118-16x9.jpg";
+        if (this.avatar != null) return this.avatar.getUrl();
+        else return null;
+//        return "http://nick.mtvnimages.com/nick/video/images/avatar/avatar-118-16x9.jpg";
     }
 
     public Date getDate_of_birth() {
@@ -122,5 +130,21 @@ public class User extends RealmObject {
 
     public void setDate_of_birth(Date date_of_birth) {
         this.date_of_birth = date_of_birth;
+    }
+
+    public HappImage getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(HappImage avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getAvatarId() {
+        return avatarId;
+    }
+
+    public void setAvatarId(String avatarId) {
+        this.avatarId = avatarId;
     }
 }

@@ -6,6 +6,7 @@ import com.happ.models.City;
 import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
 import com.happ.models.EventsResponse;
+import com.happ.models.HappImage;
 import com.happ.models.HappToken;
 import com.happ.models.InterestResponse;
 import com.happ.models.LanguageData;
@@ -16,12 +17,16 @@ import com.happ.models.UserEditData;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -153,5 +158,9 @@ public interface HAPPapi {
 
     @POST("users/current/set/language/")
     Call<HappToken> setLanguage(@Body LanguageData languageData);
+
+    @Multipart
+    @POST("upload/")
+    Call<List<HappImage>> uploadImage(@Part MultipartBody.Part file);
 
 }

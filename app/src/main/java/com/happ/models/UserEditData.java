@@ -12,6 +12,7 @@ public class UserEditData {
     private String email;
     private Integer gender;
     private Date date_of_birth;
+    private String avatar_id;
 
     public String getFullname() {
         return fullname;
@@ -51,5 +52,13 @@ public class UserEditData {
 
     public void setDate_of_birth(Date date_of_birth) {
         this.date_of_birth = date_of_birth;
+    }
+
+    public void setAvatarId(String avatarId) {
+        this.avatar_id = avatarId;
+    }
+
+    public String getAvatarId() {
+        return avatar_id;
     }
 }

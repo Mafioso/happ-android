@@ -1,5 +1,6 @@
 package com.happ.controllers;
 
+import android.Manifest;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -7,16 +8,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
@@ -34,6 +39,9 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
@@ -51,6 +59,9 @@ import java.util.Date;
  * Created by dante on 9/22/16.
  */
 public class UserActivity extends AppCompatActivity implements com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener {
+
+    private static final int MY_PERMISSIONS_REQUEST_READ_MEDIA = 2;
+    private static final int SELECT_PICTURE = 1;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -72,6 +83,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
     private RadioButton mMale, mFemale;
 
     private BroadcastReceiver setUserEditOKReceiver;
+    private BroadcastReceiver imageUploadedReceiver;
     private boolean fromSettings = false;
 
 
@@ -81,10 +93,10 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
     private int arrowDrawable;
     private int closeDrawable;
     private AppBarLayout.OnOffsetChangedListener offsetChangedListener;
+    private String imageId;
 
 
-    private static final int SELECT_PICTURE = 1;
-    private String selectedImagePath;
+    private Bitmap newImageBitmap;
 
     @Override
     public void onBackPressed() {
@@ -133,6 +145,10 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
         mOldPassword = (EditText) findViewById(R.id.old_password);
         mNewPassword = (EditText) findViewById(R.id.new_password);
         mReapeatNewPassword = (EditText) findViewById(R.id.repeat_new_password);
+
+        if (user.getAvatar() != null) {
+            imageId = user.getAvatar().getId();
+        }
 
 //        mUserPhoto.setMaxHeight(width);
 //        mUserPhoto.setMinimumHeight(width);
@@ -186,30 +202,46 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
             mFemale.setChecked(user.getGender() > 0);
 
 //            final String imageUrl = user.getImageUrl();
-            final String imageUrl = null;
 
             arrowDrawable = R.drawable.ic_right_arrow_grey;
             closeDrawable = R.drawable.ic_close_grey;
 
+            final String imageUrl = user.getImageUrl();
             if (imageUrl == null) {
                 mUserPhoto.setVisibility(View.GONE);
                 mAvatarPlaceholder.setVisibility(View.VISIBLE);
             } else {
-                Picasso.with(App.getContext())
-                        .load(imageUrl)
-                        .fit()
-                        .centerCrop()
-                        .into(mUserPhoto, new Callback() {
-                            @Override
-                            public void onSuccess() {
-                                photoDidSet();
-                            }
+                Glide.with(App.getContext()).load(imageUrl).asBitmap().listener(new RequestListener<String, Bitmap>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+                        return false;
+                    }
 
-                            @Override
-                            public void onError() {
+                    @Override
+                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        photoDidSet();
+                        return false;
+                    }
+                }).into(mUserPhoto);
 
-                            }
-                        });
+
+
+//                Picasso.with(this)
+//                    .load(imageUrl)
+//                    .fit()
+//                    .centerCrop()
+//                    .into(mUserPhoto, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//                            photoDidSet();
+//                            String a = "asd";
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            String a = "123";
+//                        }
+//                    });
             }
 
 
@@ -246,7 +278,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
 
                     int gender = 0;
                     if (mFemale.isChecked()) gender = 1;
-                    APIService.doUserEdit(mUsername.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), mDateBirthday, gender);
+                    APIService.doUserEdit(mUsername.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), mDateBirthday, gender, imageId);
 
                 }
             });
@@ -256,10 +288,28 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
             setUserEditOKReceiver = createSetUserEditOKReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(setUserEditOKReceiver, new IntentFilter(BroadcastIntents.USEREDIT_REQUEST_OK));
         }
+        if (imageUploadedReceiver == null) {
+            imageUploadedReceiver = createImageUploadedReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(imageUploadedReceiver, new IntentFilter(BroadcastIntents.IMAGE_UPLOAD_OK));
+        }
 
 
         initViews();
 
+    }
+
+    private BroadcastReceiver createImageUploadedReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String savedId = intent.getStringExtra(BroadcastIntents.IMAGE_UPLOAD_EXTRA_ID);
+                if (savedId != null) {
+                    imageId = savedId;
+                    mUserPhoto.setImageBitmap(newImageBitmap);
+                    photoDidSet();
+                }
+            }
+        };
     }
 
 
@@ -278,6 +328,30 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
     }
 
     private void openGallery() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_MEDIA);
+        } else {
+            readDataExternal();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_MEDIA:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    readDataExternal();
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void readDataExternal() {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -329,26 +403,9 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                 Uri selectedImageUri = data.getData();
 //                selectedImagePath = getPath(selectedImageUri);
                 updateImage(selectedImageUri);
+                APIService.uploadImage(selectedImageUri);
             }
         }
-    }
-
-    private String getPath(Uri uri) {
-        if( uri == null ) {
-            return null;
-        }
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if( cursor != null ){
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            String path = cursor.getString(column_index);
-            cursor.close();
-            return path;
-        }
-        // this is our fallback here
-        return uri.getPath();
     }
 
     private void photoDidSet() {
@@ -369,33 +426,13 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        mUserPhoto.setImageBitmap(bmp);
-        photoDidSet();
-    }
-
-    private void updateImage() {
-        if (selectedImagePath == null) return;
-
-        Bitmap bmp = null;
-        try {
-            bmp = getBitmapFromUri(new Uri.Builder().path(selectedImagePath).build());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        mUserPhoto.setImageBitmap(bmp);
+        newImageBitmap = bmp;
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         Bitmap bitmap = MediaStore.Images.Media
                 .getBitmap(this.getContentResolver(), uri);
         return bitmap;
-//        ParcelFileDescriptor parcelFileDescriptor =
-//                getContentResolver().openFileDescriptor(uri, "r");
-//        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-//        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-//        parcelFileDescriptor.close();
-//        return image;
     }
 
 
@@ -406,6 +443,10 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
         if (setUserEditOKReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(setUserEditOKReceiver);
             setUserEditOKReceiver = null;
+        }
+        if (imageUploadedReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(imageUploadedReceiver);
+            imageUploadedReceiver = null;
         }
     }
 

@@ -1,6 +1,10 @@
 package com.happ.retrofit;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -9,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.FileUtils;
 import com.happ.R;
 import com.happ.models.ChangePwData;
 import com.happ.models.CitiesResponse;
@@ -18,6 +23,7 @@ import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
 import com.happ.models.EventPhone;
 import com.happ.models.EventsResponse;
+import com.happ.models.HappImage;
 import com.happ.models.HappToken;
 import com.happ.models.Interest;
 import com.happ.models.InterestResponse;
@@ -39,7 +45,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -52,8 +63,11 @@ import io.jsonwebtoken.Jwts;
 import io.realm.Realm;
 import io.realm.RealmList;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -69,6 +83,7 @@ public class HappRestClient {
     private Gson gson;
     private Retrofit retrofit;
     private HAPPapi happApi;
+    private HAPPapi uploadApi;
     private OkHttpClient httpClient;
     private Interceptor authHeaderInterceptor;
 
@@ -87,10 +102,15 @@ public class HappRestClient {
     }
 
     private HappRestClient() {
-        buildClient(null);
+        happApi = buildClient(null);
+        uploadApi = buildClient(null, false);
     }
 
-    private void buildClient(List<Interceptor> httpInterceptors) {
+    private HAPPapi buildClient(List<Interceptor> httpInterceptors) {
+        return buildClient(httpInterceptors, true);
+    }
+
+    private HAPPapi buildClient(List<Interceptor> httpInterceptors, boolean withApi) {
         if (gson == null) {
             gson = new GsonBuilder()
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
@@ -115,13 +135,18 @@ public class HappRestClient {
         }
         httpClient = builder.build();
 
+        String url = host;
+        if (withApi) url = host+api;
+
         retrofit = new Retrofit.Builder()
-                .baseUrl(host+api)
+                .baseUrl(url)
                 .addConverterFactory(gsonConverterFactory)
                 .client(httpClient)
                 .build();
 
-        happApi = retrofit.create(HAPPapi.class);
+
+//        happApi =
+        return retrofit.create(HAPPapi.class);
 //        setAuthHeader();
     }
 
@@ -161,7 +186,8 @@ public class HappRestClient {
             };
             List<Interceptor> interceptors = new ArrayList<Interceptor>();
             interceptors.add(authHeaderInterceptor);
-            buildClient(interceptors);
+            happApi = buildClient(interceptors);
+            uploadApi = buildClient(interceptors, false);
             successfullyAddedHeader = true;
         } catch (Exception ex) {
             Log.e("HAPP_API", ex.getLocalizedMessage());
@@ -174,7 +200,8 @@ public class HappRestClient {
     public boolean removeAuthHeader() {
         if (authHeaderInterceptor != null && httpClient.interceptors().contains(authHeaderInterceptor)) {
             authHeaderInterceptor = null;
-            buildClient(null);
+            happApi = buildClient(null);
+            uploadApi = buildClient(null, false);
             return true;
         }
         return false;
@@ -606,7 +633,7 @@ public class HappRestClient {
         });
     }
 
-    public void doUserEdit(String edit_fullname, String edit_email, String edit_phone, Date edit_dateofbirth, int gender) {
+    public void doUserEdit(String edit_fullname, String edit_email, String edit_phone, Date edit_dateofbirth, int gender, String avatarId) {
 
         UserEditData userEditData = new UserEditData();
         userEditData.setFullname(edit_fullname);
@@ -614,6 +641,7 @@ public class HappRestClient {
         userEditData.setPhone(edit_phone);
         userEditData.setDate_of_birth(edit_dateofbirth);
         userEditData.setGender(gender);
+        userEditData.setAvatarId(avatarId);
 
         happApi.doUserEdit(userEditData).enqueue(new Callback<User>() {
             @Override
@@ -633,6 +661,8 @@ public class HappRestClient {
 
                     Intent intent = new Intent(BroadcastIntents.USEREDIT_REQUEST_OK);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                    getCurrentUser();
                 }
                 else {
                     Intent intent = new Intent(BroadcastIntents.USEREDIT_REQUEST_FAIL);
@@ -1679,6 +1709,49 @@ public class HappRestClient {
 //                        e.printStackTrace();
             }
         }
+    }
+
+
+
+    
+    public void uploadFile(Uri uri) {
+//        File file = new File(uri.getPath());
+//        MediaStore.Images.Media.getBitmap(App.getContext().getContentResolver(),uri);
+        String path = FileUtils.getPath(App.getContext(), uri);
+        File file = new File(path);
+
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("files", file.getName(), requestFile);
+
+        uploadApi.uploadImage(body).enqueue(new Callback<List<HappImage>>() {
+            @Override
+            public void onResponse(Call<List<HappImage>> call, Response<List<HappImage>> response) {
+                if (response.isSuccessful()){
+                    if (response.body().size() > 0) {
+                        HappImage image = response.body().get(0);
+                        String imageId = image.getId();
+                        Intent intent = new Intent(BroadcastIntents.IMAGE_UPLOAD_OK);
+                        intent.putExtra(BroadcastIntents.IMAGE_UPLOAD_EXTRA_ID, imageId);
+                        LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                    }
+
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.IMAGE_UPLOAD_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("BODY", response.body().toString());
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<HappImage>> call, Throwable t) {
+                Log.d("FILE_UPL",t.getLocalizedMessage());
+            }
+        });
     }
 
 }
