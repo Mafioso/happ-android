@@ -401,8 +401,8 @@ public class EventActivity extends AppCompatActivity {
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-        mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.iv_user_avatar));
-        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.avatar_placeholder));
+        mDrawerHeaderAvatar = ((ImageView)findViewById(R.id.dr_iv_user_avatar));
+        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)findViewById(R.id.dr_avatar_placeholder));
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
 
     }
