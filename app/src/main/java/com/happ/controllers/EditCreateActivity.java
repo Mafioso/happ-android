@@ -1,14 +1,22 @@
 package com.happ.controllers;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -17,12 +25,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+//import android.content.Uri;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
+import com.happ.FileUtils;
 import com.happ.R;
-import com.happ.adapters.EventImagesSwipeAdapter;
+import com.happ.adapters.EcImagesAdapter;
 import com.happ.controllers_drawer.EventActivity;
+import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.fragments.ChangeCurrencyFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.City;
@@ -30,12 +41,16 @@ import com.happ.models.Currency;
 import com.happ.models.Event;
 import com.happ.models.EventPhone;
 import com.happ.models.GeopointResponse;
+import com.happ.models.HappImage;
+import com.happ.models.Interest;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -47,6 +62,77 @@ import io.realm.RealmList;
  * Created by dante on 8/19/16.
  */
 public class EditCreateActivity extends AppCompatActivity {
+
+
+    public class EventEditImage {
+        private boolean isLocal;
+        private String imageId;
+        private Uri uri;
+        private HappImage image;
+        private boolean isLast = false;
+        private boolean isUploading = false;
+        private String path;
+
+        public boolean isLocal() {
+            return isLocal;
+        }
+
+        public void setLocal(boolean local) {
+            this.isLocal = local;
+        }
+
+        public String getImageId() {
+            return imageId;
+        }
+
+        public void setImageId(String imageId) {
+            this.imageId = imageId;
+        }
+
+        public Uri getUri() {
+            return uri;
+        }
+
+        public void setUri(Uri uri) {
+            this.uri = uri;
+        }
+
+        public HappImage getImage() {
+            return image;
+        }
+
+        public void setImage(HappImage image) {
+            this.image = image;
+        }
+
+        public boolean isLast() {
+            return isLast;
+        }
+
+        public void setLast(boolean last) {
+            isLast = last;
+        }
+
+        public boolean isUploading() {
+            return isUploading;
+        }
+
+        public void setUploading(boolean uploading) {
+            isUploading = uploading;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+    }
+
+    private static final int MY_PERMISSIONS_REQUEST_READ_MEDIA = 2;
+    private static final int SELECT_PICTURE = 1;
+    private static final int SELECT_INTEREST = 3;
 
     private Toolbar toolbar;
     private Button mBtnCreateSave;
@@ -77,13 +163,18 @@ public class EditCreateActivity extends AppCompatActivity {
                         mImgBtnSelectCity,
                         mImgBtnSelectCurreny;
 
+    private BroadcastReceiver imageUploadedReceiver;
+
     private View mViewSpaceListenerStartTime, mViewSpaceListenerEndTime;
 
-    private EventImagesSwipeAdapter mEventImagesSwipeAdapter;
+    private RecyclerView mEventImagesList;
+    private EcImagesAdapter mEventImagesAdapter;
     private BroadcastReceiver createEventReceiver, eventEditReceiver;
 
     private City selectedCity = App.getCurrentCity();
     private String selectedCurrency = App.getCurrentUser().getSettings().getCurrency();
+
+    private ArrayList<EventEditImage> imagesList;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +189,7 @@ public class EditCreateActivity extends AppCompatActivity {
             mEventCurrency.setText(App.getCurrentUser().getSettings().getCurrencyObject().getName());
             mEventCity.setText(selectedCity.getName());
             event = new Event();
+            imagesList = new ArrayList<>();
         } else {
             setTitle(getString(R.string.edit_event));
             Realm realm = Realm.getDefaultInstance();
@@ -135,7 +227,54 @@ public class EditCreateActivity extends AppCompatActivity {
             mEventTicketLink.setText("ЗДЕСЬ СЫЛКА НА БИЛЕТ");
             if (event.getEmail() != null)mEventEmail.setText(event.getEmail());
             if (event.getPhones().size() > 0) mEventPhone.setText(event.getPhones().get(0).getPhone());
+
+            imagesList = new ArrayList<>();
+            for (HappImage img: event.getImages()) {
+                EventEditImage eei = new EventEditImage();
+                eei.setLocal(false);
+                eei.setImageId(img.getId());
+                eei.setImage(img);
+                imagesList.add(eei);
+            }
+
+            Interest interest = event.getInterest();
+            String interestTitle = interest.getTitle();
+            if (interest.getParent() != null) {
+                interestTitle = interest.getParent().getTitle() + " / " + interestTitle;
+            }
+            mEventInterest.setText(interestTitle);
         }
+
+        EventEditImage lastEei = new EventEditImage();
+        lastEei.setLast(true);
+        imagesList.add(lastEei);
+
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mEventImagesList.setLayoutManager(llm);
+
+        mEventImagesAdapter = new EcImagesAdapter(this, imagesList);
+        mEventImagesList.setAdapter(mEventImagesAdapter);
+        mEventImagesAdapter.setItemActionListener(new EcImagesAdapter.EcItemActionLintener() {
+            @Override
+            public void onImageSelectRequested() {
+                openGallery();
+            }
+
+            @Override
+            public void onImageDeleteRequested(String imageId) {
+                int id = -1;
+                while (id < imagesList.size()) {
+                    if (imageId != null && imagesList.get(id+1).getImageId().equals(imageId)) {
+                        id++;
+                        break;
+                    }
+                    id++;
+                }
+                imagesList.remove(id);
+                mEventImagesAdapter.updateList(imagesList);
+            }
+        });
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -373,6 +512,15 @@ public class EditCreateActivity extends AppCompatActivity {
             }
         });
 
+        mImgBtnSelectInterest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EditCreateActivity.this, SelectInterestsActivity.class);
+                intent.putExtra("is_full", false);
+                EditCreateActivity.this.startActivityForResult(intent, SELECT_INTEREST);
+            }
+        });
+
         if (createEventReceiver == null) {
             createEventReceiver = createSaveDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(createEventReceiver, new IntentFilter(BroadcastIntents.EVENTCREATE_REQUEST_OK));
@@ -380,6 +528,11 @@ public class EditCreateActivity extends AppCompatActivity {
         if (eventEditReceiver == null) {
             eventEditReceiver = eventEditSaveDoneReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(eventEditReceiver, new IntentFilter(BroadcastIntents.EVENTEDIT_REQUEST_OK));
+        }
+
+        if (imageUploadedReceiver == null) {
+            imageUploadedReceiver = createImageUploadedReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(imageUploadedReceiver, new IntentFilter(BroadcastIntents.IMAGE_UPLOAD_OK));
         }
 
 
@@ -417,6 +570,9 @@ public class EditCreateActivity extends AppCompatActivity {
         mViewSpaceListenerStartTime = (View) findViewById(R.id.view_click_starttime);
         mViewSpaceListenerEndTime = (View) findViewById(R.id.view_click_endtime);
 
+        mEventImagesList = (RecyclerView) findViewById(R.id.ec_image_rv);
+
+
     }
 
     private void saveEvent() {
@@ -442,6 +598,22 @@ public class EditCreateActivity extends AppCompatActivity {
         geopoinstResponse.setLat((float) 43.239032);
         geopoinstResponse.setLng((float) 76.952740);
         event.setGeopoint(geopoinstResponse);
+
+        RealmList<HappImage> images = new RealmList<>();
+        for (EventEditImage img: imagesList) {
+            if (img.getImageId() != null) {
+                if (!img.isLocal()) {
+                    images.add(img.getImage());
+                } else {
+                    HappImage image = new HappImage();
+                    image.setId(img.getImageId());
+                    images.add(image);
+                }
+            }
+        }
+        event.setImages(images);
+
+
 
 
         event.setStartDate(mStartDate);
@@ -508,15 +680,6 @@ public class EditCreateActivity extends AppCompatActivity {
                 intent.putExtra("event_id", evendId);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
-
-//                final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.event_done), Snackbar.LENGTH_INDEFINITE);
-////                snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
-////                        @Override
-////                        public void onClick(View view) {
-////                            snackbar.dismiss();
-////                        }
-////                    });
-////                snackbar.show();
             }
         };
     }
@@ -548,6 +711,104 @@ public class EditCreateActivity extends AppCompatActivity {
         if (eventEditReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(eventEditReceiver);
             eventEditReceiver = null;
+        }
+
+
+        if (imageUploadedReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(imageUploadedReceiver);
+            imageUploadedReceiver = null;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+                String path = FileUtils.getPath(App.getContext(), selectedImageUri);
+
+                EventEditImage eei = imagesList.get(imagesList.size()-1);
+                eei.setLast(false);
+                eei.setPath(path);
+                eei.setUri(selectedImageUri);
+                eei.setUploading(true);
+                eei.setLocal(true);
+
+
+                EventEditImage last = new EventEditImage();
+                last.setLast(true);
+                imagesList.add(last);
+
+                mEventImagesAdapter.updateList(imagesList);
+
+
+                APIService.uploadImage(selectedImageUri);
+
+            } else if (requestCode == SELECT_INTEREST) {
+                String interestId = data.getStringExtra("ID");
+            }
+        }
+    }
+
+    private BroadcastReceiver createImageUploadedReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String savedId = intent.getStringExtra(BroadcastIntents.IMAGE_UPLOAD_EXTRA_ID);
+                String savedPath = intent.getStringExtra(BroadcastIntents.IMAGE_UPLOAD_EXTRA_URI);
+
+                EventEditImage eei = null;
+                for (int i=0; i < imagesList.size(); i++) {
+                    if (imagesList.get(i).isLocal() && imagesList.get(i).getPath().equals(savedPath)) {
+                        eei = imagesList.get(i);
+                        break;
+                    }
+                }
+
+                if (eei != null) {
+                    if (savedId != null) {
+                        eei.setUploading(false);
+                    }
+                    eei.setImageId(savedId);
+                }
+
+                mEventImagesAdapter.updateList(imagesList);
+
+            }
+        };
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_MEDIA:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    readDataExternal();
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void readDataExternal() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,
+                "Select Picture"), SELECT_PICTURE);
+    }
+
+    private void openGallery() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_MEDIA);
+        } else {
+            readDataExternal();
         }
     }
 

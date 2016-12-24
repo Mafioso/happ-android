@@ -128,8 +128,8 @@ public class SelectInterestsActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-            Intent intent = getIntent();
-            fullActivity = intent.getBooleanExtra("is_full", false);
+        Intent intent = getIntent();
+        fullActivity = intent.getBooleanExtra("is_full", false);
         setContentView(R.layout.activity_select_interests);
         final Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();  // deprecated
@@ -179,18 +179,26 @@ public class SelectInterestsActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         cityName.setText(App.getCurrentCity().getName());
 
+//        if (!fullActivity) {
+//            Intent data = new Intent();
+//            String interestId = "Result to be returned....";
+//            data.putExtra("ID", interestId);
+//            setResult(RESULT_OK, data);
+//            finish();
+//        }
+
 
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ArrayList<String> selectedInterests = new ArrayList<String>();
 
-                for (Iterator<String> key = selectedInterestIds.keySet().iterator(); key.hasNext();) {
+                for (Iterator<String> key = selectedInterestIds.keySet().iterator(); key.hasNext(); ) {
                     String parentId = key.next();
                     if (selectedInterestIds.get(parentId).size() == 0) {
                         selectedInterests.add(parentId);
                     } else {
-                        for (Iterator<String> child = selectedInterestIds.get(parentId).iterator(); child.hasNext();) {
+                        for (Iterator<String> child = selectedInterestIds.get(parentId).iterator(); child.hasNext(); ) {
                             selectedInterests.add(child.next());
                         }
                     }

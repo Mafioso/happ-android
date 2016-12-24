@@ -28,17 +28,17 @@
                     android:layout_width="0px"
                     android:layout_height="0px"/>
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/container_ec_images"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:background="@color/dark12"
-                    android:visibility="gone">
+                    android:layout_height="wrap_content"
+                    android:background="@color/dark5"
+                    android:orientation="vertical">
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/ec_image_rv"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="240dp"
                         android:layout_above="@+id/tv_images_warning"/>
 
                     <TextView
@@ -46,12 +46,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
+                        android:textColor="@color/dark38"
                         android:paddingTop="8dp"
                         android:paddingBottom="8dp"
                         android:text="@string/warning_add_image_in_ec"
                         android:gravity="center_horizontal"/>
 
-                </RelativeLayout>
+                </LinearLayout>
 
                 <RelativeLayout
                     android:layout_below="@+id/container_ec_images"
@@ -128,6 +129,7 @@
                             android:hint="@string/event_description"
                             android:textSize="16sp"
                             android:textColor="@color/dark87"
+                            android:maxLines="20"
                             android:inputType="textNoSuggestions"/>
 
                         <TextView
@@ -136,7 +138,8 @@
                             android:layout_marginLeft="16dp"
                             android:layout_marginStart="16dp"
                             android:textSize="16sp"
-                            android:text="@string/tap_here_description"/>
+                            android:text="@string/tap_here_description"
+                            android:visibility="gone"/>
                     </android.support.design.widget.TextInputLayout>
 
 
@@ -630,7 +633,7 @@
         <Button
             android:id="@+id/btn_editcreate_save"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="56dp"
             style="?attr/borderlessButtonStyle"
             android:textColor="@color/colorAccent"
             android:textSize="16sp"

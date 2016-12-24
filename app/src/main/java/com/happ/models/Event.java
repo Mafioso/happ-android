@@ -58,6 +58,9 @@ public class Event extends RealmObject implements Serializable {
     @Ignore
     @SerializedName("interest_ids")
     private ArrayList<String> interestIds;
+    @Ignore
+    @SerializedName("image_ids")
+    private ArrayList<String> imageIds;
     private int status;
     @SerializedName("is_active")
     private boolean isActive;
@@ -346,5 +349,13 @@ public class Event extends RealmObject implements Serializable {
 
     public void setRejectionReasons(RealmList<RejectionReasons> rejectionReasons) {
         this.rejectionReasons = rejectionReasons;
+    }
+
+    public ArrayList<String> getImageIds() {
+        return imageIds;
+    }
+
+    public void setImageIds(ArrayList<String> imageIds) {
+        this.imageIds = imageIds;
     }
 }

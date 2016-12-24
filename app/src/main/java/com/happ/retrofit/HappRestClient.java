@@ -697,7 +697,14 @@ public class HappRestClient {
                     ) {
                 interest_ids.add(interest.getId());
             }
+
             event.setInterestIds(interest_ids);
+
+            ArrayList<String> imageIds = new ArrayList<>();
+            for (HappImage img: event.getImages()) {
+                imageIds.add(img.getId());
+            }
+            event.setImageIds(imageIds);
             happApi.doEventEdit(event.getId(), event).enqueue(new Callback<Event>() {
                 @Override
                 public void onResponse(Call<Event> call, Response<Event> response) {
@@ -1020,6 +1027,12 @@ public class HappRestClient {
                 interest_ids.add(interest.getId());
             }
             event.setInterestIds(interest_ids);
+
+            ArrayList<String> imageIds = new ArrayList<>();
+            for (HappImage img: event.getImages()) {
+                imageIds.add(img.getId());
+            }
+            event.setImageIds(imageIds);
             happApi.createEvent(event).enqueue(new Callback<Event>() {
                 @Override
                 public void onResponse(Call<Event> call, Response<Event> response) {
@@ -1717,7 +1730,7 @@ public class HappRestClient {
     public void uploadFile(Uri uri) {
 //        File file = new File(uri.getPath());
 //        MediaStore.Images.Media.getBitmap(App.getContext().getContentResolver(),uri);
-        String path = FileUtils.getPath(App.getContext(), uri);
+        final String path = FileUtils.getPath(App.getContext(), uri);
         File file = new File(path);
 
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -1733,16 +1746,18 @@ public class HappRestClient {
                         String imageId = image.getId();
                         Intent intent = new Intent(BroadcastIntents.IMAGE_UPLOAD_OK);
                         intent.putExtra(BroadcastIntents.IMAGE_UPLOAD_EXTRA_ID, imageId);
+                        intent.putExtra(BroadcastIntents.IMAGE_UPLOAD_EXTRA_URI, path);
                         LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                     }
 
                 }
                 else {
-                    Intent intent = new Intent(BroadcastIntents.IMAGE_UPLOAD_FAIL);
+                    Intent intent = new Intent(BroadcastIntents.IMAGE_UPLOAD_OK);
                     intent.putExtra("CODE", response.code());
                     showRequestError(response);
                     intent.putExtra("BODY", response.body().toString());
                     intent.putExtra("MESSAGE", response.message());
+                    intent.putExtra(BroadcastIntents.IMAGE_UPLOAD_EXTRA_URI, path);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
             }
@@ -1750,6 +1765,9 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<List<HappImage>> call, Throwable t) {
                 Log.d("FILE_UPL",t.getLocalizedMessage());
+                Intent intent = new Intent(BroadcastIntents.IMAGE_UPLOAD_OK);
+                intent.putExtra(BroadcastIntents.IMAGE_UPLOAD_EXTRA_URI, path);
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
             }
         });
     }
