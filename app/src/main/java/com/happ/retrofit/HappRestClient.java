@@ -2,9 +2,6 @@ package com.happ.retrofit;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -46,11 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -1141,7 +1134,7 @@ public class HappRestClient {
         });
     }
 
-    public void getFilteredEvents(int page, String feedSearchText, String startDate, String endDate, String maxPrice,boolean popularity, boolean favs) {
+    public void getFilteredEvents(int page, String feedSearchText, String startDate, String endDate, String maxPrice,String popularity, boolean favs) {
 
         if (favs) {
             getFilteredFavs(page, feedSearchText, startDate, endDate, maxPrice, popularity);
@@ -1190,7 +1183,7 @@ public class HappRestClient {
         });
     }
 
-    public void getFilteredFavs(int page, String feedSearchText, String startDate, String endDate, String maxPrice, boolean popularity) {
+    public void getFilteredFavs(int page, String feedSearchText, String startDate, String endDate, String maxPrice, String popularity) {
         happApi.getFilteredFavourites(page, feedSearchText, startDate, endDate, maxPrice, popularity).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {

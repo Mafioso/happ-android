@@ -134,9 +134,9 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
         Date startDate = ((FeedActivity)getActivity()).getStartD();
         Date endDate = ((FeedActivity)getActivity()).getEndD();
         String feedSearchText = ((FeedActivity)getActivity()).getFeedSearch();
-        boolean popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
+        String popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
-        if (!feedSearchText.equals("") || startDate != null || endDate != null || (maxFree != null && maxFree.length() > 0) || popularityEvents) {
+        if (!feedSearchText.equals("") || startDate != null || endDate != null || (maxFree != null && maxFree.length() > 0) || !popularityEvents.equals("")) {
             String sD = "";
             String eD = "";
             if (startDate != null) sD = sdf.format(startDate);
