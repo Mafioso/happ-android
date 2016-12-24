@@ -41,7 +41,7 @@ public class ExploreEventsFragment extends Fragment {
 
     private GridLayoutManager mExploreEventGridLayoutManager;
 
-    private int interestsPageSize;
+    private int explorePageSize;
     private boolean loading = true;
     private boolean dataLoading = false;
     private int firstVisibleItem, visibleItemCount, totalItemCount;
@@ -74,8 +74,8 @@ public class ExploreEventsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        interestsPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
-        visibleThreshold = 6;
+        explorePageSize = 10;
+        visibleThreshold = 3;
     }
 
     @Nullable
@@ -126,9 +126,10 @@ public class ExploreEventsFragment extends Fragment {
         updateExploreEvents();
     }
 
+
     protected void updateExploreEvents() {
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Event> eventRealmResults = realm.where(Event.class).findAll();
+        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).findAll();
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
         ((ExploreListAdapter)mExploreRecyclerView.getAdapter()).updateData(events);
         realm.close();
@@ -154,7 +155,7 @@ public class ExploreEventsFragment extends Fragment {
                     if (! dataLoading && !loading && (totalItemCount - visibleItemCount)
                             <= (firstVisibleItem + visibleThreshold)) {
                         loading = true;
-                        int nextPage = (totalItemCount / interestsPageSize) + 1;
+                        int nextPage = (totalItemCount / explorePageSize) + 1;
                         dataLoading = true;
 
                         APIService.getExploreEvents(nextPage);

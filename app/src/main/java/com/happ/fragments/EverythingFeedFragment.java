@@ -25,6 +25,7 @@ import com.happ.retrofit.APIService;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.Realm;
@@ -120,9 +121,17 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     }
 
     protected void updateEventsList() {
+        Date today = new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(today);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        today = cal.getTime();
 
         Realm realm = Realm.getDefaultInstance();
-        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).notEqualTo("author.id", userId).findAllSorted("startDate", Sort.ASCENDING);
+        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).notEqualTo("author.id", userId).greaterThanOrEqualTo("startDate", today).findAllSorted("startDate", Sort.ASCENDING);
         events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();

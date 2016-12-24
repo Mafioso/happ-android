@@ -12,22 +12,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.happ.App;
 import com.happ.R;
 import com.happ.models.Event;
 
 import java.util.ArrayList;
+
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 /**
  ** Created by dante on 11/1/16.
@@ -38,8 +44,6 @@ public class MapFragment extends Fragment {
 
     }
 
-    private ArrayList<Event> events;
-
     public static MapFragment newInstance() {
 
         return new MapFragment();
@@ -47,6 +51,7 @@ public class MapFragment extends Fragment {
 
     private MapView mMapView;
     private GoogleMap googleMap;
+    private ArrayList<Event> events;
 
 
     @Nullable
@@ -55,6 +60,10 @@ public class MapFragment extends Fragment {
 //        return super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).isNotNull("geopoint").findAll();
+        events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
+        realm.close();
 
         mMapView = (MapView) view.findViewById(R.id.mapview_feed);
         mMapView.onCreate(savedInstanceState);
@@ -87,16 +96,33 @@ public class MapFragment extends Fragment {
                 googleMap.setMyLocationEnabled(true);
 
                 LatLng eventLocation = new LatLng(43.218282, 76.927793);
-                googleMap.addMarker(new MarkerOptions().position(eventLocation).title("Marker Title").snippet("Marker Description"));
+                googleMap.addMarker(new MarkerOptions()
+                        .position(eventLocation)
+                        .title("Marker Title")
+                        .snippet("Marker Description"));
 
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(eventLocation).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//                CameraPosition cameraPosition = new CameraPosition.Builder().target(eventLocation).zoom(12).build();
+//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
-                googleMap.addCircle(new CircleOptions()
-                        .center(new LatLng(43.218282, 76.927793))
-                        .radius(2000)
-                        .strokeColor(Color.RED)
-                        .fillColor(android.R.color.transparent));
+                for (int p = 0; p < events.size(); p++) {
+                    if (events.get(p).getGeopoint() != null) {
+
+                        double lat = events.get(p).getGeopoint().getLat();
+                        double lng = events.get(p).getGeopoint().getLng();
+                        LatLng location = new LatLng(lat, lng);
+
+                        googleMap.addMarker(new MarkerOptions()
+                                .position(location)
+                                .icon(BitmapDescriptorFactory.defaultMarker())  
+                                .title(events.get(p).getTitle()));
+
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
+                    } else {
+                        p++;
+                    }
+                }
+
+
 
                 googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                     @Override
@@ -113,12 +139,26 @@ public class MapFragment extends Fragment {
                         double distance = results1[0] > results2[0] ? results1[0] : results2[0];
                         Log.d(TAG, "onCameraChange:" + results1[0] + "  " + results2[0]);
                         double radius = results1[0];
+                    }
+                });
 
-                            googleMap.addCircle(new CircleOptions()
-                                .center(new LatLng(43.218282, 76.927793))
-                                .radius((int)radius)
-                                .strokeColor(Color.RED)
-                                .fillColor(android.R.color.transparent));
+                googleMap.addCircle(new CircleOptions()
+                        .center(new LatLng(43.218282, 76.927793))
+                        .radius(3000)
+                        .strokeColor(Color.RED)
+                        .fillColor(android.R.color.transparent));
+
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        for (int p = 0; p < events.size(); p++) {
+                            if (marker.getTitle().equals(events.get(p).getTitle())) {
+
+                                Toast.makeText(App.getContext(), "marker is  " +
+                                        events.get(p).getTitle() + "// id: " + events.get(p).getId() , Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        return true;
                     }
                 });
 
@@ -155,26 +195,26 @@ public class MapFragment extends Fragment {
 ////        points.add(new LatLng(43.24432741, 76.94549292));   // Work Space
 ////        points.add(new LatLng(43.2331407, 76.9565731));     // Dostyk Plaza
 //
-////        for (int p = 0; p < events.size(); p++) {
-////            if (events.get(p).getGeopoint() != null) {
-////
-////                double lat = Double.parseDouble(events.get(p).getGeopoint().get(0).toString());
-////                double lng = Double.parseDouble(events.get(p).getGeopoint().get(1).toString());
-////                LatLng location = new LatLng(lat, lng);
-////
-////                map.addMarker(new MarkerOptions()
-////                        .position(location)
-////                        .icon(BitmapDescriptorFactory
-////                                .fromBitmap(createDrawableFromView(
-////                                        getActivity(),
-////                                        markerView))))
-////                        .setAnchor(0.0f, 1.0f);
-////
-////                map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
-////            } else {
-////                p++;
-////            }
-////        }
+//        for (int p = 0; p < events.size(); p++) {
+//            if (events.get(p).getGeopoint() != null) {
+//
+//                double lat = Double.parseDouble(events.get(p).getGeopoint().get(0).toString());
+//                double lng = Double.parseDouble(events.get(p).getGeopoint().get(1).toString());
+//                LatLng location = new LatLng(lat, lng);
+//
+//                map.addMarker(new MarkerOptions()
+//                        .position(location)
+//                        .icon(BitmapDescriptorFactory
+//                                .fromBitmap(createDrawableFromView(
+//                                        getActivity(),
+//                                        markerView))))
+//                        .setAnchor(0.0f, 1.0f);
+//
+//                map.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
+//            } else {
+//                p++;
+//            }
+//        }
 //
 ////        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
 ////            @Override
