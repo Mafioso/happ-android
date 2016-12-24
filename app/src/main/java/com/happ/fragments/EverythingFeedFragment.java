@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
@@ -49,7 +50,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
     private Date startDate;
     private Date endDate;
     private String maxFree;
-    private boolean popularityEvents = false;
+    private String popularityEvents;
 
     private boolean isUndoing = false;
 
@@ -69,7 +70,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         maxFree = ((FeedActivity)getActivity()).getMaxFree();
         popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
-        if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null || popularityEvents) {
+        if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null || !popularityEvents.equals("")) {
             filteredEventsList();
         } else {
             updateEventsList();
@@ -150,12 +151,10 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         RealmQuery<Event> q = realm.where(Event.class).beginGroup();
         q.notEqualTo("author.id", userId);
         q.equalTo("localOnly", false);
-        if (feedSearchText != null && feedSearchText.length() > 0) q.contains("title", feedSearchText);
+        if (!feedSearchText.equals("")) q.contains("title", feedSearchText, Case.INSENSITIVE);
         if (startDate != null) q.greaterThanOrEqualTo("startDate", startDate);
         if (endDate != null) q.lessThanOrEqualTo("startDate", endDate);
-        if (maxFree != null && maxFree.length() > 0) q.equalTo("lowestPrice", 0);
-        if (popularityEvents) q.or().findAllSorted("votesCount", Sort.DESCENDING);
-        if (!popularityEvents) q.findAllSorted("startDate", Sort.ASCENDING);
+        if (maxFree.equals("")) q.equalTo("lowestPrice", 0);
         RealmResults<Event> eventRealmResults = q.endGroup().findAll();
 //        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("startDate", Sort.ASCENDING);
 
@@ -182,8 +181,8 @@ public class EverythingFeedFragment extends BaseFeedFragment {
             if (startDate != null) sD = sdf.format(startDate);
             if (endDate != null) eD = sdf.format(endDate);
 
-            if (!feedSearchText.equals("") || startDate != null || endDate != null || !maxFree.equals("") || popularityEvents) {
-                APIService.getFilteredEvents(page, feedSearchText, sD, eD, maxFree,popularityEvents, false);
+            if (!feedSearchText.equals("") || startDate != null || endDate != null || !maxFree.equals("") || !popularityEvents.equals("")) {
+                APIService.getFilteredEvents(page, feedSearchText, sD, eD, maxFree, popularityEvents, false);
             } else {
                 APIService.getEvents(page, false);
             }
@@ -262,7 +261,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 maxFree = ((FeedActivity)getActivity()).getMaxFree();
                 popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
-                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null || popularityEvents) {
+                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null || !popularityEvents.equals("")) {
                     filteredEventsList();
                 } else {
                     updateEventsList();
@@ -282,7 +281,7 @@ public class EverythingFeedFragment extends BaseFeedFragment {
                 maxFree = ((FeedActivity)getActivity()).getMaxFree();
                 popularityEvents = ((FeedActivity)getActivity()).getPopularityEvents();
 
-                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null || popularityEvents) {
+                if (!feedSearchText.equals("") || !maxFree.equals("") || startDate != null || endDate != null || !popularityEvents.equals("")) {
                     filteredEventsList();
                 } else {
                     updateEventsList();

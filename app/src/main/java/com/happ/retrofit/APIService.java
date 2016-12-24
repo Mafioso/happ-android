@@ -162,7 +162,7 @@ public class APIService extends IntentService {
                                          String startDate,
                                          String endDate,
                                          String isFree,
-                                         boolean popularity,
+                                         String popularity,
                                          boolean favs) {
         Intent i = new Intent(App.getContext(), APIService.class);
         i.setAction(ACTION_GET_FILTERED_EVENTS);
@@ -431,7 +431,7 @@ public class APIService extends IntentService {
                 String startDate = intent.getStringExtra(EXTRA_STARTDATE);
                 String endDate = intent.getStringExtra(EXTRA_ENDDATE);
                 String isFree = intent.getStringExtra(EXTRA_FREEEVENTS);
-                boolean popularity = intent.getBooleanExtra(EXTRA_POPULARITY_EVENTS, false);
+                String popularity = intent.getStringExtra(EXTRA_POPULARITY_EVENTS);
                 boolean favs = intent.getBooleanExtra(EXTRA_GET_FAVS, false);
                 HappRestClient
                         .getInstance()

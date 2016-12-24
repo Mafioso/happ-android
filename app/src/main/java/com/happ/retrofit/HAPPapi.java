@@ -18,7 +18,6 @@ import com.happ.models.UserEditData;
 import java.util.List;
 
 import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -60,11 +59,11 @@ public interface HAPPapi {
 
     @GET("events/feed/")
     Call<EventsResponse> getFilteredEvents( @Query("page") int page,
-                                            @Query("feed_search") String feedSearchText,
+                                            @Query("search") String feedSearchText,
                                             @Query("start_date") String startDate,
                                             @Query("end_date") String endDate,
                                             @Query("max_price") String price,
-                                            @Query("popularity_events") boolean popularity);
+                                            @Query("order") String popularity);
 
 
     @GET("events/explore/")
@@ -154,7 +153,7 @@ public interface HAPPapi {
                                                @Query("start_date") String startDate,
                                                @Query("end_date") String endDate,
                                                @Query("max_price") String price,
-                                               @Query("popularity_events") boolean popularity);
+                                               @Query("popularity_events") String popularity);
 
     @POST("users/current/set/language/")
     Call<HappToken> setLanguage(@Body LanguageData languageData);

@@ -670,8 +670,11 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     public String getFeedSearch() {
         return searchText;
     }
-    public boolean getPopularityEvents() {
-        return popularityEvents;
+    public String getPopularityEvents() {
+        if (popularityEvents) {
+            return "popular";
+        }
+        return "";
     }
 
 
