@@ -38,6 +38,7 @@ public class InterestChildrenFragment extends Fragment {
     private static final String ARG_PARENTS = "parent_interests";
     private static final String ARG_TOP = "top";
     private static final String ARG_HEIGHT = "height";
+    private static final String ARG_SINGLE = "single";
 
 
     private String mInterest;
@@ -58,6 +59,7 @@ public class InterestChildrenFragment extends Fragment {
     private RecyclerView mChildrenView;
     private ChildInterestsAdapter mChildrenAdapter;
     private Button mCloseButton;
+    private boolean isSingle;
 
     public InterestChildrenFragment() {
     }
@@ -68,7 +70,8 @@ public class InterestChildrenFragment extends Fragment {
                                                        ArrayList<String> parents,
                                                        ArrayList<String> selectedChildren,
                                                        int top,
-                                                       int height) {
+                                                       int height,
+                                                       boolean single) {
         InterestChildrenFragment fragment = new InterestChildrenFragment();
         Bundle args = new Bundle();
         args.putString(ARG_INTEREST, interestId);
@@ -77,6 +80,7 @@ public class InterestChildrenFragment extends Fragment {
         args.putStringArrayList(ARG_SEL_CHILDREN, selectedChildren);
         args.putInt(ARG_TOP, top);
         args.putInt(ARG_HEIGHT, height);
+        args.putBoolean(ARG_SINGLE, single);
 
         fragment.setArguments(args);
         return fragment;
@@ -92,6 +96,7 @@ public class InterestChildrenFragment extends Fragment {
             mSelectedChildren = getArguments().getStringArrayList(ARG_SEL_CHILDREN);
             mTop = getArguments().getInt(ARG_TOP);
             mHeight = getArguments().getInt(ARG_HEIGHT);
+            isSingle = getArguments().getBoolean(ARG_SINGLE, false);
         }
     }
 
@@ -145,6 +150,7 @@ public class InterestChildrenFragment extends Fragment {
         realm.close();
 
         mChildrenAdapter = new ChildInterestsAdapter(this.getActivity(), children, mSelectedChildren);
+        mChildrenAdapter.setSingle(isSingle);
         mChildrenView.setAdapter(mChildrenAdapter);
 
         mCloseButton.setOnClickListener(new View.OnClickListener() {
@@ -157,20 +163,28 @@ public class InterestChildrenFragment extends Fragment {
         mChildrenAdapter.setOnChildItemChangedListener(new ChildInterestsAdapter.OnChildItemChanged() {
             @Override
             public void onChildItemSwitched(String childId) {
-                boolean isDeleted = false;
-                if (mSelectedChildren.size() > 0) {
-                    for (int i = mSelectedChildren.size() - 1; i>=0; i--) {
-                        if (mSelectedChildren.get(i).equals(childId)) {
-                            mSelectedChildren.remove(i);
-                            isDeleted = true;
-                            break;
+                if (isSingle) {
+                    ArrayList<String> res = new ArrayList<String>();
+                    res.add(childId);
+                    if (mListener != null) {
+                        mListener.onChildrenUpdated(mInterest, res);
+                    }
+                } else {
+                    boolean isDeleted = false;
+                    if (mSelectedChildren.size() > 0) {
+                        for (int i = mSelectedChildren.size() - 1; i>=0; i--) {
+                            if (mSelectedChildren.get(i).equals(childId)) {
+                                mSelectedChildren.remove(i);
+                                isDeleted = true;
+                                break;
+                            }
                         }
                     }
-                }
-                if (!isDeleted) mSelectedChildren.add(childId);
-                mChildrenAdapter.updateSelectedInterests(mSelectedChildren);
-                if (mListener != null) {
-                    mListener.onChildrenUpdated(mInterest, mSelectedChildren);
+                    if (!isDeleted) mSelectedChildren.add(childId);
+                    mChildrenAdapter.updateSelectedInterests(mSelectedChildren);
+                    if (mListener != null) {
+                        mListener.onChildrenUpdated(mInterest, mSelectedChildren);
+                    }
 //            mListener.onFragmentInteraction(uri);
                 }
             }
@@ -234,6 +248,14 @@ public class InterestChildrenFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public boolean isSingle() {
+        return isSingle;
+    }
+
+    public void setSingle(boolean single) {
+        isSingle = single;
     }
 
     /**

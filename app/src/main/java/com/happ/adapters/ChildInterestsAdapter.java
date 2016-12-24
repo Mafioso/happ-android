@@ -23,6 +23,7 @@ public class ChildInterestsAdapter  extends RecyclerView.Adapter<ChildInterestsA
     ArrayList<String> selectedInterests;
     Context context;
     OnChildItemChanged listener;
+    private boolean single;
 
     public ChildInterestsAdapter(Context context, ArrayList<Interest> interests, ArrayList<String> selectedInterests) {
         this.context = context;
@@ -71,6 +72,14 @@ public class ChildInterestsAdapter  extends RecyclerView.Adapter<ChildInterestsA
     @Override
     public int getItemCount() {
         return interests.size();
+    }
+
+    public void setSingle(boolean single) {
+        this.single = single;
+    }
+
+    public boolean isSingle() {
+        return single;
     }
 
     public class ChildInterestsViewHolder extends RecyclerView.ViewHolder {

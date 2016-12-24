@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -99,8 +100,10 @@ public class SelectInterestsActivity extends AppCompatActivity
 
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
     private boolean isKeyboarShown = false;
+    private boolean isSingle;
     private LinearLayout mDrawerLLFooter;
     private TextView mDrawerVersionApp;
+    private AppBarLayout header;
 
     InterestChildrenFragment icf;
 
@@ -116,7 +119,9 @@ public class SelectInterestsActivity extends AppCompatActivity
                     .remove(icf)
                     .commit();
             icf = null;
-            mSaveButton.setVisibility(View.VISIBLE);
+            if (!isSingle) {
+                mSaveButton.setVisibility(View.VISIBLE);
+            }
         } else {
             super.onBackPressed();
         }
@@ -130,6 +135,7 @@ public class SelectInterestsActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         fullActivity = intent.getBooleanExtra("is_full", false);
+        isSingle = intent.getBooleanExtra("is_single", false);
         setContentView(R.layout.activity_select_interests);
         final Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();  // deprecated
@@ -161,6 +167,7 @@ public class SelectInterestsActivity extends AppCompatActivity
         String versionName = BuildConfig.VERSION_NAME;
         mSaveButton = (Button)findViewById(R.id.save_interests);
         mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
+        header = (AppBarLayout) findViewById(R.id.header);
 
 //        selectedRow.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -187,6 +194,12 @@ public class SelectInterestsActivity extends AppCompatActivity
 //            finish();
 //        }
 
+        if (isSingle) {
+            mBtnSelectAllInterests.setVisibility(View.GONE);
+            mSaveButton.setVisibility(View.GONE);
+            header.setVisibility(View.GONE);
+            mInterestsRecyclerView.setPadding(0,0,0,0);
+        }
 
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -237,24 +250,32 @@ public class SelectInterestsActivity extends AppCompatActivity
         }
 
         mInterestsListAdapter = new InterestsListAdapter(SelectInterestsActivity.this, interests, true);
-        if (fullActivity) {
+        if (fullActivity && !isSingle) {
             mInterestsListAdapter.setUserAcivityIds(App.getCurrentUser().getInterestIds());
         }
         mInterestsRecyclerView.setAdapter(mInterestsListAdapter);
+        mInterestsListAdapter.setSingle(isSingle);
         mInterestsListAdapter.setOnInterestsSelectListener(new InterestsListAdapter.OnInterestsSelectListener() {
             @Override
             public void onParentInterestChanged(String parentId) {
-                //Простой клик. Полносью выбирается интерес
-                if (selectedInterestIds.get(parentId) == null) {
-                    selectedInterestIds.put(parentId, new ArrayList<String>());
+                if (isSingle) {
+                    Intent data = new Intent();
+                    data.putExtra("ID", parentId);
+                    setResult(RESULT_OK, data);
+                    finish();
                 } else {
-                    if (selectedInterestIds.get(parentId).size() > 0) {
-                        selectedInterestIds.get(parentId).clear();
+                    //Простой клик. Полносью выбирается интерес
+                    if (selectedInterestIds.get(parentId) == null) {
+                        selectedInterestIds.put(parentId, new ArrayList<String>());
                     } else {
-                        selectedInterestIds.remove(parentId);
+                        if (selectedInterestIds.get(parentId).size() > 0) {
+                            selectedInterestIds.get(parentId).clear();
+                        } else {
+                            selectedInterestIds.remove(parentId);
+                        }
                     }
+                    mInterestsListAdapter.updateSelectedInterests(selectedInterestIds);
                 }
-                mInterestsListAdapter.updateSelectedInterests(selectedInterestIds);
             }
 
             @Override
@@ -288,11 +309,14 @@ public class SelectInterestsActivity extends AppCompatActivity
                 realm.close();
 
 
-                ArrayList<String> selectedChildren = selectedInterestIds.get(interestId);
+                ArrayList<String> selectedChildren = null;
+                if (!isSingle) {
+                    selectedChildren =  selectedInterestIds.get(interestId);
+                }
                 if (selectedChildren == null) selectedChildren = new ArrayList<>();
                 icf = InterestChildrenFragment.newInstance(interestId,
                         children, parents, selectedChildren,
-                        top-titleBarHeight, height);
+                        top-titleBarHeight, height, isSingle);
 
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.city_children_fragment_container, icf)
@@ -306,7 +330,17 @@ public class SelectInterestsActivity extends AppCompatActivity
         toolbar.setBackgroundResource(android.R.color.transparent);
         setSupportActionBar(toolbar);
 
-        if (fullActivity) {
+        if (fullActivity && isSingle) {
+            toolbar.setNavigationIcon(R.drawable.ic_close_white);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
+
+        if (fullActivity && !isSingle) {
 
             ActionBar actionBar = getSupportActionBar();
             if(actionBar != null){
@@ -435,68 +469,70 @@ public class SelectInterestsActivity extends AppCompatActivity
 
 
     private void rebuildSelectedInterests() {
-        HashMap<String, ArrayList<String>> newSelectedInterests = new HashMap<>();
+        if (!isSingle) {
+            HashMap<String, ArrayList<String>> newSelectedInterests = new HashMap<>();
 
-        RealmList<Interest> selectedInterests = App.getCurrentUser().getInterests();
+            RealmList<Interest> selectedInterests = App.getCurrentUser().getInterests();
 
-        for (Iterator<String> key = selectedInterestIds.keySet().iterator(); key.hasNext();) {
-            String parentId = key.next();
-            ArrayList<String> interestsForKey = selectedInterestIds.get(parentId);
+            for (Iterator<String> key = selectedInterestIds.keySet().iterator(); key.hasNext(); ) {
+                String parentId = key.next();
+                ArrayList<String> interestsForKey = selectedInterestIds.get(parentId);
 
-            for (int i=selectedInterests.size()-1; i>= 0;i--) {
-                String selectedParent = selectedInterests.get(i).getParentId();
-                boolean removed = false;
-                if (selectedParent != null && selectedParent.equals(parentId)) {
-                    boolean notInInterests = true;
-                    for (int j=0; j<interestsForKey.size(); j++) {
-                        if (interestsForKey.get(j).equals(selectedInterests.get(i).getId())) {
-                            notInInterests = false;
-                            break;
+                for (int i = selectedInterests.size() - 1; i >= 0; i--) {
+                    String selectedParent = selectedInterests.get(i).getParentId();
+                    boolean removed = false;
+                    if (selectedParent != null && selectedParent.equals(parentId)) {
+                        boolean notInInterests = true;
+                        for (int j = 0; j < interestsForKey.size(); j++) {
+                            if (interestsForKey.get(j).equals(selectedInterests.get(i).getId())) {
+                                notInInterests = false;
+                                break;
+                            }
+                        }
+                        if (notInInterests) interestsForKey.add(selectedInterests.get(i).getId());
+                        selectedInterests.remove(i);
+                        removed = true;
+                    }
+                    if (!removed && selectedInterests.get(i).getId().equals(parentId)) {
+                        selectedInterests.remove(i);
+                    }
+                }
+                newSelectedInterests.put(parentId, interestsForKey);
+            }
+
+            Realm realm = Realm.getDefaultInstance();
+            while (selectedInterests.size() > 0) {
+                String id = selectedInterests.get(0).getId();
+                boolean isParent = true;
+                Interest temp = realm.where(Interest.class).equalTo("id", id).findFirst();
+                if (temp == null) {
+                    selectedInterests.remove(0);
+                    continue;
+                }
+                if (temp.getParentId() != null) {
+                    isParent = false;
+                    id = temp.getParentId();
+                }
+
+                RealmResults<Interest> children = realm.where(Interest.class).equalTo("parentId", id).findAll();
+                ArrayList<String> selectedChildren = new ArrayList<>();
+
+                for (int i = 0; i < children.size(); i++) {
+                    for (int j = selectedInterests.size() - 1; j >= 0; j--) {
+                        if (children.get(i).getId().equals(selectedInterests.get(j).getId())) {
+                            selectedChildren.add(selectedInterests.get(j).getId());
+                            selectedInterests.remove(j);
                         }
                     }
-                    if (notInInterests) interestsForKey.add(selectedInterests.get(i).getId());
-                    selectedInterests.remove(i);
-                    removed = true;
                 }
-                if (!removed && selectedInterests.get(i).getId().equals(parentId)) {
-                    selectedInterests.remove(i);
-                }
+                newSelectedInterests.put(id, selectedChildren);
+                if (isParent) selectedInterests.remove(0);
             }
-            newSelectedInterests.put(parentId, interestsForKey);
+            realm.close();
+
+            selectedInterestIds = newSelectedInterests;
+            this.mInterestsListAdapter.updateSelectedInterests(selectedInterestIds);
         }
-
-        Realm realm = Realm.getDefaultInstance();
-        while (selectedInterests.size() > 0) {
-            String id = selectedInterests.get(0).getId();
-            boolean isParent = true;
-            Interest temp = realm.where(Interest.class).equalTo("id", id).findFirst();
-            if (temp == null) {
-                selectedInterests.remove(0);
-                continue;
-            }
-            if (temp.getParentId() != null) {
-                isParent = false;
-                id = temp.getParentId();
-            }
-
-            RealmResults<Interest> children = realm.where(Interest.class).equalTo("parentId", id).findAll();
-            ArrayList<String> selectedChildren = new ArrayList<>();
-
-            for (int i=0; i<children.size(); i++) {
-                for (int j=selectedInterests.size()-1; j>=0; j--) {
-                    if (children.get(i).getId().equals(selectedInterests.get(j).getId())) {
-                        selectedChildren.add(selectedInterests.get(j).getId());
-                        selectedInterests.remove(j);
-                    }
-                }
-            }
-            newSelectedInterests.put(id, selectedChildren);
-            if (isParent) selectedInterests.remove(0);
-        }
-        realm.close();
-
-        selectedInterestIds = newSelectedInterests;
-        this.mInterestsListAdapter.updateSelectedInterests(selectedInterestIds);
     }
 
 
@@ -561,17 +597,27 @@ public class SelectInterestsActivity extends AppCompatActivity
 
     @Override
     public void onChildrenUpdated(String parentId, ArrayList<String> childrenIds) {
-        ArrayList<String> currentChildren = selectedInterestIds.get(parentId);
-        if (currentChildren == null) {
-            selectedInterestIds.put(parentId, childrenIds);
-        } else {
-            if (childrenIds.size() == 0) {
-                selectedInterestIds.remove(parentId);
-            } else {
-                selectedInterestIds.put(parentId, childrenIds);
+        if (isSingle) {
+            Intent data = new Intent();
+
+            if (childrenIds.size() > 0) {
+                data.putExtra("ID", childrenIds.get(0));
             }
+            setResult(RESULT_OK, data);
+            finish();
+        } else {
+            ArrayList<String> currentChildren = selectedInterestIds.get(parentId);
+            if (currentChildren == null) {
+                selectedInterestIds.put(parentId, childrenIds);
+            } else {
+                if (childrenIds.size() == 0) {
+                    selectedInterestIds.remove(parentId);
+                } else {
+                    selectedInterestIds.put(parentId, childrenIds);
+                }
+            }
+            mInterestsListAdapter.updateSelectedInterests(selectedInterestIds);
         }
-        mInterestsListAdapter.updateSelectedInterests(selectedInterestIds);
     }
 
 

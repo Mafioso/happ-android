@@ -49,7 +49,6 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -138,6 +137,8 @@ public class EditCreateActivity extends AppCompatActivity {
     private Button mBtnCreateSave;
     private Event event;
     private String eventId;
+    private String selectedInterestId;
+    private Interest selectedInterest;
 
     private Date mStartDate, mEndDate, mStartTime, mEndTime;
 
@@ -243,6 +244,8 @@ public class EditCreateActivity extends AppCompatActivity {
                 interestTitle = interest.getParent().getTitle() + " / " + interestTitle;
             }
             mEventInterest.setText(interestTitle);
+            selectedInterestId = interest.getId();
+            selectedInterest = interest;
         }
 
         EventEditImage lastEei = new EventEditImage();
@@ -516,7 +519,8 @@ public class EditCreateActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(EditCreateActivity.this, SelectInterestsActivity.class);
-                intent.putExtra("is_full", false);
+                intent.putExtra("is_single", true);
+                intent.putExtra("is_full", true);
                 EditCreateActivity.this.startActivityForResult(intent, SELECT_INTEREST);
             }
         });
@@ -649,6 +653,12 @@ public class EditCreateActivity extends AppCompatActivity {
         author.setFullname(App.getCurrentUser().getFn());
         event.setAuthor(author);
 
+        if (selectedInterestId != null) {
+            RealmList<Interest> interests = new RealmList<>();
+            interests.add(selectedInterest);
+            event.setInterests(interests);
+        }
+
         Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         realm.copyToRealmOrUpdate(event);
@@ -748,6 +758,20 @@ public class EditCreateActivity extends AppCompatActivity {
 
             } else if (requestCode == SELECT_INTEREST) {
                 String interestId = data.getStringExtra("ID");
+                selectedInterestId = interestId;
+
+                Realm realm = Realm.getDefaultInstance();
+                Interest interest = realm.where(Interest.class).equalTo("id", selectedInterestId).findFirst();
+                interest = realm.copyFromRealm(interest);
+                realm.close();
+                if (interest != null) {
+                    String interestTitle = interest.getTitle();
+                    if (interest.getParent() != null) {
+                        interestTitle = interest.getParent().getTitle() + " / " + interestTitle;
+                    }
+                    mEventInterest.setText(interestTitle);
+                    selectedInterest = interest;
+                }
             }
         }
     }

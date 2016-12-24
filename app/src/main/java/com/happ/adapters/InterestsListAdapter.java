@@ -51,6 +51,14 @@ public class InterestsListAdapter extends RecyclerView.Adapter<InterestsListAdap
     private int middleItemWidth;
     private boolean parentsView;
 
+    public void setSingle(boolean single) {
+        this.selectSingle = single;
+    }
+
+    public boolean getSingle() {
+        return this.selectSingle;
+    }
+
 
     public interface OnInterestsSelectListener {
         void onParentInterestChanged(String interestId);
