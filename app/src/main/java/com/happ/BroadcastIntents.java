@@ -71,4 +71,5 @@ public class BroadcastIntents {
     public static final String IMAGE_UPLOAD_FAIL = "com.happ.image_upload_fail";
     public static final String IMAGE_UPLOAD_OK = "com.happ.image_upload_ok";
     public static final String IMAGE_UPLOAD_EXTRA_ID = "com.happ.image_upload_extra_id";
+    public static final String IMAGE_UPLOAD_EXTRA_URI = "com.happ.image_upload_extra_uri";
 }

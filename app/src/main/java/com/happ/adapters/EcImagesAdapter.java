@@ -1,17 +1,26 @@
 package com.happ.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.happ.App;
 import com.happ.R;
+import com.happ.controllers.EditCreateActivity;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -19,25 +28,17 @@ import java.util.ArrayList;
  */
 public class EcImagesAdapter extends RecyclerView.Adapter<EcImagesAdapter.EcImagesViewHolder> {
 
-    private ArrayList<String> mImagesItems;
-    private final Context contex;
+    private ArrayList<EditCreateActivity.EventEditImage> mImagesItems;
+    private final Context context;
+    private EcItemActionLintener listener;
 
-//    private String[] urls = {
-//            "http://www.freedigitalphotos.net/images/img/homepage/87357.jpg",
-//            "http://assets.barcroftmedia.com.s3-website-eu-west-1.amazonaws.com/assets/images/recent-images-11.jpg",
-//            "http://7606-presscdn-0-74.pagely.netdna-cdn.com/wp-content/uploads/2016/03/Dubai-Photos-Images-Oicture-Dubai-Landmarks-800x600.jpg",
-//            "http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg",
-//            "http://www.w3schools.com/css/trolltunga.jpg",
-//            "http://i164.photobucket.com/albums/u8/hemi1hemi/COLOR/COL9-6.jpg",
-//            "http://www.planwallpaper.com/static/images/desktop-year-of-the-tiger-images-wallpaper.jpg",
-//            "http://www.gettyimages.pt/gi-resources/images/Homepage/Hero/PT/PT_hero_42_153645159.jpg",
-//            "http://www.planwallpaper.com/static/images/beautiful-sunset-images-196063.jpg",
-//            "http://www.w3schools.com/css/img_fjords.jpg"
-//    };
-
-    public EcImagesAdapter(Context context, ArrayList<String> mImagesItems) {
-        this.contex = context;
+    public EcImagesAdapter(Context context, ArrayList<EditCreateActivity.EventEditImage> mImagesItems) {
+        this.context = context;
         this.mImagesItems = mImagesItems;
+    }
+
+    public void setItemActionListener(EcItemActionLintener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -48,17 +49,57 @@ public class EcImagesAdapter extends RecyclerView.Adapter<EcImagesAdapter.EcImag
     }
 
     @Override
-    public void onBindViewHolder(EcImagesViewHolder holder, int position) {
-        final String eventImage = mImagesItems.get(position);
+    public void onBindViewHolder(final EcImagesViewHolder holder, int position) {
+        EditCreateActivity.EventEditImage event = mImagesItems.get(position);
 
-        final EcImagesViewHolder itemHolder = (EcImagesViewHolder)holder;
+        if (event.isLast()) {
+            holder.mProgress.setVisibility(View.GONE);
+            holder.mEmptyPlaceholder.setVisibility(View.VISIBLE);
+            holder.mImageView.setImageDrawable(context.getResources().getDrawable(R.drawable.dashed_bg_darker));
+            holder.mDeleteImageButton.setVisibility(View.GONE);
+        } else {
+            holder.mProgress.setVisibility(View.VISIBLE);
+            holder.mEmptyPlaceholder.setVisibility(View.GONE);
+            holder.mImageView.setImageDrawable(null);
+            holder.mDeleteImageButton.setVisibility(View.GONE);
 
-        Glide
-                .with(App.getContext())
-                .load(eventImage)
-                .centerCrop()
-                .crossFade()
-                .into(itemHolder.mImageView);
+            if (event.isLocal() && !event.isUploading()) {
+                holder.mDeleteImageButton.setVisibility(View.VISIBLE);
+                holder.mProgress.setVisibility(View.GONE);
+                Bitmap bmp = null;
+                try {
+                    bmp = MediaStore.Images.Media
+                            .getBitmap(this.context.getContentResolver(), event.getUri());
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                holder.mImageView.setImageBitmap(bmp);
+            }
+
+            if (!event.isLocal()) {
+                final String url = event.getImage().getUrl();
+                Picasso.with(context)
+                    .load(url)
+                    .fit()
+                    .centerCrop()
+                    .into(holder.mImageView, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            holder.mProgress.setVisibility(View.GONE);
+                            holder.mDeleteImageButton.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            holder.mProgress.setVisibility(View.GONE);
+                            holder.mDeleteImageButton.setVisibility(View.GONE);
+                        }
+                    });
+            }
+        }
+
+        holder.bind(position);
 
     }
 
@@ -67,16 +108,49 @@ public class EcImagesAdapter extends RecyclerView.Adapter<EcImagesAdapter.EcImag
         return mImagesItems.size();
     }
 
+    public void updateList(ArrayList<EditCreateActivity.EventEditImage> imagesList) {
+        mImagesItems = imagesList;
+        notifyDataSetChanged();
+    }
+
     public class EcImagesViewHolder extends RecyclerView.ViewHolder {
 
-        public RelativeLayout mRLImage;
+        public LinearLayout mEmptyPlaceholder;
         public ImageView mImageView;
+        public ImageButton mDeleteImageButton;
+        public ProgressBar mProgress;
 
         public EcImagesViewHolder(View itemView) {
             super(itemView);
-            mRLImage = (RelativeLayout) itemView.findViewById(R.id.rl_ec_image);
-            mImageView = (ImageView) itemView.findViewById(R.id.iv_ec);
+            mEmptyPlaceholder = (LinearLayout) itemView.findViewById(R.id.ec_item_placeholder);
+            mImageView = (ImageView) itemView.findViewById(R.id.ec_item_image);
+            mDeleteImageButton = (ImageButton) itemView.findViewById(R.id.ec_item_delete);
+            mProgress = (ProgressBar) itemView.findViewById(R.id.ec_item_image_preloader);
         }
+
+        public void bind(final int position) {
+            mEmptyPlaceholder.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) listener.onImageSelectRequested();
+                }
+            });
+
+            mDeleteImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!mImagesItems.get(position).isLast() && listener != null) {
+                        listener.onImageDeleteRequested(mImagesItems.get(position).getImageId());
+                    }
+                }
+            });
+        }
+    }
+
+
+    public interface EcItemActionLintener {
+        void onImageSelectRequested();
+        void onImageDeleteRequested(String imageId);
     }
 
 }

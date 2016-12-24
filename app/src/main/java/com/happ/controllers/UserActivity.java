@@ -219,25 +219,6 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                         return false;
                     }
                 }).into(mUserPhoto);
-
-
-
-//                Picasso.with(this)
-//                    .load(imageUrl)
-//                    .fit()
-//                    .centerCrop()
-//                    .into(mUserPhoto, new Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//                            photoDidSet();
-//                            String a = "asd";
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                            String a = "123";
-//                        }
-//                    });
             }
 
 
