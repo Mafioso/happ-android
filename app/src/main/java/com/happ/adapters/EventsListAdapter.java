@@ -36,18 +36,22 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by iztiev on 8/4/16.
  */
 public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.EventsListViewHolder> {
-    private final ArrayList<EventListItem> mItems;
+    private ArrayList<EventListItem> mItems;
+    private ArrayList<EventListItem> defaultItems;
     private static final int VIEW_TYPE_HEADER = 0x01;
     private static final int VIEW_TYPE_CONTENT = 0x00;
     private final DateTimeFormatter eventStartDateFormatter;
     private final Context context;
     private SelectEventItemListener mSelectItemListener;
     private boolean isOrganizer;
+    private boolean sortByPopularity;
 
     private InterestsListAdapter mInterestsListAdapter;
     private ArrayList<Interest> interests;
@@ -64,13 +68,18 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
     public EventsListAdapter(Context context, ArrayList<Event> events) {
         this.context = context;
-        mItems = new ArrayList<>();
+        defaultItems = new ArrayList<>();
         eventStartDateFormatter = DateTimeFormat.forPattern("MMMM dd, yyyy 'a''t' h:mm a");
         this.updateItems(events);
     }
 
+    public void setSortByPopularity(boolean sortByPopularity) {
+        this.sortByPopularity = sortByPopularity;
+
+    }
+
     public void updateItems(ArrayList<Event> events) {
-        mItems.clear();
+        defaultItems.clear();
         DateTime now = new DateTime();
         now.minusHours(now.hourOfDay().get());
         now.minusMinutes(now.minuteOfHour().get());
@@ -102,14 +111,48 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 sectionFirstPosition = i + headerCount;
                 lastHeader = header;
                 headerCount += 1;
-                mItems.add(new EventListItem(true, sectionManager, sectionFirstPosition, null, header));
+                defaultItems.add(new EventListItem(true, sectionManager, sectionFirstPosition, null, header));
             }
-            mItems.add(new EventListItem(false, sectionManager, sectionFirstPosition, events.get(i), header));
+            defaultItems.add(new EventListItem(false, sectionManager, sectionFirstPosition, events.get(i), header));
+        }
+    }
+
+    protected void sortItems() {
+        if (sortByPopularity) {
+            ArrayList<EventListItem> sortedItems = new ArrayList<>();
+            if (mItems.size() > 0) {
+                sortedItems.add(mItems.get(0));
+                int first = 1;
+                int last = 0;
+                for (int i = 1; i < mItems.size(); i++) {
+                    if (!mItems.get(i).isHeader) {
+                        last = i;
+                    } else {
+                        ArrayList<EventListItem> tmp = (ArrayList)mItems.subList(first, last);
+
+                        Collections.sort(tmp);
+                        sortedItems.addAll(tmp);
+                        sortedItems.add(mItems.get(0));
+
+                        if (i + 1 < mItems.size()) {
+                            first = i + 1;
+                        }
+                    }
+                }
+                ArrayList<EventListItem> tmp = (ArrayList)mItems.subList(first, last);
+
+                Collections.sort(tmp);
+                sortedItems.addAll(tmp);
+            }
+            mItems = sortedItems;
+        } else {
+            mItems = defaultItems;
         }
     }
 
     public void updateData(ArrayList<Event> events) {
         this.updateItems(events);
+        this.sortItems();
         Log.d("AAAAA", String.valueOf(events.size()));
         this.notifyDataSetChanged();
         this.notifyHeaderChanges();
@@ -386,7 +429,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 
     }
 
-    public class EventListItem {
+    public class EventListItem implements Comparable<EventListItem> {
         public int sectionManager;
         public int sectionFirstPosition;
         public boolean isHeader;
@@ -399,6 +442,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             this.sectionFirstPosition = sectionFirstPosition;
             this.event = event;
             this.headerTitle = headerTitle;
+        }
+
+        @Override
+        public int compareTo(EventListItem o) {
+            return event.getViewsCount() - o.event.getViewsCount();
         }
     }
 }

@@ -100,6 +100,7 @@ public class FavoriteFeedFragment extends BaseFeedFragment {
             Realm realm = Realm.getDefaultInstance();
             RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("inFavorites", true).notEqualTo("author.id", userId).equalTo("localOnly", false).findAllSorted("startDate", Sort.ASCENDING);
             events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
+            ((EventsListAdapter)eventsListView.getAdapter()).setSortByPopularity(false);
             ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
             realm.close();
 
