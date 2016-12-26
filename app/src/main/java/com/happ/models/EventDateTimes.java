@@ -9,6 +9,7 @@ import io.realm.RealmObject;
  */
 public class EventDateTimes extends RealmObject {
 
+
     private Date date;
 //    private Date start_time;
 //    private Date end_time;

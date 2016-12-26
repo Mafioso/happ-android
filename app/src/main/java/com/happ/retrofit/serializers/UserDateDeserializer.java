@@ -1,7 +1,5 @@
 package com.happ.retrofit.serializers;
 
-import android.util.Log;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -20,19 +18,23 @@ public class UserDateDeserializer implements JsonDeserializer<Date>, JsonSeriali
 
     @Override
     public Date deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
-        String date = element.getAsString();
+        String dateJson = element.getAsString();
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("GMT"));
-
+        SimpleDateFormat longDateFormater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        longDateFormater.setTimeZone(TimeZone.getTimeZone("GMT"));
+        SimpleDateFormat onlyDate = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
-            return format.parse(date);
-
-        } catch (ParseException exp) {
-            Log.e("DATE_DESER", exp.getLocalizedMessage());
+            if (dateJson.equals(onlyDate.format(onlyDate.parse(dateJson)))) {
+                return onlyDate.parse(dateJson);
+            }
+            return longDateFormater.parse(dateJson);
+        } catch (ParseException e) {
+            e.printStackTrace();
             return null;
         }
+
+
     }
 
     @Override
