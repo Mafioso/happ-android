@@ -263,6 +263,7 @@
     <string name="explore">Explore</string>
     <string name="map">Map</string>
     <string name="pro_functions">Pro-Functions</string>
+    <string name="add_event">Add event</string>
     <string name="analytics">Analytics</string>
     <string name="venue_unknown" translatable="false">Venue Unknown</string>
     <string name="organizer_title">My Events</string>

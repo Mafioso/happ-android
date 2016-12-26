@@ -426,7 +426,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:text="—"
+                        android:text="@string/dash_long"
                         android:textSize="18sp"
                         android:layout_marginLeft="4dp"
                         android:layout_marginRight="4dp"
