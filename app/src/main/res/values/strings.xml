@@ -1,14 +1,14 @@
 <resources>
     <!--<string name="HOST">http://happ.westeurope.cloudapp.azure.com/</string>-->
-    <string name="HOST">http://happ.skills.kz/</string>
+    <string name="HOST" translatable="false">http://happ.skills.kz/</string>
 
 
-    <string name="API_URL">api/v1/</string>
-    <string name="facebook_app_id">1284244154932616</string>
-    <string name="fb_login_protocol_scheme">fb1284244154932616</string>
+    <string name="API_URL" translatable="false">api/v1/</string>
+    <string name="facebook_app_id" translatable="false">1284244154932616</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb1284244154932616</string>
 
-    <string name="event_feeds_page_size">10</string>
-    <string name="event_feeds_visible_treshold_for_loading_next_items">3</string>
+    <string name="event_feeds_page_size" translatable="false">10</string>
+    <string name="event_feeds_visible_treshold_for_loading_next_items" translatable="false">3</string>
     <string name="app_name">HAPP</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
@@ -17,7 +17,7 @@
     <string name="event_min_price">Minimal Price</string>
     <string name="event_max_price">Maximal Price</string>
     <string name="event_place">Place</string>
-    <string name="event_email">Email</string>
+    <string name="event_email" translatable="false">Email</string>
     <string name="event_website">Website</string>
     <string name="event_interest">Interest</string>
     <string name="pls_add_image">Please, add at least one image for this event</string>
@@ -28,7 +28,7 @@
     <string name="cancel">Cancel</string>
     <string name="agree">Agree</string>
     <string name="login">Login</string>
-    <string name="email">Email</string>
+    <string name="email" translatable="false">Email</string>
     <string name="password">Password</string>
     <string name="repeat_password">Repeat password</string>
     <string name="new_password">New Password</string>
@@ -57,12 +57,12 @@
     <string name="nav_item_attachment">Attachment</string>
     <string name="nav_item_images">Images</string>
     <string name="nav_item_location">My Location</string>
-    <string name="nav_sub_menu">Sub Menu</string>
-    <string name="nav_sub_menu_item01">Sub Menu Item 1</string>
-    <string name="nav_sub_menu_item02">Sub Menu Item 2</string>
-    <string name="drawer_header_text">Drawer Header</string>
-    <string name="second_activity_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin consectetur diam id aliquam scelerisque. Donec ultrices lacus vel dignissim pharetra. Vivamus pharetra augue quis rhoncus placerat. Sed ultricies at risus non cursus. Nam rutrum leo nec placerat consectetur. Vestibulum feugiat eleifend diam, nec interdum augue tincidunt sit amet. Praesent feugiat est auctor lacus consectetur, vitae pellentesque dolor laoreet.</string>
-    <string name="title_activity_second">SecondActivity</string>
+    <string name="nav_sub_menu" translatable="false">Sub Menu</string>
+    <string name="nav_sub_menu_item01" translatable="false">Sub Menu Item 1</string>
+    <string name="nav_sub_menu_item02" translatable="false">Sub Menu Item 2</string>
+    <string name="drawer_header_text" translatable="false">Drawer Header</string>
+    <string name="second_activity_text" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin consectetur diam id aliquam scelerisque. Donec ultrices lacus vel dignissim pharetra. Vivamus pharetra augue quis rhoncus placerat. Sed ultricies at risus non cursus. Nam rutrum leo nec placerat consectetur. Vestibulum feugiat eleifend diam, nec interdum augue tincidunt sit amet. Praesent feugiat est auctor lacus consectetur, vitae pellentesque dolor laoreet.</string>
+    <string name="title_activity_second" translatable="false">SecondActivity</string>
 
     <string name="menu_filter">Filter Events</string>
     <string name="nav_item_feed">Feed</string>
@@ -103,29 +103,29 @@
 
     <!-- For the welcome screen -->
 
-    <string name="title_activity_welcome">Home Screen</string>
+    <string name="title_activity_welcome" translatable="false">Home Screen</string>
     <string name="next">NEXT</string>
     <string name="skip">SKIP</string>
-    <string name="start">GOT IT</string>
+    <string name="start" translatable="false">GOT IT</string>
 
-    <string name="slide_1_title">Hello Food!</string>
-    <string name="slide_1_desc">The easiest way to order food from your favourite restaurant!</string>
+    <string name="slide_1_title" translatable="false">Hello Food!</string>
+    <string name="slide_1_desc" translatable="false">The easiest way to order food from your favourite restaurant!</string>
 
-    <string name="slide_2_title">Movie Tickets</string>
-    <string name="slide_2_desc">Book movie tickets for your family and friends!</string>
+    <string name="slide_2_title" translatable="false">Movie Tickets</string>
+    <string name="slide_2_desc" translatable="false">Book movie tickets for your family and friends!</string>
 
-    <string name="slide_3_title">Great Discounts</string>
-    <string name="slide_3_desc">Best discounts on every single service we offer!</string>
+    <string name="slide_3_title" translatable="false">Great Discounts</string>
+    <string name="slide_3_desc" translatable="false">Best discounts on every single service we offer!</string>
 
-    <string name="slide_4_title">World Travel</string>
-    <string name="slide_4_desc">Book tickets of any transportation and travel the world!</string>
+    <string name="slide_4_title" translatable="false">World Travel</string>
+    <string name="slide_4_desc" translatable="false">Book tickets of any transportation and travel the world!</string>
 
     <!-- END -->
     <string name="login_facebook">Login with Facebook</string>
-    <string name="privacy_policy">Privacy policy</string>
+    <string name="privacy_policy" translatable="false">Privacy policy</string>
     <string name="organizer_rules">Organizer rules</string>
 
-    <string name="check_organizer_rules">Ознакомлен с правилами заполнения события.</string>
+    <string name="check_organizer_rules" translatable="false">Ознакомлен с правилами заполнения события.</string>
     <string name="change_password">Change Password</string>
     <string name="ok">ok</string>
     <string name="old_password">Old Password</string>
@@ -167,8 +167,8 @@
     <string name="interests_view_header_city">City Name</string>
     <string name="interests_view_select_all">Select All Interests</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="interest_placeholder">Default child interest</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="interest_placeholder" translatable="false">Default child interest</string>
     <string name="show_events_by_status">Show events by status</string>
     <string name="filter_active">Active</string>
     <string name="filter_inactive">Inactive</string>
@@ -180,22 +180,22 @@
     <string name="event_date">Event Date</string>
     <string name="event_tickets_link">Tickets Link</string>
     <string name="event_phone">Phone</string>
-    <string name="tap_here_description">Tap here to add description</string>
-    <string name="continuing_event">Continuing Event</string>
+    <string name="tap_here_description" translatable="false">Tap here to add description</string>
+    <string name="continuing_event" translatable="false">Continuing Event</string>
     <string name="tap_to_add">Tap to add a photo</string>
     <string name="create_account">Create Account</string>
     <string name="title_activity_maps">Map</string>
     <string name="go_to_event_page">Go to Event Page</string>
-    <string name="explicit_content">Explicit Content</string>
-    <string name="sub_text_explicit_content">Content appropriate only for age rate over 18</string>
+    <string name="explicit_content" translatable="false">Explicit Content</string>
+    <string name="sub_text_explicit_content" translatable="false">Content appropriate only for age rate over 18</string>
     <string name="sub_text_continuing_event">New visitors can enter event even if it already started</string>
     <string name="event_duration">Event Duration</string>
     <string name="recover_enter_email">Enter your username or email to recover your password</string>
     <string name="recover_password">Recover Password</string>
     <string name="detailed_instruction">Detailed instructions will be sent to your email</string>
     <string name="username_or_email">username or email</string>
-    <string name="credit_info">© happapp.info 2016, All Rights Reserved</string>
-    <string name="terms_and_policy"><![CDATA[Terms & Policy]]></string>
+    <string name="credit_info" translatable="false">© happapp.info 2016, All Rights Reserved</string>
+    <string name="terms_and_policy" translatable="false"><![CDATA[Terms & Policy]]></string>
     <string name="login_or">— OR —</string>
     <string name="forgot_password">Forgot password</string>
     <string name="create_new_account">Create new account</string>
@@ -217,24 +217,24 @@
     <string name="no_internet_connection">No Internet Connection</string>
     <string name="settings">Settings</string>
     <string name="select_interest">Select Interests</string>
-    <string name="browser">HAPP Browser</string>
+    <string name="browser" translatable="false">HAPP Browser</string>
     <string name="event_organizer">Event Organizer</string>
     <string name="disagree">Disagree</string>
     <string name="password_dont_match">Passwords do not match</string>
     <string name="error">Error</string>
     <string name="event_author_email">Author Email</string>
     <string name="tap_camera_to_add_image">Tap here to add photo</string>
-    <string name="all_rights_reserved">© All Rights Reserved, 2015</string>
+    <string name="all_rights_reserved" translatable="false">© All Rights Reserved, 2015</string>
     <string name="nav_item_share_app">Share App</string>
     <string name="settings_subject_contact">Question from</string>
-    <string name="happ_email">happerala@happapp.info</string>
+    <string name="happ_email" translatable="false">happerala@happapp.info</string>
     <string name="share_happ_to">Share Happ to</string>
-    <string name="drawer_share_subject">Share HAPP Subject...</string>
-    <string name="drawer_share_text">Drawer Share Text</string>
-    <string name="event_share_subject">HAPP App</string>
+    <string name="drawer_share_subject" translatable="false">Share HAPP Subject...</string>
+    <string name="drawer_share_text" translatable="false">Drawer Share Text</string>
+    <string name="event_share_subject" translatable="false">HAPP App</string>
     <string name="share_event_to">Share Event to</string>
-    <string name="navigation_drawer_open">Drawer open</string>
-    <string name="navigation_drawer_close">Drawer close</string>
+    <string name="navigation_drawer_open" translatable="false">Drawer open</string>
+    <string name="navigation_drawer_close" translatable="false">Drawer close</string>
     <string name="price">Price</string>
     <string name="votes_count">Votes Count</string>
     <string name="show_more">Show more</string>
@@ -252,10 +252,10 @@
     <string name="rra_header_text">According to the policy and rules of “HAPP” the event you posted can not be published.</string>
     <string name="rra_please_edit_this">Please edit the following:</string>
     <string name="rra_event_details">Event details</string>
-    <string name="dash_long">—</string>
+    <string name="dash_long" translatable="false">—</string>
     <string name="menu_deactivate">Deactivate</string>
     <string name="menu_activate">Activate</string>
-    <string name="unknown">Unknow</string>
+    <string name="unknown" translatable="false">Unknow</string>
     <string name="events_near_you">Events near you</string>
     <string name="user_password_updated">User password successfully updated.</string>
     <string name="feed">Feed</string>
@@ -265,7 +265,8 @@
     <string name="pro_functions">Pro-Functions</string>
     <string name="add_event">Add event</string>
     <string name="analytics">Analytics</string>
-    <string name="venue_unknown">Venue Unknown</string>
-
+    <string name="venue_unknown" translatable="false">Venue Unknown</string>
+    <string name="organizer_title">My Events</string>
+    <string name="add_event">Add Event</string>
 
 </resources>
