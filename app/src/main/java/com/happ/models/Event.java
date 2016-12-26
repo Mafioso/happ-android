@@ -38,6 +38,7 @@ public class Event extends RealmObject implements Serializable {
     private Date startDate;
     @SerializedName("end_datetime")
     private Date endDate;
+    private RealmList<EventDateTimes> datetimes;
     @SerializedName("address")
     private String place;
     private Currency currency;
@@ -377,5 +378,13 @@ public class Event extends RealmObject implements Serializable {
 
     public void setCloseOnStart(boolean closeOnStart) {
         this.closeOnStart = closeOnStart;
+    }
+
+    public RealmList<EventDateTimes> getDatetimes() {
+        return datetimes;
+    }
+
+    public void setDatetimes(RealmList<EventDateTimes> datetimes) {
+        this.datetimes = datetimes;
     }
 }
