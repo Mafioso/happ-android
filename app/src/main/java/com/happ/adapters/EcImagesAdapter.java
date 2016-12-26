@@ -11,10 +11,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
-import com.happ.App;
 import com.happ.R;
 import com.happ.controllers.EditCreateActivity;
 import com.squareup.picasso.Callback;

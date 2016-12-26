@@ -105,10 +105,16 @@
                                             android:id="@+id/iv_flashing_calendar"
                                             android:layout_width="70dp"
                                             android:layout_height="70dp"
-                                            android:background="@drawable/circle_orange_event"
+                                            android:background="@drawable/circle_event"
                                             android:layout_centerVertical="true"
                                             android:layout_centerHorizontal="true"
-                                            android:visibility="invisible"/>
+                                            android:visibility="gone"/>
+
+                                        <View
+                                            android:layout_width="70dp"
+                                            android:layout_height="70dp"
+                                            android:background="@drawable/circle_event_lighter"/>
+
                                         <LinearLayout
                                             android:id="@+id/ll_calendar_image"
                                             android:layout_gravity="center"
@@ -166,24 +172,30 @@
                                         android:id="@+id/iv_flashing_price"
                                         android:layout_width="70dp"
                                         android:layout_height="70dp"
-                                        android:background="@drawable/circle_orange_event"
+                                        android:background="@drawable/circle_event"
                                         android:layout_centerVertical="true"
                                         android:layout_centerHorizontal="true"
-                                        android:visibility="invisible"/>
-                                    <LinearLayout
-                                            android:id="@+id/ll_price_image"
-                                            android:layout_width="60dp"
-                                            android:layout_height="60dp"
-                                            android:background="@drawable/circle_event"
-                                            android:layout_centerVertical="true"
-                                            android:layout_centerHorizontal="true"
-                                            android:gravity="center">
+                                        android:visibility="gone"/>
 
-                                            <ImageView
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:layout_gravity="center"
-                                                app:srcCompat="@drawable/ic_money"/>
+                                    <View
+                                        android:layout_width="70dp"
+                                        android:layout_height="70dp"
+                                        android:background="@drawable/circle_event_lighter"/>
+
+                                    <LinearLayout
+                                        android:id="@+id/ll_price_image"
+                                        android:layout_width="60dp"
+                                        android:layout_height="60dp"
+                                        android:background="@drawable/circle_event"
+                                        android:layout_centerVertical="true"
+                                        android:layout_centerHorizontal="true"
+                                        android:gravity="center">
+
+                                        <ImageView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            app:srcCompat="@drawable/ic_money"/>
 
                                     </LinearLayout>
                                 </RelativeLayout>
@@ -231,7 +243,8 @@
                                         android:layout_height="70dp"
                                         android:background="@drawable/circle_event"
                                         android:layout_centerVertical="true"
-                                        android:layout_centerHorizontal="true"/>
+                                        android:layout_centerHorizontal="true"
+                                        android:visibility="gone"/>
 
                                     <View
                                         android:layout_width="70dp"

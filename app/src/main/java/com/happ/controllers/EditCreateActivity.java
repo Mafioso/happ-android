@@ -225,8 +225,8 @@ public class EditCreateActivity extends AppCompatActivity {
             mEventEndTime.setText(timeFormat.format(event.getEndDate()));
 
             if (event.getWebSite() != null) mEventWebSite.setText(event.getWebSite());
-            mEventTicketLink.setText("ЗДЕСЬ СЫЛКА НА БИЛЕТ");
-            if (event.getEmail() != null)mEventEmail.setText(event.getEmail());
+            if (event.getRegistationLink() != null) mEventTicketLink.setText(event.getRegistationLink());
+            if (event.getEmail() != null) mEventEmail.setText(event.getEmail());
             if (event.getPhones().size() > 0) mEventPhone.setText(event.getPhones().get(0).getPhone());
 
             imagesList = new ArrayList<>();
@@ -690,6 +690,7 @@ public class EditCreateActivity extends AppCompatActivity {
                 intent.putExtra("event_id", evendId);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
+                finish();
             }
         };
     }
@@ -706,6 +707,7 @@ public class EditCreateActivity extends AppCompatActivity {
                 intent.putExtra("event_id", evendId);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(intent);
+                finish();
             }
         };
     }

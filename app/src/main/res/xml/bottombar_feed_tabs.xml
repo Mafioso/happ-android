@@ -3,19 +3,19 @@
     <tab
         id="@+id/tab_feed"
         icon="@drawable/bb_ic_feed"
-        title="Feed" />
+        title="@string/feed" />
     <tab
         id="@+id/tab_favorites"
         icon="@drawable/bb_ic_favorites"
-        title="Favorites" />
+        title="@string/favorites" />
     <tab
         id="@+id/tab_explore"
         icon="@drawable/bb_ic_explore"
-        title="Explore" />
+        title="@string/explore" />
     <tab
         id="@+id/tab_map"
         icon="@drawable/bb_ic_map"
-        title="Map" />
+        title="@string/map" />
 
     <!--<tab-->
         <!--id="@+id/tab_chat"-->

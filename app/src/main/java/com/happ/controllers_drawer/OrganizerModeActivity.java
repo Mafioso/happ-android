@@ -102,7 +102,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
         setContentView(R.layout.activity_organizermode);
         binds();
         setSupportActionBar(toolbar);
-        setTitle(R.string.organizer_title);
+        setTitle(R.string.my_events);
         eventsOrganizerFragment = EventsOrganizerFragment.newInstance();
         setAllFunctionNavigationMenu();
         setListenerToRootView();

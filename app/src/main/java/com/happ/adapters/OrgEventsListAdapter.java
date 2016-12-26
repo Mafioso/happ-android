@@ -139,7 +139,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
         if (event.getPlace() != null) {
             itemHolder.mPlace.setText(event.getPlace());
         } else {
-            itemHolder.mPlace.setText("Venue unknown");
+            itemHolder.mPlace.setText(context.getResources().getString(R.string.venue_unknown));
         }
 
         String startTime = event.getStartDateFormatted("dd MMM HH:mm").toUpperCase();

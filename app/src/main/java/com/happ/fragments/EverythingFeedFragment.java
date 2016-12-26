@@ -154,11 +154,14 @@ public class EverythingFeedFragment extends BaseFeedFragment {
         if (!feedSearchText.equals("")) q.contains("title", feedSearchText, Case.INSENSITIVE);
         if (startDate != null) q.greaterThanOrEqualTo("startDate", startDate);
         if (endDate != null) q.lessThanOrEqualTo("startDate", endDate);
-        if (maxFree.equals("")) q.equalTo("lowestPrice", 0);
-        RealmResults<Event> eventRealmResults = q.endGroup().findAll();
-//        RealmResults<Event> eventRealmResults = q.endGroup().findAllSorted("startDate", Sort.ASCENDING);
-
-        events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
+        if (maxFree.equals("")) q.equalTo("highestPrice", 0);
+        if (!popularityEvents.equals("")) {
+            RealmResults<Event> eventRealmResults = q.endGroup().findAll().sort("votesCount", Sort.DESCENDING, "startDate", Sort.ASCENDING);
+            events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
+        } else {
+            RealmResults<Event> eventRealmResults = q.endGroup().greaterThanOrEqualTo("startDate", new Date()).findAllSorted("startDate", Sort.ASCENDING);
+            events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults.subList(0, eventRealmResults.size()));
+        }
         ((EventsListAdapter)eventsListView.getAdapter()).updateData(events);
         realm.close();
 

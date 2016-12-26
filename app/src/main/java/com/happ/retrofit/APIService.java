@@ -3,9 +3,11 @@ package com.happ.retrofit;
 import android.app.IntentService;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.os.Process;
 
 import com.happ.App;
+import com.happ.models.GeopointArrayResponce;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +28,7 @@ public class APIService extends IntentService {
     private static final String ACTION_POST_LOGIN = "com.happ.action.ACTION_POST_LOGIN";
     private static final String ACTION_POST_SIGNUP = "com.happ.action.ACTION_POST_SIGNUP";
     private static final String ACTION_POST_CHANGE_PW = "com.happ.action.ACTION_POST_CHANGE_PW";
+    private static final String ACTION_POST_EVENTMAP = "com.happ.action.ACTION_POST_EVENTMAP";
 
     private static final String ACTION_GET_USER = "com.happ.action.ACTION_GET_USER";
     private static final String ACTION_GET_CURRENT_USER = "com.happ.action.ACTION_GET_CURRENT_USER";
@@ -69,6 +72,9 @@ public class APIService extends IntentService {
 
     private static final String EXTRA_OLD_PASSWORD = "com.happ.extra.EXTRA_OLD_PASSWORD";
     private static final String EXTRA_NEW_PASSWORD = "com.happ.extra.EXTRA_NEW_PASSWORD";
+
+    private static final String EXTRA_SET_RADIUS = "com.happ.extra.EXTRA_SET_RADIUS";
+    private static final String EXTRA_SET_CENTER = "com.happ.extra.EXTRA_SET_CENTER";
 
     private static final String EXTRA_SET_INTERESTS = "com.happ.extra.EXTRA_SET_INTERESTS";
     private static final String EXTRA_SET_ALL_INTERESTS = "com.happ.extra.EXTRA_SET_ALL_INTERESTS";
@@ -275,6 +281,14 @@ public class APIService extends IntentService {
         App.getContext().startService(login);
     }
 
+    public static void setEventsMap(GeopointArrayResponce center, int radius) {
+        Intent eventMap = new Intent(App.getContext(), APIService.class);
+        eventMap.setAction(ACTION_POST_EVENTMAP);
+        eventMap.putExtra(EXTRA_SET_CENTER, (Parcelable) center);
+        eventMap.putExtra(EXTRA_SET_RADIUS, radius);
+        App.getContext().startService(eventMap);
+    }
+
     public static void doChangePassword(String oldPassword, String newPassword) {
         Intent changePw = new Intent(App.getContext(), APIService.class);
         changePw.setAction(ACTION_POST_CHANGE_PW);
@@ -446,6 +460,10 @@ public class APIService extends IntentService {
                 String username = intent.getStringExtra(EXTRA_USERNAME);
                 String password = intent.getStringExtra(EXTRA_PASSWORD);
                 HappRestClient.getInstance().doLogin(username, password);
+            } else if (action.equals(ACTION_POST_EVENTMAP)) {
+                GeopointArrayResponce geopointArrayResponce = intent.getParcelableExtra(EXTRA_SET_CENTER);
+                int radius = intent.getIntExtra(EXTRA_SET_RADIUS, 0);
+                HappRestClient.getInstance().setEventsMap(geopointArrayResponce, radius);
             } else if (action.equals(ACTION_POST_CHANGE_PW)) {
                 String oldPassword = intent.getStringExtra(EXTRA_OLD_PASSWORD);
                 String newPassword = intent.getStringExtra(EXTRA_NEW_PASSWORD);

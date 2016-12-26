@@ -66,7 +66,7 @@ public class CityListAdapter extends RecyclerView.Adapter<CityListAdapter.Cities
         String name_city = city.getName();
 
         if (fromEditCreateActivity) {
-            if (mySelectedCityId.equals(city.getId())) {
+            if (city.getId().equals(mySelectedCityId)) {
                 holder.mImageHappIcon.setVisibility(View.VISIBLE);
                 holder.mTitleCities.setTextColor(context.getResources().getColor(R.color.colorAccent));
             } else {

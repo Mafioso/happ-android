@@ -4,20 +4,20 @@
     <tab
         id="@+id/tab_my_events"
         icon="@drawable/bb_ic_feed"
-        title="My events" />
+        title="@string/my_events" />
     <tab
         id="@+id/tab_add_event"
         icon="@drawable/ic_bb_add_event"
-        title="Add event" />
+        title="@string/add_event" />
 
     <tab
         id="@+id/tab_pro_function"
         icon="@drawable/ic_bb_pro_functions"
-        title="Pro-Functions" />
+        title="@string/pro_functions" />
 
     <tab
         id="@+id/tab_analytics"
         icon="@drawable/ic_bb_analytics"
-        title="Analytics" />
+        title="@string/analytics" />
 
 </tabs>

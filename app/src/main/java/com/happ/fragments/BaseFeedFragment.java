@@ -77,6 +77,7 @@ public class BaseFeedFragment extends Fragment {
     public void setChangeColorIconToolbarListener(ChangeColorIconToolbarListener listener) {
         mChangeColorIconToolbarListener = listener;
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

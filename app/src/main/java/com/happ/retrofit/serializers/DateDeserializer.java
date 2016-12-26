@@ -27,7 +27,6 @@ public class DateDeserializer implements JsonDeserializer<Date>, JsonSerializer<
 
 
         try {
-            Date adate = format.parse(date);
             return format.parse(date);
         } catch (ParseException exp) {
             Log.e("DATE_DESER", exp.getLocalizedMessage());

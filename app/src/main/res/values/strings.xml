@@ -83,7 +83,7 @@
     <string name="city_name_label">Your City is</string>
     <string name="select_city_button">Select city</string>
     <string name="city_search">Find City... </string>
-    <string name="organizer_title">My events</string>
+    <string name="my_events">My events</string>
     <string name="user_settings">Profile Settings</string>
 
     <string name="did_upvote">You Like Event </string>
@@ -135,6 +135,7 @@
     <string name="password_changed">Password changed</string>
     <string name="error_500">Something went wrong</string>
     <string name="error_400">Checking the correctness of filling</string>
+    <string name="fields_not_filled">Some fields are not filled.</string>
     <string name="version_name">Version Name</string>
     <string name="date_filter">Filter Date</string>
     <string name="popular_first">Show Popular First</string>
@@ -254,5 +255,16 @@
     <string name="dash_long">—</string>
     <string name="menu_deactivate">Deactivate</string>
     <string name="menu_activate">Activate</string>
+    <string name="unknown">Unknow</string>
+    <string name="events_near_you">Events near you</string>
+    <string name="user_password_updated">User password successfully updated.</string>
+    <string name="feed">Feed</string>
+    <string name="favorites">Favorites</string>
+    <string name="explore">Explore</string>
+    <string name="map">Map</string>
+    <string name="pro_functions">Pro-Functions</string>
+    <string name="analytics">Analytics</string>
+    <string name="venue_unknown">Venue Unknown</string>
+
 
 </resources>

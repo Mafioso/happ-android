@@ -26,6 +26,8 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.Display;
 import android.view.View;
@@ -36,20 +38,22 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+
+import io.realm.Realm;
 
 /**
  * Created by dante on 9/22/16.
@@ -80,6 +84,10 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
 
     private BroadcastReceiver setUserEditOKReceiver;
     private BroadcastReceiver imageUploadedReceiver;
+    private BroadcastReceiver createCurrentUserReceiver;
+    private BroadcastReceiver changePasswordUserOKReceiver;
+    private BroadcastReceiver changePasswordUserFAILReceiver;
+
     private boolean fromSettings = false;
 
 
@@ -113,6 +121,9 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
         fromSettings = getIntent().getBooleanExtra("from_settings", false);
         user = App.getCurrentUser();
         setContentView(R.layout.activity_user);
+
+        Realm realm = Realm.getDefaultInstance();
+
 
         final Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();  // deprecated
@@ -181,7 +192,12 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                 public void onClick(View v) {
 
                     Calendar now = Calendar.getInstance();
-                    now.setTime(mDateBirthday);
+                    if (mDateBirthday != null) {
+                        now.setTime(mDateBirthday);
+                    } else {
+                        now.setTime(new Date());
+                    }
+
                     DatePickerDialog dpd = DatePickerDialog.newInstance(
                             UserActivity.this,
                             now.get(Calendar.YEAR),
@@ -197,28 +213,28 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
             mMale.setChecked(user.getGender() == 0);
             mFemale.setChecked(user.getGender() > 0);
 
-//            final String imageUrl = user.getImageUrl();
-
             arrowDrawable = R.drawable.ic_right_arrow_grey;
             closeDrawable = R.drawable.ic_close_grey;
 
-            final String imageUrl = user.getImageUrl();
-            if (imageUrl == null) {
+            if (user.getAvatar() == null) {
                 mUserPhoto.setVisibility(View.GONE);
                 mAvatarPlaceholder.setVisibility(View.VISIBLE);
             } else {
-                Glide.with(App.getContext()).load(imageUrl).asBitmap().listener(new RequestListener<String, Bitmap>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-                        return false;
-                    }
+                Picasso.with(App.getContext())
+                        .load(user.getAvatar().getPath())
+                        .fit()
+                        .centerCrop()
+                        .into(mUserPhoto, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                photoDidSet();
+                            }
 
-                    @Override
-                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        photoDidSet();
-                        return false;
-                    }
-                }).into(mUserPhoto);
+                            @Override
+                            public void onError() {
+
+                            }
+                        });
             }
 
 
@@ -249,13 +265,39 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                     });
                     colorAnimation.start();
                     hideSoftKeyboard(UserActivity.this, v);
-                    if (!mOldPassword.getText().toString().equals("") && mNewPassword.getText().toString().equals(mReapeatNewPassword.getText().toString())) {
-                        APIService.doChangePassword(mOldPassword.getText().toString(), mNewPassword.getText().toString());
-                    }
+                    if (!mOldPassword.getText().toString().equals("") && !mNewPassword.getText().toString().equals("")) {
+                        if (mNewPassword.getText().toString().equals(mReapeatNewPassword.getText().toString())) {
+                            APIService.doChangePassword(mOldPassword.getText().toString(), mNewPassword.getText().toString());
+                        } else {
+                            Toast.makeText(UserActivity.this, R.string.password_dont_match, Toast.LENGTH_SHORT).show();
+                        }
 
-                    int gender = 0;
-                    if (mFemale.isChecked()) gender = 1;
-                    APIService.doUserEdit(mUsername.getText().toString(), mEmail.getText().toString(), mPhoneNumber.getText().toString(), mDateBirthday, gender, imageId);
+                    } else {
+                        int gender = 0;
+                        if (mFemale.isChecked()) gender = 1;
+
+                        if (mBirthday.getText().toString().equals("")
+                                || mPhoneNumber.getText().toString().equals("")
+                                || mEmail.getText().toString().equals("")) {
+
+                            final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.fields_not_filled), Snackbar.LENGTH_SHORT);
+                            snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    snackbar.dismiss();
+                                }
+                            });
+                            snackbar.show();
+
+                        } else {
+                            APIService.doUserEdit(
+                                    mUsername.getText().toString(),
+                                    mEmail.getText().toString(),
+                                    mPhoneNumber.getText().toString(),
+                                    mDateBirthday, gender, imageId
+                            );
+                        }
+                    }
 
                 }
             });
@@ -269,10 +311,55 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
             imageUploadedReceiver = createImageUploadedReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(imageUploadedReceiver, new IntentFilter(BroadcastIntents.IMAGE_UPLOAD_OK));
         }
+        if (createCurrentUserReceiver == null) {
+            createCurrentUserReceiver = createCurrentUserOKReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(createCurrentUserReceiver, new IntentFilter(BroadcastIntents.GET_CURRENT_USER_REQUEST_OK));
+        }
+        if (changePasswordUserOKReceiver == null) {
+            changePasswordUserOKReceiver = changePasswordOKReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changePasswordUserOKReceiver, new IntentFilter(BroadcastIntents.CHANGE_PW_REQUEST_OK));
+        }
+        if (changePasswordUserFAILReceiver == null) {
+            changePasswordUserFAILReceiver = changePasswordFAILReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changePasswordUserFAILReceiver, new IntentFilter(BroadcastIntents.CHANGE_PW_REQUEST_FAIL));
+        }
 
         initViews();
+        APIService.getCurrentUser();
+
+        mNewPassword.addTextChangedListener(mWatcher);
+        mOldPassword.addTextChangedListener(mWatcher);
 
     }
+
+
+    TextWatcher mWatcher = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (!mNewPassword.getText().toString().equals("") && !mOldPassword.getText().toString().equals("")) {
+                mUserSave.setBackgroundColor(ContextCompat.getColor(App.getContext(), R.color.colorAccentDark));
+                mUserSave.setTextColor(ContextCompat.getColor(App.getContext(), R.color.bg_light));
+                mUserSave.setText(getResources().getString(R.string.change_password));
+            } else {
+                mUserSave.setBackgroundColor(ContextCompat.getColor(App.getContext(), R.color.bg_light));
+                mUserSave.setTextColor(ContextCompat.getColor(App.getContext(), R.color.colorAccentDark));
+                mUserSave.setText(getResources().getString(R.string.save));
+            }
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            // TODO Auto-generated method stub
+
+        }
+    };
 
     private BroadcastReceiver createImageUploadedReceiver() {
         return new BroadcastReceiver() {
@@ -288,6 +375,48 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
         };
     }
 
+    private BroadcastReceiver createCurrentUserOKReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+            }
+        };
+    }
+    private BroadcastReceiver changePasswordOKReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mOldPassword.setText("");
+                mNewPassword.setText("");
+                mReapeatNewPassword.setText("");
+
+                final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.user_password_updated), Snackbar.LENGTH_SHORT);
+                snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+    }
+    private BroadcastReceiver changePasswordFAILReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                final Snackbar snackbar = Snackbar.make(mScrollView, getResources().getString(R.string.error_400), Snackbar.LENGTH_SHORT);
+                snackbar.setAction(getResources().getString(R.string.event_done_action), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                    }
+                });
+                snackbar.show();
+            }
+        };
+    }
 
     @Override
     public void onDateSet(com.wdullaer.materialdatetimepicker.date.DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
@@ -353,6 +482,32 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
     @Override
     public void onResume() {
         super.onResume();
+        user = App.getCurrentUser();
+
+        if (user.getAvatar() == null) {
+            mUserPhoto.setVisibility(View.GONE);
+            mAvatarPlaceholder.setVisibility(View.VISIBLE);
+        } else {
+            photoDidSet();
+
+            Picasso.with(App.getContext())
+                    .load(user.getAvatar().getUrl())
+                    .fit()
+                    .centerCrop()
+                    .into(mUserPhoto, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            photoDidSet();
+                        }
+
+                        @Override
+                        public void onError() {
+
+                        }
+                    });
+        }
+
+
     }
 
     private BroadcastReceiver createSetUserEditOKReceiver() {

@@ -19,7 +19,9 @@ import com.happ.models.Currency;
 import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
 import com.happ.models.EventPhone;
+import com.happ.models.EventsMapData;
 import com.happ.models.EventsResponse;
+import com.happ.models.GeopointArrayResponce;
 import com.happ.models.HappImage;
 import com.happ.models.HappToken;
 import com.happ.models.Interest;
@@ -31,6 +33,7 @@ import com.happ.models.SignUpData;
 import com.happ.models.User;
 import com.happ.models.UserEditData;
 import com.happ.retrofit.serializers.DateDeserializer;
+import com.happ.retrofit.serializers.GeopointDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
 import com.happ.retrofit.serializers.PhoneDeserializer;
 import com.happ.retrofit.serializers.RejectionReasonsDeserializer;
@@ -110,6 +113,7 @@ public class HappRestClient {
                     .registerTypeAdapter(Date.class, new DateDeserializer())
                     .registerTypeAdapter(EventPhone.class, new PhoneDeserializer())
                     .registerTypeAdapter(RejectionReasons.class, new RejectionReasonsDeserializer())
+                    .registerTypeAdapter(GeopointArrayResponce.class, new GeopointDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }
@@ -582,8 +586,9 @@ public class HappRestClient {
     public void doChangePassword(String oldPassword, String newPassword) {
 
         ChangePwData changePwData = new ChangePwData();
-        changePwData.setOldPassword(oldPassword);
         changePwData.setNewPssword(newPassword);
+        changePwData.setOldPassword(oldPassword);
+
 
         happApi.doChangePassword(changePwData).enqueue(new Callback<HappToken>() {
             @Override
@@ -593,17 +598,6 @@ public class HappRestClient {
                 Log.d("HAPP_API", response.message());
 
                 if(response.isSuccessful()) {
-
-                    HappToken happToken = response.body();
-                    Realm realm = Realm.getDefaultInstance();
-                    realm.beginTransaction();
-
-                    realm.copyToRealmOrUpdate(happToken);
-
-                    realm.commitTransaction();
-                    realm.close();
-
-                    setAuthHeader();
 
                     Intent intent = new Intent(BroadcastIntents.CHANGE_PW_REQUEST_OK);
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
@@ -759,6 +753,65 @@ public class HappRestClient {
             });
 
         }
+    }
+
+
+    public void setEventsMap(GeopointArrayResponce geopoints, int radius) {
+
+        EventsMapData eventsMapData = new EventsMapData();
+        eventsMapData.setCenter(geopoints);
+        eventsMapData.setRadius(radius);
+
+
+        happApi.setEventsMap(eventsMapData).enqueue(new Callback<EventsResponse>() {
+            @Override
+            public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()));
+                Log.d("HAPP_API", response.message());
+
+                if (response.isSuccessful()) {
+
+                    List<Event> events = response.body().getEvents();
+
+                    User user = App.getCurrentUser();
+                    for (int i=0; i<events.size(); i++) {
+                        if (events.get(i).getAuthor().getId().equals(user.getId())) {
+                            events.get(i).setAuthor(user);
+                        }
+                    }
+
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(events);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    Intent intent = new Intent(BroadcastIntents.EVENTS_MAP_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+
+                } else {
+                    Intent intent = new Intent(BroadcastIntents.EVENTS_MAP_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<EventsResponse> call, Throwable t) {
+
+                Intent intent = new Intent(BroadcastIntents.EVENTS_MAP_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
     }
 
     public void doUpVote(final String eventId) {

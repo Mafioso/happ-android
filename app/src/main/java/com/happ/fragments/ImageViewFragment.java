@@ -11,11 +11,9 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.happ.R;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by iztiev on 8/22/16.
@@ -68,24 +66,21 @@ public class ImageViewFragment extends Fragment {
 
                         Log.d("EventImagesSwipeAdapter", "Setting Image");
 
-                            Glide.with(getContext())
-                                    .load(imageUrl)
-                                    .listener(new RequestListener<String, GlideDrawable>() {
+                        Picasso.with(getContext())
+                                .load(imageUrl)
+                                .fit()
+                                .centerCrop()
+                                .into(mImageView, new Callback() {
                                         @Override
-                                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            return false;
+                                        public void onSuccess() {
+                                            mImageView.setVisibility(View.VISIBLE);
+                                            mProgressBar.setVisibility(View.GONE);
                                         }
 
                                         @Override
-                                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            mImageView.setVisibility(View.VISIBLE);
-                                            mProgressBar.setVisibility(View.GONE);
-                                            return false;
+                                        public void onError() {
                                         }
-                                    })
-                                    .override(viewWidth, viewHeight)
-                                    .centerCrop()
-                                    .into(mImageView);
+                        });
                     } else {
                         mImageView.setVisibility(View.VISIBLE);
                     }

@@ -106,7 +106,7 @@ public class EventActivity extends AppCompatActivity {
 
     private LinearLayout mEventWEbSite, mEventEmail, mEventPhone;
     private LinearLayout mCircleLLCalendar, mCircleLLPrice, mCircleLLPlace;
-    private ImageView mFlashingImageViewCalendar, mFlashingImageViewPrice, mFlashingImageViewPlace;
+    private ImageView mFlashingImageViewDateTime, mFlashingImageViewPrice, mFlashingImageViewPlace;
     private Animation anim;
 
 
@@ -154,7 +154,6 @@ public class EventActivity extends AppCompatActivity {
         inEventActivity = intent.getBooleanExtra("in_event_activity", false);
         eventId = intent.getStringExtra("event_id");
         position = intent.getIntExtra("position", 10);
-
         setContentView(R.layout.activity_event);
         setTitle("");
         binds();
@@ -164,27 +163,6 @@ public class EventActivity extends AppCompatActivity {
         String versionName = BuildConfig.VERSION_NAME;
         mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
         mFab.setVisibility(View.GONE);
-
-        if (isOrg) {
-            mFab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent editIntent = new Intent(EventActivity.this, EditCreateActivity.class);
-                    editIntent.putExtra("event_id", eventId);
-                    EventActivity.this.startActivity(editIntent);
-                }
-            });
-        }
-
-        mCircleLLPlace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(EventActivity.this, EventMapActivity.class);
-                i.putExtra("event_id_for_map", eventId);
-                i.putExtra("from_event_activity", true);
-                startActivity(i);
-            }
-        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setEnterTransition(new Explode());
@@ -199,7 +177,6 @@ public class EventActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_rigth_arrow);
         }
@@ -297,6 +274,41 @@ public class EventActivity extends AppCompatActivity {
         App.setStatusBarTranslucent(getWindow(), true);
         setDrawerHeaderAvatar();
 
+        if (isOrg) {
+            mFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent editIntent = new Intent(EventActivity.this, EditCreateActivity.class);
+                    editIntent.putExtra("event_id", eventId);
+                    EventActivity.this.startActivity(editIntent);
+                }
+            });
+        }
+
+        if (event.getGeopoint() != null) {
+            mCircleLLPlace.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(EventActivity.this, EventMapActivity.class);
+                    i.putExtra("event_id_for_map", eventId);
+                    i.putExtra("from_event_activity", true);
+                    startActivity(i);
+                }
+            });
+        }
+
+        if (event.getRegistationLink()!= null) {
+            mCircleLLPrice.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent("com.happ.Browser");
+                    intent.setData(Uri.parse(event.getRegistationLink()));
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
+                }
+            });
+        }
+
         if (didUpvoteReceiver == null) {
             didUpvoteReceiver = createUpvoteReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
@@ -342,6 +354,8 @@ public class EventActivity extends AppCompatActivity {
         mCircleLLCalendar = (LinearLayout) findViewById(R.id.ll_calendar_image);
         mCircleLLPrice = (LinearLayout) findViewById(R.id.ll_price_image);
         mFlashingImageViewPlace = (ImageView) findViewById(R.id.iv_flashing_place);
+        mFlashingImageViewPrice = (ImageView) findViewById(R.id.iv_flashing_price);
+        mFlashingImageViewDateTime = (ImageView) findViewById(R.id.iv_flashing_calendar);
         mLLVote = (LinearLayout) findViewById(R.id.ll_upvote_image);
         mLLFav = (LinearLayout) findViewById(R.id.ll_fav_image);
         mCurrency = (TextView) findViewById(R.id.event_currency);
@@ -464,6 +478,8 @@ public class EventActivity extends AppCompatActivity {
 
         switch (id) {
             case android.R.id.home:
+
+
 //                if (!isOrg) {
 //                    Intent intent = new Intent(EventActivity.this, OrganizerModeActivity.class);
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -504,6 +520,7 @@ public class EventActivity extends AppCompatActivity {
     private void repopulateEvent() {
 
         if (inEventActivity) {
+
             Realm realm = Realm.getDefaultInstance();
             event = realm.where(Event.class).equalTo("id", eventId).findFirst();
             event = realm.copyFromRealm(event);
@@ -549,24 +566,39 @@ public class EventActivity extends AppCompatActivity {
                 mCircleLLPlace.setBackgroundResource(R.drawable.circle_event);
                 mLLVote.setBackgroundResource(R.drawable.circle_event);
                 mFlashingImageViewPlace.setBackgroundResource(R.drawable.circle_event);
+                mFlashingImageViewPrice.setBackgroundResource(R.drawable.circle_event);
+
 
                 GradientDrawable gdCalendar = (GradientDrawable) mCircleLLCalendar.getBackground().getCurrent();
                 GradientDrawable gdPlace = (GradientDrawable) mCircleLLPlace.getBackground().getCurrent();
                 GradientDrawable gdPrice = (GradientDrawable) mCircleLLPrice.getBackground().getCurrent();
                 GradientDrawable gdVote = (GradientDrawable) mLLVote.getBackground().getCurrent();
                 GradientDrawable gdFlashingPlace = (GradientDrawable) mFlashingImageViewPlace.getBackground().getCurrent();
+                GradientDrawable gdFlashingPrice = (GradientDrawable) mFlashingImageViewPrice.getBackground().getCurrent();
 
                 gdCalendar.setColor(Color.parseColor(event.getColor()));
                 gdPlace.setColor(Color.parseColor(event.getColor()));
                 gdPrice.setColor(Color.parseColor(event.getColor()));
                 gdVote.setColor(Color.parseColor(event.getColor()));
                 gdFlashingPlace.setColor(Color.parseColor(event.getColor()));
+                gdFlashingPrice.setColor(Color.parseColor(event.getColor()));
 
                 mLLToolbar.setBackgroundColor(Color.parseColor(event.getColor()));
             }
 
-            anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha_infiniti);
-            mFlashingImageViewPlace.startAnimation(anim);
+            if (event.getGeopoint() != null) {
+                mFlashingImageViewPlace.setVisibility(View.VISIBLE);
+                anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha_infiniti);
+                mFlashingImageViewPlace.startAnimation(anim);
+            }
+
+            if (event.getRegistationLink() != null) {
+                mFlashingImageViewPrice.setVisibility(View.VISIBLE);
+                anim = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.animatealpha_infiniti);
+                mFlashingImageViewPrice.startAnimation(anim);
+            }
+
+
 
             mTitle.setText(event.getTitle());
             mPlace.setText(event.getPlace());

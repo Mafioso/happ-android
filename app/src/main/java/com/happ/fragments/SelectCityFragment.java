@@ -63,7 +63,7 @@ public class SelectCityFragment extends Fragment {
     private City selectedCity;
     private boolean fromCityActivity;
     private boolean fromEditCreateActivity;
-    private String mySelectedCityId = App.getCurrentCity().getId();
+    private String mySelectedCityId;
 
     private EditText search;
 

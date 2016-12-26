@@ -1,19 +1,28 @@
 package com.happ.fragments;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -21,14 +30,16 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.happ.App;
 import com.happ.R;
+import com.happ.controllers.EventMapActivity;
 import com.happ.models.Event;
+import com.happ.models.GeopointArrayResponce;
+import com.happ.retrofit.HappRestClient;
 
 import java.util.ArrayList;
 
@@ -38,7 +49,9 @@ import io.realm.RealmResults;
 /**
  ** Created by dante on 11/1/16.
  * */
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
     public MapFragment() {
 
@@ -52,7 +65,20 @@ public class MapFragment extends Fragment {
     private MapView mMapView;
     private GoogleMap googleMap;
     private ArrayList<Event> events;
+    private FloatingActionButton mFabLocation;
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+    private Location mLastLocation;
+    private LatLng myLocationLatLng;
+    private ChangeColorIconToolbarListener mChangeColorIconToolbarListener;
 
+    public interface ChangeColorIconToolbarListener {
+        void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter);
+    }
+
+    public void setChangeColorIconToolbarListener(ChangeColorIconToolbarListener listener) {
+        mChangeColorIconToolbarListener = listener;
+    }
 
     @Nullable
     @Override
@@ -60,11 +86,7 @@ public class MapFragment extends Fragment {
 //        return super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
-        Realm realm = Realm.getDefaultInstance();
-        RealmResults<Event> eventRealmResults = realm.where(Event.class).equalTo("localOnly", false).isNotNull("geopoint").findAll();
-        events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
-        realm.close();
-
+        mFabLocation = (FloatingActionButton) view.findViewById(R.id.fab_my_location);
         mMapView = (MapView) view.findViewById(R.id.mapview_feed);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
@@ -80,49 +102,20 @@ public class MapFragment extends Fragment {
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
 
-                if (ActivityCompat.checkSelfPermission(App.getContext(),
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(App.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                                != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                googleMap.setMyLocationEnabled(true);
-
-                LatLng eventLocation = new LatLng(43.218282, 76.927793);
-                googleMap.addMarker(new MarkerOptions()
-                        .position(eventLocation)
-                        .title("Marker Title")
-                        .snippet("Marker Description"));
-
-//                CameraPosition cameraPosition = new CameraPosition.Builder().target(eventLocation).zoom(12).build();
-//                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-                for (int p = 0; p < events.size(); p++) {
-                    if (events.get(p).getGeopoint() != null) {
-
-                        double lat = events.get(p).getGeopoint().getLat();
-                        double lng = events.get(p).getGeopoint().getLng();
-                        LatLng location = new LatLng(lat, lng);
-
-                        googleMap.addMarker(new MarkerOptions()
-                                .position(location)
-                                .icon(BitmapDescriptorFactory.defaultMarker())  
-                                .title(events.get(p).getTitle()));
-
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
-                    } else {
-                        p++;
+                //Initialize Google Play Services
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ContextCompat.checkSelfPermission(App.getContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        buildGoogleApiClient();
+                        googleMap.setMyLocationEnabled(true);
                     }
+                } else {
+                    buildGoogleApiClient();
+                    googleMap.setMyLocationEnabled(true);
                 }
 
-
+                googleMap.getUiSettings().setMyLocationButtonEnabled(false);
 
                 googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                     @Override
@@ -138,15 +131,56 @@ public class MapFragment extends Fragment {
                         Location.distanceBetween(target.latitude, target.longitude, southEast.latitude, southEast.longitude, results2);
                         double distance = results1[0] > results2[0] ? results1[0] : results2[0];
                         Log.d(TAG, "onCameraChange:" + results1[0] + "  " + results2[0]);
-                        double radius = results1[0];
+                        double doubleRadius = results1[0];
+                        int intRadius = (int)doubleRadius;
+
+                        if (myLocationLatLng != null ) {
+
+                            googleMap.clear();
+
+//                            Realm deleteFromRealm = Realm.getDefaultInstance();
+//                            final RealmResults<Event> results = deleteFromRealm.where(Event.class).findAll();
+//                            deleteFromRealm.executeTransaction(new Realm.Transaction() {
+//                                @Override
+//                                public void execute(Realm realm) {
+//                                    results.deleteAllFromRealm();
+//                                }
+//                            });
+//                            deleteFromRealm.close();
+
+                            GeopointArrayResponce geopointArrayResponce = new GeopointArrayResponce();
+                            geopointArrayResponce.setLat((float)myLocationLatLng.latitude);
+                            geopointArrayResponce.setLng((float)myLocationLatLng.longitude);
+
+                            HappRestClient.getInstance().setEventsMap(geopointArrayResponce, intRadius);
+
+                            Realm realm = Realm.getDefaultInstance();
+                            RealmResults<Event> eventRealmResults = realm.where(Event.class).findAll();
+                            events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
+                            realm.close();
+
+
+                            for (int p = 0; p < events.size(); p++) {
+                                if (events.get(p).getGeopoint() != null) {
+
+                                    double lat = events.get(p).getGeopoint().getLat();
+                                    double lng = events.get(p).getGeopoint().getLng();
+                                    LatLng location = new LatLng(lat, lng);
+
+                                    googleMap.addMarker(new MarkerOptions()
+                                            .position(location)
+                                            .icon(BitmapDescriptorFactory.defaultMarker())
+                                            .title(events.get(p).getTitle()));
+
+//                                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
+                                } else {
+                                    p++;
+                                }
+                            }
+                        }
+
                     }
                 });
-
-                googleMap.addCircle(new CircleOptions()
-                        .center(new LatLng(43.218282, 76.927793))
-                        .radius(3000)
-                        .strokeColor(Color.RED)
-                        .fillColor(android.R.color.transparent));
 
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
@@ -154,8 +188,13 @@ public class MapFragment extends Fragment {
                         for (int p = 0; p < events.size(); p++) {
                             if (marker.getTitle().equals(events.get(p).getTitle())) {
 
-                                Toast.makeText(App.getContext(), "marker is  " +
-                                        events.get(p).getTitle() + "// id: " + events.get(p).getId() , Toast.LENGTH_SHORT).show();
+                                    Intent goToEventMapIntent = new Intent(App.getContext(), EventMapActivity.class);
+                                    goToEventMapIntent.putExtra("event_id_for_map", events.get(p).getId());
+                                    goToEventMapIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                                    startActivity(goToEventMapIntent);
+
+//                                Toast.makeText(App.getContext(), "marker is  " +
+//                                        events.get(p).getTitle() + "// id: " + events.get(p).getId() , Toast.LENGTH_SHORT).show();
                             }
                         }
                         return true;
@@ -166,9 +205,74 @@ public class MapFragment extends Fragment {
         });
 
 
+        mFabLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startLocationUpdates();
+            }
+        });
+
+
         return view;
     }
 
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(App.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(App.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        if (ContextCompat.checkSelfPermission(App.getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+        }
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        mLastLocation = location;
+
+        myLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocationLatLng));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+
+        //stop location updates
+        if (mGoogleApiClient != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(App.getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
 
 //    @Override
 //    public void onMapReady(GoogleMap map) {
@@ -253,6 +357,7 @@ public class MapFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        mChangeColorIconToolbarListener.onChangeColorIconToolbar(R.drawable.ic_menu_gray, R.drawable.ic_filter_gray);
     }
 
     @Override

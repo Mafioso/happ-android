@@ -24,6 +24,9 @@ public class BroadcastIntents {
     public static final String ORG_EVENTS_REQUEST_OK = "com.happ.org_events_request_ok";
     public static final String ORG_EVENTS_REQUEST_FAIL = "com.happ.org_events_request_fail";
 
+    public static final String EVENTS_MAP_REQUEST_OK = "com.happ.events_map_request_ok";
+    public static final String EVENTS_MAP_REQUEST_FAIL = "com.happ.events_map_request_fail";
+
     public static final String EXPLORE_EVENTS_REQUEST_OK = "com.happ.explore_events_request_ok";
     public static final String EXPLORE_EVENTS_REQUEST_FAIL = "com.happ.explore_events_request_fail";
 

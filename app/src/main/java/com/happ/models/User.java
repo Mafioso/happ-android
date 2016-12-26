@@ -7,7 +7,6 @@ import java.util.Date;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
-import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -121,7 +120,6 @@ public class User extends RealmObject {
     public String getImageUrl() {
         if (this.avatar != null) return this.avatar.getUrl();
         else return null;
-//        return "http://nick.mtvnimages.com/nick/video/images/avatar/avatar-118-16x9.jpg";
     }
 
     public Date getDate_of_birth() {

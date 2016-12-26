@@ -39,7 +39,8 @@
                     android:id="@+id/avatar_placeholder"
                     android:background="@color/dark3"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:visibility="visible">
 
                     <ImageView
                         android:layout_width="420dp"
@@ -78,8 +79,7 @@
                     android:layout_height="420dp"
                     android:src="@drawable/my_avatar"
                     android:scaleType="centerCrop"
-                    android:visibility="gone"
-                    />
+                    android:visibility="gone" />
 
 
                 <LinearLayout
@@ -280,6 +280,7 @@
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_toRightOf="@+id/iv_calendar"
+                    android:layout_toLeftOf="@+id/iv_edit_birthday"
                     android:id="@+id/input_layout_user_birthday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -297,12 +298,13 @@
 
                 <ImageView
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:id="@+id/iv_edit_birthday"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="@drawable/ic_edit"
+                    android:layout_centerVertical="true"
                     android:padding="8dp"
-                    android:layout_alignParentBottom="true"
                     android:alpha="0.57"/>
             </RelativeLayout>
 
@@ -429,7 +431,7 @@
         android:layout_width="match_parent"
         android:layout_height="52dp"
         style="?attr/borderlessButtonStyle"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorAccentDark"
         android:textSize="16sp"
         android:textAllCaps="true"
         android:layout_alignParentBottom="true"

@@ -66,6 +66,10 @@ public class Event extends RealmObject implements Serializable {
     private boolean isActive;
     @SerializedName("rejection_reasons")
     private RealmList<RejectionReasons> rejectionReasons;
+    @SerializedName("registration_link")
+    private String registationLink;
+    @SerializedName("close_on_start")
+    private boolean closeOnStart;
 
     //geo for googleMap
     private GeopointResponse geopoint;
@@ -357,5 +361,21 @@ public class Event extends RealmObject implements Serializable {
 
     public void setImageIds(ArrayList<String> imageIds) {
         this.imageIds = imageIds;
+    }
+
+    public String getRegistationLink() {
+        return registationLink;
+    }
+
+    public void setRegistationLink(String registationLink) {
+        this.registationLink = registationLink;
+    }
+
+    public boolean isCloseOnStart() {
+        return closeOnStart;
+    }
+
+    public void setCloseOnStart(boolean closeOnStart) {
+        this.closeOnStart = closeOnStart;
     }
 }

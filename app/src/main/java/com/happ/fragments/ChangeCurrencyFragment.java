@@ -10,13 +10,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -48,6 +51,7 @@ public class ChangeCurrencyFragment extends Fragment {
     private BroadcastReceiver changeCurrencyRequestDoneReceiver;
     private OnCurrencySelectListener listener;
     private String selectedCurrency;
+    private Toolbar mToolbar;
 
     public void setOnCurrencyListener(OnCurrencySelectListener listener) {
         this.listener = listener;
@@ -81,6 +85,23 @@ public class ChangeCurrencyFragment extends Fragment {
         selectedCurrency = getArguments().getString("selectedCurrency");
         final View contentView = inflater.inflate(R.layout.fragment_change_currency, container, false);
         final AppCompatActivity activity = (AppCompatActivity) getActivity();
+
+
+        mToolbar = (Toolbar) contentView.findViewById(R.id.toolbar);
+        activity.setSupportActionBar(mToolbar);
+        mToolbar.setTitle(R.string.event_currency);
+
+        ActionBar actionBar = activity.getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_close_grey);
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(App.getContext(), "Test", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
 
         currencyPageSize = Integer.parseInt(this.getString(R.string.event_feeds_page_size));
         visibleThreshold = 10;

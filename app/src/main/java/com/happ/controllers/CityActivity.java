@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.animation.PathInterpolatorCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -110,7 +112,7 @@ public class CityActivity extends AppCompatActivity {
 
                 final SelectCityFragment scf = new SelectCityFragment();
                 Bundle args = new Bundle();
-                args.putBoolean("from_edit_create_activity", true);
+                args.putBoolean("from_city_activity", true);
                 scf.setArguments(args);
 
                 scf.setOnCitySelectListener(new SelectCityFragment.OnCitySelectListener() {
@@ -197,7 +199,18 @@ public class CityActivity extends AppCompatActivity {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Intent feedIntent = new Intent(CityActivity.this, SelectInterestsActivity.class);
+
+                SharedPreferences sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                String name = sPref.getString("set_first_currency", "");
+
+                if (name.equals("")) {
+                    APIService.setCurrency("583bcfd633f276475e4746cf");
+                    sPref = PreferenceManager.getDefaultSharedPreferences(App.getContext());
+                    sPref.edit().putString("set_first_currency", "set_first_currency_is_on").apply();
+                }
+
+
+                    Intent feedIntent = new Intent(CityActivity.this, SelectInterestsActivity.class);
                 feedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 CityActivity.this.startActivity(feedIntent);
                 CityActivity.this.overridePendingTransition(0,0);

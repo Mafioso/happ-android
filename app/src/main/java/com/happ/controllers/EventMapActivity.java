@@ -21,16 +21,11 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -48,8 +43,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.happ.App;
 import com.happ.DataParser;
 import com.happ.R;
-import com.happ.controllers_drawer.SettingsActivity;
+import com.happ.controllers_drawer.EventActivity;
 import com.happ.models.Event;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -83,12 +80,11 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     private FloatingActionButton mFabRoad, mFabLocation;
     private MapView mapView;
 
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
     private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
     private LocationRequest mLocationRequest;
 
-    private TextView mEventTitle,mEventPlace,mEventDistance,mEventPrice,mEventDate,mEventPriceCurrency;
+    private TextView mEventTitle,mEventPlace,mEventDistance,mEventPrice,mEventDate;
 
     private Button mBtnEventPage;
     private ImageView mImageView, mImagePlaceHolder;
@@ -98,7 +94,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     private String eventId;
 
     private LatLng myLocationLatLng;
-    private LatLng eventLocation = new LatLng(43.218282, 76.927793);
+    private LatLng eventLocation;
 
     private boolean fromEventActivity;
 
@@ -116,6 +112,10 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         event = realm.where(Event.class).equalTo("id", eventId).findFirst();
         event = realm.copyFromRealm(event);
         realm.close();
+
+        double lat = event.getGeopoint().getLat();
+        double lng = event.getGeopoint().getLng();
+        eventLocation = new LatLng(lat, lng);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mFabLocation = (FloatingActionButton) findViewById(R.id.fab_my_location);
@@ -173,82 +173,42 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
             mEventPrice.setText(price);
         }
 
-        mEventPrice.setText(event.getPriceRange());
-        mEventDate.setText(event.getStartDateFormatted("dd MMM"));
+        String startDate = event.getStartDateFormatted("MMM dd").toUpperCase();
+        String endDate = event.getEndDateFormatted("MMM dd").toUpperCase();
 
-        if(event.getImages().size() > 0){
-            final String url = event.getImages().get(0).getUrl();
-            Glide.clear(mImageView);
+        if (startDate.equals(endDate)) {
+            mEventDate.setText(startDate);
+        } else {
+            mEventDate.setText(startDate + " - " + endDate);
+        }
+
+        if(event.getImages().size() > 0) {
+            String url = event.getImages().get(0).getUrl();
             mImagePreloader.setVisibility(View.VISIBLE);
-            try {
-                ViewTreeObserver viewTreeObserver = mImageView.getViewTreeObserver();
-                if (viewTreeObserver.isAlive()) {
-                    viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            Picasso.with(App.getContext())
+                    .load(url)
+                    .fit()
+                    .centerCrop()
+                    .into(mImageView, new Callback() {
                         @Override
-                        public void onGlobalLayout() {
-                            mImageView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            int viewWidth = mImageView.getWidth();
-                            int viewHeight = mImageView.getHeight();
-                            Log.d("HEIGHT_WIDTH", String.valueOf(viewWidth) + " " + String.valueOf(viewHeight));
+                        public void onSuccess() {
+                            mImagePlaceHolder.setVisibility(View.GONE);
+                            mImagePreloader.setVisibility(View.GONE);
+                        }
 
-                            Glide.with(App.getContext())
-                                    .load(url)
-                                    .listener(new RequestListener<String, GlideDrawable>() {
-                                        @Override
-                                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                            Log.e("GLIDE_ERR", url + " " + e.getMessage());
-
-                                            mImagePlaceHolder.setVisibility(View.VISIBLE);
-                                            return false;
-                                        }
-
-                                        @Override
-                                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                            Log.d("GLIDE_OK", url);
-//                                                Bitmap bm = ((GlideBitmapDrawable)resource.getCurrent()).getBitmap();
-//                                                Palette p = Palette.from(bm).generate();
-//
-//                                                Palette.Swatch vibrantSwatch = p.getVibrantSwatch();
-//
-//                                                String strColor = String.format("#%06X", 0xFFFFFF & vibrantSwatch.getRgb());
-//
-//                                                Realm realm = Realm.getDefaultInstance();
-//                                                Event event = realm.where(Event.class).equalTo("id",item.event.getId()).findFirst();
-//                                                if (event != null) {
-//                                                    realm.beginTransaction();
-//                                                    event.setColor(strColor);
-//                                                    realm.copyToRealmOrUpdate(event);
-//                                                    realm.commitTransaction();
-//                                                }
-//                                                realm.close();
-//
-//                                                if (vibrantSwatch != null) {
-//                                                    mBackground.setBackgroundColor(vibrantSwatch.getRgb());
-//                                                } else {
-//
-//                                                }
-
-                                            mImagePlaceHolder.setVisibility(View.INVISIBLE);
-                                            mImagePreloader.setVisibility(View.INVISIBLE);
-                                            return false;
-                                        }
-                                    })
-                                    .override(viewWidth, viewHeight)
-                                    .centerCrop()
-                                    .into(mImageView);
-                            
+                        @Override
+                        public void onError() {
+                            mImagePlaceHolder.setVisibility(View.VISIBLE);
                         }
                     });
-                }
-            } catch (Exception ex) {
-                Log.e("EVENTS PAGE", ex.getLocalizedMessage());
-            }
         } else {
-            Glide.clear(mImageView);
+            mImagePreloader.setVisibility(View.GONE);
             mImagePlaceHolder.setVisibility(View.VISIBLE);
         }
-        
-        
+
+
+
         mFabLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -260,8 +220,17 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
 
+                googleMap.clear();
                 LocationManager locationManager = (LocationManager) App.getContext().getSystemService(Context.LOCATION_SERVICE);
                 boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_circle_orange_border);
+                BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(eventLocation);
+                markerOptions.icon(markerIcon);
+                googleMap.addMarker(markerOptions);
 
                 if (enabled) {
                     LatLng origin = myLocationLatLng;
@@ -269,15 +238,14 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                     // Getting URL to the Google Directions API
                     String url = getUrl(origin, dest);
-                    Log.d("onMapClick", url.toString());
                     FetchUrl FetchUrl = new FetchUrl();
 
                     // Start downloading json data from Google Directions API
                     FetchUrl.execute(url);
 
                     //move map camera
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(eventLocation));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(eventLocation));
+                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
                     mRouteBuilt = true;
                     Toast.makeText(EventMapActivity.this, R.string.route_is_built, Toast.LENGTH_SHORT).show();
@@ -293,9 +261,12 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
                 if (fromEventActivity) {
                     finish();
                 } else {
-                    Intent goToFeedIntent = new Intent(EventMapActivity.this, SettingsActivity.class);
-                    goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(goToFeedIntent);
+                    Intent goToEventActivityIntent = new Intent(EventMapActivity.this, EventActivity.class);
+                    goToEventActivityIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    goToEventActivityIntent.putExtra("event_id", eventId);
+                    goToEventActivityIntent.putExtra("in_event_activity", true);
+
+                    startActivity(goToEventActivityIntent);
                     overridePendingTransition(0,0);
                 }
             }
@@ -306,7 +277,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.googleMap = googleMap;
 
         //Initialize Google Play Services
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -314,14 +285,14 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
                     Manifest.permission.ACCESS_FINE_LOCATION)
                     == PackageManager.PERMISSION_GRANTED) {
                 buildGoogleApiClient();
-                mMap.setMyLocationEnabled(true);
+                this.googleMap.setMyLocationEnabled(true);
             }
         } else {
             buildGoogleApiClient();
-            mMap.setMyLocationEnabled(true);
+            this.googleMap.setMyLocationEnabled(true);
         }
 
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        this.googleMap.getUiSettings().setMyLocationButtonEnabled(false);
 
 //        final ArrayList<LatLng> MarkerPoints = new ArrayList<LatLng>();
 //        MarkerPoints.add(eventLocation);
@@ -331,12 +302,11 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(eventLocation);
-        markerOptions.title("Current Position");
         markerOptions.icon(markerIcon);
-        mMap.addMarker(markerOptions);
+        this.googleMap.addMarker(markerOptions);
 
 //        // Setting onclick event listener for the map
-//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 //
 //            @Override
 //            public void onMapClick(LatLng point) {
@@ -344,7 +314,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 //                // Already two locations
 //                if (MarkerPoints.size() > 0) {
 //                    MarkerPoints.clear();
-//                    mMap.clear();
+//                    googleMap.clear();
 //                }
 //
 //                // Adding new item to the ArrayList
@@ -368,7 +338,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 //
 //
 //                // Add new marker to the Google Map Android API V2
-//                mMap.addMarker(options);
+//                googleMap.addMarker(options);
 //
 //                // Checks, whether start and end locations are captured
 //                if (MarkerPoints.size() >= 2) {
@@ -383,8 +353,8 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 //                    // Start downloading json data from Google Directions API
 //                    FetchUrl.execute(url);
 //                    //move map camera
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
-//                    mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+//                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
+//                    googleMap.animateCamera(CameraUpdateFactory.zoomTo(11));
 //                }
 //
 //            }
@@ -538,7 +508,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
 
             // Drawing polyline in the Google Map for the i-th route
             if (lineOptions != null) {
-                mMap.addPolyline(lineOptions);
+                googleMap.addPolyline(lineOptions);
             } else {
                 Log.d("onPostExecute", "without Polylines drawn");
             }
@@ -586,17 +556,30 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onLocationChanged(Location location) {
 
-        mLastLocation = location;
 //        if (mCurrLocationMarker != null) {
 //            mCurrLocationMarker.remove();
 //        }
 
         myLocationLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
+        Location startPoint=new Location("locationIsA");
+        startPoint.setLatitude(location.getLatitude());
+        startPoint.setLongitude(location.getLongitude());
+
+        Location endPoint=new Location("locationIsB");
+        endPoint.setLatitude(event.getGeopoint().getLat());
+        endPoint.setLongitude(event.getGeopoint().getLng());
+
+        double distance = startPoint.distanceTo(endPoint);
+        double result = Math.rint(100.0 * (distance / 1000)) / 100.0;
+        String resultDistanceString = String.format("%.1f", result);
+
+        mEventDistance.setText(resultDistanceString + " km");
+
 
         //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocationLatLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLocationLatLng));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(16));
 
         //stop location updates
         if (mGoogleApiClient != null) {
@@ -604,7 +587,6 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
         }
 
     }
-
 
     private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
         Canvas canvas = new Canvas();
@@ -670,7 +652,7 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
                         if (mGoogleApiClient == null) {
                             buildGoogleApiClient();
                         }
-//                        mMap.setMyLocationEnabled(true);
+//                        googleMap.setMyLocationEnabled(true);
                     }
 
                 } else {

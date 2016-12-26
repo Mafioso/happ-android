@@ -5,6 +5,7 @@ import com.happ.models.CitiesResponse;
 import com.happ.models.City;
 import com.happ.models.CurrencyResponse;
 import com.happ.models.Event;
+import com.happ.models.EventsMapData;
 import com.happ.models.EventsResponse;
 import com.happ.models.HappImage;
 import com.happ.models.HappToken;
@@ -161,5 +162,10 @@ public interface HAPPapi {
     @Multipart
     @POST("upload/")
     Call<List<HappImage>> uploadImage(@Part MultipartBody.Part file);
+
+    @POST("events/map/")
+    Call<EventsResponse> setEventsMap(@Body EventsMapData eventsMapData);
+
+
 
 }
