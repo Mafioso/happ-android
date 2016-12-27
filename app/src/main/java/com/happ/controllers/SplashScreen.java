@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
-import com.happ.R;
 import com.happ.controllers_drawer.FeedActivity;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
@@ -30,8 +29,13 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash_screen);
+//        setContentView(R.layout.splash_screen);
 
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
 
         if (mCityLoadedBroadcastReceiver == null) {
             mCityLoadedBroadcastReceiver = createCityLoadedBroadcastReceiver();

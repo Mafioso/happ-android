@@ -91,7 +91,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         int sectionFirstPosition = 0;
 
         for (int i=0; i<events.size(); i++) {
-            DateTime eventDate = new DateTime(events.get(0).getStartDate());
+            DateTime eventDate = new DateTime(events.get(0).getDatetimes().get(0).getDate());
             eventDate.minusHours(eventDate.hourOfDay().get());
             eventDate.minusMinutes(eventDate.minuteOfHour().get());
             eventDate.minusSeconds(eventDate.secondOfMinute().get());

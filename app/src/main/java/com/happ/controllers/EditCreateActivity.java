@@ -35,6 +35,7 @@ import com.happ.adapters.EcImagesAdapter;
 import com.happ.controllers_drawer.EventActivity;
 import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.fragments.ChangeCurrencyFragment;
+import com.happ.fragments.PointMarkerMapFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.City;
 import com.happ.models.Currency;
@@ -440,8 +441,34 @@ public class EditCreateActivity extends AppCompatActivity {
         mImgBtnSelectPointMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(EditCreateActivity.this, "in progress... ^_^", Toast.LENGTH_SHORT).show();
+                final PointMarkerMapFragment pmmf = new PointMarkerMapFragment();
+                Bundle args = new Bundle();
+//                args.putBoolean("from_edit_create_activity", true);
+//                args.putString("selectedCity", selectedCity.getId());
+                pmmf.setArguments(args);
 
+//                pmmf.setOnCitySelectListener(new SelectCityFragment.OnCitySelectListener() {
+//                    @Override
+//                    public void onCitySelected(City city, float x, float y) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancel(float x, float y) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onCitySelectedFromEditCreate(City city) {
+//                        selectedCity = city;
+//                        mEventCity.setText(selectedCity.getName().trim());
+//                    }
+//
+//                });
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fl_container, pmmf)
+                        .commit();
             }
         });
 

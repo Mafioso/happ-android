@@ -294,7 +294,9 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                                     mUsername.getText().toString(),
                                     mEmail.getText().toString(),
                                     mPhoneNumber.getText().toString(),
-                                    mDateBirthday, gender, imageId
+                                    mDateBirthday,
+                                    gender,
+                                    imageId
                             );
                         }
                     }

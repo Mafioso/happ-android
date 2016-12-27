@@ -70,6 +70,8 @@ public class PasswordRecoveActivity extends AppCompatActivity {
 
     private boolean isKeyboarShown = false;
     private ViewTreeObserver.OnGlobalLayoutListener mKeyboardListener;
+    private RelativeLayout mRLDoneForm;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,8 @@ public class PasswordRecoveActivity extends AppCompatActivity {
         mIVbg = (AppCompatImageView) findViewById(R.id.iv_recove_pw_bg);
         mTVEnterEmail = (TextView) findViewById(R.id.tv_enter_email);
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_recove_password);
-
+        mRLDoneForm = (RelativeLayout) findViewById(R.id.rl_form_response_done);
+        mRLDoneForm.setVisibility(View.GONE);
 
         LockableScrollView sv = (LockableScrollView)findViewById(R.id.fake_scrollview);
         sv.setScrollingEnabled(false);
@@ -119,6 +122,7 @@ public class PasswordRecoveActivity extends AppCompatActivity {
                 mBtnRecovePassword.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
                 HappRestClient.getInstance().setPasswordReset(mEmail.getText().toString());
+                mRLDoneForm.setVisibility(View.VISIBLE);
             }
         });
 

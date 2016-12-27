@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:drawable="@color/bg_light" />
+
+    <item
+        android:left="200dp"
+        android:right="200dp"
+        android:top="200dp"
+        android:bottom="200dp">
+
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/happ_logo_512"
+            />
+    </item>
+
+</layer-list>

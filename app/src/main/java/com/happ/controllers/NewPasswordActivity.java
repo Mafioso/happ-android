@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.text.SpannableString;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -27,6 +28,7 @@ import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.R;
 import com.happ.controllers_drawer.OrganizerModeActivity;
+import com.happ.retrofit.APIService;
 import com.happ.retrofit.HappRestClient;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -77,6 +79,9 @@ public class NewPasswordActivity extends AppCompatActivity {
             uidb64 = getIntent().getData().getQueryParameter("uidb64");
             token = getIntent().getData().getQueryParameter("token");
 
+            Log.e("Log >>>>", "uidb64: " + uidb64);
+            Log.e("Log >>>>", "token: " + token);
+
             mBtnChangePassword.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -89,8 +94,9 @@ public class NewPasswordActivity extends AppCompatActivity {
                 }
             });
 
-        } else {
+        } else if (uriData.getQueryParameter("key") != null) {
             key = getIntent().getData().getQueryParameter("key");
+            Log.e("Log >>>>", "key: " + key);
             mRLNewPassword.setVisibility(View.GONE);
             mRLReapeatNewPassword.setVisibility(View.GONE);
             mTVInformation.setVisibility(View.GONE);
@@ -234,6 +240,7 @@ public class NewPasswordActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
                 mpb.setVisibility(View.GONE);
                 mBtnChangePassword.setVisibility(View.VISIBLE);
+                APIService.getCurrentUser();
 
                 Intent goToOrganizerMode = new Intent(getApplicationContext(), OrganizerModeActivity.class);
                 goToOrganizerMode.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);

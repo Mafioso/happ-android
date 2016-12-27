@@ -28,6 +28,7 @@ public class User extends RealmObject {
     @SerializedName("avatar_id")
     private String avatarId;
     private HappImage avatar;
+    private int role;
 
 
     public String getUsername() {
@@ -144,5 +145,13 @@ public class User extends RealmObject {
 
     public void setAvatarId(String avatarId) {
         this.avatarId = avatarId;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
     }
 }

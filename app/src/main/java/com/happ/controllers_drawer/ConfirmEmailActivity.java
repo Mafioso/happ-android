@@ -168,20 +168,10 @@ public class ConfirmEmailActivity extends AppCompatActivity {
                 if (mEditTextConfirmEmail.getText().toString().equals("")) {
                     Toast.makeText(ConfirmEmailActivity.this, getResources().getString(R.string.enter_your_email), Toast.LENGTH_SHORT).show();
                 } else {
-//                    if (user.getEmail() != null) {
-                        HappRestClient.getInstance().getConfirmEmail();
+                    HappRestClient.getInstance().getConfirmEmail();
+                    mProgressBar.setVisibility(View.VISIBLE);
                     mRLDoneForm.setVisibility(View.VISIBLE);
-//                    } else {
-//                        APIService.doUserEdit(
-//                                user.getFullname(),
-//                                mEditTextConfirmEmail.getText().toString(),
-//                                user.getPhone(),
-//                                user.getDate_of_birth(),
-//                                user.getGender(),
-//                                user.getAvatarId());
 
-//                        HappRestClient.getInstance().getConfirmEmail();
-//                    }
                 }
             }
         });
