@@ -3,7 +3,9 @@ package com.happ.retrofit;
 import com.happ.models.ChangePwData;
 import com.happ.models.CitiesResponse;
 import com.happ.models.City;
+import com.happ.models.ConfirmEmailKey;
 import com.happ.models.CurrencyResponse;
+import com.happ.models.EmailResetPassword;
 import com.happ.models.Event;
 import com.happ.models.EventsMapData;
 import com.happ.models.EventsResponse;
@@ -12,6 +14,7 @@ import com.happ.models.HappToken;
 import com.happ.models.InterestResponse;
 import com.happ.models.LanguageData;
 import com.happ.models.LoginData;
+import com.happ.models.PasswordResetResponse;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
 import com.happ.models.UserEditData;
@@ -167,5 +170,16 @@ public interface HAPPapi {
     Call<EventsResponse> setEventsMap(@Body EventsMapData eventsMapData);
 
 
+    @POST("auth/password/reset/")
+    Call<Void> setPasswordReset(@Body EmailResetPassword emailResetPassword);
+
+    @POST("auth/password/reset/confirm/")
+    Call<Void> setNewPassword(@Body PasswordResetResponse passwordResetResponse);
+
+    @GET("auth/email/confirm/request/")
+    Call<Void> getConfirmEmail();
+
+    @POST("auth/email/confirm/")
+    Call<Void> setConfirmEmail(@Body ConfirmEmailKey confirmEmailKey);
 
 }

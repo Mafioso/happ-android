@@ -54,6 +54,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.Realm;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by dante on 9/22/16.
@@ -98,6 +99,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
     private int closeDrawable;
     private AppBarLayout.OnOffsetChangedListener offsetChangedListener;
     private String imageId;
+    private MaterialProgressBar mUserAvatarProgress;
 
 
     private Bitmap newImageBitmap;
@@ -152,13 +154,11 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
         mOldPassword = (EditText) findViewById(R.id.old_password);
         mNewPassword = (EditText) findViewById(R.id.new_password);
         mReapeatNewPassword = (EditText) findViewById(R.id.repeat_new_password);
+        mUserAvatarProgress = (MaterialProgressBar) findViewById(R.id.user_avatar_progress);
 
         if (user.getAvatar() != null) {
             imageId = user.getAvatar().getId();
         }
-
-//        mUserPhoto.setMaxHeight(width);
-//        mUserPhoto.setMinimumHeight(width);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -370,6 +370,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
                     imageId = savedId;
                     mUserPhoto.setImageBitmap(newImageBitmap);
                     photoDidSet();
+                    mUserAvatarProgress.setVisibility(View.INVISIBLE);
                 }
             }
         };
@@ -529,6 +530,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+        mUserAvatarProgress.setVisibility(View.VISIBLE);
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE) {
                 Uri selectedImageUri = data.getData();

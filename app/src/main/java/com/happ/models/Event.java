@@ -143,7 +143,7 @@ public class Event extends RealmObject implements Serializable {
 
     public String getStartDateFormatted(String format) {
         DateTimeFormatter dtFormatter = DateTimeFormat.forPattern(format);
-        DateTime eventDate = new DateTime(datetimes.get(0).getDate());
+        DateTime eventDate = new DateTime(getStartDate());
         return eventDate.toString(dtFormatter);
     }
 
@@ -153,7 +153,7 @@ public class Event extends RealmObject implements Serializable {
 
     public String getEndDateFormatted(String format) {
         DateTimeFormatter dtFormatter = DateTimeFormat.forPattern(format);
-        DateTime eventDate = new DateTime(datetimes.get(datetimes.size()-1).getDate());
+        DateTime eventDate = new DateTime(getEndDate());
         return eventDate.toString(dtFormatter);
     }
 

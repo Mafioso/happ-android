@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,8 @@ import com.happ.controllers.ChangeCurrencyActivity;
 import com.happ.controllers.HtmlPageAcitivty;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.SelectCityFragment;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 /**
  * Created by dante on 9/22/16.
@@ -74,6 +77,10 @@ public class SettingsActivity extends AppCompatActivity {
     private LinearLayout mDrawerLLFooter;
     private TextView mDrawerVersionApp;
 
+    private ImageView mDrawerHeaderAvatar;
+    private RelativeLayout mDrawerHeaderAvatarPlaceholder;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +109,8 @@ public class SettingsActivity extends AppCompatActivity {
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
         String versionName = BuildConfig.VERSION_NAME;
         mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
+        mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.dr_iv_user_avatar));
+        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.dr_avatar_placeholder));
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -194,12 +203,41 @@ public class SettingsActivity extends AppCompatActivity {
 
         setDrawerLayoutListener();
         setListenerToRootView();
+        setDrawerHeaderAvatar();
+
 
         if (changeCityDoneReceiver == null) {
             changeCityDoneReceiver = changeCityReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
         }
 
+    }
+
+    private void setDrawerHeaderAvatar() {
+        if (App.getCurrentUser().getAvatar() != null) {
+            String url = App.getCurrentUser().getAvatar().getUrl();
+            mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
+            Picasso.with(App.getContext())
+                    .load(url)
+                    .fit()
+                    .centerCrop()
+                    .into(mDrawerHeaderAvatar, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+
+        } else {
+            mDrawerHeaderAvatar.setVisibility(View.GONE);
+            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+        }
     }
 
     public void buttonOnClick(View view) {
@@ -344,6 +382,7 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setDrawerHeaderAvatar();
         mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
 

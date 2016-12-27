@@ -146,7 +146,7 @@ public class App extends MultiDexApplication {
         if (wifiInfo != null && wifiInfo.isConnected()) {
             return true;
         }
-        Toast.makeText(context, R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, com.happ.R.string.no_internet_connection, Toast.LENGTH_SHORT).show();
         return false;
     }
 

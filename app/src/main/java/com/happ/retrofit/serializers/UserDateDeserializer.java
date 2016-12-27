@@ -23,12 +23,15 @@ public class UserDateDeserializer implements JsonDeserializer<Date>, JsonSeriali
         SimpleDateFormat longDateFormater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         longDateFormater.setTimeZone(TimeZone.getTimeZone("GMT"));
         SimpleDateFormat onlyDate = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
         try {
             if (dateJson.equals(onlyDate.format(onlyDate.parse(dateJson)))) {
                 return onlyDate.parse(dateJson);
+            } else if (dateJson.equals(longDateFormater.format(longDateFormater.parse(dateJson)))) {
+                return longDateFormater.parse(dateJson);
             }
-            return longDateFormater.parse(dateJson);
+            return null;
         } catch (ParseException e) {
             e.printStackTrace();
             return null;

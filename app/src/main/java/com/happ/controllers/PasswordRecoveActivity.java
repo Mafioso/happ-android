@@ -23,10 +23,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.happ.LockableScrollView;
 import com.happ.R;
+import com.happ.retrofit.HappRestClient;
 
 import java.util.Random;
 
@@ -118,7 +118,7 @@ public class PasswordRecoveActivity extends AppCompatActivity {
                 hideSoftKeyboard(PasswordRecoveActivity.this, view);
                 mBtnRecovePassword.setVisibility(View.INVISIBLE);
                 mProgressBar.setVisibility(View.VISIBLE);
-                Toast.makeText(PasswordRecoveActivity.this, "clicked", Toast.LENGTH_SHORT).show();
+                HappRestClient.getInstance().setPasswordReset(mEmail.getText().toString());
             }
         });
 

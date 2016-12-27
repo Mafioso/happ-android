@@ -13,11 +13,13 @@
     <tab
         id="@+id/tab_pro_function"
         icon="@drawable/ic_bb_pro_functions"
-        title="@string/pro_functions" />
+        title="@string/pro_functions"
+        enabled="false"/>
 
     <tab
         id="@+id/tab_analytics"
         icon="@drawable/ic_bb_analytics"
-        title="@string/analytics" />
+        title="@string/analytics"
+        enabled="false"/>
 
 </tabs>

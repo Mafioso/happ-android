@@ -3,6 +3,9 @@ package com.happ.fragments;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +31,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -159,6 +163,9 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
                             events = (ArrayList<Event>)realm.copyFromRealm(eventRealmResults);
                             realm.close();
 
+                            Drawable circleDrawable = getResources().getDrawable(R.drawable.ic_circle_orange_border);
+                            BitmapDescriptor markerIcon = getMarkerIconFromDrawable(circleDrawable);
+
 
                             for (int p = 0; p < events.size(); p++) {
                                 if (events.get(p).getGeopoint() != null) {
@@ -169,7 +176,7 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
 
                                     googleMap.addMarker(new MarkerOptions()
                                             .position(location)
-                                            .icon(BitmapDescriptorFactory.defaultMarker())
+                                            .icon(markerIcon)
                                             .title(events.get(p).getTitle()));
 
 //                                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12.0f));
@@ -214,6 +221,15 @@ public class MapFragment extends Fragment implements GoogleApiClient.ConnectionC
 
 
         return view;
+    }
+
+    private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable) {
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     protected void startLocationUpdates() {

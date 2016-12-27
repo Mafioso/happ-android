@@ -44,6 +44,8 @@
                 android:paddingLeft="48dp"
                 android:paddingRight="48dp"
                 android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_below="@+id/toolbar"
                 android:layout_above="@+id/rl_footer">
 
                 <ImageView
@@ -81,7 +83,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:singleLine="true"
-                        android:hint="@string/email"
+                        android:hint="@string/enter_your_email"
                         android:fontFamily="Roboto"
                         android:background="#00000000"
                         android:paddingTop="12dp"
@@ -136,6 +138,8 @@
             <include layout="@layout/copyright"/>
 
         </RelativeLayout>
+
+        <include layout="@layout/form_response_done"/>
 
         <include layout="@layout/drawer_layout" />
 

@@ -689,17 +689,17 @@ public class EventActivity extends AppCompatActivity {
                 mEventDate.setText(startDate + " - " + endDate);
             }
 
-//            String startTime = event.getStartDateFormatted("h:mm a");
-            String startTime = event.getStartDateFormatted("HH:mm");
-            String endTime = event.getEndDateFormatted("HH:mm");
-//            String endTime = event.getEndDateFormatted("h:mm a");
-            String rangeTime = startTime + " — " + endTime;
-
-            if (startTime.equals(endTime)) {
-                mEventTime.setText(startTime);
-            } else {
-                mEventTime.setText(rangeTime);
-            }
+////            String startTime = event.getStartDateFormatted("h:mm a");
+//            String startTime = event.getStartDateFormatted("HH:mm");
+//            String endTime = event.getEndDateFormatted("HH:mm");
+////            String endTime = event.getEndDateFormatted("h:mm a");
+//            String rangeTime = startTime + " — " + endTime;
+//
+//            if (startTime.equals(endTime)) {
+//                mEventTime.setText(startTime);
+//            } else {
+//                mEventTime.setText(rangeTime);
+//            }
 
             mVotesCount.setText(String.valueOf(event.getVotesCount()));
 
@@ -762,6 +762,7 @@ public class EventActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         repopulateEvent();
         if (isOrg && mFab.getVisibility() != View.VISIBLE) {
             mFab.show();

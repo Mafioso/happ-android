@@ -24,7 +24,6 @@ import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import io.realm.Realm;
 import io.realm.RealmQuery;

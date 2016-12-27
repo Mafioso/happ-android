@@ -263,10 +263,14 @@
     <string name="explore">Explore</string>
     <string name="map">Map</string>
     <string name="pro_functions">Pro-Functions</string>
-    <string name="add_event">Add event</string>
     <string name="analytics">Analytics</string>
     <string name="venue_unknown" translatable="false">Venue Unknown</string>
     <string name="organizer_title">My Events</string>
     <string name="add_event">Add Event</string>
+    <string name="save_password">Save Password</string>
+    <string name="enter_your_email">Enter your email</string>
+    <string name="enter_new_password">Enter your new password</string>
+    <string name="go_to_organizer">Go to organizer</string>
+    <string name="check_your_email">Check Your Email</string>
 
 </resources>

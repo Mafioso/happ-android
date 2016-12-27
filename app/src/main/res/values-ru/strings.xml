@@ -185,8 +185,8 @@
     <string name="want_to_go">Я хочу сходить!</string>
     <string name="warning_add_image_in_ec">Первое изображение будет показано в ленте событий</string>
     <string name="warning_for_chp">Оставьте поля пустыми если хотите использовать старый пароль</string>
-    <string name="warning_for_empty_box_email">Оставьте поля пустыми чтобы использовать email профиля</string>
-    <string name="warning_for_empty_box_phone">Оставьте поля пустыми чтобы использовать телефон профиля</string>
+    <string name="warning_for_empty_box_email">Оставьте поле пустым, чтобы использовать email профиля</string>
+    <string name="warning_for_empty_box_phone">Оставьте поле пустым, чтобы использовать телефон профиля</string>
     <string name="your_city_label">НЕ ВЫБРАНО</string>
     <string name="text_is_empty_here">Здесь ничего нет!</string>
     <string name="analytics">Аналитика</string>
@@ -202,4 +202,9 @@
     <string name="unknown" translatable="false">Неизв.</string>
     <string name="user_password_updated">Пароль успешно изменен</string>
     <string name="add_event">Создать</string>
+    <string name="save_password">Сохранить пароль</string>
+    <string name="enter_your_email">Введите свою почту</string>
+    <string name="enter_new_password">Введите новый пароль</string>
+    <string name="go_to_organizer">Перейти в режим организатора</string>
+    <string name="check_your_email">Проверьте свою почту</string>
 </resources>

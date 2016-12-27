@@ -37,7 +37,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Created by iztiev on 8/4/16.
@@ -92,7 +91,7 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         int sectionFirstPosition = 0;
 
         for (int i=0; i<events.size(); i++) {
-            DateTime eventDate = new DateTime(events.get(i).getDatetimes().get(0).getDate());
+            DateTime eventDate = new DateTime(events.get(0).getStartDate());
             eventDate.minusHours(eventDate.hourOfDay().get());
             eventDate.minusMinutes(eventDate.minuteOfHour().get());
             eventDate.minusSeconds(eventDate.secondOfMinute().get());
@@ -128,7 +127,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                     if (!mItems.get(i).isHeader) {
                         last = i;
                     } else {
-                        ArrayList<EventListItem> tmp = (ArrayList)mItems.subList(first, last);
+
+                        ArrayList<EventListItem> tmp = new ArrayList<>();
+                        for (EventListItem item: mItems.subList(first, last)) {
+                            tmp.add(item);
+                        }
 
                         Collections.sort(tmp);
                         sortedItems.addAll(tmp);
@@ -139,7 +142,11 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                         }
                     }
                 }
-                ArrayList<EventListItem> tmp = (ArrayList)mItems.subList(first, last);
+
+                ArrayList<EventListItem> tmp = new ArrayList<>();
+                for (EventListItem item: mItems.subList(first, last)) {
+                    tmp.add(item);
+                }
 
                 Collections.sort(tmp);
                 sortedItems.addAll(tmp);
@@ -334,8 +341,9 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 itemHolder.mFavoritesImage.setImageResource(R.drawable.ic_not_in_favorites);
             }
 
-//            String startTime = item.event.getStartDateFormatted("HH:mm");
-//            String endTime = item.event.getEndDateFormatted("HH:mm");
+
+//            String startTime = startDateTime.toString(dtFormatter);
+//            String endTime = endDateTime.toString(dtFormatter);
 //            String rangeTime = startTime + " — " + endTime;
 //
 //            if (startTime.equals(endTime)) {
@@ -343,6 +351,15 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
 //            } else {
 //                itemHolder.mTime.setText(rangeTime);
 //            }
+
+            String startDate = item.event.getStartDateFormatted("MMM dd").toUpperCase();
+            String endDate = item.event.getEndDateFormatted("MMM dd").toUpperCase();
+
+            if (startDate.equals(endDate)) {
+                itemHolder.mTime.setText(startDate);
+            } else {
+                itemHolder.mTime.setText(startDate + " - " + endDate);
+            }
 
 
             Menu menu = itemHolder.mToolbar.getMenu();

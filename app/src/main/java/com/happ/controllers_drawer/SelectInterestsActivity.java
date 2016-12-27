@@ -47,6 +47,8 @@ import com.happ.fragments.InterestChildrenFragment;
 import com.happ.fragments.SelectCityFragment;
 import com.happ.models.Interest;
 import com.happ.retrofit.APIService;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,6 +108,10 @@ public class SelectInterestsActivity extends AppCompatActivity
     private AppBarLayout header;
 
     InterestChildrenFragment icf;
+
+    private ImageView mDrawerHeaderAvatar;
+    private RelativeLayout mDrawerHeaderAvatarPlaceholder;
+
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -168,6 +174,8 @@ public class SelectInterestsActivity extends AppCompatActivity
         mSaveButton = (Button)findViewById(R.id.save_interests);
         mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
         header = (AppBarLayout) findViewById(R.id.header);
+        mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.dr_iv_user_avatar));
+        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.dr_avatar_placeholder));
 
 //        selectedRow.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -444,6 +452,7 @@ public class SelectInterestsActivity extends AppCompatActivity
 
         setListenerToRootView();
         setDrawerLayoutListener();
+        setDrawerHeaderAvatar();
 
         if (this.interestsRequestDoneReceiver == null) {
             this.interestsRequestDoneReceiver = createInterestsRequestDoneReceiver();
@@ -467,6 +476,32 @@ public class SelectInterestsActivity extends AppCompatActivity
         }
     }
 
+    private void setDrawerHeaderAvatar() {
+        if (App.getCurrentUser().getAvatar() != null) {
+            String url = App.getCurrentUser().getAvatar().getUrl();
+            mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
+            Picasso.with(App.getContext())
+                    .load(url)
+                    .fit()
+                    .centerCrop()
+                    .into(mDrawerHeaderAvatar, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+
+        } else {
+            mDrawerHeaderAvatar.setVisibility(View.GONE);
+            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+        }
+    }
 
     private void rebuildSelectedInterests() {
         if (!isSingle) {
@@ -642,6 +677,7 @@ public class SelectInterestsActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        setDrawerHeaderAvatar();
         mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
         mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }

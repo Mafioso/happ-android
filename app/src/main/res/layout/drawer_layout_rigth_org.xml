@@ -212,7 +212,8 @@
             android:layout_height="40dp"
             android:orientation="horizontal"
             android:layout_marginTop="32dp"
-            android:paddingLeft="16dp">
+            android:paddingLeft="16dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/ff_top_text_org_filter_date"

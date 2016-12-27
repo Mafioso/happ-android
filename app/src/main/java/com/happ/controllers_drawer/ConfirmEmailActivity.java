@@ -28,10 +28,12 @@ import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.happ.App;
 import com.happ.BroadcastIntents;
@@ -41,6 +43,10 @@ import com.happ.R;
 import com.happ.controllers.HtmlPageAcitivty;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.SelectCityFragment;
+import com.happ.models.User;
+import com.happ.retrofit.HappRestClient;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.Random;
 
@@ -61,6 +67,7 @@ public class ConfirmEmailActivity extends AppCompatActivity {
     private ImageView mImageLogo;
     private TextView mTVConfirmEmail;
     private Button mBtnConfirmEmail;
+    private RelativeLayout mRLDoneForm;
 
     private int[] login_bg = {
             R.drawable.login_bg_1,
@@ -87,12 +94,19 @@ public class ConfirmEmailActivity extends AppCompatActivity {
     private LinearLayout mDrawerLLFooter;
     private MaterialProgressBar mProgressBar;
     private TextView mDrawerVersionApp;
+    private EditText mEditTextConfirmEmail;
 
+    private ImageView mDrawerHeaderAvatar;
+    private RelativeLayout mDrawerHeaderAvatarPlaceholder;
     private BroadcastReceiver changeCityDoneReceiver;
+
+    private User user;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.confirm_email);
+
+        user = App.getCurrentUser();
 
         mDrawerCityFragment = (ViewPager) findViewById(R.id.drawer_viewpager);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -110,6 +124,7 @@ public class ConfirmEmailActivity extends AppCompatActivity {
         mTVConfirmEmail = (TextView) findViewById(R.id.tv_confirm_email);
         mDrawerLLFooter = (LinearLayout) findViewById(R.id.ll_drawer_footer);
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_confirm_email);
+        mEditTextConfirmEmail = (EditText) findViewById(R.id.input_confirm_mail);
 
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
@@ -117,7 +132,12 @@ public class ConfirmEmailActivity extends AppCompatActivity {
         mDrawerVersionApp = (TextView) findViewById(R.id.tv_drawer_version_app);
         String versionName = BuildConfig.VERSION_NAME;
         mDrawerVersionApp.setText(getResources().getString(R.string.app_name) + " " + "v" + versionName);
-        
+        mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.dr_iv_user_avatar));
+        mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.dr_avatar_placeholder));
+
+        mRLDoneForm = (RelativeLayout) findViewById(R.id.rl_form_response_done);
+        mRLDoneForm.setVisibility(View.GONE);
+
         mIVbg.setImageResource(randomBg);
         LockableScrollView sv = (LockableScrollView)findViewById(R.id.fake_scrollview);
         sv.setScrollingEnabled(false);
@@ -135,15 +155,34 @@ public class ConfirmEmailActivity extends AppCompatActivity {
                 }
             });
         }
+
         setTitle("");
+        if (user.getEmail() != null) {
+            mEditTextConfirmEmail.setText(user.getEmail());
+        }
 
         mBtnConfirmEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent goToOrgEvent = new Intent(ConfirmEmailActivity.this, OrganizerModeActivity.class);
-                goToOrgEvent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                startActivity(goToOrgEvent);
-                overridePendingTransition(0,0);
+
+                if (mEditTextConfirmEmail.getText().toString().equals("")) {
+                    Toast.makeText(ConfirmEmailActivity.this, getResources().getString(R.string.enter_your_email), Toast.LENGTH_SHORT).show();
+                } else {
+//                    if (user.getEmail() != null) {
+                        HappRestClient.getInstance().getConfirmEmail();
+                    mRLDoneForm.setVisibility(View.VISIBLE);
+//                    } else {
+//                        APIService.doUserEdit(
+//                                user.getFullname(),
+//                                mEditTextConfirmEmail.getText().toString(),
+//                                user.getPhone(),
+//                                user.getDate_of_birth(),
+//                                user.getGender(),
+//                                user.getAvatarId());
+
+//                        HappRestClient.getInstance().getConfirmEmail();
+//                    }
+                }
             }
         });
 
@@ -244,10 +283,38 @@ public class ConfirmEmailActivity extends AppCompatActivity {
         setListenerToRootView();
         setDrawerLayoutListener();
         setSpannableString();
+        setDrawerHeaderAvatar();
 
         if (changeCityDoneReceiver == null) {
             changeCityDoneReceiver = changeCityReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(changeCityDoneReceiver, new IntentFilter(BroadcastIntents.SET_CITIES_OK));
+        }
+    }
+
+    private void setDrawerHeaderAvatar() {
+        if (App.getCurrentUser().getAvatar() != null) {
+            String url = App.getCurrentUser().getAvatar().getUrl();
+            mDrawerHeaderAvatar.setVisibility(View.VISIBLE);
+            Picasso.with(App.getContext())
+                    .load(url)
+                    .fit()
+                    .centerCrop()
+                    .into(mDrawerHeaderAvatar, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onError() {
+                            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+
+        } else {
+            mDrawerHeaderAvatar.setVisibility(View.GONE);
+            mDrawerHeaderAvatarPlaceholder.setVisibility(View.VISIBLE);
         }
     }
 
@@ -341,6 +408,15 @@ public class ConfirmEmailActivity extends AppCompatActivity {
         public int getCount() {
             return 1;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setDrawerHeaderAvatar();
+
+        mDrawerHeaderTVUsername.setText(App.getCurrentUser().getFullname());
+        mDrawerHeaderTVCity.setText(App.getCurrentCity().getName());
     }
 
     private BroadcastReceiver changeCityReceiver() {

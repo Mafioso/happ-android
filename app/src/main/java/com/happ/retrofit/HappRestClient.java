@@ -15,8 +15,10 @@ import com.happ.R;
 import com.happ.models.ChangePwData;
 import com.happ.models.CitiesResponse;
 import com.happ.models.City;
+import com.happ.models.ConfirmEmailKey;
 import com.happ.models.Currency;
 import com.happ.models.CurrencyResponse;
+import com.happ.models.EmailResetPassword;
 import com.happ.models.Event;
 import com.happ.models.EventPhone;
 import com.happ.models.EventsMapData;
@@ -28,6 +30,7 @@ import com.happ.models.Interest;
 import com.happ.models.InterestResponse;
 import com.happ.models.LanguageData;
 import com.happ.models.LoginData;
+import com.happ.models.PasswordResetResponse;
 import com.happ.models.RejectionReasons;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
@@ -114,7 +117,6 @@ public class HappRestClient {
                     .registerTypeAdapter(EventPhone.class, new PhoneDeserializer())
                     .registerTypeAdapter(RejectionReasons.class, new RejectionReasonsDeserializer())
                     .registerTypeAdapter(GeopointArrayResponce.class, new GeopointDeserializer())
-//                    .registerTypeAdapter(EventDateTimes.class, new DateDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
         }
@@ -285,6 +287,13 @@ public class HappRestClient {
                         }
                     }
 
+                    for (Event evt: events) {
+                        if (evt.getDatetimes().size() > 0) {
+                            evt.setStartDate(evt.getDatetimes().get(0).getDate());
+                            evt.setEndDate(evt.getDatetimes().get(evt.getDatetimes().size()-1).getDate());
+                        }
+                    }
+
                     Realm realm = Realm.getDefaultInstance();
 
                     for (int i=0; i<events.size(); i++) {
@@ -344,6 +353,13 @@ public class HappRestClient {
                         }
                     }
 
+                    for (Event evt: events) {
+                        if (evt.getDatetimes().size() > 0) {
+                            evt.setStartDate(evt.getDatetimes().get(0).getDate());
+                            evt.setEndDate(evt.getDatetimes().get(evt.getDatetimes().size()-1).getDate());
+                        }
+                    }
+
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
                     realm.copyToRealmOrUpdate(events);
@@ -388,6 +404,13 @@ public class HappRestClient {
                         }
                     }
 
+                    for (Event evt: events) {
+                        if (evt.getDatetimes().size() > 0) {
+                            evt.setStartDate(evt.getDatetimes().get(0).getDate());
+                            evt.setEndDate(evt.getDatetimes().get(evt.getDatetimes().size()-1).getDate());
+                        }
+                    }
+
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
                     realm.copyToRealmOrUpdate(events);
@@ -429,6 +452,13 @@ public class HappRestClient {
                     for (int i=0; i<fEventsOrg.size(); i++) {
                         if (fEventsOrg.get(i).getAuthor().getId().equals(user.getId())) {
                             fEventsOrg.get(i).setAuthor(user);
+                        }
+                    }
+
+                    for (Event evt: fEventsOrg) {
+                        if (evt.getDatetimes().size() > 0) {
+                            evt.setStartDate(evt.getDatetimes().get(0).getDate());
+                            evt.setEndDate(evt.getDatetimes().get(evt.getDatetimes().size()-1).getDate());
                         }
                     }
 
@@ -580,6 +610,130 @@ public class HappRestClient {
             @Override
             public void onFailure(Call<HappToken> call, Throwable t) {
 
+            }
+        });
+    }
+
+    public void setPasswordReset(String email) {
+
+        EmailResetPassword emailResetPassword = new EmailResetPassword();
+        emailResetPassword.setEmail(email);
+
+        happApi.setPasswordReset(emailResetPassword).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()) + response.message());
+
+                if(response.isSuccessful()) {
+                    Intent intent = new Intent(BroadcastIntents.PASSWORD_RESET_EMAIL_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.PASSWORD_RESET_EMAIL_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.PASSWORD_RESET_EMAIL_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
+    public void setNewPassword(String uidb64, String token, String new_password) {
+
+        PasswordResetResponse passwordResetResponse = new PasswordResetResponse();
+        passwordResetResponse.setUidb64(uidb64);
+        passwordResetResponse.setToken(token);
+        passwordResetResponse.setNew_password(new_password);
+
+
+        happApi.setNewPassword(passwordResetResponse).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()) + response.message());
+
+                if(response.isSuccessful()) {
+                    Intent intent = new Intent(BroadcastIntents.PASSWORD_RESET_NEWPW_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.PASSWORD_RESET_NEWPW_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.PASSWORD_RESET_NEWPW_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void setConfirmEmail(String key) {
+
+        ConfirmEmailKey confirmEmailKey = new ConfirmEmailKey();
+        confirmEmailKey.setKey(key);
+
+
+        happApi.setConfirmEmail(confirmEmailKey).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()) + response.message());
+
+                if(response.isSuccessful()) {
+                    Intent intent = new Intent(BroadcastIntents.SET_CONFIRM_EMAIL_KEY_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.SET_CONFIRM_EMAIL_KEY_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.SET_CONFIRM_EMAIL_KEY_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+    public void getConfirmEmail() {
+
+        happApi.getConfirmEmail().enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()) + response.message());
+
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -779,6 +933,13 @@ public class HappRestClient {
                     for (int i=0; i<events.size(); i++) {
                         if (events.get(i).getAuthor().getId().equals(user.getId())) {
                             events.get(i).setAuthor(user);
+                        }
+                    }
+
+                    for (Event evt: events) {
+                        if (evt.getDatetimes().size() > 0) {
+                            evt.setStartDate(evt.getDatetimes().get(0).getDate());
+                            evt.setEndDate(evt.getDatetimes().get(evt.getDatetimes().size()-1).getDate());
                         }
                     }
 
@@ -1208,6 +1369,13 @@ public class HappRestClient {
                         }
                     }
 
+                    for (Event evt: fEvents) {
+                        if (evt.getDatetimes().size() > 0) {
+                            evt.setStartDate(evt.getDatetimes().get(0).getDate());
+                            evt.setEndDate(evt.getDatetimes().get(evt.getDatetimes().size()-1).getDate());
+                        }
+                    }
+
                     Realm realm = Realm.getDefaultInstance();
                     realm.beginTransaction();
                     realm.copyToRealmOrUpdate(fEvents);
@@ -1248,6 +1416,13 @@ public class HappRestClient {
                     for (int i=0; i<fEvents.size(); i++) {
                         if (fEvents.get(i).getAuthor().getId().equals(user.getId())) {
                             fEvents.get(i).setAuthor(user);
+                        }
+                    }
+
+                    for (Event evt: fEvents) {
+                        if (evt.getDatetimes().size() > 0) {
+                            evt.setStartDate(evt.getDatetimes().get(0).getDate());
+                            evt.setEndDate(evt.getDatetimes().get(evt.getDatetimes().size()-1).getDate());
                         }
                     }
 

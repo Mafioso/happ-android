@@ -24,6 +24,15 @@ public class BroadcastIntents {
     public static final String ORG_EVENTS_REQUEST_OK = "com.happ.org_events_request_ok";
     public static final String ORG_EVENTS_REQUEST_FAIL = "com.happ.org_events_request_fail";
 
+
+    public static final String PASSWORD_RESET_EMAIL_OK = "com.happ.password_reset_email_ok";
+    public static final String PASSWORD_RESET_EMAIL_FAIL = "com.happ.password_reset_email_fail";
+
+    public static final String PASSWORD_RESET_NEWPW_OK = "com.happ.password_reset_newpw_ok";
+    public static final String PASSWORD_RESET_NEWPW_FAIL = "com.happ.password_reset_newpw_fail";
+
+
+
     public static final String EVENTS_MAP_REQUEST_OK = "com.happ.events_map_request_ok";
     public static final String EVENTS_MAP_REQUEST_FAIL = "com.happ.events_map_request_fail";
 
@@ -75,4 +84,7 @@ public class BroadcastIntents {
     public static final String IMAGE_UPLOAD_OK = "com.happ.image_upload_ok";
     public static final String IMAGE_UPLOAD_EXTRA_ID = "com.happ.image_upload_extra_id";
     public static final String IMAGE_UPLOAD_EXTRA_URI = "com.happ.image_upload_extra_uri";
+
+    public static final String SET_CONFIRM_EMAIL_KEY_OK = "com.happ.set_confirm_email_key_ok";
+    public static final String SET_CONFIRM_EMAIL_KEY_FAIL = "com.happ.set_confirm_email_key_fail";
 }

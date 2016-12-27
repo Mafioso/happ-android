@@ -6,12 +6,11 @@ android {
     buildToolsVersion "24.0.3"
 
     defaultConfig {
-        applicationId "com.happ"
+        applicationId "kz.happappinfo"
         minSdkVersion 16
         targetSdkVersion 24
         versionCode 1
-        versionName "1.0"
-
+        versionName "2.0"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = "true"
 
@@ -22,7 +21,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 //            resValue "string", "HOST", "http://happ.westeurope.cloudapp.azure.com/"
-            resValue "string", "HOST", "http://192.168.2.10:8000/"
+//            resValue "string", "HOST", "http://192.168.2.10:8000/"
         }
     }
 }
