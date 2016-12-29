@@ -25,8 +25,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-//import android.content.Uri;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.FileUtils;
@@ -56,6 +56,8 @@ import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+
+//import android.content.Uri;
 
 
 /**
@@ -177,6 +179,7 @@ public class EditCreateActivity extends AppCompatActivity {
     private String selectedCurrency = App.getCurrentUser().getSettings().getCurrency();
 
     private ArrayList<EventEditImage> imagesList;
+    private LatLng saveAddress;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -443,28 +446,14 @@ public class EditCreateActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final PointMarkerMapFragment pmmf = new PointMarkerMapFragment();
                 Bundle args = new Bundle();
-//                args.putBoolean("from_edit_create_activity", true);
-//                args.putString("selectedCity", selectedCity.getId());
                 pmmf.setArguments(args);
-
-//                pmmf.setOnCitySelectListener(new SelectCityFragment.OnCitySelectListener() {
-//                    @Override
-//                    public void onCitySelected(City city, float x, float y) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancel(float x, float y) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onCitySelectedFromEditCreate(City city) {
-//                        selectedCity = city;
-//                        mEventCity.setText(selectedCity.getName().trim());
-//                    }
-//
-//                });
+                pmmf.setTakeTheAddressOfThePointListener(new PointMarkerMapFragment.TakeAddressOfThePointListener() {
+                    @Override
+                    public void setOnAddress(LatLng address, String strAddress) {
+                        saveAddress = address;
+                        mEventPlace.setText(strAddress);
+                    }
+                });
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fl_container, pmmf)
@@ -569,7 +558,6 @@ public class EditCreateActivity extends AppCompatActivity {
 
     }
 
-
     private void binds() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         mBtnCreateSave = (Button) findViewById(R.id.btn_editcreate_save);
@@ -619,16 +607,23 @@ public class EditCreateActivity extends AppCompatActivity {
         event.setDescription(mEventDescription.getText().toString());
         event.setCityId(selectedCity.getId());
 
+//        event.setCloseOnStart(false);
 
         event.setCurrencyId(selectedCurrency);
 
         if (!mEventPlace.getText().toString().equals(""))
             event.setPlace(mEventPlace.getText().toString());
 
-        GeopointResponse geopoinstResponse = new GeopointResponse();
-        geopoinstResponse.setLat((float) 43.239032);
-        geopoinstResponse.setLng((float) 76.952740);
-        event.setGeopoint(geopoinstResponse);
+        if (event.getGeopoint() != null) {
+            // Сохранение точек при редактировании.
+        }
+        if (saveAddress != null) {
+            GeopointResponse geopoinstResponse = new GeopointResponse();
+            geopoinstResponse.setLat((float) saveAddress.latitude);
+            geopoinstResponse.setLng((float) saveAddress.longitude);
+            event.setGeopoint(geopoinstResponse);
+        }
+
 
         RealmList<HappImage> images = new RealmList<>();
         for (EventEditImage img: imagesList) {
@@ -643,9 +638,6 @@ public class EditCreateActivity extends AppCompatActivity {
             }
         }
         event.setImages(images);
-
-
-
 
         event.setStartDate(mStartDate);
         event.setEndDate(mEndDate);

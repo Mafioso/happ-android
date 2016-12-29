@@ -3,8 +3,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <include layout="@layout/toolbar_transparent"/>
-
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapview_editcreate"
         android:layout_width="match_parent"
@@ -13,7 +11,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_my_location"
-        android:layout_above="@+id/fab_road"
+        android:layout_above="@+id/btn_location_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -21,9 +19,24 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_alignParentBottom="true"
         app:backgroundTint="@color/bg_light"
         app:srcCompat="@drawable/ic_location_compat"
-        app:fabSize="normal"/>
+        app:fabSize="normal" />
+
+    <Button
+        android:id="@+id/btn_location_save"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        style="?attr/borderlessButtonStyle"
+        android:textColor="@color/colorAccentDark"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bg_light"
+        android:text="@string/save_event_location"
+        android:gravity="center"
+        android:layout_gravity="bottom"/>
+
+    <include layout="@layout/toolbar_transparent"/>
 
 </RelativeLayout>

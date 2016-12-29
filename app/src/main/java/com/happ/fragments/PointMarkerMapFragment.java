@@ -3,6 +3,7 @@ package com.happ.fragments;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,12 +11,17 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,6 +39,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.happ.App;
 import com.happ.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -59,25 +74,73 @@ public class PointMarkerMapFragment extends Fragment implements GoogleApiClient.
     private Location mLastLocation;
     private LatLng myLocationLatLng;
     private FloatingActionButton mFabLocation;
+    private TakeAddressOfThePointListener takeAddressOfThePointListener;
+    private String mAddress = "";
+    private LatLng eventLocation;
+    private Button mBtnSaveEventLocation;
+
+    public interface TakeAddressOfThePointListener {
+        void setOnAddress(LatLng address, String strAddress);
+    }
+
+    public void setTakeTheAddressOfThePointListener(TakeAddressOfThePointListener listener) {
+        takeAddressOfThePointListener = listener;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 //        return super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_map_pointmarker, container, false);
+        final AppCompatActivity activity = (AppCompatActivity) getActivity();
 
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        mBtnSaveEventLocation = (Button) view.findViewById(R.id.btn_location_save);
         mFabLocation = (FloatingActionButton) view.findViewById(R.id.fab_my_location);
         mMapView = (MapView) view.findViewById(R.id.mapview_editcreate);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
 
+        toolbar.setTitle(mAddress);
+        mBtnSaveEventLocation.setVisibility(View.INVISIBLE);
+
+        activity.setSupportActionBar(toolbar);
+        ActionBar actionBar = activity.getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_close_grey);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    takeAddressOfThePointListener.setOnAddress(eventLocation, mAddress);
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction trans = manager.beginTransaction();
+                    trans.remove(PointMarkerMapFragment.this);
+                    trans.commit();
+                    manager.popBackStack();
+                }
+            });
+        }
 
         try {
             MapsInitializer.initialize(getActivity().getApplicationContext());
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        mBtnSaveEventLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takeAddressOfThePointListener.setOnAddress(eventLocation, mAddress);
+                FragmentManager manager = getActivity().getSupportFragmentManager();
+                FragmentTransaction trans = manager.beginTransaction();
+                trans.remove(PointMarkerMapFragment.this);
+                trans.commit();
+                manager.popBackStack();
+            }
+        });
+
+
 
         mMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -117,7 +180,13 @@ public class PointMarkerMapFragment extends Fragment implements GoogleApiClient.
                         options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                         googleMap.addMarker(options);
 
-                        Log.e("LOG >>> ", " <<< EDIT CREATE MAP" + point);
+                        String url = getUrl(MarkerPoints.get(0));
+                        FetchUrl FetchUrl = new FetchUrl();
+                        FetchUrl.execute(url);
+
+                        eventLocation = MarkerPoints.get(0);
+
+                        mBtnSaveEventLocation.setVisibility(View.VISIBLE);
 
                     }
                 });
@@ -135,6 +204,75 @@ public class PointMarkerMapFragment extends Fragment implements GoogleApiClient.
 
         return view;
     }
+
+
+    private String getUrl(LatLng address_latlng) {
+        String latlng = address_latlng.latitude + "," + address_latlng.longitude;
+        String parameters = "latlng=" + latlng;
+        String output = "json";
+        String url = "https://maps.googleapis.com/maps/api/geocode/" + output + "?" + parameters;
+        return url;
+    }
+
+
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.connect();
+            iStream = urlConnection.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+            StringBuffer sb = new StringBuffer();
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            data = sb.toString();
+            Log.d("downloadUrl", data.toString());
+            br.close();
+
+        } catch (Exception e) {
+            Log.d("Exception", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
+    }
+
+    private class FetchUrl extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+            String data = "";
+
+            try {
+                data = downloadUrl(url[0]);
+                Log.d("Background Task data", data.toString());
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+
+            try {
+                JSONObject jsonObject = new JSONObject(data);
+                JSONArray jsonArray = jsonObject.getJSONArray("results");
+                String address = jsonArray.getJSONObject(0).getString("formatted_address");
+                Log.e("address", address);
+
+                mAddress = address;
+
+            } catch (Exception e) {
+                Log.e("ERROR", e.getLocalizedMessage());
+            }
+
+            return null;
+        }
+    }
+
 
     protected void startLocationUpdates() {
         if (ActivityCompat.checkSelfPermission(App.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(App.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

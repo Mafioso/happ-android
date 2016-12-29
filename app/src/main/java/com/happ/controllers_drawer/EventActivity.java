@@ -607,10 +607,16 @@ public class EventActivity extends AppCompatActivity {
 
 
 
-            mTitle.setText(event.getTitle());
-            mPlace.setText(event.getPlace());
+            if (event.getTitle() != null) mTitle.setText(event.getTitle());
+            if (event.getPlace() != null) mPlace.setText(event.getPlace());
             mPrice.setText(event.getPriceRange());
-            mCurrency.setText(event.getCurrency().getName());
+            if (event.getCurrency() != null) {
+                if (event.getCurrency().getCode() != null) {
+                    mCurrency.setText(event.getCurrency().getCode());
+                } else {
+                    mCurrency.setText(event.getCurrency().getName());
+                }
+            }
 
             final User author = event.getAuthor();
             if (author != null) {
@@ -643,7 +649,7 @@ public class EventActivity extends AppCompatActivity {
                 mEventPhone.setVisibility(View.GONE);
             }
 
-            mDescription.setText(event.getDescription());
+            if (event.getDescription() != null) mDescription.setText(event.getDescription());
 
             if (event.getWebSite() == null || event.getWebSite().equals("")) {
                 mEventWEbSite.setVisibility(View.GONE);
