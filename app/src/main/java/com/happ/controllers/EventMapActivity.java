@@ -236,14 +236,10 @@ public class EventMapActivity extends AppCompatActivity implements OnMapReadyCal
                     LatLng origin = myLocationLatLng;
                     LatLng dest = eventLocation;
 
-                    // Getting URL to the Google Directions API
                     String url = getUrl(origin, dest);
                     FetchUrl FetchUrl = new FetchUrl();
-
-                    // Start downloading json data from Google Directions API
                     FetchUrl.execute(url);
 
-                    //move map camera
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(eventLocation));
                     googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 

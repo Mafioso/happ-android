@@ -138,6 +138,7 @@ public class Event extends RealmObject implements Serializable {
     }
 
     public Date getStartDate() {
+        startDate = datetimes.get(0).getDate();
         return startDate;
     }
 
@@ -158,6 +159,7 @@ public class Event extends RealmObject implements Serializable {
     }
 
     public Date getEndDate() {
+        endDate = datetimes.get(datetimes.size()-1).getDate();
         return endDate;
     }
 

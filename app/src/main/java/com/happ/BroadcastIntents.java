@@ -87,4 +87,9 @@ public class BroadcastIntents {
 
     public static final String SET_CONFIRM_EMAIL_KEY_OK = "com.happ.set_confirm_email_key_ok";
     public static final String SET_CONFIRM_EMAIL_KEY_FAIL = "com.happ.set_confirm_email_key_fail";
+
+    public static final String FACEBOOK_LOGIN_REQUEST_OK = "com.happ.facebook_login_request_ok";
+    public static final String FACEBOOK_LOGIN_REQUEST_FAIL = "com.happ.facebook_login_request_fail";
+    public static final String FACEBOOK_REGISTER_REQUEST_OK = "com.happ.facebook_register_request_ok";
+    public static final String FACEBOOK_REGISTER_REQUEST_FAIL = "com.happ.facebook_register_request_fail";
 }

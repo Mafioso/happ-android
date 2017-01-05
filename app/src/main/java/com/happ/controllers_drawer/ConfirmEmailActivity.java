@@ -168,7 +168,7 @@ public class ConfirmEmailActivity extends AppCompatActivity {
                 if (mEditTextConfirmEmail.getText().toString().equals("")) {
                     Toast.makeText(ConfirmEmailActivity.this, getResources().getString(R.string.enter_your_email), Toast.LENGTH_SHORT).show();
                 } else {
-                    HappRestClient.getInstance().getConfirmEmail();
+                    HappRestClient.getInstance().getConfirmEmail(mEditTextConfirmEmail.getText().toString());
                     mProgressBar.setVisibility(View.VISIBLE);
                     mRLDoneForm.setVisibility(View.VISIBLE);
 

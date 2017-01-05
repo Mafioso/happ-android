@@ -5,10 +5,12 @@ import com.happ.models.CitiesResponse;
 import com.happ.models.City;
 import com.happ.models.ConfirmEmailKey;
 import com.happ.models.CurrencyResponse;
-import com.happ.models.EmailResetPassword;
+import com.happ.models.EmailParameterBody;
 import com.happ.models.Event;
 import com.happ.models.EventsMapData;
 import com.happ.models.EventsResponse;
+import com.happ.models.FacebookLoginBody;
+import com.happ.models.FacebookRegisterBody;
 import com.happ.models.HappImage;
 import com.happ.models.HappToken;
 import com.happ.models.InterestResponse;
@@ -53,10 +55,10 @@ public interface HAPPapi {
     @GET("events/organizer/")
     Call<EventsResponse> getFilteredOrgEvents(@Query("page") int page,
                                    @Query("is_active") boolean is_acitve,
-                                   @Query("is_inactive") boolean is_inacitve,
-                                   @Query("is_onreview") boolean is_onreview,
-                                   @Query("is_rejected") boolean is_rejected,
-                                   @Query("is_finished") boolean is_finished);
+                                   @Query("is_active") boolean is_inactive,
+                                   @Query("status") int is_onreview,
+                                   @Query("status") int is_rejected,
+                                   @Query("finished") boolean is_finished);
 
     @GET("events/feed/")
     Call<EventsResponse> getEvents(@Query("page") int page, @Query("start_date") String startDate);
@@ -171,15 +173,21 @@ public interface HAPPapi {
 
 
     @POST("auth/password/reset/")
-    Call<Void> setPasswordReset(@Body EmailResetPassword emailResetPassword);
+    Call<Void> setPasswordReset(@Body EmailParameterBody emailParameterBody);
 
     @POST("auth/password/reset/confirm/")
     Call<Void> setNewPassword(@Body PasswordResetResponse passwordResetResponse);
 
-    @GET("auth/email/confirm/request/")
-    Call<Void> getConfirmEmail();
+    @POST("auth/email/confirm/request/")
+    Call<Void> getConfirmEmail(@Body EmailParameterBody emailParameterBody);
 
     @POST("auth/email/confirm/")
     Call<Void> setConfirmEmail(@Body ConfirmEmailKey confirmEmailKey);
+
+    @POST("auth/register/facebook/")
+    Call<HappToken> doFacebookRegister(@Body FacebookRegisterBody facebookRegisterBody);
+
+    @POST("auth/login/facebook/")
+    Call<HappToken> doFacebookLogin(@Body FacebookLoginBody facebokLoginBody);
 
 }

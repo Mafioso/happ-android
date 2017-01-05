@@ -40,6 +40,7 @@ import com.happ.fragments.SelectCityFragment;
 import com.happ.models.City;
 import com.happ.models.Currency;
 import com.happ.models.Event;
+import com.happ.models.EventDateTimes;
 import com.happ.models.EventPhone;
 import com.happ.models.GeopointResponse;
 import com.happ.models.HappImage;
@@ -191,7 +192,7 @@ public class EditCreateActivity extends AppCompatActivity {
         if (eventId == null) {
             setTitle(getString(R.string.create_event));
             mBtnCreateSave.setText(getResources().getString(R.string.create_event));
-            mEventCurrency.setText(App.getCurrentUser().getSettings().getCurrencyObject().getName());
+//            mEventCurrency.setText(App.getCurrentUser().getSettings().getCurrencyObject().getName());
             mEventCity.setText(selectedCity.getName());
             event = new Event();
             imagesList = new ArrayList<>();
@@ -601,6 +602,7 @@ public class EditCreateActivity extends AppCompatActivity {
         if (eventId != null) {
             event.setLocalId(eventId);
         }
+
         event.setId("local_event_" + (new Date()).getTime());
 
         event.setTitle(mEventTitle.getText().toString());
@@ -617,6 +619,7 @@ public class EditCreateActivity extends AppCompatActivity {
         if (event.getGeopoint() != null) {
             // Сохранение точек при редактировании.
         }
+
         if (saveAddress != null) {
             GeopointResponse geopoinstResponse = new GeopointResponse();
             geopoinstResponse.setLat((float) saveAddress.latitude);
@@ -637,10 +640,33 @@ public class EditCreateActivity extends AppCompatActivity {
                 }
             }
         }
+
         event.setImages(images);
 
-        event.setStartDate(mStartDate);
-        event.setEndDate(mEndDate);
+
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+//
+//        event.setStartDate(mStartDate);
+//        event.setEndDate(mEndDate);
+
+        Calendar gcal = Calendar.getInstance();
+        Date start = mStartDate;
+        Date end = mEndDate;
+        gcal.setTime(start);
+        RealmList<EventDateTimes> eventDateTimes = new RealmList<EventDateTimes>();
+        do {
+            Date d = gcal.getTime();
+            System.out.println(d);
+            gcal.add(Calendar.DAY_OF_MONTH, 1);
+            Date nextDate = gcal.getTime();
+            EventDateTimes eventDate = new EventDateTimes();
+            eventDate.setDate(nextDate);
+            eventDateTimes.add(eventDate);
+        } while (gcal.getTime().before(end));
+
+        event.setDatetimes(eventDateTimes);
+
 
         if (mEventMinPrice.getText().toString().equals("")) {
             event.setLowestPrice(0);

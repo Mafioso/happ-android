@@ -18,11 +18,13 @@ import com.happ.models.City;
 import com.happ.models.ConfirmEmailKey;
 import com.happ.models.Currency;
 import com.happ.models.CurrencyResponse;
-import com.happ.models.EmailResetPassword;
+import com.happ.models.EmailParameterBody;
 import com.happ.models.Event;
 import com.happ.models.EventPhone;
 import com.happ.models.EventsMapData;
 import com.happ.models.EventsResponse;
+import com.happ.models.FacebookLoginBody;
+import com.happ.models.FacebookRegisterBody;
 import com.happ.models.GeopointArrayResponce;
 import com.happ.models.HappImage;
 import com.happ.models.HappToken;
@@ -442,7 +444,14 @@ public class HappRestClient {
 
 
     public void getFilteredOrgEvents(int page, boolean is_active, boolean is_inactive, boolean is_onreview, boolean is_rejected, boolean is_finished) {
-        happApi.getFilteredOrgEvents(page, is_active, is_inactive, is_onreview, is_rejected, is_finished).enqueue(new Callback<EventsResponse>() {
+
+        int onreview = 100;
+        int rejected = 200;
+
+        if (is_onreview) onreview = 0;
+        if (is_rejected) rejected = 2;
+
+        happApi.getFilteredOrgEvents(page, is_active,is_inactive, onreview, rejected, is_finished).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){
@@ -579,6 +588,108 @@ public class HappRestClient {
         });
     }
 
+
+
+    public void doFacebookLogin(String facebook_id) {
+
+        FacebookLoginBody facebookLoginBody = new FacebookLoginBody();
+        facebookLoginBody.setFacebook_id(facebook_id);
+
+        happApi.doFacebookLogin(facebookLoginBody).enqueue(new Callback<HappToken>() {
+            @Override
+            public void onResponse(Call<HappToken> call, Response<HappToken> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()));
+                Log.d("HAPP_API", response.message());
+
+                if(response.isSuccessful()) {
+
+                    HappToken happToken = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(happToken);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    setAuthHeader();
+
+                    Intent intent = new Intent(BroadcastIntents.FACEBOOK_LOGIN_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.FACEBOOK_LOGIN_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HappToken> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.FACEBOOK_LOGIN_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
+    public void doFacebookRegister(String facebook_id, String fullname, int gender, String email) {
+
+        FacebookRegisterBody facebookRegisterBody = new FacebookRegisterBody();
+        facebookRegisterBody.setFacebook_id(facebook_id);
+        facebookRegisterBody.setFullname(fullname);
+        facebookRegisterBody.setGender(gender);
+        facebookRegisterBody.setEmail(email);
+
+
+        happApi.doFacebookRegister(facebookRegisterBody).enqueue(new Callback<HappToken>() {
+            @Override
+            public void onResponse(Call<HappToken> call, Response<HappToken> response) {
+
+                Log.d("HAPP_API", String.valueOf(response.code()));
+                Log.d("HAPP_API", response.message());
+
+                if(response.isSuccessful()) {
+
+                    HappToken happToken = response.body();
+                    Realm realm = Realm.getDefaultInstance();
+                    realm.beginTransaction();
+
+                    realm.copyToRealmOrUpdate(happToken);
+
+                    realm.commitTransaction();
+                    realm.close();
+
+                    setAuthHeader();
+
+                    Intent intent = new Intent(BroadcastIntents.FACEBOOK_REGISTER_REQUEST_OK);
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+                else {
+                    Intent intent = new Intent(BroadcastIntents.FACEBOOK_REGISTER_REQUEST_FAIL);
+                    intent.putExtra("CODE", response.code());
+                    showRequestError(response);
+                    intent.putExtra("MESSAGE", response.message());
+                    LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<HappToken> call, Throwable t) {
+                Intent intent = new Intent(BroadcastIntents.FACEBOOK_REGISTER_REQUEST_FAIL);
+                Toast.makeText(App.getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                intent.putExtra("MESSAGE", t.getLocalizedMessage());
+                LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
+            }
+        });
+    }
+
+
     public void setLanguage(String language) {
 
         LanguageData languageData = new LanguageData();
@@ -616,10 +727,10 @@ public class HappRestClient {
 
     public void setPasswordReset(String email) {
 
-        EmailResetPassword emailResetPassword = new EmailResetPassword();
-        emailResetPassword.setEmail(email);
+        EmailParameterBody emailParameterBody = new EmailParameterBody();
+        emailParameterBody.setEmail(email);
 
-        happApi.setPasswordReset(emailResetPassword).enqueue(new Callback<Void>() {
+        happApi.setPasswordReset(emailParameterBody).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
 
@@ -721,9 +832,12 @@ public class HappRestClient {
         });
     }
 
-    public void getConfirmEmail() {
+    public void getConfirmEmail(String email) {
 
-        happApi.getConfirmEmail().enqueue(new Callback<Void>() {
+        EmailParameterBody emailParameterBody = new EmailParameterBody();
+        emailParameterBody.setEmail(email);
+
+        happApi.getConfirmEmail(emailParameterBody).enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
 
@@ -835,8 +949,7 @@ public class HappRestClient {
         if (event != null) {
             event.setId(event.getLocalId());
             ArrayList<String> interest_ids = new ArrayList<>();
-            for (Interest interest: event.getInterests()
-                    ) {
+            for (Interest interest: event.getInterests()) {
                 interest_ids.add(interest.getId());
             }
 
@@ -1228,6 +1341,8 @@ public class HappRestClient {
         realm.close();
 
 
+
+
         if (event != null) {
             ArrayList<String> interest_ids = new ArrayList<>();
             for (Interest interest: event.getInterests()
@@ -1241,6 +1356,7 @@ public class HappRestClient {
                 imageIds.add(img.getId());
             }
             event.setImageIds(imageIds);
+
             happApi.createEvent(event).enqueue(new Callback<Event>() {
                 @Override
                 public void onResponse(Call<Event> call, Response<Event> response) {
@@ -1259,9 +1375,7 @@ public class HappRestClient {
 
                         Realm realm = Realm.getDefaultInstance();
                         realm.beginTransaction();
-
                         realm.copyToRealmOrUpdate(event);
-
                         realm.commitTransaction();
                         realm.close();
 

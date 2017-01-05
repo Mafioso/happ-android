@@ -121,14 +121,8 @@
                 <action android:name=".Browser" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="http" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name=".Browser" />
-                <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
             </intent-filter>
-
         </activity>
 
         <activity

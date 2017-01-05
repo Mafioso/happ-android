@@ -72,7 +72,7 @@
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:includeFontPadding="false"
-                android:visibility="visible">
+                android:visibility="gone">
 
             </Button>
 
@@ -86,7 +86,8 @@
                 android:textColor="@color/white57"
                 android:gravity="center"
                 android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"/>
 
             <RelativeLayout
                 android:id="@+id/ll_username_form"

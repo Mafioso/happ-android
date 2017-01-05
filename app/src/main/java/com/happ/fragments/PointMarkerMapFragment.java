@@ -180,11 +180,11 @@ public class PointMarkerMapFragment extends Fragment implements GoogleApiClient.
                         options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
                         googleMap.addMarker(options);
 
+                        eventLocation = MarkerPoints.get(0);
+
                         String url = getUrl(MarkerPoints.get(0));
                         FetchUrl FetchUrl = new FetchUrl();
                         FetchUrl.execute(url);
-
-                        eventLocation = MarkerPoints.get(0);
 
                         mBtnSaveEventLocation.setVisibility(View.VISIBLE);
 
@@ -242,6 +242,7 @@ public class PointMarkerMapFragment extends Fragment implements GoogleApiClient.
             urlConnection.disconnect();
         }
         return data;
+
     }
 
     private class FetchUrl extends AsyncTask<String, Void, String> {
@@ -253,25 +254,60 @@ public class PointMarkerMapFragment extends Fragment implements GoogleApiClient.
             try {
                 data = downloadUrl(url[0]);
                 Log.d("Background Task data", data.toString());
-            } catch (Exception e) {
-                Log.d("Background Task", e.toString());
-            }
 
-            try {
                 JSONObject jsonObject = new JSONObject(data);
                 JSONArray jsonArray = jsonObject.getJSONArray("results");
                 String address = jsonArray.getJSONObject(0).getString("formatted_address");
+
                 Log.e("address", address);
 
                 mAddress = address;
 
             } catch (Exception e) {
-                Log.e("ERROR", e.getLocalizedMessage());
+                Log.d("Background Task", e.toString());
             }
 
-            return null;
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+//            ParserTask parserTask = new ParserTask();
+//            parserTask.execute(result);
         }
     }
+
+//    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+//
+//        @Override
+//        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+//
+//            try {
+//                JSONObject jsonObject = new JSONObject(jsonData[0]);
+//                JSONArray jsonArray = jsonObject.getJSONArray("results");
+//                String address = jsonArray.getJSONObject(0).getString("formatted_address");
+//                Log.e("address", address);
+//
+//                mAddress = address;
+//
+//
+//            } catch (Exception e) {
+//                Log.e("ERROR", e.getLocalizedMessage());
+//                e.printStackTrace();
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+//
+//
+//
+//
+//        }
+//    }
+
 
 
     protected void startLocationUpdates() {

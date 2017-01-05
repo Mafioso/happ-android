@@ -50,7 +50,8 @@ public class APIService extends IntentService {
     private static final String ACTION_PATCH_EVENTCREATE = "com.happ.action.ACTION_PATCH_EVENTCREATE";
     private static final String ACTION_ACTIVATE_EVENT = "com.happ.action.ACTION_ACTIVATE_EVENT";
     private static final String ACTION_DEACTIVATE_EVENT = "com.happ.action.ACTION_DEACTIVATE_EVENT";
-
+    private static final String ACTION_POST_LOGIN_FACEBOOK = "com.happ.action.ACTION_POST_LOGIN_FACEBOOK";
+    private static final String ACTION_POST_REGISTER_FACEBOOK = "com.happ.action.ACTION_POST_REGISTER_FACEBOOK";
 
     private static final String ACTION_GET_SELECTED_INTERESTS = "com.happ.action.ACTION_GET_SELECTED_INTERESTS";
 
@@ -107,6 +108,11 @@ public class APIService extends IntentService {
     private static final String EXTRA_POPULARITY_EVENTS = "com.happ.extra.EXTRA_POPULARITY_EVENTS";
     private static final String EXTRA_AVATAR_ID ="com.happ.extra.EXTRA_AVATAR_ID" ;
 
+    private static final String EXTRA_FB_ID ="com.happ.extra.EXTRA_FB_ID" ;
+    private static final String EXTRA_FB_FULLNAME ="com.happ.extra.EXTRA_FB_FULLNAME" ;
+    private static final String EXTRA_FB_GENDER ="com.happ.extra.EXTRA_FB_GENDER" ;
+    private static final String EXTRA_FB_EMAIL ="com.happ.extra.EXTRA_FB_EMAIL" ;
+
 
     public static void getEvents(boolean favs) {
         Intent intent = new Intent(App.getContext(), APIService.class);
@@ -139,7 +145,7 @@ public class APIService extends IntentService {
 
     public static void getFilteredOrgEvents(int page,
                                             boolean is_active,
-                                            boolean is_inactive,
+                                            boolean is_inacitve,
                                             boolean is_onreview,
                                             boolean is_rejected,
                                             boolean is_finished) {
@@ -147,7 +153,7 @@ public class APIService extends IntentService {
         intent.setAction(ACTION_GET_ORG_FILTERED_EVENTS);
         intent.putExtra(EXTRA_PAGE, page);
         intent.putExtra(EXTRA_ACTIVE, is_active);
-        intent.putExtra(EXTRA_INACTIVE, is_inactive);
+        intent.putExtra(EXTRA_INACTIVE, is_inacitve);
         intent.putExtra(EXTRA_ONREVIEW, is_onreview);
         intent.putExtra(EXTRA_REJECTED, is_rejected);
         intent.putExtra(EXTRA_FINISHED, is_finished);
@@ -279,6 +285,23 @@ public class APIService extends IntentService {
         login.putExtra(EXTRA_USERNAME, username);
         login.putExtra(EXTRA_PASSWORD, password);
         App.getContext().startService(login);
+    }
+
+    public static void doFacebookLogin(String facebook_id) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_POST_LOGIN_FACEBOOK);
+        intent.putExtra(EXTRA_FB_ID, facebook_id);
+        App.getContext().startService(intent);
+    }
+
+    public static void doFacebookRegister(String facebook_id, String fullname, int gender, String email) {
+        Intent intent = new Intent(App.getContext(), APIService.class);
+        intent.setAction(ACTION_POST_REGISTER_FACEBOOK);
+        intent.putExtra(EXTRA_FB_ID, facebook_id);
+        intent.putExtra(EXTRA_FB_FULLNAME, fullname);
+        intent.putExtra(EXTRA_FB_GENDER, gender);
+        intent.putExtra(EXTRA_FB_EMAIL, email);
+        App.getContext().startService(intent);
     }
 
     public static void setEventsMap(GeopointArrayResponce center, int radius) {
@@ -438,7 +461,7 @@ public class APIService extends IntentService {
                 boolean is_onreview = intent.getBooleanExtra(EXTRA_ONREVIEW, false);
                 boolean is_rejected = intent.getBooleanExtra(EXTRA_REJECTED, false);
                 boolean is_finished = intent.getBooleanExtra(EXTRA_FINISHED, false);
-                HappRestClient.getInstance().getFilteredOrgEvents(page, is_active, is_inactive, is_onreview, is_rejected, is_finished);
+                HappRestClient.getInstance().getFilteredOrgEvents(page, is_active,is_inactive, is_onreview, is_rejected, is_finished);
             } else if (action.equals(ACTION_GET_FILTERED_EVENTS)) {
                 int page = intent.getIntExtra(EXTRA_PAGE, 1);
                 String feedSearchText = intent.getStringExtra(EXTRA_EVENT_SEARCH_TEXT);
@@ -456,6 +479,15 @@ public class APIService extends IntentService {
                 HappRestClient.getInstance().getCities(page, searchText);
             } else if (action.equals(ACTION_GET_INTERESTS)) {
                 HappRestClient.getInstance().getInterests();
+            } else if (action.equals(ACTION_POST_LOGIN_FACEBOOK)) {
+                String facebook_id = intent.getStringExtra(EXTRA_FB_ID);
+                HappRestClient.getInstance().doFacebookLogin(facebook_id);
+            }else if (action.equals(ACTION_POST_REGISTER_FACEBOOK)) {
+                String facebook_id = intent.getStringExtra(EXTRA_FB_ID);
+                String fullname = intent.getStringExtra(EXTRA_FB_FULLNAME);
+                int gender = intent.getIntExtra(EXTRA_FB_GENDER, 0);
+                String email = intent.getStringExtra(EXTRA_FB_EMAIL);
+                HappRestClient.getInstance().doFacebookRegister(facebook_id, fullname, gender, email);
             } else if (action.equals(ACTION_POST_LOGIN)) {
                 String username = intent.getStringExtra(EXTRA_USERNAME);
                 String password = intent.getStringExtra(EXTRA_PASSWORD);
