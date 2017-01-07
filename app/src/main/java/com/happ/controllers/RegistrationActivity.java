@@ -28,7 +28,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.LockableScrollView;
@@ -44,7 +43,6 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
  * Created by dante on 8/29/16.
  */
 public class RegistrationActivity extends AppCompatActivity {
-    private CallbackManager mCallbackManager;
 
     private EditText mUsername, mPassword, mRepeatPassword;
     private Button mCreateAccountButton;
@@ -82,68 +80,6 @@ public class RegistrationActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        FacebookSdk.sdkInitialize(this.getApplicationContext());
-//        mCallbackManager = CallbackManager.Factory.create();
-//
-//        LoginManager.getInstance().registerCallback(mCallbackManager,
-//                new FacebookCallback<LoginResult>() {
-//                    @Override
-//                    public void onSuccess(LoginResult loginResult) {
-//                        Log.d("Success", "Login");
-//                        Log.e(TAG, "Facebook getApplicationId: " + loginResult.getAccessToken().getApplicationId());
-//                        Log.d(TAG, "Facebook getToken: " + loginResult.getAccessToken().getToken());
-//                        Log.d(TAG, "Facebook getUserId: " + loginResult.getAccessToken().getUserId());
-//                        Log.d(TAG, "Facebook getExpires: " + loginResult.getAccessToken().getExpires());
-//                        Log.d(TAG, "Facebook getLastRefresh: " + loginResult.getAccessToken().getLastRefresh());
-//
-//                        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//                        GraphRequest request = GraphRequest.newMeRequest(
-//                                accessToken,
-//                                new GraphRequest.GraphJSONObjectCallback() {
-//                                    @Override
-//                                    public void onCompleted(JSONObject object, GraphResponse response) {
-//                                        try {
-//
-//                                            //check is response is not empty
-//                                            if (response.getError() == null){
-//
-//                                                //parse json
-//                                                object = new JSONObject(response.getRawResponse().toString());
-//
-//                                                String id = object.getString("id");
-//                                                String email = object.getString("email");
-//
-//                                                APIService.doSignUp(email, id);
-//                                            }
-//
-//
-//
-//                                        } catch (JSONException e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                    }
-//                                });
-//
-//                        Bundle parameters = new Bundle();
-//                        parameters.putString("fields", "id,email");
-//                        request.setParameters(parameters);
-//                        request.executeAsync();
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancel() {
-//                        Toast.makeText(RegistrationActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
-//                    }
-//
-//                    @Override
-//                    public void onError(FacebookException exception) {
-//                        Toast.makeText(RegistrationActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
-//                        Log.d(TAG, exception.getMessage());
-//                    }
-//                });
 
         setContentView(R.layout.registration_form);
 
@@ -225,17 +161,6 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-//        facebookButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                LoginManager loginManager = LoginManager.getInstance();
-//                loginManager.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
-//                loginManager.logInWithReadPermissions(
-//                        RegistrationActivity.this,
-//                        Arrays.asList("public_profile", "user_friends", "email"));
-//            }
-//        });
-
         setListenerToRootView();
         setSpannableString();
 
@@ -297,11 +222,6 @@ public class RegistrationActivity extends AppCompatActivity {
             activityRootView.getViewTreeObserver().removeOnGlobalLayoutListener(mKeyboardListener);
         }
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(mKeyboardListener);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     public static void hideSoftKeyboard (Activity activity, View view)

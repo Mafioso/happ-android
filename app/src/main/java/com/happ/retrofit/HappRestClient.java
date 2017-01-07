@@ -20,6 +20,7 @@ import com.happ.models.Currency;
 import com.happ.models.CurrencyResponse;
 import com.happ.models.EmailParameterBody;
 import com.happ.models.Event;
+import com.happ.models.EventDateTimes;
 import com.happ.models.EventPhone;
 import com.happ.models.EventsMapData;
 import com.happ.models.EventsResponse;
@@ -33,10 +34,11 @@ import com.happ.models.InterestResponse;
 import com.happ.models.LanguageData;
 import com.happ.models.LoginData;
 import com.happ.models.PasswordResetResponse;
-import com.happ.models.RejectionReasons;
+import com.happ.models.RejectionReason;
 import com.happ.models.SignUpData;
 import com.happ.models.User;
 import com.happ.models.UserEditData;
+import com.happ.retrofit.serializers.DateDeserializer;
 import com.happ.retrofit.serializers.GeopointDeserializer;
 import com.happ.retrofit.serializers.InterestDeserializer;
 import com.happ.retrofit.serializers.PhoneDeserializer;
@@ -115,9 +117,10 @@ public class HappRestClient {
         if (gson == null) {
             gson = new GsonBuilder()
                     .registerTypeAdapter(Interest.class, new InterestDeserializer())
-                    .registerTypeAdapter(Date.class, new UserDateDeserializer())
+                    .registerTypeAdapter(Date.class, new DateDeserializer())
+                    .registerTypeAdapter(EventDateTimes.class, new UserDateDeserializer())
                     .registerTypeAdapter(EventPhone.class, new PhoneDeserializer())
-                    .registerTypeAdapter(RejectionReasons.class, new RejectionReasonsDeserializer())
+                    .registerTypeAdapter(RejectionReason.class, new RejectionReasonsDeserializer())
                     .registerTypeAdapter(GeopointArrayResponce.class, new GeopointDeserializer())
                     .create();
             gsonConverterFactory = GsonConverterFactory.create(gson);
@@ -278,7 +281,6 @@ public class HappRestClient {
         getEventsResponse.enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
-
                 if (response.isSuccessful()){
                     List<Event> events = response.body().getEvents();
 
@@ -297,7 +299,6 @@ public class HappRestClient {
                     }
 
                     Realm realm = Realm.getDefaultInstance();
-
                     for (int i=0; i<events.size(); i++) {
                         if (events.get(i).getInterest() != null) {
                             RealmList<Interest> eventInterests = events.get(i).getInterests();

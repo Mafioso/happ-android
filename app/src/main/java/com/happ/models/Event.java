@@ -1,5 +1,6 @@
 package com.happ.models;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.joda.time.DateTime;
@@ -38,6 +39,8 @@ public class Event extends RealmObject implements Serializable {
     private Date startDate;
     @SerializedName("end_datetime")
     private Date endDate;
+    @SerializedName("datetimes")
+    @Expose
     private RealmList<EventDateTimes> datetimes;
     @SerializedName("address")
     private String place;
@@ -65,8 +68,11 @@ public class Event extends RealmObject implements Serializable {
     private int status;
     @SerializedName("is_active")
     private boolean isActive;
-    @SerializedName("rejection_reasons")
-    private RealmList<RejectionReasons> rejectionReasons;
+
+//    private RealmList<RejectionReason> rejectionReasons;
+    @SerializedName("rejection_reason")
+    private RejectionReason rejectionReason;
+
     @SerializedName("registration_link")
     private String registationLink;
     @SerializedName("close_on_start")
@@ -144,7 +150,7 @@ public class Event extends RealmObject implements Serializable {
 
     public String getStartDateFormatted(String format) {
         DateTimeFormatter dtFormatter = DateTimeFormat.forPattern(format);
-        DateTime eventDate = new DateTime(getStartDate());
+        DateTime eventDate = new DateTime(datetimes.get(0).getDate());
         return eventDate.toString(dtFormatter);
     }
 
@@ -154,7 +160,8 @@ public class Event extends RealmObject implements Serializable {
 
     public String getEndDateFormatted(String format) {
         DateTimeFormatter dtFormatter = DateTimeFormat.forPattern(format);
-        DateTime eventDate = new DateTime(getEndDate());
+//        DateTime eventDate = new DateTime(getEndDate());
+        DateTime eventDate = new DateTime(datetimes.get(0).getDate());
         return eventDate.toString(dtFormatter);
     }
 
@@ -350,14 +357,6 @@ public class Event extends RealmObject implements Serializable {
         isActive = active;
     }
 
-    public RealmList<RejectionReasons> getRejectionReasons() {
-        return rejectionReasons;
-    }
-
-    public void setRejectionReasons(RealmList<RejectionReasons> rejectionReasons) {
-        this.rejectionReasons = rejectionReasons;
-    }
-
     public ArrayList<String> getImageIds() {
         return imageIds;
     }
@@ -388,5 +387,13 @@ public class Event extends RealmObject implements Serializable {
 
     public void setDatetimes(RealmList<EventDateTimes> datetimes) {
         this.datetimes = datetimes;
+    }
+
+    public RejectionReason getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(RejectionReason rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 }

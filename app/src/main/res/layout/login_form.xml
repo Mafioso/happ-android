@@ -40,7 +40,6 @@
             android:id="@+id/form_layout2"
             android:paddingLeft="48dp"
             android:paddingRight="48dp"
-            android:paddingTop="24dp"
             android:gravity="center"
             android:layout_centerVertical="true"
             android:layout_above="@+id/rl_footer"
@@ -72,7 +71,7 @@
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:includeFontPadding="false"
-                android:visibility="gone">
+                android:visibility="visible">
 
             </Button>
 
@@ -87,7 +86,7 @@
                 android:gravity="center"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <RelativeLayout
                 android:id="@+id/ll_username_form"

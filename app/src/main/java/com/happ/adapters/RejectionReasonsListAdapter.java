@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.happ.R;
-import com.happ.models.RejectionReasons;
+import com.happ.models.RejectionReason;
 
 import io.realm.RealmList;
 
@@ -16,16 +16,16 @@ import io.realm.RealmList;
  * Created by iztiev on 8/4/16.
  */
 public class RejectionReasonsListAdapter extends RecyclerView.Adapter<RejectionReasonsListAdapter.RejectionReasonsListViewHolder> {
-    private RealmList<RejectionReasons> mRejectionReasons;
+    private RealmList<RejectionReason> mRejectionReasons;
     private final Context context;
 
 
-    public RejectionReasonsListAdapter(Context context, RealmList<RejectionReasons> rejectionReasonses) {
+    public RejectionReasonsListAdapter(Context context, RealmList<RejectionReason> rejectionReasonses) {
         this.context = context;
         this.mRejectionReasons = rejectionReasonses;
     }
 
-    public void updateData(RealmList<RejectionReasons> rejectionReasonses) {
+    public void updateData(RealmList<RejectionReason> rejectionReasonses) {
         this.mRejectionReasons = rejectionReasonses;
         this.notifyDataSetChanged();
     }
@@ -39,8 +39,8 @@ public class RejectionReasonsListAdapter extends RecyclerView.Adapter<RejectionR
 
     @Override
     public void onBindViewHolder(RejectionReasonsListViewHolder holder, int position) {
-        final RejectionReasons rejectionReasons = mRejectionReasons.get(position);
-        holder.mTextViewRejectionReasons.setText(rejectionReasons.getText());
+        final RejectionReason rejectionReason = mRejectionReasons.get(position);
+        holder.mTextViewRejectionReasons.setText(rejectionReason.getText());
     }
 
     @Override

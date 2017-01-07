@@ -10,9 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.happ.R;
-import com.happ.adapters.RejectionReasonsListAdapter;
 import com.happ.models.Event;
 
 import io.realm.Realm;
@@ -29,6 +29,7 @@ public class RejectionReasonsActivity extends AppCompatActivity {
 
     private String eventId;
     private Event event;
+    private TextView mTextViewRejectionReason;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,10 +59,12 @@ public class RejectionReasonsActivity extends AppCompatActivity {
             });
         }
 
-        llm = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(llm);
-        RejectionReasonsListAdapter rejectionReasonsListAdapter = new RejectionReasonsListAdapter(this, event.getRejectionReasons());
-        mRecyclerView.setAdapter(rejectionReasonsListAdapter);
+        mTextViewRejectionReason.setText(event.getRejectionReason().getText());
+
+//        llm = new LinearLayoutManager(this);
+//        mRecyclerView.setLayoutManager(llm);
+//        RejectionReasonsListAdapter rejectionReasonsListAdapter = new RejectionReasonsListAdapter(this, event.getRejectionReason());
+//        mRecyclerView.setAdapter(rejectionReasonsListAdapter);
 
         mBtnEditEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +86,6 @@ public class RejectionReasonsActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mBtnEditEvent = (Button) findViewById(R.id.btn_edit_event);
         mRecyclerView = (RecyclerView) findViewById(R.id.rra_recycler_view);
-
+        mTextViewRejectionReason = (TextView) findViewById(R.id.rra_text);
     }
 }

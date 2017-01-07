@@ -8,7 +8,7 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by dante on 12/23/16.
  */
-public class RejectionReasons extends RealmObject {
+public class RejectionReason extends RealmObject {
 
     @PrimaryKey
     private String id;

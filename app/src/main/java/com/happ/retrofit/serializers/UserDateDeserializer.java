@@ -5,54 +5,54 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.happ.models.EventDateTimes;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
-public class UserDateDeserializer implements JsonDeserializer<Date>, JsonSerializer<Date> {
+public class UserDateDeserializer implements JsonDeserializer<EventDateTimes>, JsonSerializer<EventDateTimes> {
 
     @Override
-    public Date deserialize(JsonElement element, Type arg1, JsonDeserializationContext arg2) throws JsonParseException {
-        String dateJson = element.getAsString();
+    public EventDateTimes deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 
-        SimpleDateFormat longDateFormater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        longDateFormater.setTimeZone(TimeZone.getTimeZone("GMT"));
-        SimpleDateFormat onlyDate = new SimpleDateFormat("yyyy-MM-dd");
+        JsonObject jsonObject = json.getAsJsonObject();
+        String date = jsonObject.get("date").getAsString();
+        String start_time = jsonObject.get("start_time").getAsString();
+        String end_time = jsonObject.get("end_time").getAsString();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
+        EventDateTimes eventDateTimes = new EventDateTimes();
         try {
-            if (dateJson.equals(onlyDate.format(onlyDate.parse(dateJson)))) {
-                return onlyDate.parse(dateJson);
-            } else if (dateJson.equals(longDateFormater.format(longDateFormater.parse(dateJson)))) {
-                return longDateFormater.parse(dateJson);
-            }
-            return null;
+            eventDateTimes.setDate(dateFormat.parse(date));
+            eventDateTimes.setStartTime(timeFormat.parse(start_time));
+            eventDateTimes.setEndTime(timeFormat.parse(end_time));
         } catch (ParseException e) {
             e.printStackTrace();
-            return null;
         }
-
+        return eventDateTimes;
     }
 
     @Override
-    public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.get("date").getAsString();
+    public JsonElement serialize(EventDateTimes src, Type typeOfSrc, JsonSerializationContext context) {
 
-//        JsonArray jsonArray = new JsonArray();
-//        jsonArray.add(new JsonPrimitive(src.getDate()));
-//        Log.e("DATE SERIALIZE", "" + dateFormat.format(src));
+        Date date = src.getDate();
+        Date startTime = src.getStartTime();
+        Date endTime = src.getEndTime();
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HHmmss");
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        return new JsonPrimitive(format.format(src));
+        JsonObject eventDateTimeObj = new JsonObject();
+        eventDateTimeObj.addProperty("date", dateFormat.format(date));
+        eventDateTimeObj.addProperty("start_time", timeFormat.format(startTime));
+        eventDateTimeObj.addProperty("end_time", timeFormat.format(endTime));
+        return eventDateTimeObj;
+
     }
 }

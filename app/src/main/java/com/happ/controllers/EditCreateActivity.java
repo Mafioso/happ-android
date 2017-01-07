@@ -656,13 +656,13 @@ public class EditCreateActivity extends AppCompatActivity {
         gcal.setTime(start);
         RealmList<EventDateTimes> eventDateTimes = new RealmList<EventDateTimes>();
         do {
-            Date d = gcal.getTime();
-            System.out.println(d);
-            gcal.add(Calendar.DAY_OF_MONTH, 1);
             Date nextDate = gcal.getTime();
             EventDateTimes eventDate = new EventDateTimes();
             eventDate.setDate(nextDate);
+            eventDate.setStartTime(mStartDate);
+            eventDate.setEndTime(mEndDate);
             eventDateTimes.add(eventDate);
+            gcal.add(Calendar.DAY_OF_MONTH, 1);
         } while (gcal.getTime().before(end));
 
         event.setDatetimes(eventDateTimes);

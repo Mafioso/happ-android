@@ -5,7 +5,6 @@ package com.happ.models;
  */
 public class FacebookRegisterBody {
 
-
     private String facebook_id;
     private String fullname;
     private int gender;

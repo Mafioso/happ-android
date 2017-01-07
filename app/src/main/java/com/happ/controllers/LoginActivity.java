@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.UnderlineSpan;
 import android.transition.Explode;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
@@ -26,7 +27,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginBehavior;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.happ.App;
 import com.happ.BroadcastIntents;
 import com.happ.LockableScrollView;
@@ -36,6 +49,10 @@ import com.happ.controllers_drawer.SelectInterestsActivity;
 import com.happ.models.User;
 import com.happ.retrofit.APIService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
 import java.util.Random;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -49,6 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
+    private CallbackManager mCallbackManager;
     private EditText mEmail, mPassword;
     private TextView mTvBtnCreateAccount, mTvBtnForgotPw;
     private TextView mTVPrivacyPolicy, mTVTermsPolicy;
@@ -61,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
     private MaterialProgressBar mProgressBar;
     private AppCompatImageView mIVbg;
     private int[] mInsets = new int[3];
+    private Button mButtonFacebookLogin;
 
     private int[] login_bg = {
             R.drawable.login_bg_1,
@@ -81,8 +100,18 @@ public class LoginActivity extends AppCompatActivity {
     private BroadcastReceiver currentUserDoneReceiver;
     private BroadcastReceiver currentCityDoneReceiver;
     private BroadcastReceiver selectedInterestsReceiver;
+    private BroadcastReceiver facebookLoginRequestDoneReceiver;
+    private BroadcastReceiver facebookRegisterRequestDoneReceiver;
+    private BroadcastReceiver facebookLoginRequestFAILReceiver;
+
+    private String saved_facebook_id = "";
+    private int saved_gender;
+    private String saved_email = "";
+    private String saved_fullname = "";
 
     private boolean selectedInterestsAsked;
+
+    private String TAG = "FACEBOOK LOGIN";
 
     int idx = new Random().nextInt(login_bg.length);
     int randomBg = login_bg[idx];
@@ -90,6 +119,98 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(
+//                    "kz.happappinfo",
+//                    PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
+
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        AppEventsLogger.activateApp(this);
+        mCallbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(mCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d("Success", "Login");
+                        Log.e(TAG, "Facebook getApplicationId: " + loginResult.getAccessToken().getApplicationId());
+                        Log.d(TAG, "Facebook getToken: " + loginResult.getAccessToken().getToken());
+                        Log.d(TAG, "Facebook getUserId: " + loginResult.getAccessToken().getUserId());
+                        Log.d(TAG, "Facebook getExpires: " + loginResult.getAccessToken().getExpires());
+                        Log.d(TAG, "Facebook getLastRefresh: " + loginResult.getAccessToken().getLastRefresh());
+
+                        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                accessToken,
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(JSONObject object, GraphResponse response) {
+                                        try {
+
+                                            //check is response is not empty
+                                            if (response.getError() == null){
+
+                                                //parse json
+                                                object = new JSONObject(response.getRawResponse().toString());
+
+                                                String id = object.getString("id");
+                                                String email = object.getString("email");
+                                                String name = object.getString("name");
+                                                String gender = object.getString("gender");
+
+                                                saved_facebook_id = id;
+                                                if (gender.equals("male")) {
+                                                    saved_gender = 0;
+                                                } else {
+                                                    saved_gender = 1;
+                                                }
+                                                saved_email = email;
+                                                saved_fullname = name;
+
+                                                Log.e("FB SDK", "id = " + id);
+                                                Log.e("FB SDK", "email = " + email);
+                                                Log.e("FB SDK", "name = " + name);
+                                                Log.e("FB SDK", "gender = " + gender);
+
+                                                APIService.doFacebookLogin(id);
+                                            }
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id,email,gender,name");
+                        request.setParameters(parameters);
+                        request.executeAsync();
+
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(LoginActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Toast.makeText(LoginActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+                        Log.d(TAG, exception.getMessage());
+                    }
+                });
 
         setContentView(R.layout.login_form);
 
@@ -110,6 +231,7 @@ public class LoginActivity extends AppCompatActivity {
         mProgressBar = (MaterialProgressBar) findViewById(R.id.circular_progress_login);
         mTVPrivacyPolicy = (TextView) findViewById(R.id.tv_privacy_policy);
         mTVTermsPolicy = (TextView) findViewById(R.id.tv_terms_and_policy);
+        mButtonFacebookLogin = (Button) findViewById(R.id.button_fb_login);
 
 
         mBtnLogin.setVisibility(View.INVISIBLE);
@@ -122,6 +244,17 @@ public class LoginActivity extends AppCompatActivity {
 
         mEmail.addTextChangedListener(mWatcher);
         mPassword.addTextChangedListener(mWatcher);
+
+        mButtonFacebookLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginManager loginManager = LoginManager.getInstance();
+                loginManager.setLoginBehavior(LoginBehavior.NATIVE_WITH_FALLBACK);
+                loginManager.logInWithReadPermissions(
+                        LoginActivity.this,
+                        Arrays.asList("public_profile", "user_friends", "email"));
+            }
+        });
 
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -195,6 +328,21 @@ public class LoginActivity extends AppCompatActivity {
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(selectedInterestsReceiver, new IntentFilter(BroadcastIntents.SELECTED_INTERESTS_REQUEST_OK));
         }
 
+        if (facebookLoginRequestDoneReceiver == null) {
+            facebookLoginRequestDoneReceiver = facebookLoginSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(facebookLoginRequestDoneReceiver, new IntentFilter(BroadcastIntents.FACEBOOK_LOGIN_REQUEST_OK));
+        }
+
+        if (facebookLoginRequestFAILReceiver == null) {
+            facebookLoginRequestFAILReceiver = facebookLoginFailSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(facebookLoginRequestFAILReceiver, new IntentFilter(BroadcastIntents.FACEBOOK_LOGIN_REQUEST_FAIL));
+        }
+
+        if (facebookRegisterRequestDoneReceiver == null) {
+            facebookRegisterRequestDoneReceiver = facebookRegisterSuccessReceiver();
+            LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(facebookRegisterRequestDoneReceiver, new IntentFilter(BroadcastIntents.FACEBOOK_REGISTER_REQUEST_OK));
+        }
+
     }
 
 
@@ -255,6 +403,11 @@ public class LoginActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
     TextWatcher mWatcher = new TextWatcher() {
 
         @Override
@@ -299,7 +452,6 @@ public class LoginActivity extends AppCompatActivity {
                 APIService.getSelectedInterests();
                 if (currentUser.getSettings().getCity() != null) {
                     APIService.getCurrentCity();
-//                    HappRestClient.getInstance().getCurrentCity();
                 } else {
                     Intent goToFeedIntent = new Intent(LoginActivity.this, CityActivity.class);
                     goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -319,6 +471,33 @@ public class LoginActivity extends AppCompatActivity {
                 goToFeedIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 startActivity(goToFeedIntent);
                 overridePendingTransition(0, 0);
+            }
+        };
+    }
+
+    private BroadcastReceiver facebookLoginSuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                APIService.getCurrentUser();
+            }
+        };
+    }
+
+    private BroadcastReceiver facebookLoginFailSuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                APIService.doFacebookRegister(saved_facebook_id, saved_fullname, saved_gender, saved_email);
+            }
+        };
+    }
+
+    private BroadcastReceiver facebookRegisterSuccessReceiver() {
+        return new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                APIService.getCurrentUser();
             }
         };
     }
@@ -378,6 +557,10 @@ public class LoginActivity extends AppCompatActivity {
         if (selectedInterestsReceiver != null) {
             LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(selectedInterestsReceiver);
             selectedInterestsReceiver = null;
+        }
+        if (facebookLoginRequestDoneReceiver != null) {
+            LocalBroadcastManager.getInstance(App.getContext()).unregisterReceiver(facebookLoginRequestDoneReceiver);
+            facebookLoginRequestDoneReceiver = null;
         }
 
         super.onDestroy();

@@ -7,26 +7,26 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.happ.models.RejectionReasons;
+import com.happ.models.RejectionReason;
 
 import java.lang.reflect.Type;
 
 /**
  * Created by dante on 12/23/16.
  */
-public class RejectionReasonsDeserializer implements JsonDeserializer<RejectionReasons>, JsonSerializer<RejectionReasons> {
+public class RejectionReasonsDeserializer implements JsonDeserializer<RejectionReason>, JsonSerializer<RejectionReason> {
     @Override
-    public RejectionReasons deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public RejectionReason deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
 
         JsonObject rrJson = json.getAsJsonObject();
-        RejectionReasons rejectionReasons = new RejectionReasons();
-        rejectionReasons.setId(rrJson.get("id").getAsString());
-        rejectionReasons.setText(rrJson.get("text").getAsString());
-        return rejectionReasons;
+        RejectionReason rejectionReason = new RejectionReason();
+        rejectionReason.setId(rrJson.get("id").getAsString());
+        rejectionReason.setText(rrJson.get("text").getAsString());
+        return rejectionReason;
     }
 
     @Override
-    public JsonElement serialize(RejectionReasons src, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(RejectionReason src, Type typeOfSrc, JsonSerializationContext context) {
         return null;
     }
 }
