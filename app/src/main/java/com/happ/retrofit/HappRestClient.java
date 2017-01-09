@@ -446,13 +446,7 @@ public class HappRestClient {
 
     public void getFilteredOrgEvents(int page, boolean is_active, boolean is_inactive, boolean is_onreview, boolean is_rejected, boolean is_finished) {
 
-        int onreview = 100;
-        int rejected = 200;
-
-        if (is_onreview) onreview = 0;
-        if (is_rejected) rejected = 2;
-
-        happApi.getFilteredOrgEvents(page, is_active,is_inactive, onreview, rejected, is_finished).enqueue(new Callback<EventsResponse>() {
+        happApi.getFilteredOrgEvents(page, is_active,is_inactive, is_onreview, is_rejected, is_finished).enqueue(new Callback<EventsResponse>() {
             @Override
             public void onResponse(Call<EventsResponse> call, Response<EventsResponse> response) {
                 if (response.isSuccessful()){
@@ -622,7 +616,6 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.FACEBOOK_LOGIN_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
-                    showRequestError(response);
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }
@@ -674,7 +667,6 @@ public class HappRestClient {
                 else {
                     Intent intent = new Intent(BroadcastIntents.FACEBOOK_REGISTER_REQUEST_FAIL);
                     intent.putExtra("CODE", response.code());
-                    showRequestError(response);
                     intent.putExtra("MESSAGE", response.message());
                     LocalBroadcastManager.getInstance(App.getContext()).sendBroadcast(intent);
                 }

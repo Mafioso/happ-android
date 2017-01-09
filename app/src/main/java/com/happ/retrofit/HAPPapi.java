@@ -54,10 +54,10 @@ public interface HAPPapi {
 
     @GET("events/organizer/")
     Call<EventsResponse> getFilteredOrgEvents(@Query("page") int page,
-                                   @Query("is_active") boolean is_acitve,
-                                   @Query("is_active") boolean is_inactive,
-                                   @Query("status") int is_onreview,
-                                   @Query("status") int is_rejected,
+                                   @Query("active") boolean is_acitve,
+                                   @Query("not_active") boolean is_inactive,
+                                   @Query("moderation") boolean is_onreview,
+                                   @Query("rejected") boolean is_rejected,
                                    @Query("finished") boolean is_finished);
 
     @GET("events/feed/")

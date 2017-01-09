@@ -9,6 +9,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import io.realm.RealmList;
@@ -145,12 +146,24 @@ public class Event extends RealmObject implements Serializable {
 
     public Date getStartDate() {
         startDate = datetimes.get(0).getDate();
+        Calendar calTime = Calendar.getInstance();
+        calTime.setTime(datetimes.get(0).getStartTime());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(startDate);
+        cal.get(Calendar.YEAR);
+        cal.get(Calendar.MONTH);
+        cal.get(Calendar.DAY_OF_MONTH);
+        cal.set(Calendar.HOUR_OF_DAY, calTime.get(Calendar.HOUR_OF_DAY));
+        cal.set(Calendar.MINUTE,  calTime.get(Calendar.MINUTE));
+        startDate = cal.getTime();
+
         return startDate;
     }
 
     public String getStartDateFormatted(String format) {
         DateTimeFormatter dtFormatter = DateTimeFormat.forPattern(format);
-        DateTime eventDate = new DateTime(datetimes.get(0).getDate());
+        DateTime eventDate = new DateTime(getStartDate());
+//        DateTime eventDate = new DateTime(datetimes.get(0).getDate());
         return eventDate.toString(dtFormatter);
     }
 
@@ -160,13 +173,23 @@ public class Event extends RealmObject implements Serializable {
 
     public String getEndDateFormatted(String format) {
         DateTimeFormatter dtFormatter = DateTimeFormat.forPattern(format);
-//        DateTime eventDate = new DateTime(getEndDate());
-        DateTime eventDate = new DateTime(datetimes.get(0).getDate());
+        DateTime eventDate = new DateTime(getEndDate());
+//        DateTime eventDate = new DateTime(datetimes.get(0).getDate());
         return eventDate.toString(dtFormatter);
     }
 
     public Date getEndDate() {
         endDate = datetimes.get(datetimes.size()-1).getDate();
+        Calendar calTime = Calendar.getInstance();
+        calTime.setTime(datetimes.get(0).getEndTime());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(endDate);
+        cal.get(Calendar.YEAR);
+        cal.get(Calendar.MONTH);
+        cal.get(Calendar.DAY_OF_MONTH);
+        cal.set(Calendar.HOUR_OF_DAY, calTime.get(Calendar.HOUR_OF_DAY));
+        cal.set(Calendar.MINUTE,  calTime.get(Calendar.MINUTE));
+        endDate = cal.getTime();
         return endDate;
     }
 

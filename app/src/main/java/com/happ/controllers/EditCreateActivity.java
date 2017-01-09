@@ -650,23 +650,24 @@ public class EditCreateActivity extends AppCompatActivity {
 //        event.setStartDate(mStartDate);
 //        event.setEndDate(mEndDate);
 
-        Calendar gcal = Calendar.getInstance();
-        Date start = mStartDate;
-        Date end = mEndDate;
-        gcal.setTime(start);
-        RealmList<EventDateTimes> eventDateTimes = new RealmList<EventDateTimes>();
-        do {
-            Date nextDate = gcal.getTime();
-            EventDateTimes eventDate = new EventDateTimes();
-            eventDate.setDate(nextDate);
-            eventDate.setStartTime(mStartDate);
-            eventDate.setEndTime(mEndDate);
-            eventDateTimes.add(eventDate);
-            gcal.add(Calendar.DAY_OF_MONTH, 1);
-        } while (gcal.getTime().before(end));
+        if (mStartDate != null && mEndDate != null) {
+            Calendar gcal = Calendar.getInstance();
+            Date start = mStartDate;
+            Date end = mEndDate;
+            gcal.setTime(start);
+            RealmList<EventDateTimes> eventDateTimes = new RealmList<EventDateTimes>();
+            do {
+                Date nextDate = gcal.getTime();
+                EventDateTimes eventDate = new EventDateTimes();
+                eventDate.setDate(nextDate);
+                eventDate.setStartTime(mStartDate);
+                eventDate.setEndTime(mEndDate);
+                eventDateTimes.add(eventDate);
+                gcal.add(Calendar.DAY_OF_MONTH, 1);
+            } while (gcal.getTime().before(end));
 
-        event.setDatetimes(eventDateTimes);
-
+            event.setDatetimes(eventDateTimes);
+        }
 
         if (mEventMinPrice.getText().toString().equals("")) {
             event.setLowestPrice(0);
@@ -686,13 +687,21 @@ public class EditCreateActivity extends AppCompatActivity {
         if (!mEventEmail.getText().toString().equals(""))
             event.setEmail(mEventEmail.getText().toString());
 
-        RealmList<EventPhone> phones = new RealmList<EventPhone>();
-        for (int i = 0; i < 2; i++) {
-            EventPhone phone1 = new EventPhone();
-            phone1.setPhone("+7701774176"+i);
-            phones.add(phone1);
+        if (!mEventPhone.getText().toString().equals("")) {
+            RealmList<EventPhone> phones = new RealmList<EventPhone>();
+                EventPhone phone = new EventPhone();
+                phone.setPhone(mEventPhone.getText().toString());
+                phones.add(phone);
+            event.setPhones(phones);
+        } else {
+            if (App.getCurrentUser().getPhone() != null) {
+                RealmList<EventPhone> phones = new RealmList<EventPhone>();
+                    EventPhone phone = new EventPhone();
+                    phone.setPhone(App.getCurrentUser().getPhone());
+                    phones.add(phone);
+                event.setPhones(phones);
+            }
         }
-        event.setPhones(phones);
 
         User author = new User();
         author.setFullname(App.getCurrentUser().getFn());
@@ -710,11 +719,23 @@ public class EditCreateActivity extends AppCompatActivity {
         realm.commitTransaction();
         realm.close();
 
-        if (eventId == null) {
-            APIService.createEvent(event.getId());
+        if (mStartDate != null && mEndDate != null
+                && !mEventPlace.getText().toString().equals("")
+                && !mEventTitle.getText().toString().equals("")
+                && !mEventDescription.getText().toString().equals("")
+                && !mEventInterest.getText().toString().equals("")
+                && !mEventCurrency.getText().toString().equals("")) {
+
+            if (eventId == null) {
+                APIService.createEvent(event.getId());
+            } else {
+                APIService.doEventEdit(event.getId());
+            }
+
         } else {
-            APIService.doEventEdit(event.getId());
+            Toast.makeText(EditCreateActivity.this, R.string.not_all_fields_are_filled, Toast.LENGTH_SHORT).show();
         }
+
 
     }
 

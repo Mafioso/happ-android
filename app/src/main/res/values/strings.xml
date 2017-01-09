@@ -273,5 +273,6 @@
     <string name="go_to_organizer">Go to organizer</string>
     <string name="check_your_email">Check Your Email</string>
     <string name="save_event_location">Save Event Location</string>
+    <string name="not_all_fields_are_filled">Not all required fields are filled</string>
 
 </resources>

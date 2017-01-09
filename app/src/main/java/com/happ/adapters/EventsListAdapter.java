@@ -91,7 +91,8 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
         int sectionFirstPosition = 0;
 
         for (int i = 0; i < events.size(); i++) {
-            DateTime eventDate = new DateTime(events.get(i).getDatetimes().get(0).getDate());
+//            DateTime eventDate = new DateTime(events.get(i).getDatetimes().get(0).getDate());
+            DateTime eventDate = new DateTime(events.get(i).getStartDate());
             eventDate.minusHours(eventDate.hourOfDay().get());
             eventDate.minusMinutes(eventDate.minuteOfHour().get());
             eventDate.minusSeconds(eventDate.secondOfMinute().get());
@@ -342,24 +343,23 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
             }
 
 
-//            String startTime = startDateTime.toString(dtFormatter);
-//            String endTime = endDateTime.toString(dtFormatter);
-//            String rangeTime = startTime + " — " + endTime;
-//
-//            if (startTime.equals(endTime)) {
-//                itemHolder.mTime.setText(startTime);
-//            } else {
-//                itemHolder.mTime.setText(rangeTime);
-//            }
-
-            String startDate = item.event.getStartDateFormatted("MMM dd").toUpperCase();
-            String endDate = item.event.getEndDateFormatted("MMM dd").toUpperCase();
-
-            if (startDate.equals(endDate)) {
-                itemHolder.mTime.setText(startDate);
+            String startTime = item.event.getStartDateFormatted("HH:mm").toUpperCase();
+            String endTime = item.event.getEndDateFormatted("HH:mm").toUpperCase();
+            String rangeTime = startTime + " — " + endTime;
+            if (startTime.equals(endTime)) {
+                itemHolder.mTime.setText(startTime);
             } else {
-                itemHolder.mTime.setText(startDate + " - " + endDate);
+                itemHolder.mTime.setText(rangeTime);
             }
+
+//            String startDate = item.event.getStartDateFormatted("MMM dd").toUpperCase();
+//            String endDate = item.event.getEndDateFormatted("MMM dd").toUpperCase();
+//
+//            if (startDate.equals(endDate)) {
+//                itemHolder.mTime.setText(startDate);
+//            } else {
+//                itemHolder.mTime.setText(startDate + " - " + endDate);
+//            }
 
 
             Menu menu = itemHolder.mToolbar.getMenu();

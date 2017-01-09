@@ -208,4 +208,5 @@
     <string name="go_to_organizer">Перейти в режим организатора</string>
     <string name="check_your_email">Проверьте свою почту</string>
     <string name="save_event_location">Сохранить локацию события</string>
+    <string name="not_all_fields_are_filled">Не все обязательные поля заполнены</string>
 </resources>
