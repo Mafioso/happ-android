@@ -477,7 +477,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                             navigationHeader.setVisibility(View.GONE);
                             mBottomBar.setVisibility(View.GONE);
                             mDrawerLLFooter.setVisibility(View.GONE);
-                            mRightDrawerLLFooter.setVisibility(View.GONE);
+//                            mRightDrawerLLFooter.setVisibility(View.GONE);
 
                         }
                         isKeyboarShown = true;
@@ -486,7 +486,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                         navigationHeader.setVisibility(View.VISIBLE);
                         mBottomBar.setVisibility(View.VISIBLE);
                         mDrawerLLFooter.setVisibility(View.VISIBLE);
-                        mRightDrawerLLFooter.setVisibility(View.VISIBLE);
+//                        mRightDrawerLLFooter.setVisibility(View.VISIBLE);
                         isKeyboarShown = false;
                     }
                 }

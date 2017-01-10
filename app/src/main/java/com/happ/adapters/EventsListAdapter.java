@@ -371,14 +371,12 @@ public class EventsListAdapter extends RecyclerView.Adapter<EventsListAdapter.Ev
                 public boolean onMenuItemClick(MenuItem menuItem) {
                     menuItem.setChecked(false);
                     if (menuItem.getItemId() == R.id.menu_unsubscribe) {
-
                         mInterestsListAdapter = new InterestsListAdapter(context, interests, true);
                         mInterestsListAdapter.setUserAcivityIds(App.getCurrentUser().getInterestIds());
                         ArrayList<String> selectedInterests = mInterestsListAdapter.getSelectedInterests();
                         String idInterest = item.event.getInterest().getId();
                         selectedInterests.remove(idInterest);
                         APIService.setInterests(selectedInterests);
-
                     }
                     return false;
                 }

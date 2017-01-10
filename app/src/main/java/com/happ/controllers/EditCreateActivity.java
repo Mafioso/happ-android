@@ -17,6 +17,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.View;
@@ -167,6 +168,8 @@ public class EditCreateActivity extends AppCompatActivity {
                         mImgBtnSelectPointMap,
                         mImgBtnSelectCity,
                         mImgBtnSelectCurreny;
+
+    private SwitchCompat mSwitchContinuingEvent;
 
     private BroadcastReceiver imageUploadedReceiver;
 
@@ -591,6 +594,7 @@ public class EditCreateActivity extends AppCompatActivity {
         mViewSpaceListenerEndTime = (View) findViewById(R.id.view_click_endtime);
 
         mEventImagesList = (RecyclerView) findViewById(R.id.ec_image_rv);
+        mSwitchContinuingEvent = (SwitchCompat) findViewById(R.id.switch_ec_continuing);
 
 
     }
@@ -703,6 +707,15 @@ public class EditCreateActivity extends AppCompatActivity {
             }
         }
 
+        if (!mEventTicketLink.getText().toString().equals("")){
+            event.setRegistationLink(mEventTicketLink.getText().toString());
+        }
+
+        if (mSwitchContinuingEvent.isChecked()) {
+            event.setCloseOnStart(true);
+        } else {
+            event.setCloseOnStart(false);
+        }
         User author = new User();
         author.setFullname(App.getCurrentUser().getFn());
         event.setAuthor(author);
