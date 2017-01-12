@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -14,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.PagerAdapter;
@@ -536,10 +536,10 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             case TAB_EVERYTHING:
                 everythingFeedFragment.setChangeColorIconToolbarListener(new BaseFeedFragment.ChangeColorIconToolbarListener() {
                     @Override
-                    public void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter) {
+                    public void onChangeColorIconToolbar(int drawableHome, int drawableFilter) {
                         if (actionBar != null) {
-                            actionBar.setHomeAsUpIndicator(drawableHome);
-                            menu.getItem(0).setIcon(drawableFilter);
+                            actionBar.setHomeAsUpIndicator(ContextCompat.getDrawable(FeedActivity.this, drawableHome));
+                            menu.getItem(0).setIcon(ContextCompat.getDrawable(FeedActivity.this, drawableFilter));
                         }
                     }
 
@@ -553,10 +553,10 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             case TAB_FAVORITES:
                 favoriteFeedFragment.setChangeColorIconToolbarListener(new BaseFeedFragment.ChangeColorIconToolbarListener() {
                     @Override
-                    public void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter) {
+                    public void onChangeColorIconToolbar(int drawableHome, int drawableFilter) {
                         if (actionBar != null) {
-                            actionBar.setHomeAsUpIndicator(drawableHome);
-                            menu.getItem(0).setIcon(drawableFilter);
+                            actionBar.setHomeAsUpIndicator(ContextCompat.getDrawable(FeedActivity.this, drawableHome));
+                            menu.getItem(0).setIcon(ContextCompat.getDrawable(FeedActivity.this, drawableFilter));
                         }
                     }
 
@@ -585,10 +585,10 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             case TAB_MAP:
                 mapFragment.setChangeColorIconToolbarListener(new MapFragment.ChangeColorIconToolbarListener() {
                     @Override
-                    public void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter) {
+                    public void onChangeColorIconToolbar(int drawableHome, int drawableFilter) {
                         if (actionBar != null) {
-                            actionBar.setHomeAsUpIndicator(drawableHome);
-                            menu.getItem(0).setIcon(drawableFilter);
+                            actionBar.setHomeAsUpIndicator(ContextCompat.getDrawable(FeedActivity.this, drawableHome));
+                            menu.getItem(0).setIcon(ContextCompat.getDrawable(FeedActivity.this, drawableFilter));
                         }
                     }
                 });

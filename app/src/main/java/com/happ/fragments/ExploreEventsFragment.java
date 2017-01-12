@@ -64,7 +64,7 @@ public class ExploreEventsFragment extends Fragment {
     }
 
     public void setOnHideShowFilterListener(HideShowFilterListener listener) {
-        this.hideshowFilterListener = listener;
+        hideshowFilterListener = listener;
     }
     public static ExploreEventsFragment newInstance() {
         return new ExploreEventsFragment();
@@ -83,8 +83,6 @@ public class ExploreEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View contentView = inflater.inflate(R.layout.explore_events_fragment, container, false);
         final Activity activity = getActivity();
-
-        hideshowFilterListener.onHideFilter();
 
         mExploreRecyclerView = (RecyclerView) contentView.findViewById(R.id.fragment_explore_rv);
         mExploreEventGridLayoutManager = new GridLayoutManager(activity, 3);
@@ -118,6 +116,12 @@ public class ExploreEventsFragment extends Fragment {
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(exploreEventsRequestDoneReceiver, new IntentFilter(BroadcastIntents.EXPLORE_EVENTS_REQUEST_OK));
         }
         return contentView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        hideshowFilterListener.onHideFilter();
     }
 
     @Override

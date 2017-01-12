@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -70,7 +69,7 @@ public class BaseFeedFragment extends Fragment {
     }
 
     public interface ChangeColorIconToolbarListener {
-        void onChangeColorIconToolbar(@DrawableRes int drawableHome, @DrawableRes int drawableFilter);
+        void onChangeColorIconToolbar(int drawableHome, int drawableFilter);
         void onClickButtonEmpty();
     }
 
