@@ -157,7 +157,7 @@ public class UserActivity extends AppCompatActivity implements com.wdullaer.mate
         mUserAvatarProgress = (MaterialProgressBar) findViewById(R.id.user_avatar_progress);
 
         if (user.getAvatar() != null) {
-            imageId = user.getAvatar().getId();
+            imageId = user.getAvatar().getPath();
         }
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

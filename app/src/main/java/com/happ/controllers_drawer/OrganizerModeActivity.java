@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -85,6 +86,7 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
     private LinearLayout mDrawerLLFooter;
     private ImageView mDrawerHeaderAvatar;
     private RelativeLayout mDrawerHeaderAvatarPlaceholder;
+    private Button mBtnResetFilters;
 
     private SwitchCompat isActive, isInactive, isOnreview, isRejected, isFinished;
     private boolean
@@ -171,6 +173,23 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
                     is_finished = false;
                     getFilteredOrganizerEvents();
                 }
+            }
+        });
+
+        mBtnResetFilters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isActive.setChecked(true);
+                is_active = true;
+                isInactive.setChecked(true);
+                is_inacitve = true;
+                isOnreview.setChecked(true);
+                is_onreview = true;
+                isRejected.setChecked(true);
+                is_rejected = true;
+                isFinished.setChecked(false);
+                is_finished = false;
+                getFilteredOrganizerEvents();
             }
         });
 
@@ -419,6 +438,8 @@ public class OrganizerModeActivity extends AppCompatActivity implements FragNavC
         isOnreview = (SwitchCompat) findViewById(R.id.filter_onreview);
         isRejected = (SwitchCompat) findViewById(R.id.filter_rejected);
         isFinished = (SwitchCompat) findViewById(R.id.filter_finished);
+
+        mBtnResetFilters = (Button) findViewById(R.id.btn_reset_filters);
 
         isActive.setChecked(true);
         isInactive.setChecked(true);

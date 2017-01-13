@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -97,7 +98,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
     private EditText mFilterDate, mFilterTime;
 
-    private SwitchCompat mFilterFree, mFilterPopularity;
+    private SwitchCompat mSCFilterFree, mFilterPopularity, mSCChangeCurrency;
     private Date startDate, endDate;
     private String isFree = "";
     private ImageView mCloseRightNavigation, mCLoseLeftNavigation;
@@ -106,6 +107,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     private EditText mFeedSearchText;
     private BottomBar mBottomBar;
     private FragNavController fragNavController;
+    private Button mBtnResetFilters;
 
     private MapFragment mapFragment;
     private EverythingFeedFragment everythingFeedFragment;
@@ -197,7 +199,9 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         mCloseRightNavigation = (ImageView) findViewById(R.id.close_right_navigation);
         mCLoseLeftNavigation = (ImageView) findViewById(R.id.close_left_navigation);
         mBottomBar = (BottomBar) findViewById(R.id.bottombar_feed);
-        mFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
+        mSCFilterFree = (SwitchCompat) findViewById(R.id.filter_free);
+        mSCChangeCurrency = (SwitchCompat) findViewById(R.id.filter_change_event_currency);
+        mBtnResetFilters = (Button) findViewById(R.id.btn_reset_filters);
         mFilterPopularity = (SwitchCompat) findViewById(R.id.filter_popularity_events);
         mViewFilterDate = (View) findViewById(R.id.view_filter_date);
         mViewFilterTime = (View) findViewById(R.id.view_filter_time);
@@ -209,7 +213,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         mDrawerHeaderArrow = ((CheckBox)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_header_arrow));
         mDrawerHeaderTVCity = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_city));
         mDrawerHeaderTVUsername = ((TextView)navigationHeader.getHeaderView(0).findViewById(R.id.drawer_username));
-
         mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.dr_iv_user_avatar));
         mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.dr_avatar_placeholder));
 
@@ -343,7 +346,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             }
         });
 
-        mFilterFree.setOnClickListener(new View.OnClickListener() {
+        mSCFilterFree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -352,12 +355,23 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                 if (startDate != null) sD = sdf.format(startDate);
                 if (endDate != null) eD = sdf.format(endDate);
 
-                if (mFilterFree.isChecked()) {
+                if (mSCFilterFree.isChecked()) {
                     isFree = "0";
                     APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
                 } else {
                     isFree = "";
                     APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
+                }
+            }
+        });
+
+        mSCChangeCurrency.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mSCChangeCurrency.isChecked()) {
+                    Toast.makeText(FeedActivity.this, "Change 1", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(FeedActivity.this, "Change 0", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -377,6 +391,21 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                     popularityEvents = false;
                     APIService.getFilteredEvents(1,getFeedSearch(), sD, eD, getMaxFree(),getPopularityEvents(), false);
                 }
+            }
+        });
+
+        mBtnResetFilters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startDate = null;
+                endDate = null;
+                popularityEvents = false;
+                isFree = "";
+                searchText = "";
+                mSCFilterFree.setChecked(false);
+                mFilterDate.setText("");
+                mFeedSearchText.setText("");
+                APIService.getEvents(false);
             }
         });
 
@@ -723,9 +752,9 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 //        mStartDateText.setText(format.format(startDate));
 //        mDateText.setText(format.format(endDate));
 //        if (isFree != null && isFree.length() > 0) {
-//            mFilterFree.setChecked(true);
+//            mSCFilterFree.setChecked(true);
 //        } else {
-//            mFilterFree.setChecked(false);
+//            mSCFilterFree.setChecked(false);
 //        }
     }
 

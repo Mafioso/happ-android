@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
@@ -107,7 +106,7 @@ public class EventsOrganizerFragment extends Fragment {
         OrgEventsListAdapter oela = new OrgEventsListAdapter(activity, orgEvents);
         oela.setOnSelectItemListener(new OrgEventsListAdapter.SelectEventItemListener() {
             @Override
-            public void onEventItemSelected(String eventId, ActivityOptionsCompat options) {
+            public void onEventItemSelected(String eventId) {
                 Intent intent = new Intent(activity, EventActivity.class);
                 intent.putExtra("event_id", eventId);
                 intent.putExtra("is_organizer", true);
@@ -116,7 +115,7 @@ public class EventsOrganizerFragment extends Fragment {
 //                    EventsOrganizerFragment.this.startActivity(intent);
 //                    (activity).overridePendingTransition(R.anim.slide_in_from_right, R.anim.push_to_back);
 //                } else {
-                    EventsOrganizerFragment.this.startActivity(intent, options.toBundle());
+                    activity.startActivity(intent);
 //                }
             }
 

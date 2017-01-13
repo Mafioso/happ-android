@@ -45,7 +45,8 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
     private SelectEventItemListener mSelectItemListener;
 
     public interface SelectEventItemListener {
-        void onEventItemSelected(String eventId, ActivityOptionsCompat options);
+//        void onEventItemSelected(String eventId, ActivityOptionsCompat options);
+        void onEventItemSelected(String eventId);
         void onEventEditSelected(String eventId);
         void onEventRejectionReasonsActivity(String eventId);
     }
@@ -94,7 +95,7 @@ public class OrgEventsListAdapter extends RecyclerView.Adapter<OrgEventsListAdap
         makeSceneTransitionAnimation((Activity) context, p1, p3, p4);
         }
         if (mSelectItemListener != null) {
-            mSelectItemListener.onEventItemSelected(id, optionsCompat);
+            mSelectItemListener.onEventItemSelected(id);
         }
     }
 

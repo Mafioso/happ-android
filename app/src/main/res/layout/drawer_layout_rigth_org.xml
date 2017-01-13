@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.design.widget.NavigationView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -256,6 +255,17 @@
 
 
         </RelativeLayout>
+
+        <Button
+            android:id="@+id/btn_reset_filters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?attr/borderlessButtonStyle"
+            android:textColor="@color/colorAccentDark"
+            android:textSize="16sp"
+            android:textAllCaps="true"
+            android:layout_alignParentBottom="true"
+            android:text="@string/reset_filters"/>
 
     </RelativeLayout>
 
