@@ -1,5 +1,7 @@
 package com.happ.controllers_drawer;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,7 +28,9 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +51,7 @@ import com.happ.BuildConfig;
 import com.happ.R;
 import com.happ.controllers.UserActivity;
 import com.happ.fragments.BaseFeedFragment;
+import com.happ.fragments.DialogsChatFeedFragment;
 import com.happ.fragments.EverythingFeedFragment;
 import com.happ.fragments.ExploreEventsFragment;
 import com.happ.fragments.FavoriteFeedFragment;
@@ -113,11 +118,13 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
     private EverythingFeedFragment everythingFeedFragment;
     private FavoriteFeedFragment favoriteFeedFragment;
     private ExploreEventsFragment exploreEventsFragment;
+    private DialogsChatFeedFragment dialogsChatFeedFragment;
 
     private final int TAB_EVERYTHING = FragNavController.TAB1;
     private final int TAB_FAVORITES = FragNavController.TAB2;
     private final int TAB_EXPLORE = FragNavController.TAB3;
     private final int TAB_MAP = FragNavController.TAB4;
+    private final int TAB_CHAT = FragNavController.TAB5;
 
     private BroadcastReceiver userRequestDoneReceiver;
     private BroadcastReceiver didUpvoteReceiver;
@@ -138,7 +145,6 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
     private ImageView mDrawerHeaderAvatar;
     private RelativeLayout mDrawerHeaderAvatarPlaceholder;
-
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -156,6 +162,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         favoriteFeedFragment = FavoriteFeedFragment.newInstance();
         exploreEventsFragment = ExploreEventsFragment.newInstance();
         mapFragment = MapFragment.newInstance();
+        dialogsChatFeedFragment = DialogsChatFeedFragment.newInstance();
 
         setSupportActionBar(toolbar);
         setAllFunctionNavigationMenu();
@@ -163,6 +170,11 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
         setDrawerLayoutListener();
 
         setDrawerHeaderAvatar();
+
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
+                new IntentFilter("new-push-event"));
+
 
         if (userRequestDoneReceiver == null) {
             userRequestDoneReceiver = createLoginSuccessReceiver();
@@ -286,10 +298,27 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
                 }
                 if (menuItem.getItemId() == R.id.nav_item_share_app) {
+
+                    final String appPackageName = getPackageName();
+
                     Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
                     sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
-                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+//                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+                    sharingIntent.putExtra(
+                            Intent.EXTRA_TEXT,
+                            Html.fromHtml(new StringBuilder()
+                                    .append("Скачайте приложение <b>HAPP!</b><br/>")
+                                    .append("Будьте в курсе всех событий в своем городе!<br/>")
+                                    .append("<a href=\"https://play.google.com/store/apps/details?id=kz.happappinfo\">Перейти на страницу с приложением.</a>")
+                                    .toString())
+                    );
+//
+//                    try {
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+//                    } catch (android.content.ActivityNotFoundException anfe) {
+//                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+//                    }
                     startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_happ_to)));
                 }
                 mDrawerLayout.closeDrawers();
@@ -622,6 +651,17 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                     }
                 });
                 return mapFragment;
+            case TAB_CHAT:
+//                mapFragment.setChangeColorIconToolbarListener(new MapFragment.ChangeColorIconToolbarListener() {
+//                    @Override
+//                    public void onChangeColorIconToolbar(int drawableHome, int drawableFilter) {
+//                        if (actionBar != null) {
+//                            actionBar.setHomeAsUpIndicator(ContextCompat.getDrawable(FeedActivity.this, drawableHome));
+//                            menu.getItem(0).setIcon(ContextCompat.getDrawable(FeedActivity.this, drawableFilter));
+//                        }
+//                    }
+//                });
+                return dialogsChatFeedFragment;
         }
         throw new IllegalStateException("Need to send an index that we know");
     }
@@ -654,7 +694,7 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
 
         this.menu = menu;
 
-        fragNavController = new FragNavController(bundle, getSupportFragmentManager(),R.id.feed_container,this,4, TAB_EVERYTHING);
+        fragNavController = new FragNavController(bundle, getSupportFragmentManager(),R.id.feed_container,this,5, TAB_EVERYTHING);
         fragNavController.setTransactionListener(this);
         mBottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -671,6 +711,9 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
                         break;
                     case R.id.tab_favorites:
                         fragNavController.switchTab(TAB_FAVORITES);
+                        break;
+                    case R.id.tab_chat:
+                        fragNavController.switchTab(TAB_CHAT);
                         break;
                 }
             }
@@ -779,6 +822,26 @@ public class FeedActivity extends AppCompatActivity implements FragNavController
             }
         };
     }
+
+    private BroadcastReceiver pushBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("message");
+            String from = intent.getStringExtra("from");
+
+            NotificationManager notif = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            Notification notify = new Notification.Builder
+                    (getApplicationContext()).setContentTitle("Admin").setContentText(message).
+                    setContentTitle(from).setSmallIcon(R.drawable.happ_icon).build();
+
+//            notify.flags |= Notification.FLAG_AUTO_CANCEL;
+            int max = 100000;
+            int id = (int)(Math.random() * ++max);
+            notif.notify(id, notify);
+
+            Log.i("BR Not", "Receiving message: " + message + ", from " + from);
+        }
+    };
 
     private BroadcastReceiver createUpvoteReceiver() {
         return new BroadcastReceiver() {

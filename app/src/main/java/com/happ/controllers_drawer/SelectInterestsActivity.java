@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.util.Log;
 import android.view.Display;
 import android.view.MenuItem;
@@ -396,7 +397,15 @@ public class SelectInterestsActivity extends AppCompatActivity
                         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                         sharingIntent.setType("text/plain");
                         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
-                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+//                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+                        sharingIntent.putExtra(
+                                Intent.EXTRA_TEXT,
+                                Html.fromHtml(new StringBuilder()
+                                        .append("Скачайте приложение <b>HAPP!</b><br/>")
+                                        .append("Будьте в курсе всех событий в своем городе!<br/>")
+                                        .append("<a href=\"https://play.google.com/store/apps/details?id=kz.happappinfo\">Перейти на страницу с приложением.</a>")
+                                        .toString())
+                        );
                         startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_happ_to)));
                     }
                     mDrawerLayout.closeDrawers();

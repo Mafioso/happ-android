@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:name=".App"
@@ -29,7 +30,6 @@
         android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-
             android:value="@string/facebook_app_id" />
 
         <activity
@@ -141,12 +141,21 @@
 
         </activity>
 
+        <activity android:name=".chat.controllers.ChatActivity"/>
+
 
 
 
         <service
             android:name=".retrofit.APIService"
             android:exported="false" >
+        </service>
+
+        <service
+            android:name="com.quickblox.messages.services.fcm.QBFcmPushListenerService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
         </service>
 
         <meta-data
@@ -159,6 +168,10 @@
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
             android:value="93c7091b509c1d1aea723c9d8caede48"/>
+
+        <meta-data android:name="com.quickblox.messages.TYPE" android:value="FCM" />
+        <meta-data android:name="com.quickblox.messages.SENDER_ID" android:value="@string/sender_id" />
+        <meta-data android:name="com.quickblox.messages.QB_ENVIRONMENT" android:value="DEVELOPMENT" />
 
     </application>
 

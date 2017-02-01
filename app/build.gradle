@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'realm-android'
 
+
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
@@ -67,6 +68,10 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.0.1'
     compile 'com.google.android.gms:play-services-location:10.0.1'
 
+    compile 'com.google.android.gms:play-services-gcm:10.0.1'
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.leavjenn.smoothdaterangepicker:library:0.2.0'
 
@@ -80,7 +85,15 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'jp.wasabeef:picasso-transformations:2.1.0'
 
-    compile "org.parceler:parceler-api:1.0.3"
+    compile 'org.parceler:parceler-api:1.0.3'
 
+    compile 'com.quickblox:quickblox-android-sdk-core:3.3.0'
+    compile 'com.quickblox:quickblox-android-sdk-messages:3.3.0'
+    compile 'com.quickblox:quickblox-android-sdk-chat:3.3.0'
+    compile 'com.quickblox:quickblox-android-sdk-content:3.3.0'
+
+    compile 'com.github.orangegangsters:swipy:1.2.2@aar'
 
 }
+
+apply plugin: 'com.google.gms.google-services'

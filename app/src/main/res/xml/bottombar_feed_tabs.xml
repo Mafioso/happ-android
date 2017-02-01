@@ -17,9 +17,9 @@
         icon="@drawable/bb_ic_map"
         title="@string/map" />
 
-    <!--<tab-->
-        <!--id="@+id/tab_chat"-->
-        <!--icon="@drawable/ic_bb_chat"-->
-        <!--title="Chat" />-->
+    <tab
+        id="@+id/tab_chat"
+        icon="@drawable/ic_event_chat"
+        title="@string/chat" />
 
 </tabs>

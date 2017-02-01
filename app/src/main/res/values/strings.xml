@@ -227,9 +227,9 @@
     <string name="all_rights_reserved" translatable="false">© All Rights Reserved, 2015</string>
     <string name="nav_item_share_app">Share App</string>
     <string name="settings_subject_contact">Question from</string>
-    <string name="happ_email" translatable="false">happerala@happapp.info</string>
+    <string name="happ_email" translatable="false">info@happapp.info</string>
     <string name="share_happ_to">Share Happ to</string>
-    <string name="drawer_share_subject" translatable="false">Share HAPP Subject...</string>
+    <string name="drawer_share_subject" translatable="false">HAPP App</string>
     <string name="drawer_share_text" translatable="false">Drawer Share Text</string>
     <string name="event_share_subject" translatable="false">HAPP App</string>
     <string name="share_event_to">Share Event to</string>
@@ -276,5 +276,13 @@
     <string name="not_all_fields_are_filled">Not all required fields are filled</string>
     <string name="reset_filters">Reset Filters</string>
     <string name="convert_currency">Convert currency</string>
+    <string name="go_to_app_page">Go to the page with the application.</string>
+    <string name="sender_id">947980900008</string>
+    <string name="chat">Chat</string>
+    <string name="dialog_last_message">Last Message</string>
+    <string name="dialog_name">Dialog Name</string>
+    <string name="send">send</string>
+    <string name="type_message">Type a message</string>
+
 
 </resources>

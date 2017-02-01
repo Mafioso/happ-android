@@ -30,6 +30,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.transition.Explode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -52,6 +53,7 @@ import com.happ.R;
 import com.happ.Typefaces;
 import com.happ.adapters.EventImagesSwipeAdapter;
 import com.happ.adapters.EventPhoneListAdapter;
+import com.happ.chat.controllers.ChatActivity;
 import com.happ.controllers.EditCreateActivity;
 import com.happ.controllers.EventMapActivity;
 import com.happ.controllers.UserActivity;
@@ -106,6 +108,7 @@ public class EventActivity extends AppCompatActivity {
 
     private LinearLayout mEventWEbSite, mEventEmail, mEventPhone;
     private LinearLayout mCircleLLCalendar, mCircleLLPrice, mCircleLLPlace;
+    private LinearLayout mLLEventAskAbout;
     private ImageView mFlashingImageViewDateTime, mFlashingImageViewPrice, mFlashingImageViewPlace;
     private Animation anim;
 
@@ -229,8 +232,16 @@ public class EventActivity extends AppCompatActivity {
                 if (menuItem.getItemId() == R.id.nav_item_share_app) {
                     Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                     sharingIntent.setType("text/plain");
-//                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, getResources().getString(R.string.drawer_share_subject));
 //                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, getResources().getString(R.string.drawer_share_text));
+                    sharingIntent.putExtra(
+                            Intent.EXTRA_TEXT,
+                            Html.fromHtml(new StringBuilder()
+                                    .append("Скачайте приложение <b>HAPP!</b><br/>")
+                                    .append("Будьте в курсе всех событий в своем городе!<br/>")
+                                    .append("<a href=\"https://play.google.com/store/apps/details?id=kz.happappinfo\">Перейти на страницу с приложением.</a>")
+                                    .toString())
+                    );
                     startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_happ_to)));
                 }
                 mDrawerLayout.closeDrawers();
@@ -316,6 +327,15 @@ public class EventActivity extends AppCompatActivity {
             });
         }
 
+        mLLEventAskAbout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent goToChat = new Intent(EventActivity.this, ChatActivity.class);
+                goToChat.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(goToChat);
+            }
+        });
+
         if (didUpvoteReceiver == null) {
             didUpvoteReceiver = createUpvoteReceiver();
             LocalBroadcastManager.getInstance(App.getContext()).registerReceiver(didUpvoteReceiver, new IntentFilter(BroadcastIntents.EVENT_UPVOTE_REQUEST_OK));
@@ -382,6 +402,8 @@ public class EventActivity extends AppCompatActivity {
 
         mDrawerHeaderAvatar = ((ImageView)navigationHeader.getHeaderView(0).findViewById(R.id.dr_iv_user_avatar));
         mDrawerHeaderAvatarPlaceholder = ((RelativeLayout)navigationHeader.getHeaderView(0).findViewById(R.id.dr_avatar_placeholder));
+
+        mLLEventAskAbout = (LinearLayout) findViewById(R.id.ll_ask_about_event);
 
     }
 

@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
+import android.provider.Settings;
 import android.support.multidex.MultiDexApplication;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,6 +20,15 @@ import com.happ.models.City;
 import com.happ.models.Event;
 import com.happ.models.HappToken;
 import com.happ.models.User;
+import com.quickblox.auth.session.QBSettings;
+import com.quickblox.core.QBEntityCallback;
+import com.quickblox.core.exception.QBResponseException;
+import com.quickblox.messages.QBPushNotifications;
+import com.quickblox.messages.model.QBEnvironment;
+import com.quickblox.messages.model.QBNotificationChannel;
+import com.quickblox.messages.model.QBSubscription;
+import com.quickblox.users.QBUsers;
+import com.quickblox.users.model.QBUser;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -34,6 +46,11 @@ import io.realm.RealmResults;
 public class App extends MultiDexApplication {
     private static Context context;
 
+    // Set your QuickBlox application credentials here
+    static final String APP_ID = "52527";
+    static final String AUTH_KEY = "PZvm6eaMNFrCkKH";
+    static final String AUTH_SECRET = "3fsKy4TWzzVMvfT";
+    static final String ACCOUNT_KEY = "x3MuTiZGYsbxzSBtsy3t";
 
     @Override
     public void onCreate() {
@@ -44,18 +61,70 @@ public class App extends MultiDexApplication {
 
         RealmConfiguration realmConfiguration = new RealmConfiguration
                 .Builder(this)
+                .deleteRealmIfMigrationNeeded()
                 .build();
 
         Realm.setDefaultConfiguration(realmConfiguration);
-
-//        if (hasInternet()) {
-//            deleleFromRealm();
-//        }
 
         if (hasConnection(context)) {
             deleleFromRealm();
         }
 
+
+        //        QBSettings.getInstance().fastConfigInit("52527", "PZvm6eaMNFrCkKH", "3fsKy4TWzzVMvfT");
+        QBSettings.getInstance().init(getApplicationContext(), APP_ID, AUTH_KEY, AUTH_SECRET);
+        QBSettings.getInstance().setAccountKey(ACCOUNT_KEY);
+
+//        final QBUser user = new QBUser("dante666lcf", "DEVILsuka666DANTEdmc");
+        final QBUser user = new QBUser("rustem", "qwerty123");
+
+//        QBUsers.signUp(user).performAsync(new QBEntityCallback<QBUser>() {
+//            @Override
+//            public void onSuccess(QBUser user, Bundle args) {
+//
+//            }
+//
+//            @Override
+//            public void onError(QBResponseException error) {
+//
+//            }
+//        });
+
+        QBUsers.signIn(user).performAsync(new QBEntityCallback<QBUser>() {
+
+            @Override
+            public void onSuccess(QBUser user, Bundle args) {
+                Log.e("QBUser", "" + user.getExternalId());
+//                String registrationID = user.getId().toString();
+//                subscribeToPushNotifications(registrationID);
+            }
+
+            @Override
+            public void onError(QBResponseException error) {
+
+            }
+        });
+
+
+    }
+
+    public void subscribeToPushNotifications(String registrationID) {
+        QBSubscription subscription = new QBSubscription(QBNotificationChannel.GCM);
+        subscription.setEnvironment(QBEnvironment.DEVELOPMENT);
+        //
+        String deviceId;
+        final TelephonyManager mTelephony = (TelephonyManager) context.getSystemService(
+                Context.TELEPHONY_SERVICE);
+        if (mTelephony.getDeviceId() != null) {
+            deviceId = mTelephony.getDeviceId(); //*** use for mobiles
+        } else {
+            deviceId = Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID); //*** use for tablets
+        }
+        subscription.setDeviceUdid(deviceId);
+        subscription.setRegistrationID(registrationID);
+        //
+        QBPushNotifications.createSubscription(subscription);
     }
 
     public void deleleFromRealm(){
@@ -113,24 +182,6 @@ public class App extends MultiDexApplication {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
-
-//    public static boolean hasInternet()  {
-//        try{
-//            String url = "http://google.com/";
-//
-//            HttpURLConnection.setFollowRedirects(false);
-//            HttpURLConnection conn = (HttpURLConnection)new URL(url).openConnection();
-//            // conn.setRequestMethod("HEAD");
-//            conn.setRequestMethod("GET");
-//            if(conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//                Toast.makeText(App.getContext(), "has internet", Toast.LENGTH_LONG).show();
-//                return true; // интернет есть
-//            }
-//        }catch(Exception e) {
-//            Log.d("Log:", "error: " + e); // на ошибку можно не обращать внимание
-//        }
-//        return false;
-//    }
 
     public static boolean hasConnection(final Context context) {
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "947980900008",
+    "firebase_url": "https://happ-154606.firebaseio.com",
+    "project_id": "happ-154606",
+    "storage_bucket": "happ-154606.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:947980900008:android:23b0e765015a843c",
+        "android_client_info": {
+          "package_name": "kz.happappinfo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "947980900008-mivbq4egh59349pu26tkit8nlaf641u1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2ceqyc_C9EpaI0lZ0m5_dFoQs6D_N1_M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

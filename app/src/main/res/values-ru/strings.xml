@@ -209,4 +209,11 @@
     <string name="check_your_email">Проверьте свою почту</string>
     <string name="save_event_location">Сохранить локацию события</string>
     <string name="not_all_fields_are_filled">Не все обязательные поля заполнены</string>
+    <string name="convert_currency">Конвертировать валюту</string>
+    <string name="go_to_app_page">Перейти на страницу с приложением.</string>
+    <string name="sender_id">947980900008</string>
+    <string name="chat">Чат</string>
+    <string name="dialog_last_message">Последнее сообщение</string>
+    <string name="dialog_name">Название Диалога</string>
+    <string name="type_message">Введите сообщение</string>
 </resources>
